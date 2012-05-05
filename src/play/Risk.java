@@ -1,0 +1,79 @@
+package play;
+
+import card.StandardCardSet;
+import com.sun.net.httpserver.HttpServer;
+import map.Country;
+import map.StandardMap;
+import map.WorldMap;
+import state.Game;
+import state.Player;
+import web.BlobHandler;
+import web.FirstHandler;
+import web.SecondHandler;
+import web.SelectionHandler;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public class Risk {
+
+    private Game _game;
+
+    private int _numberPlayers = 6;
+    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "Yellow", "Pink "};
+
+    public static void main(String[] args) {
+        Risk risk = new Risk();
+
+        System.out.println(risk._game);
+
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(8000),10);
+            server.createContext("/foo",new FirstHandler());
+            server.createContext("/bar",new SecondHandler());
+            server.createContext("/blobs.svg",new BlobHandler());
+            server.createContext("/select",new SelectionHandler());
+            server.setExecutor(null);
+            server.start();
+        } catch (IOException io){
+            System.out.println("Could not run server");
+            io.printStackTrace();
+        }
+
+    }
+
+    public Risk(){
+        List<Player> players = new ArrayList<Player>();
+        int initialArmies = initialArmyCount(_numberPlayers);
+        for (int idx=0 ; idx< _numberPlayers ; idx++ ){
+            Player player = new Player(_colors[idx]);
+            player.grantReserves(initialArmies);
+            players.add(player);
+        }
+
+        WorldMap map = new StandardMap();
+        _game = new Game(map, players, StandardCardSet.deck);
+
+        List<Country> countries = map.getAllCountries();
+        Collections.shuffle(countries);
+
+        for(int idx=0; idx<countries.size(); idx++){
+
+            Player player = players.get(idx%_numberPlayers);
+            Country country = countries.get(idx);
+            System.out.println("Placing player " + player.getColor() + " into " + country.getName());
+            _game.placeArmy(player, country);
+        }
+    }
+
+    private int initialArmyCount(int numberPlayers){
+        return 20 + (5 * (6 - numberPlayers));
+    }
+
+    void play(){}
+
+}

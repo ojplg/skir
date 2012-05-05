@@ -1,0 +1,74 @@
+package state;
+
+import map.Country;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Occupations {
+
+    private Map<Country, Force> _records = new HashMap<Country, Force>();
+
+    public boolean isOccupied(Country country){
+        return _records.containsKey(country);
+    }
+
+    public void killArmies(Country country, int count){
+        _records.get(country).killArmies(count);
+    }
+
+    public boolean allArmiesDestroyed(Country country){
+        if (isOccupied(country)){
+            return  getOccupationForce(country) == 0;
+        }
+        throw new RuntimeException("Country " + country + " is unoccupied");
+    }
+
+    public int getOccupationForce(Country country){
+        if( isOccupied(country) ){
+            return _records.get(country).getArmies();
+        }
+        return 0;
+    }
+
+    public Player getOccupier(Country country){
+        if( isOccupied(country) ){
+            return _records.get(country).getPlayer();
+        }
+        return null;
+    }
+
+
+    public List<Country> countriesOccupied(Player player){
+        List<Country> occupied = new ArrayList<Country>();
+        for ( Map.Entry<Country, Force> entry : _records.entrySet() ) {
+            if ( player.equals(entry.getValue().getPlayer())) {
+                occupied.add(entry.getKey());
+            }
+        }
+        return occupied;
+    }
+
+    public void placeArmy(Player player, Country country){
+        placeArmies(player, country, 1);
+    }
+
+    public void placeArmies(Player player, Country country, int cnt){
+        if ( ! isOccupied(country) ){
+            _records.put(country, new Force(player, cnt));
+            return;
+        }
+        Force existingForce = _records.get(country);
+        if ( existingForce.getPlayer() == player ){
+            existingForce.addArmies(cnt);
+        }
+        if ( existingForce.getArmies() > 0 ){
+            throw new RuntimeException("Player " + player + " cannot put armies into country " + country);
+        } else {
+            _records.put(country, new Force(player, cnt));
+        }
+    }
+
+}
