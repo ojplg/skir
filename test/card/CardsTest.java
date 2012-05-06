@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CardStackTest {
+public class CardsTest {
 
     @Test
     public void createSublistsFromLengthFive(){
