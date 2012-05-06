@@ -43,6 +43,7 @@ public class Adjutant {
     }
 
     public Order endAttacks(){
+        checkAllowable(OrderType.EndAttacks);
         return new EndAttacks(this);
     }
 
@@ -56,12 +57,19 @@ public class Adjutant {
         return new ClaimArmies(this);
     }
 
+    public Order occupy(int armies){
+        checkAllowable(OrderType.Occupy);
+        int toMove = Math.min(armies, _successfulAttack.getAttackersDiceCount());
+        return new Occupy(this, _successfulAttack.getInvader(), _successfulAttack.getTarget(), toMove);
+    }
+
     public Order attack(Country from, Country to, int dice){
         checkAllowable(OrderType.Attack);
         return new Attack(this, _roller, from, to, dice);
     }
 
     public Order exchangeCardSet(Card one, Card two, Card three){
+        checkAllowable(OrderType.ExchangeCardSet);
         return new ExchangeCardSet(this, one, two, three);
     }
 

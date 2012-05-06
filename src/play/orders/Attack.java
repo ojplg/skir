@@ -36,11 +36,24 @@ public class Attack extends Order {
         Rolls rolls = _roller.roll(_attackersDiceCount, dice);
         boolean conquered = game.resolveAttack(_invader, _target, rolls);
         if ( conquered ){
+            getAdjutant().successfulAttack(this);
             getAdjutant().setAllowableOrders(OrderType.Occupy);
         } else {
             getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
         }
         return getAdjutant();
+    }
+
+    public int getAttackersDiceCount() {
+        return _attackersDiceCount;
+    }
+
+    public Country getInvader() {
+        return _invader;
+    }
+
+    public Country getTarget() {
+        return _target;
     }
 
     @Override
