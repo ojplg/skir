@@ -10,17 +10,32 @@ public class Occupy extends Order {
     private Country _conquered;
     private int _armies;
 
-    public Occupy(Player player, Country victor, Country conquered, int armies) {
-        super(player);
+    public Occupy(Adjutant adjutant, Country victor, Country conquered, int armies) {
+        super(adjutant);
+        _victor = victor;
+        _conquered = conquered;
+        _armies = armies;
     }
 
     @Override
-    TurnPhase execute(Game game) {
+    Adjutant execute(Game game) {
         Player loser = game.getOccupier(_conquered);
         if ( game.resolveConquest(_victor, _conquered, _armies) ){
+            // TODO: Check for game over?
             game.resolveElimination(activePlayer(), loser);
-            return TurnPhase.Supply;
+            if (activePlayer().hasTooManyCards()){
+                getAdjutant().setAllowableOrders(OrderType.ExchangeCardSet);
+            } else {
+                getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
+            }
+        } else {
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
         }
-        return TurnPhase.Attack;
+        return getAdjutant();
+    }
+
+    @Override
+    OrderType getType() {
+        return OrderType.Occupy;
     }
 }

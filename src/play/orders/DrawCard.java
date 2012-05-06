@@ -3,16 +3,25 @@ package play.orders;
 import state.Game;
 import state.Player;
 
+import java.util.Collections;
+
 public class DrawCard extends Order {
 
-    public DrawCard(Player player){
-        super(player);
+    public DrawCard(Adjutant adjutant){
+        super(adjutant);
     }
 
     @Override
-    TurnPhase execute(Game game) {
-        // TODO: have to find if the player is entitled to draw a card
-        activePlayer().addCard(game.drawCard());
-        return TurnPhase.Trade;
+    Adjutant execute(Game game) {
+        if( getAdjutant().hasConqueredCountry() ){
+            activePlayer().addCard(game.drawCard());
+        }
+        getAdjutant().setAllowableOrders();
+        return getAdjutant();
+    }
+
+    @Override
+    OrderType getType() {
+        return OrderType.DrawCard;
     }
 }

@@ -74,13 +74,13 @@ public class Game {
         return countriesOccupied(defender).size() == 0;
     }
 
-    // returns true if the conqueror has too many cards */
+    // returns true if the game is over */
     public boolean resolveElimination(Player conqueror, Player vanquished){
         List<Card> cards = vanquished.getCards();
         vanquished.removeCards(cards);
         conqueror.addCards(cards);
         _players.remove(vanquished);
-        return conqueror.hasTooManyCards();
+        return _players.size() == 1;
     }
 
     public boolean gameWon(){

@@ -5,15 +5,21 @@ import state.Player;
 
 public abstract class Order {
 
-    private final Player _player;
+    private final Adjutant _adjutant;
 
-    public Order (Player player){
-        _player = player;
+    public Order (Adjutant adjutant){
+        _adjutant = adjutant;
     }
 
-    abstract TurnPhase execute(Game game);
+    abstract Adjutant execute(Game game);
+    abstract OrderType getType();
 
     public Player activePlayer(){
-        return _player;
+        return _adjutant.getActivePlayer();
     }
+
+    public Adjutant getAdjutant(){
+        return _adjutant;
+    }
+
 }

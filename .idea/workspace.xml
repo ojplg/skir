@@ -2,7 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1b0f4c5f-5675-445d-98e5-b9b92ddda465" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/state/Game.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/card/Cards.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/play/orders/Adjutant.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/play/orders/OrderType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/card/CardStack.java" afterPath="$PROJECT_DIR$/src/card/CardStack.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/Attack.java" afterPath="$PROJECT_DIR$/src/play/orders/Attack.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/ClaimArmies.java" afterPath="$PROJECT_DIR$/src/play/orders/ClaimArmies.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/DrawCard.java" afterPath="$PROJECT_DIR$/src/play/orders/DrawCard.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/EndAttacks.java" afterPath="$PROJECT_DIR$/src/play/orders/EndAttacks.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java" afterPath="$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/Fortify.java" afterPath="$PROJECT_DIR$/src/play/orders/Fortify.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/Occupy.java" afterPath="$PROJECT_DIR$/src/play/orders/Occupy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/Order.java" afterPath="$PROJECT_DIR$/src/play/orders/Order.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/orders/PlaceArmy.java" afterPath="$PROJECT_DIR$/src/play/orders/PlaceArmy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/state/Game.java" afterPath="$PROJECT_DIR$/src/state/Game.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/state/Player.java" afterPath="$PROJECT_DIR$/src/state/Player.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/card/CardStackTest.java" afterPath="$PROJECT_DIR$/test/card/CardStackTest.java" />
     </list>
     <ignored path="risk.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -84,8 +100,8 @@
       <property name="field_breakpoints_groupByClasses" value="true" />
       <property name="method_breakpoints_groupByClasses" value="true" />
       <property name="exception_breakpoints_viewId" value="TABLE" />
-      <property name="field_breakpoints_viewId" value="TABLE" />
       <property name="exception_breakpoints_groupByClasses" value="true" />
+      <property name="field_breakpoints_viewId" value="TABLE" />
       <property name="method_breakpoints_groupByMethods" value="false" />
     </ui_properties>
   </component>
@@ -94,69 +110,96 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Risk.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/play/Risk.java">
+      <file leaf-file-name="Adjutant.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/Adjutant.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="24" selection-start="2174" selection-end="2174" vertical-scroll-proportion="0.0">
+            <state line="50" column="22" selection-start="1344" selection-end="1344" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1403#1411#0" expanded="true" />
+                <element signature="e#374#385#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WorldMap.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/map/WorldMap.java">
+      <file leaf-file-name="EndAttacks.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/EndAttacks.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="9" selection-start="1032" selection-end="1032" vertical-scroll-proportion="0.0">
+            <state line="8" column="14" selection-start="160" selection-end="160" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExchangeCardSet.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="27" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Fortify.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/Fortify.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="29" selection-start="742" selection-end="742" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DrawCard.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/DrawCard.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="34" selection-start="522" selection-end="522" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Occupy.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/Occupy.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="14" selection-start="307" selection-end="307" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Order.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/Order.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="17" column="42" selection-start="361" selection-end="361" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#912#921#0" expanded="true" />
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Game.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/state/Game.java">
+      <file leaf-file-name="ClaimArmies.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/ClaimArmies.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="140" column="29" selection-start="4938" selection-end="4938" vertical-scroll-proportion="5.24">
+            <state line="9" column="14" selection-start="182" selection-end="182" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Player.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/state/Player.java">
+      <file leaf-file-name="PlaceArmy.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/PlaceArmy.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="55" column="18" selection-start="1191" selection-end="1191" vertical-scroll-proportion="0.0">
+            <state line="11" column="14" selection-start="232" selection-end="232" vertical-scroll-proportion="0.17952128">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Occupations.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/state/Occupations.java">
+      <file leaf-file-name="Attack.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/play/orders/Attack.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="19" selection-start="1692" selection-end="1692" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Continent.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/map/Continent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="21" selection-start="2818" selection-end="2818" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Country.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/map/Country.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="18" selection-start="3357" selection-end="3357" vertical-scroll-proportion="0.0">
+            <state line="16" column="18" selection-start="351" selection-end="351" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -175,30 +218,28 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/web/Server.java" />
-        <option value="$PROJECT_DIR$/src/home.html" />
-        <option value="$PROJECT_DIR$/html/home.html" />
-        <option value="$PROJECT_DIR$/src/web/SecondHandler.java" />
-        <option value="$PROJECT_DIR$/src/html/ugly.svg" />
-        <option value="$PROJECT_DIR$/src/web/BlobHandler.java" />
-        <option value="$PROJECT_DIR$/src/web/FirstHandler.java" />
-        <option value="$PROJECT_DIR$/src/web/SelectionHandler.java" />
-        <option value="$PROJECT_DIR$/src/html/home.html" />
-        <option value="$PROJECT_DIR$/src/map/Continent.java" />
-        <option value="$PROJECT_DIR$/src/map/WorldMap.java" />
-        <option value="$PROJECT_DIR$/src/map/Country.java" />
-        <option value="$PROJECT_DIR$/src/state/Player.java" />
-        <option value="$PROJECT_DIR$/src/state/Occupations.java" />
         <option value="$PROJECT_DIR$/src/play/Risk.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/OrderType.java" />
+        <option value="$PROJECT_DIR$/src/card/CardStack.java" />
+        <option value="$PROJECT_DIR$/src/card/Cards.java" />
         <option value="$PROJECT_DIR$/src/state/Game.java" />
+        <option value="$PROJECT_DIR$/src/state/Player.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/EndAttacks.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/Adjutant.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/Order.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/DrawCard.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/PlaceArmy.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/Attack.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/ClaimArmies.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/Fortify.java" />
+        <option value="$PROJECT_DIR$/src/play/orders/Occupy.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="288" />
-    <option name="y" value="145" />
-    <option name="width" value="864" />
-    <option name="height" value="580" />
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -433,6 +474,28 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="play" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="orders" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="risk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="risk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="map" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -468,6 +531,10 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="card" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -486,14 +553,17 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="card.Cards" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src" />
     </key>
@@ -632,6 +702,24 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -657,24 +745,6 @@
       <envs />
       <properties />
       <listeners />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -766,8 +836,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="288" y="145" width="864" height="580" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -782,7 +852,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.44117647" sideWeight="0.670412" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25862068" sideWeight="0.670412" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2908864" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -876,109 +946,123 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java">
+    <entry file="file://$PROJECT_DIR$/src/play/orders/OrderType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="13" selection-start="117" selection-end="117" vertical-scroll-proportion="0.13962767" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/html/blobs.svg">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="55" selection-end="55" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/FirstHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="18" selection-start="2078" selection-end="2078" vertical-scroll-proportion="1.356383" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="4" selection-start="207" selection-end="207" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/SecondHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="1" selection-start="403" selection-end="624" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/html/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="30" selection-start="471" selection-end="471" vertical-scroll-proportion="0.28">
+        <state line="3" column="83" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/BlobHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/play/RandomRoller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="8" selection-start="852" selection-end="852" vertical-scroll-proportion="0.48449612">
+        <state line="6" column="13" selection-start="75" selection-end="75" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/web/SelectionHandler.java">
+    <entry file="file://$PROJECT_DIR$/src/card/CardStack.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="48" selection-start="480" selection-end="480" vertical-scroll-proportion="0.251938">
+        <state line="30" column="0" selection-start="753" selection-end="753" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/map/StandardMap.java">
+    <entry file="file://$PROJECT_DIR$/src/card/Cards.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="13" selection-start="27" selection-end="27" vertical-scroll-proportion="0.03942181">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/map/Continent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="21" selection-start="2818" selection-end="2818" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/map/WorldMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="9" selection-start="1032" selection-end="1032" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#912#921#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/map/Country.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="18" selection-start="3357" selection-end="3357" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="18" selection-start="1191" selection-end="1191" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/Occupations.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="19" selection-start="1692" selection-end="1692" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/play/Risk.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="24" selection-start="2174" selection-end="2174" vertical-scroll-proportion="0.0">
+        <state line="8" column="32" selection-start="151" selection-end="151" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1403#1411#0" expanded="true" />
+            <element signature="e#426#432#0" expanded="true" />
+            <element signature="e#960#969#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/state/Game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="29" selection-start="4938" selection-end="4938" vertical-scroll-proportion="5.24">
+        <state line="82" column="35" selection-start="3145" selection-end="3145" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/state/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="32" selection-start="1119" selection-end="1119" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/Adjutant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="22" selection-start="1344" selection-end="1344" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#374#385#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/Attack.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="18" selection-start="351" selection-end="351" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/ClaimArmies.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="14" selection-start="182" selection-end="182" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/EndAttacks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="14" selection-start="160" selection-end="160" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/ExchangeCardSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="27" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/Fortify.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="29" selection-start="742" selection-end="742" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/DrawCard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="34" selection-start="522" selection-end="522" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/Occupy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="14" selection-start="307" selection-end="307" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/Order.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="42" selection-start="361" selection-end="361" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/play/orders/PlaceArmy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="14" selection-start="232" selection-end="232" vertical-scroll-proportion="0.17952128">
           <folding />
         </state>
       </provider>

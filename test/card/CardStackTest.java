@@ -19,7 +19,7 @@ public class CardStackTest {
         strings.add("d");
         strings.add("e");
 
-        List<List<String>> subLists = CardStack.allSubsets(3, strings);
+        List<List<String>> subLists = Cards.allSubsets(3, strings);
         outLists(subLists);
         assertEquals(10, subLists.size());
     }
@@ -32,7 +32,7 @@ public class CardStackTest {
         strings.add("c");
         strings.add("d");
 
-        List<List<String>> subLists = CardStack.allSubsets(3, strings);
+        List<List<String>> subLists = Cards.allSubsets(3, strings);
         outLists(subLists);
         assertEquals(4, subLists.size());
     }
@@ -44,7 +44,7 @@ public class CardStackTest {
         strings.add("b");
         strings.add("c");
 
-        List<List<String>> subLists = CardStack.allSubsets(2, strings);
+        List<List<String>> subLists = Cards.allSubsets(2, strings);
         outLists(subLists);
 
         assertEquals(3, subLists.size());
@@ -57,7 +57,7 @@ public class CardStackTest {
         strings.add("b");
         strings.add("c");
 
-        List<List<String>> subLists = CardStack.allSubsets(1, strings);
+        List<List<String>> subLists = Cards.allSubsets(1, strings);
         outLists(subLists);
 
         assertEquals(3, subLists.size());
@@ -69,7 +69,7 @@ public class CardStackTest {
         strings.add("a");
         strings.add("b");
 
-        List<List<String>> subLists = CardStack.allSubsets(1, strings);
+        List<List<String>> subLists = Cards.allSubsets(1, strings);
         outLists(subLists);
 
         assertEquals(2, subLists.size());
@@ -80,7 +80,7 @@ public class CardStackTest {
         List<String> strings = new ArrayList<String>();
         strings.add("a");
 
-        List<List<String>> subs = CardStack.allSubsets(1, strings);
+        List<List<String>> subs = Cards.allSubsets(1, strings);
 
         outLists(subs);
 

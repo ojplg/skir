@@ -5,12 +5,22 @@ import state.Player;
 
 public class EndAttacks extends Order {
 
-    public EndAttacks(Player player){
-        super(player);
+    public EndAttacks(Adjutant adjutant){
+        super(adjutant);
     }
 
     @Override
-    TurnPhase execute(Game game) {
-        return TurnPhase.Move;
+    Adjutant execute(Game game) {
+        if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ) {
+            getAdjutant().setAllowableOrders(OrderType.DrawCard);
+        } else {
+            getAdjutant().setAllowableOrders(OrderType.Fortify);
+        }
+        return getAdjutant();
+    }
+
+    @Override
+    OrderType getType() {
+        return OrderType.EndAttacks;
     }
 }

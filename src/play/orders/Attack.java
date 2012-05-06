@@ -1,7 +1,6 @@
 package play.orders;
 
 import map.Country;
-import play.RandomRoller;
 import play.Roller;
 import state.Constants;
 import state.Game;
@@ -15,8 +14,8 @@ public class Attack extends Order {
     private final Country _target;
     private final Roller _roller;
 
-    public Attack(Player player, Roller roller, Country invader, Country target, int attackersDiceCount) {
-        super(player);
+    public Attack(Adjutant adjutant, Roller roller, Country invader, Country target, int attackersDiceCount) {
+        super(adjutant);
         _roller = roller;
         _attackersDiceCount = attackersDiceCount;
         _invader = invader;
@@ -24,7 +23,7 @@ public class Attack extends Order {
     }
 
     @Override
-    public TurnPhase execute(Game game) {
+    public Adjutant execute(Game game) {
         if( activePlayer() != game.getOccupier(_invader)){
             throw new RuntimeException("Player " + activePlayer() + " cannot attack from " + _invader);
         }
@@ -37,10 +36,15 @@ public class Attack extends Order {
         Rolls rolls = _roller.roll(_attackersDiceCount, dice);
         boolean conquered = game.resolveAttack(_invader, _target, rolls);
         if ( conquered ){
-            // TODO: need to return something useful here
-            return TurnPhase.Attack;
+            getAdjutant().setAllowableOrders(OrderType.Occupy);
+        } else {
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
         }
-        return TurnPhase.Attack;
+        return getAdjutant();
     }
 
+    @Override
+    OrderType getType() {
+        return OrderType.Attack;
+    }
 }

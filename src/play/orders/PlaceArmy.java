@@ -8,22 +8,29 @@ public class PlaceArmy extends Order {
 
     private final Country _country;
 
-    public PlaceArmy(Player player, Country country){
-        super(player);
+    public PlaceArmy(Adjutant adjutant, Country country){
+        super(adjutant);
         _country = country;
     }
 
     @Override
-    public TurnPhase execute(Game game) {
-        // TODO: this is the wrong thing to check
+    public Adjutant execute(Game game) {
+        // TODO: is this the wrong thing to check? What about when a country is newly occupied?
         if( activePlayer() != game.getOccupier(_country)){
             throw new RuntimeException("Player " + activePlayer() + " cannot place armies in " + _country);
         }
         game.placeArmy(activePlayer(), _country);
         activePlayer().drawReserves(1);
         if ( activePlayer().hasReserves() ){
-            return TurnPhase.Supply;
+            getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
+        } else{
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
         }
-        return TurnPhase.Attack;
+        return getAdjutant();
+    }
+
+    @Override
+    OrderType getType() {
+        return OrderType.PlaceArmy;
     }
 }
