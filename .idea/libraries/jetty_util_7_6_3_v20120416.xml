@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jetty-util-7.6.3.v20120416">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/java_stuff/jetty-distribution-7.6.3.v20120416/lib/jetty-util-7.6.3.v20120416.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
