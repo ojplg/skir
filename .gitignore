@@ -1,2 +1,4 @@
-
+# do not use version control for the output directory
 out/
+# do not keep the idea library cache under control
+.idea/libraries
