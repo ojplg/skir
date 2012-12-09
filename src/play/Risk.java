@@ -7,15 +7,11 @@ import map.StandardMap;
 import map.WorldMap;
 import state.Game;
 import state.Player;
-import web.BlobHandler;
-import web.FirstHandler;
-import web.SecondHandler;
-import web.SelectionHandler;
+import web.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,16 +28,15 @@ public class Risk {
         System.out.println(risk._game);
 
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8000),10);
-            server.createContext("/foo",new FirstHandler());
-            server.createContext("/bar",new SecondHandler());
-            server.createContext("/blobs.svg",new BlobHandler());
-            server.createContext("/select",new SelectionHandler());
-            server.setExecutor(null);
-            server.start();
-        } catch (IOException io){
+
+            UseJetty jetty = new UseJetty(8080);
+            jetty.StartJettyServer();
+
+            System.out.println("Started the main server");
+
+        } catch (Exception e){
             System.out.println("Could not run server");
-            io.printStackTrace();
+            e.printStackTrace();
         }
 
     }
@@ -73,7 +68,4 @@ public class Risk {
     private int initialArmyCount(int numberPlayers){
         return 20 + (5 * (6 - numberPlayers));
     }
-
-    void play(){}
-
 }
