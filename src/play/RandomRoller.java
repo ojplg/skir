@@ -1,7 +1,5 @@
 package play;
 
-import state.Rolls;
-
 import java.util.Random;
 
 public class RandomRoller implements Roller {

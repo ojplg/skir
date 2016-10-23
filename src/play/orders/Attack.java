@@ -4,8 +4,7 @@ import map.Country;
 import play.Roller;
 import state.Constants;
 import state.Game;
-import state.Player;
-import state.Rolls;
+import play.Rolls;
 
 public class Attack extends Order {
 

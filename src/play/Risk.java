@@ -1,7 +1,6 @@
 package play;
 
 import card.StandardCardSet;
-import com.sun.net.httpserver.HttpServer;
 import map.Country;
 import map.StandardMap;
 import map.WorldMap;
@@ -9,8 +8,6 @@ import state.Game;
 import state.Player;
 import web.*;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
