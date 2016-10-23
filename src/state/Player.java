@@ -36,6 +36,10 @@ public class Player {
         _reserveArmies += cnt;
     }
 
+    public int reserveCount(){
+        return _reserveArmies;
+    }
+
     public void drawReserves(int cnt){
         if (cnt > _reserveArmies){
             throw new RuntimeException("Cannot draw " + cnt + " armies from " + _reserveArmies + "reserves");

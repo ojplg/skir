@@ -24,6 +24,18 @@ public class Game {
         _cardPile = new CardStack(cards);
     }
 
+    public void doInitialPlacements(){
+        for(Player player : _players) {
+            int index = 0;
+            List<Country> countries = _occupations.countriesOccupied(player);
+            while (player.hasReserves()){
+                placeArmy(player, countries.get(index));
+                index++;
+                index = index % countries.size();
+            }
+        }
+    }
+
     public int computeMapSupply(Player player){
         return computeCountrySupply(player) + computeContinentSupply(player);
     }

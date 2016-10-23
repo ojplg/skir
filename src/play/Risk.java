@@ -60,6 +60,8 @@ public class Risk {
             System.out.println("Placing player " + player.getColor() + " into " + country.getName());
             _game.placeArmy(player, country);
         }
+        _game.doInitialPlacements();
+
     }
 
     private int initialArmyCount(int numberPlayers){

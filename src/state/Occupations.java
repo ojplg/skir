@@ -61,11 +61,11 @@ public class Occupations {
             return;
         }
         Force existingForce = _records.get(country);
-        if ( existingForce.getPlayer() == player ){
+        if ( existingForce.getPlayer().equals(player) ){
             existingForce.addArmies(cnt);
-        }
-        if ( existingForce.getArmies() > 0 ){
-            throw new RuntimeException("Player " + player + " cannot put armies into country " + country);
+        } else if ( existingForce.getArmies() > 0 ){
+            throw new RuntimeException("Player " + player + " cannot put armies into country " + country
+             + ". It is owned by " + existingForce.getPlayer());
         } else {
             _records.put(country, new Force(player, cnt));
         }
