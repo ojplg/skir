@@ -61,7 +61,7 @@ public class Shell {
         return placeArmy.execute(game);
     }
 
-    private static Country selectFromChoices(List<Country> possibilities) throws IOException, QuitException {
+    private static <T> T selectFromChoices(List<T> possibilities) throws IOException, QuitException {
         if( possibilities.size() == 1 ){
             return possibilities.get(0);
         } else {
@@ -69,9 +69,9 @@ public class Shell {
                 System.out.println(" " + (index + 1) + " " + possibilities.get(index));
             }
             int selection = readNumberInput();
-            Country country = possibilities.get(selection - 1);
-            System.out.println("selected " + country.getName());
-            return country;
+            T item = possibilities.get(selection - 1);
+            System.out.println("selected " + item);
+            return item;
         }
     }
 
@@ -80,7 +80,7 @@ public class Shell {
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
         System.out.println("READ " + character);
-        if( character == 'q'){
+        if( character == 'q' ){
             throw new QuitException();
         }
         int value = character - 48;
