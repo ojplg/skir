@@ -7,11 +7,20 @@ import state.Player;
 public class PlaceArmy extends Order {
 
     private final Country _country;
+    private final int _count;
 
     public PlaceArmy(Adjutant adjutant, Country country){
         super(adjutant);
         _country = country;
+        _count = 1;
     }
+
+    public PlaceArmy(Adjutant adjutant, Country country, int count){
+        super(adjutant);
+        _country = country;
+        _count = count;
+    }
+
 
     @Override
     public Adjutant execute(Game game) {
@@ -19,8 +28,7 @@ public class PlaceArmy extends Order {
         if( activePlayer() != game.getOccupier(_country)){
             throw new RuntimeException("Player " + activePlayer() + " cannot place armies in " + _country);
         }
-        game.placeArmy(activePlayer(), _country);
-        activePlayer().drawReserves(1);
+        game.placeArmies(activePlayer(), _country, _count);
         if ( activePlayer().hasReserves() ){
             getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
         } else{

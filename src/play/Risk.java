@@ -6,10 +6,11 @@ import map.Country;
 import map.StandardMap;
 import map.WorldMap;
 import play.orders.Adjutant;
+import play.orders.OrderType;
 import state.Game;
 import state.Player;
-import web.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,15 +24,26 @@ public class Risk {
 
     public static void main(String[] args) {
         Risk risk = new Risk();
+        Roller roller = new RandomRoller(1);
 
         System.out.println(risk._game);
 
         try {
-            Shell.printPrompt(new Adjutant(risk._game.currentAttacker(), new RandomRoller(1)));
+            Adjutant adjutant = new Adjutant(risk._game.currentAttacker(), roller);
+            while(true) {
 
-            Shell.awaitResponse();
-        } catch (Exception ex){
-            System.out.println("Failed on shell");
+                OrderType ot = Shell.next(adjutant);
+
+                System.out.println("Selected order type: " + ot);
+
+                adjutant = Shell.handeOrderType(ot, adjutant, risk._game);
+            }
+
+        } catch (QuitException ex){
+            System.out.println("Quitting");
+            return;
+        } catch (IOException ex){
+            System.out.println("IO problem");
             ex.printStackTrace();
         }
 

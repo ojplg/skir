@@ -10,7 +10,7 @@ public class EndAttacks extends Order {
     }
 
     @Override
-    Adjutant execute(Game game) {
+    public Adjutant execute(Game game) {
         if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ) {
             getAdjutant().setAllowableOrders(OrderType.DrawCard);
         } else {

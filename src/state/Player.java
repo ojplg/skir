@@ -42,7 +42,7 @@ public class Player {
 
     public void drawReserves(int cnt){
         if (cnt > _reserveArmies){
-            throw new RuntimeException("Cannot draw " + cnt + " armies from " + _reserveArmies + "reserves");
+            throw new RuntimeException("Cannot draw " + cnt + " armies from " + _reserveArmies + " reserves");
         }
         _reserveArmies -= cnt;
     }
@@ -54,7 +54,6 @@ public class Player {
     public boolean hasMaximumCards(){
         return _cards.size()  == Constants.MAXIMUM_CARD_HOLDINGS;
     }
-
 
     public boolean hasTooManyCards(){
         return _cards.size() > Constants.MAXIMUM_CARD_HOLDINGS;

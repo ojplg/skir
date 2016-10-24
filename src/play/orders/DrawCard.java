@@ -12,7 +12,7 @@ public class DrawCard extends Order {
     }
 
     @Override
-    Adjutant execute(Game game) {
+    public Adjutant execute(Game game) {
         if( getAdjutant().hasConqueredCountry() ){
             activePlayer().addCard(game.drawCard());
         }

@@ -160,6 +160,11 @@ public class Game {
         _occupations.placeArmy(player, country);
     }
 
+    public void placeArmies(Player player, Country country, int count){
+        player.drawReserves(count);
+        _occupations.placeArmies(player, country, count);
+    }
+
     public void fortify(Country source, Country destination, int armies){
         // TODO: check for constraints
         Player player = getOccupier(source);

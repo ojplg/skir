@@ -11,7 +11,7 @@ public abstract class Order {
         _adjutant = adjutant;
     }
 
-    abstract Adjutant execute(Game game);
+    public abstract Adjutant execute(Game game);
     abstract OrderType getType();
 
     public Player activePlayer(){

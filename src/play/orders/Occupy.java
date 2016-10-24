@@ -18,7 +18,7 @@ public class Occupy extends Order {
     }
 
     @Override
-    Adjutant execute(Game game) {
+    public Adjutant execute(Game game) {
         Player loser = game.getOccupier(_conquered);
         if ( game.resolveConquest(_victor, _conquered, _armies) ){
             // TODO: Check for game over?

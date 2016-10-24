@@ -18,7 +18,7 @@ public class Fortify extends Order {
     }
 
     @Override
-    Adjutant execute(Game game) {
+    public Adjutant execute(Game game) {
         game.fortify(_source, _destination, _armies);
         if( getAdjutant().hasConqueredCountry() ){
             getAdjutant().setAllowableOrders();
