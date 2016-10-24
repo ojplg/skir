@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1b0f4c5f-5675-445d-98e5-b9b92ddda465" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cli/Shell.java" afterPath="$PROJECT_DIR$/src/cli/Shell.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/play/Risk.java" afterPath="$PROJECT_DIR$/src/play/Risk.java" />
     </list>
     <ignored path="risk.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -96,10 +95,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Game.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Game.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/state/Game.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
+            <state relative-caret-position="2070">
               <caret line="190" column="23" selection-start-line="190" selection-start-column="18" selection-end-line="190" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -122,17 +121,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Shell.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Shell.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cli/Shell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-315">
-              <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+            <state relative-caret-position="1755">
+              <caret line="117" column="14" selection-start-line="117" selection-start-column="14" selection-end-line="117" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#339#340#0" expanded="true" />
                 <element signature="e#367#368#0" expanded="true" />
-                <element signature="e#5480#5481#0" expanded="true" />
-                <element signature="e#5519#5520#0" expanded="true" />
+                <element signature="e#5460#5461#0" expanded="true" />
+                <element signature="e#5499#5500#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1467,14 +1466,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/Game.java">
+    <entry file="file://$PROJECT_DIR$/src/cli/Shell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="190" column="23" selection-start-line="190" selection-start-column="18" selection-end-line="190" selection-end-column="26" />
+        <state relative-caret-position="1755">
+          <caret line="117" column="14" selection-start-line="117" selection-start-column="14" selection-end-line="117" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1499#1500#0" expanded="true" />
-            <element signature="e#1583#1584#0" expanded="true" />
+            <element signature="e#339#340#0" expanded="true" />
+            <element signature="e#367#368#0" expanded="true" />
+            <element signature="e#5460#5461#0" expanded="true" />
+            <element signature="e#5499#5500#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1489,16 +1490,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cli/Shell.java">
+    <entry file="file://$PROJECT_DIR$/src/state/Game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-315">
-          <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+        <state relative-caret-position="2070">
+          <caret line="190" column="23" selection-start-line="190" selection-start-column="18" selection-end-line="190" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#339#340#0" expanded="true" />
-            <element signature="e#367#368#0" expanded="true" />
-            <element signature="e#5480#5481#0" expanded="true" />
-            <element signature="e#5519#5520#0" expanded="true" />
+            <element signature="e#1499#1500#0" expanded="true" />
+            <element signature="e#1583#1584#0" expanded="true" />
           </folding>
         </state>
       </provider>

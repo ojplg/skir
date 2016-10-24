@@ -120,8 +120,8 @@ public class Shell {
     }
 
     private int readNumberInput(String prompt) throws IOException, QuitException {
-        System.out.println(prompt);
-        System.out.print("> ");
+        message(prompt);
+        message("> ");
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
         message("READ " + character);
