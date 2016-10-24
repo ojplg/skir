@@ -2,38 +2,27 @@ package cli;
 
 import map.Country;
 import play.QuitException;
-import play.orders.Adjutant;
-import play.orders.ClaimArmies;
-import play.orders.OrderType;
-import play.orders.PlaceArmy;
+import play.RandomRoller;
+import play.orders.*;
 import state.Game;
 import state.Player;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Shell {
 
     public static OrderType next(Adjutant adjutant) throws QuitException, IOException {
         System.out.println("The current attacker is " + adjutant.getActivePlayer());
-        Map<Integer, OrderType> orderMap = new HashMap<Integer, OrderType>();
         if( adjutant.mustChooseOrderType() ) {
-            for (int index = 0; index < adjutant.allowableOrders().size(); index++) {
-                OrderType ot = adjutant.allowableOrders().get(index);
-                System.out.println(" " + (index + 1) + ") " + ot);
-                orderMap.put(index, ot);
-            }
+            return selectFromChoices(adjutant.allowableOrders());
         } else {
             OrderType ot = adjutant.allowableOrders().get(0);
             System.out.println("Turn phase is " + ot);
             return ot;
         }
-        int value = readNumberInput();
-        return orderMap.get(value);
     }
 
     public static Adjutant handeOrderType(OrderType orderType, Adjutant adjutant, Game game)  throws IOException, QuitException {
@@ -45,11 +34,33 @@ public class Shell {
         if (orderType == OrderType.PlaceArmy){
             return handlePlaceArmies(adjutant, game);
         }
+        if( orderType == OrderType.Attack ){
+            return handleAttack(adjutant, game);
+        }
+
         System.out.println("Cannot handle order type " + orderType);
         return null;
     }
 
-    private static Adjutant handlePlaceArmies(Adjutant adjutant, Game game) throws IOException, QuitException{
+    private static Adjutant handleAttack(Adjutant adjutant, Game game) throws IOException, QuitException {
+        Player currentPlayer = game.currentAttacker();
+        List<Country> countries = game.countriesOccupied(currentPlayer);
+        System.out.println("Attack from ");
+        Country invader = selectFromChoices(countries);
+        countries = game.targets(invader);
+        System.out.println("Attack to ");
+        Country target = selectFromChoices(countries);
+        int numberDice = Math.min(3, game.getOccupationForce(invader));
+        System.out.println("Attacking from " + invader.getName() + " (" + game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + game.getOccupationForce(target) + ")");
+        Attack attack = new Attack(adjutant, new RandomRoller(1), invader, target, numberDice);
+        Adjutant newAdjutant =  attack.execute(game);
+        System.out.println("New counts are " + invader.getName() + " (" + game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + game.getOccupationForce(target) + ")");
+        return newAdjutant;
+    }
+
+    private static Adjutant handlePlaceArmies(Adjutant adjutant, Game game) throws IOException, QuitException {
         Player currentPlayer = game.currentAttacker();
         int reserveArmies = currentPlayer.reserveCount();
         System.out.println("Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.");
