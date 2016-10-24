@@ -23,7 +23,7 @@ public class Risk {
     private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "Yellow", "Pink "};
 
     public static void main(String[] args) {
-        Risk risk = new Risk();
+        Risk risk = new Risk(false);
         Roller roller = new RandomRoller(1);
 
         System.out.println(risk._game);
@@ -61,7 +61,7 @@ public class Risk {
 
     }
 
-    public Risk(){
+    public Risk(boolean randomize){
         List<Player> players = new ArrayList<Player>();
         int initialArmies = initialArmyCount(_numberPlayers);
         for (int idx=0 ; idx< _numberPlayers ; idx++ ){
@@ -74,7 +74,9 @@ public class Risk {
         _game = new Game(map, players, StandardCardSet.deck);
 
         List<Country> countries = map.getAllCountries();
-        Collections.shuffle(countries);
+        if( randomize) {
+            Collections.shuffle(countries);
+        }
 
         for(int idx=0; idx<countries.size(); idx++){
 

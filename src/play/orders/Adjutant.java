@@ -42,6 +42,10 @@ public class Adjutant {
         _successfulAttack = attack;
     }
 
+    public Attack getSuccessfulAttack(){
+        return _successfulAttack;
+    }
+
     public boolean hasConqueredCountry(){
         return _conqueredCountry;
     }
