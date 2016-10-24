@@ -1,6 +1,5 @@
 package cli;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import map.Country;
 import play.QuitException;
 import play.RandomRoller;
@@ -22,12 +21,12 @@ public class Shell {
     }
 
     public OrderType next(Adjutant adjutant) throws QuitException, IOException {
-        String prompt = "The current attacker is " + adjutant.getActivePlayer();
         if( adjutant.mustChooseOrderType() ) {
+            String prompt = "The current attacker is " + adjutant.getActivePlayer();
             return selectFromChoices(adjutant.allowableOrders(), prompt);
         } else {
             OrderType ot = adjutant.allowableOrders().get(0);
-            message("Turn phase is " + ot);
+            message("Turn phase is " + _game.currentAttacker() + "." + ot);
             return ot;
         }
     }
@@ -62,6 +61,8 @@ public class Shell {
     }
 
     private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
+        // TODO: Allow player to skip fortifications
+        // TODO: Correct filtering on to and from countries
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesOccupied(currentPlayer);
         Country from = selectFromChoices(countries, "Fortify from");
@@ -90,6 +91,7 @@ public class Shell {
     }
 
     private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
+        // TODO: Correct filtering on to and from countries
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesOccupied(currentPlayer);
         Country invader = selectFromChoices(countries, "Attack from");
