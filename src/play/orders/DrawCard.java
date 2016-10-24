@@ -1,5 +1,6 @@
 package play.orders;
 
+import play.RandomRoller;
 import state.Game;
 import state.Player;
 
@@ -16,8 +17,7 @@ public class DrawCard extends Order {
         if( getAdjutant().hasConqueredCountry() ){
             activePlayer().addCard(game.drawCard());
         }
-        getAdjutant().setAllowableOrders();
-        return getAdjutant();
+        return new Adjutant(game.nextPlayer(), new RandomRoller(1));
     }
 
     @Override

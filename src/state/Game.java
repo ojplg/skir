@@ -42,6 +42,14 @@ public class Game {
         return _currentAttacker;
     }
 
+    public Player nextPlayer(){
+        int playerCount = _players.size();
+        int currentPlayerIndex = _players.indexOf(_currentAttacker);
+        int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        _currentAttacker = _players.get(nextPlayerIndex);
+        return _currentAttacker;
+    }
+
     public int computeMapSupply(Player player){
         return computeCountrySupply(player) + computeContinentSupply(player);
     }
