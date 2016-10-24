@@ -11,11 +11,26 @@
 </body>
 
 <script>
-  var irktusk = new_country('Irktusk', 50, 50, 100, 100, 'green');
-  var japan = new_country('Japan',920,150,45,125, 'green');
-  var kamchatka = new_country('Kamchatka', 880,100,35,150, 'green');
-  var mongolia = new_country('Mongolia',820,255,85,50,'green');
-  var countries = [ irktusk, japan, kamchatka, mongolia ];
+  var irktusk = new_country('Irktusk', 780, 50, 100, 100, 'green', 'white');
+  var japan = new_country('Japan',920,150,45,125, 'green', 'white');
+  var kamchatka = new_country('Kamchatka', 880,100,35,150, 'green', 'white');
+  var mongolia = new_country('Mongolia',820,255,85,50,'green', 'white');
+
+  var alaska = new_country('Alaska', 30, 80, 40, 50, 'yellow','black');
+  var northwest_territory = new_country('Northwest Territory', 70, 100, 60, 30, 'yellow','black');
+  var alberta = new_country('Alberta', 70, 70, 30, 50, 'yellow','black');
+  var quebec = new_country('Quebec', 30, 80, 40, 50, 'yellow','black');
+  var ontario = new_country('Ontario', 30, 80, 40, 50, 'yellow','black');
+  var eastern_united_states = new_country('Eastern United States', 30, 80, 40, 50, 'yellow','black');
+  var western_united_states = new_country('Western United States', 30, 80, 40, 50, 'yellow','black');
+  var greenland = new_country('Greenland', 30, 80, 40, 50, 'yellow','black');
+  var central_america = new_country('Central America', 30, 80, 40, 50, 'yellow','black');
+
+  var countries = [ alaska, northwest_territory, alberta, quebec, ontario, eastern_united_states,
+                       western_united_states, greenland, central_america,
+                     irktusk, japan, kamchatka, mongolia ];
+
+
 
   function draw_map(){
     var canvas = document.getElementById ('canvas_map');
@@ -37,12 +52,12 @@
   function draw_country(context,country){
     context.fillStyle = country.color;
     context.fillRect(country.left, country.top, country.width, country.height);
-    context.fillStyle = 'white';
+    context.fillStyle = country.text_color;
     context.font = '10pt Arial';
     context.fillText(country.name,country.left + 5, country.top + 20);
   }
 
-  function new_country(name, left, top, width, height, color){
+  function new_country(name, left, top, width, height, color, text_color){
     var that = {};
     that.name = name;
     that.top = top;
@@ -50,6 +65,7 @@
     that.height = height;
     that.width = width;
     that.color = color;
+    that.text_color = text_color;
     return that;
   }
 
