@@ -43,16 +43,25 @@ public class Shell {
         if( orderType == OrderType.Occupy){
             return handleOccupy(adjutant, game);
         }
+        if( orderType == OrderType.DrawCard){
+            return handleDrawCard(adjutant, game);
+        }
 
         message("Cannot handle order type " + orderType);
         return null;
     }
 
+    private static Adjutant handleDrawCard(Adjutant adjutant, Game game){
+        DrawCard drawcard = new DrawCard(adjutant);
+        return drawcard.execute(game);
+
+    }
+
+
     private static Adjutant handleEndAttacks(Adjutant adjutant, Game game){
         EndAttacks endAttacks = new EndAttacks(adjutant);
         return endAttacks.execute(game);
     }
-
 
     private static Adjutant handleOccupy(Adjutant adjutant, Game game){
         Attack successfulAttack = adjutant.getSuccessfulAttack();
