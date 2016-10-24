@@ -117,6 +117,19 @@ public class Game {
         return _occupations.countriesOccupied(player);
     }
 
+    public List<Country> countriesToAttackFrom(Player player){
+        List<Country> attackBases = new ArrayList<Country>();
+        for(Country country : countriesOccupied(player)){
+            if (_occupations.hasAttackingForces(country)){
+                List<Country> neighbors = _map.getNeighbors(country);
+                if( _occupations.hasEnemy(country, neighbors)){
+                    attackBases.add(country);
+                }
+            }
+        }
+        return attackBases;
+    }
+
     public List<Continent> continentsOccupied(Player player){
         List<Continent> occupied = new ArrayList<Continent>();
         for (Continent continent : _map.getContinents() ){

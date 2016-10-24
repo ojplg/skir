@@ -40,6 +40,19 @@ public class Occupations {
         return null;
     }
 
+    public boolean hasAttackingForces(Country country){
+        return _records.get(country).getArmies() > 1;
+    }
+
+    public boolean hasEnemy(Country country, List<Country> others){
+        boolean value = false;
+        for(Country other : others){
+            if (getOccupier(country) != getOccupier(other)){
+                value = true;
+            }
+        }
+        return value;
+    }
 
     public List<Country> countriesOccupied(Player player){
         List<Country> occupied = new ArrayList<Country>();

@@ -91,9 +91,8 @@ public class Shell {
     }
 
     private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
-        // TODO: Correct filtering on to and from countries
         Player currentPlayer = _game.currentAttacker();
-        List<Country> countries = _game.countriesOccupied(currentPlayer);
+        List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
         Country invader = selectFromChoices(countries, "Attack from");
         countries = _game.targets(invader);
         Country target = selectFromChoices(countries, "Attack to");
