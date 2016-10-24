@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Map</title>
+</head>
+<body>
+    <p>The canvas is below.</p>
+    <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
+    </canvas>
+</body>
+
+<script>
+  var irktusk = new_country('Irktusk', 50, 50, 100, 100, 'green');
+  var japan = new_country('Japan',920,150,45,125, 'green');
+  var kamchatka = new_country('Kamchatka', 880,100,35,150, 'green');
+  var mongolia = new_country('Mongolia',820,255,85,50,'green');
+  var countries = [ irktusk, japan, kamchatka, mongolia ];
+
+  function draw_map(){
+    var canvas = document.getElementById ('canvas_map');
+    var context = canvas.getContext ('2d');
+    context.fillStyle = 'blue';
+    context.fillRect(0,0,1000,600);
+
+    for(var idx=0; idx<countries.length; idx++){
+      var country = countries[idx];
+      console.log('drawing ' + country.name);
+      draw_country(context,country);
+    }
+
+    canvas.addEventListener('click', function(e) {
+      map_clicked(e);
+    });
+  }
+
+  function draw_country(context,country){
+    context.fillStyle = country.color;
+    context.fillRect(country.left, country.top, country.width, country.height);
+    context.fillStyle = 'white';
+    context.font = '10pt Arial';
+    context.fillText(country.name,country.left + 5, country.top + 20);
+  }
+
+  function new_country(name, left, top, width, height, color){
+    var that = {};
+    that.name = name;
+    that.top = top;
+    that.left = left;
+    that.height = height;
+    that.width = width;
+    that.color = color;
+    return that;
+  }
+
+  function map_clicked(e){
+    //console.log('Map was clicked: ' + e.offsetX + '/' + e.offsetY);
+    //console.log('search ' + countries.length + 'countries');
+    for(var idx=0; idx<countries.length; idx++){
+      var country = countries[idx];
+      //console.log('checking ' + country.name);
+      if(country.top <= e.offsetY &&
+           country.left <= e.offsetX &&
+           country.top + country.height >= e.offsetY &&
+           country.left + country.width >= e.offsetX ){
+           console.log('Clicked on ' + country.name);
+      } else {
+        //console.log('no country');
+      }
+    }
+  }
+
+  draw_map();
+
+</script>
+
+</html>

@@ -140,7 +140,6 @@ public class Shell {
         System.out.print("> ");
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
-        message("READ " + character);
         if( character == 'q' ){
             throw new QuitException();
         }

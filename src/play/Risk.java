@@ -9,6 +9,7 @@ import play.orders.Adjutant;
 import play.orders.OrderType;
 import state.Game;
 import state.Player;
+import web.UseJetty;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,19 +19,53 @@ import java.util.List;
 public class Risk {
 
     private Game _game;
+    private Roller _roller = new RandomRoller(1);
+    private UseJetty _jettyServer = new UseJetty(8080);
 
     private int _numberPlayers = 6;
     private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "Yellow", "Pink "};
 
     public static void main(String[] args) {
-        Risk risk = new Risk(false);
-        Roller roller = new RandomRoller(1);
 
+        final Risk risk = new Risk(false);
         System.out.println(risk._game);
-        Shell shell = new Shell(risk._game);
+
+        Thread webThread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                risk.runWebServer();
+            }
+        });
+        webThread.start();
+
+        Thread shellThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                risk.runShell();
+            }
+        });
+        shellThread.start();
+    }
+
+    private void runWebServer(){
+        try {
+
+            _jettyServer.StartJettyServer();
+
+            System.out.println("Started the web server");
+
+        } catch (Exception e){
+            System.out.println("Could not run server");
+            e.printStackTrace();
+        }
+    }
+
+
+    private void runShell(){
+        Shell shell = new Shell(_game);
 
         try {
-            Adjutant adjutant = new Adjutant(risk._game.currentAttacker(), roller);
+            Adjutant adjutant = new Adjutant(_game.currentAttacker(), _roller);
             while(true) {
                 OrderType ot = shell.next(adjutant);
                 adjutant = shell.handeOrderType(ot, adjutant);
@@ -38,23 +73,12 @@ public class Risk {
 
         } catch (QuitException ex){
             System.out.println("Quitting");
+            _jettyServer.stop();
             return;
         } catch (IOException ex){
             System.out.println("IO problem");
             ex.printStackTrace();
         }
-
-//        try {
-//
-//            //UseJetty jetty = new UseJetty(8080);
-//            //jetty.StartJettyServer();
-//
-//            //System.out.println("Started the main server");
-//
-//        } catch (Exception e){
-//            System.out.println("Could not run server");
-//            e.printStackTrace();
-//        }
 
     }
 

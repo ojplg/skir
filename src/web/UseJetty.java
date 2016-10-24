@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UseJetty {
 
     private final int _httpPort;
+    private Server _server;
 
     public UseJetty(int httpPort){
         _httpPort = httpPort;
@@ -18,11 +19,11 @@ public class UseJetty {
 
     public void StartJettyServer() throws Exception {
 
-        Server server = new Server();
+        _server = new Server();
 
         SelectChannelConnector httpConnector = new SelectChannelConnector();
         httpConnector.setPort(_httpPort);
-        server.addConnector(httpConnector);
+        _server.addConnector(httpConnector);
 
         WebSocketHandler socketHandler = new WebSocketHandler() {
             @Override
@@ -34,16 +35,25 @@ public class UseJetty {
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{ "index.html" });
+        resource_handler.setWelcomeFiles(new String[]{ "canvas_map.html" });
         resource_handler.setResourceBase("/Users/ogugenheim/git_personal/risk/out/production/risk/html/");
 
         socketHandler.setHandler(resource_handler);
-        server.setHandler(socketHandler);
+        _server.setHandler(socketHandler);
 
         System.out.println("Started up Jetty Web Server");
-        server.start();
-        server.join();
+        _server.start();
+        _server.join();
         System.out.println("Joined");
+    }
+
+    public void stop(){
+        try {
+            _server.stop();
+        } catch (Exception ex){
+            System.out.println("error stopping jetty");
+            ex.printStackTrace();
+        }
     }
 
 }
