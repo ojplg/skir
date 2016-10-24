@@ -64,11 +64,17 @@
            country.top + country.height >= e.offsetY &&
            country.left + country.width >= e.offsetX ){
            console.log('Clicked on ' + country.name);
+           connection.send('{\'country\':\'' + country.name + '\'}');
       } else {
         //console.log('no country');
       }
     }
   }
+
+  var connection = new WebSocket('ws://localhost:8080');
+            //connection.onopen = function () {
+            //    connection.send('Ping'); // Send the message 'Ping' to the server
+            //};
 
   draw_map();
 
