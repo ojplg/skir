@@ -33,7 +33,7 @@ public class Risk {
             Adjutant adjutant = new Adjutant(risk._game.currentAttacker(), roller);
             while(true) {
                 OrderType ot = shell.next(adjutant);
-                adjutant = shell.handeOrderType(ot, adjutant, risk._game);
+                adjutant = shell.handeOrderType(ot, adjutant);
             }
 
         } catch (QuitException ex){

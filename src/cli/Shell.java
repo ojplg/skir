@@ -1,5 +1,6 @@
 package cli;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import map.Country;
 import play.QuitException;
 import play.RandomRoller;
@@ -31,76 +32,89 @@ public class Shell {
         }
     }
 
-    public Adjutant handeOrderType(OrderType orderType, Adjutant adjutant, Game game)  throws IOException, QuitException {
+    public Adjutant handeOrderType(OrderType orderType, Adjutant adjutant)  throws IOException, QuitException {
         if( orderType == OrderType.ClaimArmies ){
             ClaimArmies order = new ClaimArmies(adjutant);
-            order.execute(game);
+            order.execute(_game);
             return order.getAdjutant();
         }
         if (orderType == OrderType.PlaceArmy){
-            return handlePlaceArmies(adjutant, game);
+            return handlePlaceArmies(adjutant);
         }
         if( orderType == OrderType.Attack ){
-            return handleAttack(adjutant, game);
+            return handleAttack(adjutant);
         }
         if( orderType == OrderType.EndAttacks){
-            return handleEndAttacks(adjutant, game);
+            return handleEndAttacks(adjutant);
         }
         if( orderType == OrderType.Occupy){
-            return handleOccupy(adjutant, game);
+            return handleOccupy(adjutant);
         }
         if( orderType == OrderType.DrawCard){
-            return handleDrawCard(adjutant, game);
+            return handleDrawCard(adjutant);
+        }
+        if( orderType == OrderType.Fortify){
+            return handleFortify(adjutant);
         }
 
         message("Cannot handle order type " + orderType);
         return null;
     }
 
-    private Adjutant handleDrawCard(Adjutant adjutant, Game game){
+    private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
+        Player currentPlayer = _game.currentAttacker();
+        List<Country> countries = _game.countriesOccupied(currentPlayer);
+        Country from = selectFromChoices(countries, "Fortify from");
+        countries = _game.targets(from);
+        Country to = selectFromChoices(countries, "Fortify to");
+        int numberArmies = readNumberInput("Number armies to move 1-" + (_game.getOccupationForce(from) - 1));
+        Fortify order = new Fortify(adjutant, from, to, numberArmies);
+        return order.execute(_game);
+    }
+
+    private Adjutant handleDrawCard(Adjutant adjutant){
         DrawCard drawcard = new DrawCard(adjutant);
-        return drawcard.execute(game);
+        return drawcard.execute(_game);
     }
 
-
-    private Adjutant handleEndAttacks(Adjutant adjutant, Game game){
+    private Adjutant handleEndAttacks(Adjutant adjutant){
         EndAttacks endAttacks = new EndAttacks(adjutant);
-        return endAttacks.execute(game);
+        return endAttacks.execute(_game);
     }
 
-    private Adjutant handleOccupy(Adjutant adjutant, Game game){
+    private Adjutant handleOccupy(Adjutant adjutant){
         Attack successfulAttack = adjutant.getSuccessfulAttack();
         Occupy occupy = new Occupy(adjutant, successfulAttack.getInvader(), successfulAttack.getTarget(),
                 successfulAttack.getAttackersDiceCount());
-        return occupy.execute(game);
+        return occupy.execute(_game);
     }
 
-    private Adjutant handleAttack(Adjutant adjutant, Game game) throws IOException, QuitException {
-        Player currentPlayer = game.currentAttacker();
-        List<Country> countries = game.countriesOccupied(currentPlayer);
+    private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
+        Player currentPlayer = _game.currentAttacker();
+        List<Country> countries = _game.countriesOccupied(currentPlayer);
         Country invader = selectFromChoices(countries, "Attack from");
-        countries = game.targets(invader);
+        countries = _game.targets(invader);
         Country target = selectFromChoices(countries, "Attack to");
-        int numberDice = Math.min(3, game.getOccupationForce(invader));
-        message("Attacking from " + invader.getName() + " (" + game.getOccupationForce(invader) + ") to "
-                + target.getName() + " (" + game.getOccupationForce(target) + ")");
+        int numberDice = Math.min(3, _game.getOccupationForce(invader));
+        message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
         Attack attack = new Attack(adjutant, new RandomRoller(1), invader, target, numberDice);
-        Adjutant newAdjutant =  attack.execute(game);
-        message("New counts are " + invader.getName() + " (" + game.getOccupationForce(invader) + ") to "
-                + target.getName() + " (" + game.getOccupationForce(target) + ")");
+        Adjutant newAdjutant =  attack.execute(_game);
+        message("New counts are " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
         return newAdjutant;
     }
 
-    private Adjutant handlePlaceArmies(Adjutant adjutant, Game game) throws IOException, QuitException {
-        Player currentPlayer = game.currentAttacker();
+    private Adjutant handlePlaceArmies(Adjutant adjutant) throws IOException, QuitException {
+        Player currentPlayer = _game.currentAttacker();
         int reserveArmies = currentPlayer.reserveCount();
         String prompt = "Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.\n" +
             "Select number to place.";
         int numberToPlace = readNumberInput(prompt);
-        List<Country> ownedCountries = game.countriesOccupied(currentPlayer);
+        List<Country> ownedCountries = _game.countriesOccupied(currentPlayer);
         Country country = selectFromChoices(ownedCountries, prompt);
         PlaceArmy placeArmy = new PlaceArmy(adjutant, country, numberToPlace);
-        return placeArmy.execute(game);
+        return placeArmy.execute(_game);
     }
 
     private <T> T selectFromChoices(List<T> possibilities, String prompt) throws IOException, QuitException {
@@ -121,7 +135,7 @@ public class Shell {
 
     private int readNumberInput(String prompt) throws IOException, QuitException {
         message(prompt);
-        message("> ");
+        System.out.print("> ");
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
         message("READ " + character);
