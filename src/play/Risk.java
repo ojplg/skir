@@ -1,9 +1,11 @@
 package play;
 
 import card.StandardCardSet;
+import cli.Shell;
 import map.Country;
 import map.StandardMap;
 import map.WorldMap;
+import play.orders.Adjutant;
 import state.Game;
 import state.Player;
 import web.*;
@@ -25,16 +27,25 @@ public class Risk {
         System.out.println(risk._game);
 
         try {
+            Shell.printPrompt(new Adjutant(risk._game.currentAttacker(), new RandomRoller(1)));
 
-            UseJetty jetty = new UseJetty(8080);
-            jetty.StartJettyServer();
-
-            System.out.println("Started the main server");
-
-        } catch (Exception e){
-            System.out.println("Could not run server");
-            e.printStackTrace();
+            Shell.awaitResponse();
+        } catch (Exception ex){
+            System.out.println("Failed on shell");
+            ex.printStackTrace();
         }
+
+//        try {
+//
+//            //UseJetty jetty = new UseJetty(8080);
+//            //jetty.StartJettyServer();
+//
+//            //System.out.println("Started the main server");
+//
+//        } catch (Exception e){
+//            System.out.println("Could not run server");
+//            e.printStackTrace();
+//        }
 
     }
 

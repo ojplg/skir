@@ -28,6 +28,10 @@ public class Adjutant {
         return Collections.unmodifiableList(_allowableOrders);
     }
 
+    public boolean mustChooseOrderType(){
+        return allowableOrders().size() > 1;
+    }
+
     public void setAllowableOrders(OrderType ... types){
         _allowableOrders.clear();
         _allowableOrders.addAll(Arrays.asList(types));

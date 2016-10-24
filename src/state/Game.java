@@ -17,11 +17,13 @@ public class Game {
     private Occupations _occupations = new Occupations();
     private List<Player> _players = new ArrayList<Player>();
     private CardStack _cardPile;
+    private Player _currentAttacker;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards){
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
+        _currentAttacker = players.get(0);
     }
 
     public void doInitialPlacements(){
@@ -34,6 +36,10 @@ public class Game {
                 index = index % countries.size();
             }
         }
+    }
+
+    public Player currentAttacker(){
+        return _currentAttacker;
     }
 
     public int computeMapSupply(Player player){
