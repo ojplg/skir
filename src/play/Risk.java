@@ -27,16 +27,13 @@ public class Risk {
         Roller roller = new RandomRoller(1);
 
         System.out.println(risk._game);
+        Shell shell = new Shell(risk._game);
 
         try {
             Adjutant adjutant = new Adjutant(risk._game.currentAttacker(), roller);
             while(true) {
-
-                OrderType ot = Shell.next(adjutant);
-
-                System.out.println("Selected order type: " + ot);
-
-                adjutant = Shell.handeOrderType(ot, adjutant, risk._game);
+                OrderType ot = shell.next(adjutant);
+                adjutant = shell.handeOrderType(ot, adjutant, risk._game);
             }
 
         } catch (QuitException ex){

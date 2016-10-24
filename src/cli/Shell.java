@@ -14,10 +14,16 @@ import java.util.List;
 
 public class Shell {
 
-    public static OrderType next(Adjutant adjutant) throws QuitException, IOException {
-        message("The current attacker is " + adjutant.getActivePlayer());
+    private final Game _game;
+
+    public Shell(Game game){
+        _game = game;
+    }
+
+    public OrderType next(Adjutant adjutant) throws QuitException, IOException {
+        String prompt = "The current attacker is " + adjutant.getActivePlayer();
         if( adjutant.mustChooseOrderType() ) {
-            return selectFromChoices(adjutant.allowableOrders());
+            return selectFromChoices(adjutant.allowableOrders(), prompt);
         } else {
             OrderType ot = adjutant.allowableOrders().get(0);
             message("Turn phase is " + ot);
@@ -25,7 +31,7 @@ public class Shell {
         }
     }
 
-    public static Adjutant handeOrderType(OrderType orderType, Adjutant adjutant, Game game)  throws IOException, QuitException {
+    public Adjutant handeOrderType(OrderType orderType, Adjutant adjutant, Game game)  throws IOException, QuitException {
         if( orderType == OrderType.ClaimArmies ){
             ClaimArmies order = new ClaimArmies(adjutant);
             order.execute(game);
@@ -51,33 +57,30 @@ public class Shell {
         return null;
     }
 
-    private static Adjutant handleDrawCard(Adjutant adjutant, Game game){
+    private Adjutant handleDrawCard(Adjutant adjutant, Game game){
         DrawCard drawcard = new DrawCard(adjutant);
         return drawcard.execute(game);
-
     }
 
 
-    private static Adjutant handleEndAttacks(Adjutant adjutant, Game game){
+    private Adjutant handleEndAttacks(Adjutant adjutant, Game game){
         EndAttacks endAttacks = new EndAttacks(adjutant);
         return endAttacks.execute(game);
     }
 
-    private static Adjutant handleOccupy(Adjutant adjutant, Game game){
+    private Adjutant handleOccupy(Adjutant adjutant, Game game){
         Attack successfulAttack = adjutant.getSuccessfulAttack();
         Occupy occupy = new Occupy(adjutant, successfulAttack.getInvader(), successfulAttack.getTarget(),
                 successfulAttack.getAttackersDiceCount());
         return occupy.execute(game);
     }
 
-    private static Adjutant handleAttack(Adjutant adjutant, Game game) throws IOException, QuitException {
+    private Adjutant handleAttack(Adjutant adjutant, Game game) throws IOException, QuitException {
         Player currentPlayer = game.currentAttacker();
         List<Country> countries = game.countriesOccupied(currentPlayer);
-        message("Attack from ");
-        Country invader = selectFromChoices(countries);
+        Country invader = selectFromChoices(countries, "Attack from");
         countries = game.targets(invader);
-        message("Attack to ");
-        Country target = selectFromChoices(countries);
+        Country target = selectFromChoices(countries, "Attack to");
         int numberDice = Math.min(3, game.getOccupationForce(invader));
         message("Attacking from " + invader.getName() + " (" + game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + game.getOccupationForce(target) + ")");
@@ -88,39 +91,46 @@ public class Shell {
         return newAdjutant;
     }
 
-    private static Adjutant handlePlaceArmies(Adjutant adjutant, Game game) throws IOException, QuitException {
+    private Adjutant handlePlaceArmies(Adjutant adjutant, Game game) throws IOException, QuitException {
         Player currentPlayer = game.currentAttacker();
         int reserveArmies = currentPlayer.reserveCount();
-        message("Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.");
-        message("Select number to place.");
-        int numberToPlace = readNumberInput();
+        String prompt = "Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.\n" +
+            "Select number to place.";
+        int numberToPlace = readNumberInput(prompt);
         List<Country> ownedCountries = game.countriesOccupied(currentPlayer);
-        Country country = selectFromChoices(ownedCountries);
+        Country country = selectFromChoices(ownedCountries, prompt);
         PlaceArmy placeArmy = new PlaceArmy(adjutant, country, numberToPlace);
         return placeArmy.execute(game);
     }
 
-    private static <T> T selectFromChoices(List<T> possibilities) throws IOException, QuitException {
+    private <T> T selectFromChoices(List<T> possibilities, String prompt) throws IOException, QuitException {
         if( possibilities.size() == 1 ){
             return possibilities.get(0);
         } else {
+            StringBuffer buf = new StringBuffer();
             for(int index = 0; index < possibilities.size(); index++ ){
-                message(" " + (index + 1) + " " + possibilities.get(index));
+                buf.append(" " + (index + 1) + " " + possibilities.get(index));
+                buf.append("\n");
             }
-            int selection = readNumberInput();
+            int selection = readNumberInput(buf.toString() + prompt);
             T item = possibilities.get(selection - 1);
             message("selected " + item);
             return item;
         }
     }
 
-    private static int readNumberInput() throws IOException, QuitException {
+    private int readNumberInput(String prompt) throws IOException, QuitException {
+        System.out.println(prompt);
         System.out.print("> ");
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
         message("READ " + character);
         if( character == 'q' ){
             throw new QuitException();
+        }
+        if (character == 'p' ){
+            message(_game.toString());
+            return readNumberInput(prompt);
         }
         int value = character - 48;
         message("Read number " + value);
