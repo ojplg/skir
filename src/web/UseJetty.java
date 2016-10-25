@@ -35,8 +35,8 @@ public class UseJetty {
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{ "canvas_map.html" });
-        resource_handler.setResourceBase("/Users/ogugenheim/git_personal/risk/out/production/risk/html/");
+        resource_handler.setWelcomeFiles(new String[]{ "html/index.html" });
+        resource_handler.setResourceBase("../out/production/risk/");
 
         socketHandler.setHandler(resource_handler);
         _server.setHandler(socketHandler);

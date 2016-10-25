@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Canvas Map</title>
-</head>
-<body>
-    <p>Risk.</p>
-    <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
-    </canvas>
-</body>
-
-<script>
-
   // asia
   var irktusk = new_country('Irktusk', 780, 50, 100, 100, '#3ca824', 'white');
   var japan = new_country('Japan',920,150,45,125, '#2aab0e', 'white');
@@ -37,10 +23,8 @@
 
   var countries = [ alaska, northwest_territory, alberta, quebec, ontario, eastern_united_states,
                        western_united_states, greenland, central_america,
-                    venezuela, peru, brazil, argentina, 
+                    venezuela, peru, brazil, argentina,
                      irktusk, japan, kamchatka, mongolia ];
-
-
 
   function draw_map(){
     var canvas = document.getElementById ('canvas_map');
@@ -103,9 +87,3 @@
   }
 
   var connection = new WebSocket('ws://localhost:8080');
-
-  draw_map();
-
-</script>
-
-</html>
