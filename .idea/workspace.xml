@@ -118,8 +118,8 @@
       <file leaf-file-name="map.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/resource/js/map.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
+            <state relative-caret-position="285">
+              <caret line="51" column="44" selection-start-line="51" selection-start-column="44" selection-end-line="51" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -914,9 +914,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="All_in_Risk - 2016.10.23 at 15h 31m 36s.xml">
-      <configuration name="All in Risk" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="CardsTest - 2016.10.23 at 15h 39m 22s.xml">
       <configuration name="CardsTest" configurationId="JUnit" />
     </history-entry>
@@ -933,6 +930,9 @@
       <configuration name="RollsTest" configurationId="JUnit" />
     </history-entry>
     <history-entry file="RollsTest - 2016.10.24 at 21h 13m 04s.xml">
+      <configuration name="RollsTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RollsTest - 2016.10.25 at 11h 23m 47s.xml">
       <configuration name="RollsTest" configurationId="JUnit" />
     </history-entry>
     <history-entry file="RollsTest_testTieGoesToDefender - 2016.10.23 at 15h 47m 29s.xml">
@@ -1524,8 +1524,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resource/js/map.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
+        <state relative-caret-position="285">
+          <caret line="51" column="44" selection-start-line="51" selection-start-column="44" selection-end-line="51" selection-end-column="44" />
           <folding />
         </state>
       </provider>
