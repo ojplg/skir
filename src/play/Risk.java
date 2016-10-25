@@ -15,20 +15,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class Risk {
 
     private Game _game;
     private Roller _roller = new RandomRoller(1);
-    private UseJetty _jettyServer = new UseJetty(8080);
+    private UseJetty _jettyServer;
 
     private int _numberPlayers = 6;
     private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "Yellow", "Pink "};
 
+    private final CountDownLatch _latch = new CountDownLatch(1);
+
     public static void main(String[] args) {
 
-        final Risk risk = new Risk(false);
-        System.out.println(risk._game);
+        final Risk risk = new Risk();
+        risk.initializeGame(false);
+        risk._jettyServer = new UseJetty(8080, risk._game);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -37,6 +41,14 @@ public class Risk {
             }
         });
         webThread.start();
+
+        try {
+            risk._latch.await();
+        } catch (InterruptedException ex){
+            ex.printStackTrace();
+        }
+
+        risk.startGame(false);
 
         Thread shellThread = new Thread(new Runnable() {
             @Override
@@ -50,9 +62,7 @@ public class Risk {
     private void runWebServer(){
         try {
 
-            _jettyServer.StartJettyServer();
-
-            System.out.println("Started the web server");
+            _jettyServer.StartJettyServer(_latch);
 
         } catch (Exception e){
             System.out.println("Could not run server");
@@ -82,10 +92,10 @@ public class Risk {
 
     }
 
-    public Risk(boolean randomize){
+    private void initializeGame(boolean randomize) {
         List<Player> players = new ArrayList<Player>();
         int initialArmies = initialArmyCount(_numberPlayers);
-        for (int idx=0 ; idx< _numberPlayers ; idx++ ){
+        for (int idx = 0; idx < _numberPlayers; idx++) {
             Player player = new Player(_colors[idx]);
             player.grantReserves(initialArmies);
             players.add(player);
@@ -93,21 +103,22 @@ public class Risk {
 
         WorldMap map = new StandardMap();
         _game = new Game(map, players, StandardCardSet.deck);
+    }
 
-        List<Country> countries = map.getAllCountries();
+    private void startGame(boolean randomize){
+        List<Country> countries = _game.getAllCountries();
         if( randomize) {
             Collections.shuffle(countries);
         }
 
+        List<Player> players = _game.getAllPlayers();
         for(int idx=0; idx<countries.size(); idx++){
-
             Player player = players.get(idx%_numberPlayers);
             Country country = countries.get(idx);
             System.out.println("Placing player " + player.getColor() + " into " + country.getName());
             _game.placeArmy(player, country);
         }
         _game.doInitialPlacements();
-
     }
 
     private int initialArmyCount(int numberPlayers){

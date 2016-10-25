@@ -14,7 +14,7 @@ var central_america = new_country('Central America', 120, 240, 80, 80, 'yellow',
 var venezuela = new_country('Venezuela', 100, 320, 120, 40, '#5FCCDF', 'white');
 var peru = new_country('Peru', 100, 360, 40, 100, '#5fdfcf', 'white');
 var brazil = new_country('Brazil', 140, 360, 80, 100, '#19A1BD', 'white');
-var argentina = new_country('Argentina', 100, 460, 80, 40, '#6CD2E7', 'white');
+var argentina = new_country('Argentina', 100, 460, 80, 40, '#189A88', 'white');
 
 // europe
 var iceland = new_country('Iceland',300,20,50,50,'#2C22F3','white');
@@ -45,7 +45,7 @@ var mongolia = new_country('Mongolia', 730, 110, 70, 30, '#52864D', 'white');
 var china = new_country('China', 650, 140, 140, 100, '#18E304', 'white');
 var siam = new_country('Siam',690,240,80,80,'#0F7E04','white');
 var japan = new_country('Japan',880,100,45,125, '#2aab0e', 'white');
-var kamchatka = new_country('Kam- chatka', 800,20,55,110, 'green', 'white');
+var kamchatka = new_country('Kam- chatka', 800,20,55,110, '#2CCF08', 'white');
 
 // australia
 var indonesia = new_country('Indonesia',720,350,70,50,'#A645D6','white');

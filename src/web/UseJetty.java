@@ -5,19 +5,27 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
+import state.Game;
+import state.MapEventListener;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class UseJetty {
 
     private final int _httpPort;
+    private final Game _game;
     private Server _server;
+    private List<LocalWebSocket> webSockets = new ArrayList<LocalWebSocket>();
 
-    public UseJetty(int httpPort){
+    public UseJetty(int httpPort, Game game){
         _httpPort = httpPort;
+        _game = game;
     }
 
-    public void StartJettyServer() throws Exception {
+    public void StartJettyServer(CountDownLatch latch) throws Exception {
 
         _server = new Server();
 
@@ -29,7 +37,10 @@ public class UseJetty {
             @Override
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
                 System.out.println("doWebSocket called " + s);
-                return new LocalWebSocket();
+                LocalWebSocket webSocket = new LocalWebSocket();
+                webSockets.add(webSocket);
+                _game.addMapEventListener(webSocket);
+                return webSocket;
             }
         };
 
@@ -43,6 +54,8 @@ public class UseJetty {
 
         System.out.println("Started up Jetty Web Server");
         _server.start();
+        System.out.println("Counted down latch");
+        latch.countDown();
         _server.join();
         System.out.println("Joined");
     }

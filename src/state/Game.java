@@ -18,12 +18,17 @@ public class Game {
     private List<Player> _players = new ArrayList<Player>();
     private CardStack _cardPile;
     private Player _currentAttacker;
+    private List<MapEventListener> _mapEventListeners = new ArrayList<MapEventListener>();
 
     public Game(WorldMap map, List<Player> players, List<Card> cards){
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _currentAttacker = players.get(0);
+    }
+
+    public void addMapEventListener(MapEventListener listener){
+        _mapEventListeners.add(listener);
     }
 
     public void doInitialPlacements(){
@@ -177,13 +182,15 @@ public class Game {
     }
 
     public void placeArmy(Player player, Country country) {
-        player.drawReserves(1);
-        _occupations.placeArmy(player, country);
+        placeArmies(player, country, 1);
     }
 
     public void placeArmies(Player player, Country country, int count){
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
+        for(MapEventListener listener : _mapEventListeners){
+            listener.mapChanged(country, player, count);
+        }
     }
 
     public void fortify(Country source, Country destination, int armies){
@@ -199,6 +206,14 @@ public class Game {
 
     public int tradeCards(Card one, Card two, Card three){
         return _cardPile.tradeCards(one, two, three);
+    }
+
+    public List<Country> getAllCountries(){
+        return _map.getAllCountries();
+    }
+
+    public List<Player> getAllPlayers(){
+        return _players;
     }
 
     public String toString(){
