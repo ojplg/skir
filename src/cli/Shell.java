@@ -43,6 +43,9 @@ public class Shell {
         if( orderType == OrderType.Attack ){
             return handleAttack(adjutant);
         }
+        if( orderType == OrderType.AttackUntilVictoryOrDeath ){
+            return handleCommittedAttack(adjutant);
+        }
         if( orderType == OrderType.EndAttacks){
             return handleEndAttacks(adjutant);
         }
@@ -62,7 +65,6 @@ public class Shell {
 
     private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
         // TODO: Allow player to skip fortifications
-        // TODO: Correct filtering on to and from countries
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesOccupied(currentPlayer);
         Country from = selectFromChoices(countries, "Fortify from");
@@ -89,6 +91,22 @@ public class Shell {
                 successfulAttack.getAttackersDiceCount());
         return occupy.execute(_game);
     }
+
+    private Adjutant handleCommittedAttack(Adjutant adjutant) throws IOException, QuitException {
+        Player currentPlayer = _game.currentAttacker();
+        List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
+        Country invader = selectFromChoices(countries, "Attack from");
+        countries = _game.targets(invader);
+        Country target = selectFromChoices(countries, "Attack to");
+        message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
+        AttackUntilVictoryOrDeath attack = new AttackUntilVictoryOrDeath(adjutant, invader, target, _game.getRoller());
+        Adjutant newAdjutant =  attack.execute(_game);
+        message("New counts are " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
+                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
+        return newAdjutant;
+    }
+
 
     private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();

@@ -38,7 +38,7 @@ public class Attack extends Order {
             getAdjutant().successfulAttack(this);
             getAdjutant().setAllowableOrders(OrderType.Occupy);
         } else {
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }
         return getAdjutant();
     }

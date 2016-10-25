@@ -32,7 +32,7 @@ public class PlaceArmy extends Order {
         if ( activePlayer().hasReserves() ){
             getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
         } else{
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks);
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }
         return getAdjutant();
     }

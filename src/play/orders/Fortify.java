@@ -21,9 +21,9 @@ public class Fortify extends Order {
     public Adjutant execute(Game game) {
         game.fortify(_source, _destination, _armies);
         if( getAdjutant().hasConqueredCountry() ){
-            getAdjutant().setAllowableOrders();
+            getAdjutant().setAllowableOrders(OrderType.DrawCard);
         } else {
-            getAdjutant().setAllowableOrders();
+            return new Adjutant(game.nextPlayer(), game.getRoller());
         }
         return getAdjutant();
     }
