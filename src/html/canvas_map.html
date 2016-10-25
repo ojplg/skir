@@ -16,15 +16,15 @@
   var kamchatka = new_country('Kamchatka', 880,100,35,150, 'green', 'white');
   var mongolia = new_country('Mongolia',820,255,85,50,'green', 'white');
 
-  var alaska = new_country('Alaska', 30, 80, 40, 50, '#ddcc00','black');
-  var northwest_territory = new_country('Northwest Territory', 70, 100, 60, 30, '#DAEA39','black');
-  var greenland = new_country('Greenland', 140, 80, 40, 40, '#CCD666','black');
-  var alberta = new_country('Alberta', 50, 120, 30, 50, '#E4F251','black');
-  var ontario = new_country('Ontario', 90, 120, 40, 50, '#F2F251','black');
-  var quebec = new_country('Quebec', 120, 120, 40, 50, '#EAEA10','black');
-  var western_united_states = new_country('Western United States', 60, 160, 80, 80, '#DCDC05','black');
-  var eastern_united_states = new_country('Eastern United States', 100, 160, 80, 80, '#DFDF5F','black');
-  var central_america = new_country('Central America', 80, 240, 80, 80, 'yellow','black');
+  var alaska = new_country('Alaska', 20, 20, 80, 80, '#ddcc00','black');
+  var northwest_territory = new_country('Northwest Territory', 100, 20, 80, 80, '#DAEA39','black');
+  var greenland = new_country('Greenland', 180, 20, 80, 80, '#CCD666','black');
+  var alberta = new_country('Alberta', 80, 100, 60, 60, '#E4F251','black');
+  var ontario = new_country('Ontario', 140, 100, 60, 60, '#F2F251','black');
+  var quebec = new_country('Quebec', 200, 100, 60, 60, '#EAEA10','black');
+  var western_united_states = new_country('Western United States', 100, 160, 80, 80, '#DCDC05','black');
+  var eastern_united_states = new_country('Eastern United States', 180, 160, 80, 80, '#DFDF5F','black');
+  var central_america = new_country('Central America', 120, 240, 80, 80, 'yellow','black');
 
   var countries = [ alaska, northwest_territory, alberta, quebec, ontario, eastern_united_states,
                        western_united_states, greenland, central_america,
@@ -54,7 +54,12 @@
     context.fillRect(country.left, country.top, country.width, country.height);
     context.fillStyle = country.text_color;
     context.font = '10pt Arial';
-    context.fillText(country.name,country.left + 5, country.top + 20);
+    var words = country.name.split(' ');
+    for(var idx=0; idx<words.length; idx++){
+      var word = words[idx];
+      var downoffset = 20 + 20 * idx;
+      context.fillText(word,country.left + 5, country.top + downoffset);
+    }
   }
 
   function new_country(name, left, top, width, height, color, text_color){
