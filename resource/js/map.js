@@ -1,8 +1,3 @@
-// asia
-var irktusk = new_country('Irktusk', 780, 50, 100, 100, '#3ca824', 'white');
-var japan = new_country('Japan',920,150,45,125, '#2aab0e', 'white');
-var kamchatka = new_country('Kam- chat- ka', 880,100,35,150, 'green', 'white');
-var mongolia = new_country('Mongolia',820,255,85,50,'green', 'white');
 
 // north america
 var alaska = new_country('Alaska', 20, 20, 80, 80, '#ddcc00','black');
@@ -32,11 +27,25 @@ var ukraine = new_country('Ukraine',490,40,80,200,'#4D77F2','white');
 
 // africa
 var north_africa = new_country('North Africa',300,300,140,140,'#F2C04D','black');
-var egypt = new_country('Egypt',440,300,70,70,'#EEA806','black');
+var egypt = new_country('Egypt',440,300,50,70,'#EEA806','black');
 var east_africa = new_country('East Africa',440,370,70,70,'#DAB86A','black');
 var congo = new_country('Congo',410,440,50,50,'#BBA504','black');
 var madagascar = new_country('Mada- gascar',550,410,50,80,'#E7D86B','black');
 var south_africa = new_country('South Africa',460,440,70,70,'#FEE005','black');
+
+// asia
+var middle_east = new_country('Middle East',490,240,100,130,'green','white');
+var afghanistan = new_country('Afghanistan',570,140,80,100,'#107229','white');
+var india = new_country('India',590,240,100,100,'#0FAF38','white');
+var ural = new_country('Ural',570,40,100,100,'#058D28','white');
+var siberia = new_country('Siberia',670,40,60,100,'#76CF8D','white');
+var yakutsk = new_country('Yakutsk', 730, 30, 70, 40, '#107A06', 'white');
+var irkutsk = new_country('Irkutsk', 730, 70, 70, 40, '#3ca824', 'white');
+var mongolia = new_country('Mongolia', 730, 110, 70, 30, '#52864D', 'white');
+var china = new_country('China', 650, 140, 140, 100, '#18E304', 'white');
+var siam = new_country('Siam',690,240,80,80,'#0F7E04','white');
+var japan = new_country('Japan',880,100,45,125, '#2aab0e', 'white');
+var kamchatka = new_country('Kam- chatka', 800,20,55,110, 'green', 'white');
 
 var countries = [ alaska, northwest_territory, alberta, quebec, ontario,
                    eastern_united_states, western_united_states, greenland, central_america,
@@ -45,7 +54,9 @@ var countries = [ alaska, northwest_territory, alberta, quebec, ontario,
                     southern_europe, western_europe, ukraine,
                   north_africa, egypt, east_africa,
                     congo, madagascar, south_africa,
-                  irktusk, japan, kamchatka, mongolia ];
+                  middle_east, afghanistan, india, ural, siberia,
+                    yakutsk, irkutsk, china, siam,
+                    japan, kamchatka, mongolia ];
 
 function draw_map(){
   var canvas = document.getElementById ('canvas_map');
@@ -73,7 +84,7 @@ function draw_country(context,country){
   for(var idx=0; idx<words.length; idx++){
     var word = words[idx];
     var downoffset = 20 + 20 * idx;
-    context.fillText(word,country.left + 5, country.top + downoffset);
+    context.fillText(word,country.left + 2, country.top + downoffset);
   }
 }
 
