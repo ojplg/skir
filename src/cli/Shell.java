@@ -66,7 +66,7 @@ public class Shell {
     private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
         // TODO: Allow player to skip fortifications
         Player currentPlayer = _game.currentAttacker();
-        List<Country> countries = _game.countriesOccupied(currentPlayer);
+        List<Country> countries = _game.possibleFortificationCountries(currentPlayer);
         Country from = selectFromChoices(countries, "Fortify from");
         countries = _game.allies(from);
         Country to = selectFromChoices(countries, "Fortify to");

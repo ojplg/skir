@@ -63,14 +63,19 @@ public class Game implements SignalReady {
     }
 
     public boolean hasLegalFortification(Player player){
+        return possibleFortificationCountries(player).size() > 0;
+    }
+
+    public List<Country> possibleFortificationCountries(Player player){
+        List<Country> sources = new ArrayList<Country>();
         for(Country country : _occupations.countriesOccupied(player)){
             if(_occupations.getOccupationForce(country) > 1){
                 if(allies(country).size() > 0){
-                    return true;
+                    sources.add(country);
                 }
             }
         }
-        return false;
+        return sources;
     }
 
     public Player currentAttacker(){
@@ -203,13 +208,12 @@ public class Game implements SignalReady {
         for (Country neighbor : _map.getNeighbors(country)){
             if(sameOccupier && occupier.equals(getOccupier(neighbor)) ) {
                 filtered.add(neighbor);
-            } else if ( ! occupier.equals(getOccupier(neighbor))) {
+            } else if ( ! sameOccupier && ! occupier.equals(getOccupier(neighbor))) {
                 filtered.add(neighbor);
             }
         }
         return filtered;
     }
-
 
     public boolean isTarget(Country attacker, Country defender){
         if( _map.areNeighbors(attacker, defender)){
