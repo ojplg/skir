@@ -120,4 +120,24 @@ function map_clicked(e){
   }
 }
 
+function update_country(countryName, playerColor, armyCount){
+  console.log("Going to color country " + countryName + " with color " + playerColor);
+  var canvas = document.getElementById ('canvas_map');
+  var context = canvas.getContext ('2d');
+  for(var idx=0; idx<countries.length; idx++){
+    var country = countries[idx];
+    if( country.name == countryName ){
+      var border = 4;
+      context.fillStyle = playerColor;
+      context.fillRect(country.left + border, country.top + border,
+        country.width - (border*2), country.height- (border*2));
+    }
+  }
+}
+
 var connection = new WebSocket('ws://localhost:8080');
+connection.onmessage = function(event){
+  console.log("from server:" + event.data);
+  var datum = JSON.parse(event.data);
+  update_country(datum.country, datum.color, datum.count);
+}

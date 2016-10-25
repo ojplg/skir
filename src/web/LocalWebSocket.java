@@ -31,11 +31,11 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
     public void mapChanged(Country country, Player player, int armyCount) {
         try {
             StringBuilder buf = new StringBuilder();
-            buf.append("{'country':'");
+            buf.append("{\"country\":\"");
             buf.append(country.getName());
-            buf.append("','color':'");
+            buf.append("\",\"color\":\"");
             buf.append(player.getColor());
-            buf.append("','count':");
+            buf.append("\",\"count\":");
             buf.append(armyCount);
             buf.append("}");
 
