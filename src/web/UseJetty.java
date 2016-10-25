@@ -33,7 +33,7 @@ public class UseJetty {
             @Override
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
                 System.out.println("doWebSocket called " + s);
-                LocalWebSocket webSocket = new LocalWebSocket();
+                LocalWebSocket webSocket = new LocalWebSocket(_game);
                 _game.addMapEventListener(webSocket);
                 return webSocket;
             }

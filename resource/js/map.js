@@ -49,7 +49,7 @@ var kamchatka = new_country('Kam- chatka', 800,20,55,110, '#2CCF08', 'white');
 
 // australia
 var indonesia = new_country('Indonesia',720,350,70,50,'#A645D6','white');
-var new_guinea = new_country('New Guinea',810,340, 50, 50,'#A111E8','white');
+var new_guinea = new_country('New Guinea',810,340, 60, 65,'#A111E8','white');
 var western_australia = new_country('Western Australia',730,420,70,60,'#9B4CC1','white');
 var eastern_australia = new_country('Eastern Australia',800,420,70,60,'#8E189A','white');
 
@@ -95,8 +95,15 @@ function paint_country_name(context,country,name_color){
   for(var idx=0; idx<words.length; idx++){
     var word = words[idx];
     var downoffset = 20 + 20 * idx;
-    context.fillText(word,country.left + 2, country.top + downoffset);
+    context.fillText(word,country.left + 4, country.top + downoffset);
   }
+}
+
+function update_country_occupation_count(context,country,army_count,number_color){
+  context.fillStyle = number_color;
+  context.font = '9pt Arial';
+  context.fillText(army_count, country.left + country.width - 14,
+    country.top + country.height - 6 );
 }
 
 function new_country(name, left, top, width, height, color, text_color){
@@ -108,6 +115,11 @@ function new_country(name, left, top, width, height, color, text_color){
   that.width = width;
   that.color = color;
   that.text_color = text_color;
+  that.wire_name = function(){
+    var simplified = that.name.replace("- ","");
+    console.log("Simplified " + that.name + " to " + simplified);
+    return simplified;
+  }
   return that;
 }
 
@@ -124,23 +136,25 @@ function map_clicked(e){
   }
 }
 
-function update_country(countryName, playerColor, armyCount){
-  console.log("Going to color country " + countryName + " with color " + playerColor);
+function update_country(country_name, player_color, army_count){
+  console.log("Going to color country " + country_name + " with color " + player_color);
   var canvas = document.getElementById ('canvas_map');
   var context = canvas.getContext ('2d');
   for(var idx=0; idx<countries.length; idx++){
     var country = countries[idx];
-    if( country.name == countryName ){
+    if( country.wire_name() == country_name ){
       var border = 3;
-      context.fillStyle = playerColor;
+      context.fillStyle = player_color;
       context.fillRect(country.left + border, country.top + border,
         country.width - (border*2), country.height- (border*2));
-      update_country_name(context, country, playerColor);
+      var text_color = occupied_text_color(player_color);
+      paint_country_name(context, country, text_color);
+      update_country_occupation_count(context, country, army_count, text_color);
     }
   }
 }
 
-function update_country_name(context,country,player_color){
+function occupied_text_color(player_color){
   var name_color;
   if(player_color == 'Black' || player_color == 'Blue' || player_color == 'Green'){
     name_color = 'white';
@@ -148,7 +162,7 @@ function update_country_name(context,country,player_color){
   if(player_color == 'Red' || player_color == 'White' || player_color == 'Pink'){
     name_color = 'black';
   }
-  paint_country_name(context,country,name_color);
+  return name_color;
 }
 
 var connection = new WebSocket('ws://localhost:8080');

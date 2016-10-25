@@ -4,12 +4,26 @@ import map.Country;
 import org.eclipse.jetty.websocket.WebSocket;
 import state.MapEventListener;
 import state.Player;
+import state.SignalReady;
 
 import java.io.IOException;
 
 public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener {
 
+    private static volatile int _counter = 0;
+    private String _id;
     private Connection _connection;
+    private SignalReady _signalReady;
+
+    public LocalWebSocket(SignalReady ready){
+        _signalReady = ready;
+        _counter++ ;
+        _id = String.valueOf(_counter);
+    }
+
+    public String getId(){
+        return _id;
+    }
 
     @Override
     public void onMessage(String s) {
@@ -21,6 +35,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
         System.out.println("onOpen called on LocalWebSocket");
         _connection = connection;
         // must signal here that connection was created, so that countries can be painted!
+        _signalReady.signal(_id);
     }
 
     @Override

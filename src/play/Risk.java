@@ -24,7 +24,7 @@ public class Risk {
     private UseJetty _jettyServer;
 
     private int _numberPlayers = 6;
-    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink "};
+    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
     private final CountDownLatch _latch = new CountDownLatch(1);
 
@@ -115,7 +115,7 @@ public class Risk {
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_numberPlayers);
             Country country = countries.get(idx);
-            System.out.println("Placing player " + player.getColor() + " into " + country.getName());
+            //System.out.println("Placing player " + player.getColor() + " into " + country.getName());
             _game.placeArmy(player, country);
         }
         _game.doInitialPlacements();

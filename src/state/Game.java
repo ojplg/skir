@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
 
-public class Game {
+public class Game implements SignalReady {
 
     private WorldMap _map;
     private Occupations _occupations = new Occupations();
@@ -27,12 +27,19 @@ public class Game {
         _currentAttacker = players.get(0);
     }
 
-    public void addMapEventListener(MapEventListener listener){
-        for(Country country : _map.getAllCountries()){
-            Player player = _occupations.getOccupier(country);
-            int armyCount = _occupations.getOccupationForce(country);
-            listener.mapChanged(country, player, armyCount);
+    public void signal(String flag){
+        for(MapEventListener listener : _mapEventListeners){
+            if(listener.getId().equals(flag)){
+                for(Country country : _map.getAllCountries()){
+                    Player player = _occupations.getOccupier(country);
+                    int armyCount = _occupations.getOccupationForce(country);
+                    listener.mapChanged(country, player, armyCount);
+                }
+            }
         }
+    }
+
+    public void addMapEventListener(MapEventListener listener){
         _mapEventListeners.add(listener);
     }
 
@@ -91,6 +98,8 @@ public class Game {
         }
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
+        notifyListeners(attacker);
+        notifyListeners(defender);
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -107,6 +116,8 @@ public class Game {
         _occupations.killArmies(conqueror, occupyingArmyCount);
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
+        notifyListeners(conqueror);
+        notifyListeners(vanquished);
         return countriesOccupied(defender).size() == 0;
     }
 
@@ -193,9 +204,15 @@ public class Game {
     public void placeArmies(Player player, Country country, int count){
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
+        notifyListeners(country);
+    }
+
+    private void notifyListeners(Country country){
         for(MapEventListener listener : _mapEventListeners){
             if( listener != null) {
-                listener.mapChanged(country, player, count);
+                int newCount = _occupations.getOccupationForce(country);
+                Player player = _occupations.getOccupier(country);
+                listener.mapChanged(country, player, newCount);
             } else {
                 System.out.println("WARNING NULL MAP LISTENER");
             }
@@ -207,6 +224,8 @@ public class Game {
         Player player = getOccupier(source);
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(player, destination, armies);
+        notifyListeners(source);
+        notifyListeners(destination);
     }
 
     public Card drawCard() {
