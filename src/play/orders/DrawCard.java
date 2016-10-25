@@ -17,7 +17,7 @@ public class DrawCard extends Order {
         if( getAdjutant().hasConqueredCountry() ){
             activePlayer().addCard(game.drawCard());
         }
-        return new Adjutant(game.nextPlayer(), new RandomRoller(1));
+        return new Adjutant(game.nextPlayer(), game.getRoller());
     }
 
     @Override

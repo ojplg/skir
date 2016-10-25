@@ -31,7 +31,9 @@ public class Risk {
     public static void main(String[] args) {
 
         final Risk risk = new Risk();
-        risk.initializeGame(false);
+        boolean randomize = true;
+
+        risk.initializeGame(randomize);
         risk._jettyServer = new UseJetty(8080, risk._game);
 
         Thread webThread = new Thread(new Runnable(){
@@ -48,7 +50,7 @@ public class Risk {
             ex.printStackTrace();
         }
 
-        risk.startGame(false);
+        risk.startGame(randomize);
 
         Thread shellThread = new Thread(new Runnable() {
             @Override
@@ -102,7 +104,14 @@ public class Risk {
         }
 
         WorldMap map = new StandardMap();
-        _game = new Game(map, players, StandardCardSet.deck);
+        Roller roller;
+        if( randomize ) {
+            roller = new RandomRoller(System.currentTimeMillis());
+        } else {
+            roller = new RandomRoller(1);
+        }
+
+        _game = new Game(map, players, StandardCardSet.deck, roller);
     }
 
     private void startGame(boolean randomize){

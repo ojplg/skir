@@ -5,6 +5,7 @@ import card.CardStack;
 import map.Continent;
 import map.Country;
 import map.WorldMap;
+import play.Roller;
 import play.Rolls;
 
 import java.util.ArrayList;
@@ -19,12 +20,18 @@ public class Game implements SignalReady {
     private CardStack _cardPile;
     private Player _currentAttacker;
     private List<MapEventListener> _mapEventListeners = new ArrayList<MapEventListener>();
+    private Roller _roller;
 
-    public Game(WorldMap map, List<Player> players, List<Card> cards){
+    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller){
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _currentAttacker = players.get(0);
+        _roller = roller;
+    }
+
+    public Roller getRoller(){
+        return _roller;
     }
 
     public void signal(String flag){
@@ -172,15 +179,26 @@ public class Game implements SignalReady {
     }
 
     public List<Country> targets(Country country){
-        List<Country> targets = new ArrayList<Country>();
+        return filterCountries(country, false);
+    }
+
+    public List<Country> allies(Country country){
+        return filterCountries(country, true);
+    }
+
+    private List<Country> filterCountries(Country country, boolean sameOccupier){
+        List<Country> filtered = new ArrayList<Country>();
         Player occupier = getOccupier(country);
         for (Country neighbor : _map.getNeighbors(country)){
-            if( ! occupier.equals(getOccupier(neighbor)) ) {
-                targets.add(neighbor);
+            if(sameOccupier && occupier.equals(getOccupier(neighbor)) ) {
+                filtered.add(neighbor);
+            } else if ( ! occupier.equals(getOccupier(neighbor))) {
+                filtered.add(neighbor);
             }
         }
-        return targets;
+        return filtered;
     }
+
 
     public boolean isTarget(Country attacker, Country defender){
         if( _map.areNeighbors(attacker, defender)){

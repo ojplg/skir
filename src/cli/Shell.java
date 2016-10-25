@@ -66,7 +66,7 @@ public class Shell {
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesOccupied(currentPlayer);
         Country from = selectFromChoices(countries, "Fortify from");
-        countries = _game.targets(from);
+        countries = _game.allies(from);
         Country to = selectFromChoices(countries, "Fortify to");
         int numberArmies = readNumberInput("Number armies to move 1-" + (_game.getOccupationForce(from) - 1));
         Fortify order = new Fortify(adjutant, from, to, numberArmies);
@@ -96,10 +96,10 @@ public class Shell {
         Country invader = selectFromChoices(countries, "Attack from");
         countries = _game.targets(invader);
         Country target = selectFromChoices(countries, "Attack to");
-        int numberDice = Math.min(3, _game.getOccupationForce(invader));
+        int numberDice = Math.min(3, _game.getOccupationForce(invader) - 1);
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
-        Attack attack = new Attack(adjutant, new RandomRoller(1), invader, target, numberDice);
+        Attack attack = new Attack(adjutant, _game.getRoller(), invader, target, numberDice);
         Adjutant newAdjutant =  attack.execute(_game);
         message("New counts are " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
