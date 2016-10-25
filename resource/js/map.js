@@ -18,7 +18,7 @@ var argentina = new_country('Argentina', 100, 460, 80, 40, '#189A88', 'white');
 
 // europe
 var iceland = new_country('Iceland',300,20,50,50,'#2C22F3','white');
-var scandanavia = new_country('Scanda- navia',425,20,65,100,'#1A11C0','white');
+var scandinavia = new_country('Scandi- navia',425,20,65,100,'#1A11C0','white');
 var great_britain = new_country('Great Britain',320,100,60,80,'#262266','white');
 var northern_europe = new_country('Northern Europe',410,120,80,80,'#5C55BD','white');
 var southern_europe = new_country('Southern Europe',420,200,70,70,'#5570BD','white');
@@ -56,7 +56,7 @@ var eastern_australia = new_country('Eastern Australia',800,420,70,60,'#8E189A',
 var countries = [ alaska, northwest_territory, alberta, quebec, ontario,
                    eastern_united_states, western_united_states, greenland, central_america,
                   venezuela, peru, brazil, argentina,
-                  iceland, scandanavia, great_britain, northern_europe,
+                  iceland, scandinavia, great_britain, northern_europe,
                     southern_europe, western_europe, ukraine,
                   north_africa, egypt, east_africa,
                     congo, madagascar, south_africa,
