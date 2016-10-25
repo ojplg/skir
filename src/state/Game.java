@@ -62,6 +62,17 @@ public class Game implements SignalReady {
         }
     }
 
+    public boolean hasLegalFortification(Player player){
+        for(Country country : _occupations.countriesOccupied(player)){
+            if(_occupations.getOccupationForce(country) > 1){
+                if(allies(country).size() > 0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public Player currentAttacker(){
         return _currentAttacker;
     }
