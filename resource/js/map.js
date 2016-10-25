@@ -1,7 +1,7 @@
 // asia
 var irktusk = new_country('Irktusk', 780, 50, 100, 100, '#3ca824', 'white');
 var japan = new_country('Japan',920,150,45,125, '#2aab0e', 'white');
-var kamchatka = new_country('Kamchatka', 880,100,35,150, 'green', 'white');
+var kamchatka = new_country('Kam- chat- ka', 880,100,35,150, 'green', 'white');
 var mongolia = new_country('Mongolia',820,255,85,50,'green', 'white');
 
 // north america
@@ -22,19 +22,29 @@ var brazil = new_country('Brazil', 140, 360, 80, 100, '#19A1BD', 'white');
 var argentina = new_country('Argentina', 100, 460, 80, 40, '#6CD2E7', 'white');
 
 // europe
-var iceland = new_country('Iceland',400,20,50,50,'#2C22F3','white');
-var scandanavia = new_country('Scandanavia',500,20,50,100,'#1A11C0','white');
-var great_britain = new_country('Great Britain',440,100,40,80,'#262266','white');
-var northern_europe = new_country('Northern Europe',400,200,80,80,'#5C55BD','white');
-var southern_europe = new_country('Southern Europe',480,280,80,80,'#5570BD','white');
-var western_europe = new_country('Western Europe',400,280,80,80,'#1947CB','white');
-var ukraine = new_country('Ukraine',550,40,80,200,'#4D77F2','white');
+var iceland = new_country('Iceland',300,20,50,50,'#2C22F3','white');
+var scandanavia = new_country('Scan- da- navia',440,20,50,100,'#1A11C0','white');
+var great_britain = new_country('Great Britain',320,100,60,80,'#262266','white');
+var northern_europe = new_country('Northern Europe',410,120,80,80,'#5C55BD','white');
+var southern_europe = new_country('Southern Europe',420,200,70,70,'#5570BD','white');
+var western_europe = new_country('Western Europe',350,200,70,70,'#1947CB','white');
+var ukraine = new_country('Ukraine',490,40,80,200,'#4D77F2','white');
+
+// africa
+var north_africa = new_country('North Africa',300,300,140,140,'#F2C04D','black');
+var egypt = new_country('Egypt',440,300,70,70,'#EEA806','black');
+var east_africa = new_country('East Africa',440,370,70,70,'#DAB86A','black');
+var congo = new_country('Congo',410,440,50,50,'#BBA504','black');
+var madagascar = new_country('Mada- gascar',550,410,50,80,'#E7D86B','black');
+var south_africa = new_country('South Africa',460,440,70,70,'#FEE005','black');
 
 var countries = [ alaska, northwest_territory, alberta, quebec, ontario,
                    eastern_united_states, western_united_states, greenland, central_america,
                   venezuela, peru, brazil, argentina,
                   iceland, scandanavia, great_britain, northern_europe,
                     southern_europe, western_europe, ukraine,
+                  north_africa, egypt, east_africa,
+                    congo, madagascar, south_africa,
                   irktusk, japan, kamchatka, mongolia ];
 
 function draw_map(){
