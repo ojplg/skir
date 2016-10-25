@@ -20,6 +20,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
     public void onOpen(Connection connection) {
         System.out.println("onOpen called on LocalWebSocket");
         _connection = connection;
+        // must signal here that connection was created, so that countries can be painted!
     }
 
     @Override
@@ -30,17 +31,21 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
     @Override
     public void mapChanged(Country country, Player player, int armyCount) {
         try {
-            StringBuilder buf = new StringBuilder();
-            buf.append("{\"country\":\"");
-            buf.append(country.getName());
-            buf.append("\",\"color\":\"");
-            buf.append(player.getColor());
-            buf.append("\",\"count\":");
-            buf.append(armyCount);
-            buf.append("}");
+            if( _connection != null && _connection.isOpen()) {
+                StringBuilder buf = new StringBuilder();
+                buf.append("{\"country\":\"");
+                buf.append(country.getName());
+                buf.append("\",\"color\":\"");
+                buf.append(player.getColor());
+                buf.append("\",\"count\":");
+                buf.append(armyCount);
+                buf.append("}");
 
-            System.out.println("Sending message " + buf.toString());
-            _connection.sendMessage(buf.toString());
+                System.out.println("Sending message " + buf.toString());
+                _connection.sendMessage(buf.toString());
+            } else {
+                System.out.println("WARN SENDING ON CLOSED (or null) WEB SOCKET");
+            }
         } catch (IOException ioe){
             System.out.println("Troubles");
             ioe.printStackTrace();

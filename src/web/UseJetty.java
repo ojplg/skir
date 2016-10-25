@@ -6,11 +6,8 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 import state.Game;
-import state.MapEventListener;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class UseJetty {
@@ -18,7 +15,6 @@ public class UseJetty {
     private final int _httpPort;
     private final Game _game;
     private Server _server;
-    private List<LocalWebSocket> webSockets = new ArrayList<LocalWebSocket>();
 
     public UseJetty(int httpPort, Game game){
         _httpPort = httpPort;
@@ -38,7 +34,6 @@ public class UseJetty {
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
                 System.out.println("doWebSocket called " + s);
                 LocalWebSocket webSocket = new LocalWebSocket();
-                webSockets.add(webSocket);
                 _game.addMapEventListener(webSocket);
                 return webSocket;
             }

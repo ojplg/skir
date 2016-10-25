@@ -28,6 +28,11 @@ public class Game {
     }
 
     public void addMapEventListener(MapEventListener listener){
+        for(Country country : _map.getAllCountries()){
+            Player player = _occupations.getOccupier(country);
+            int armyCount = _occupations.getOccupationForce(country);
+            listener.mapChanged(country, player, armyCount);
+        }
         _mapEventListeners.add(listener);
     }
 
@@ -189,7 +194,11 @@ public class Game {
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
         for(MapEventListener listener : _mapEventListeners){
-            listener.mapChanged(country, player, count);
+            if( listener != null) {
+                listener.mapChanged(country, player, count);
+            } else {
+                System.out.println("WARNING NULL MAP LISTENER");
+            }
         }
     }
 

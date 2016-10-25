@@ -85,8 +85,12 @@ function draw_map(){
 function draw_country(context,country){
   context.fillStyle = country.color;
   context.fillRect(country.left, country.top, country.width, country.height);
-  context.fillStyle = country.text_color;
-  context.font = '10pt Arial';
+  paint_country_name(context,country,country.text_color);
+}
+
+function paint_country_name(context,country,name_color){
+  context.fillStyle = name_color;
+  context.font = '9pt Arial';
   var words = country.name.split(' ');
   for(var idx=0; idx<words.length; idx++){
     var word = words[idx];
@@ -127,12 +131,24 @@ function update_country(countryName, playerColor, armyCount){
   for(var idx=0; idx<countries.length; idx++){
     var country = countries[idx];
     if( country.name == countryName ){
-      var border = 4;
+      var border = 3;
       context.fillStyle = playerColor;
       context.fillRect(country.left + border, country.top + border,
         country.width - (border*2), country.height- (border*2));
+      update_country_name(context, country, playerColor);
     }
   }
+}
+
+function update_country_name(context,country,player_color){
+  var name_color;
+  if(player_color == 'Black' || player_color == 'Blue' || player_color == 'Green'){
+    name_color = 'white';
+  }
+  if(player_color == 'Red' || player_color == 'White' || player_color == 'Pink'){
+    name_color = 'black';
+  }
+  paint_country_name(context,country,name_color);
 }
 
 var connection = new WebSocket('ws://localhost:8080');

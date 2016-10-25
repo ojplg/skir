@@ -24,7 +24,7 @@ public class Risk {
     private UseJetty _jettyServer;
 
     private int _numberPlayers = 6;
-    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "Yellow", "Pink "};
+    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink "};
 
     private final CountDownLatch _latch = new CountDownLatch(1);
 
