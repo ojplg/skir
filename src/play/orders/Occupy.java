@@ -26,11 +26,11 @@ public class Occupy extends Order {
             if (activePlayer().hasTooManyCards()){
                 getAdjutant().setAllowableOrders(OrderType.ExchangeCardSet);
             } else {
-                getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks
+                getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks,
                     OrderType.AttackUntilVictoryOrDeath);
             }
         } else {
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks
+            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks,
                 OrderType.AttackUntilVictoryOrDeath);
         }
         return getAdjutant();
