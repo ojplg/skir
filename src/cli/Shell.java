@@ -1,5 +1,6 @@
 package cli;
 
+import card.Card;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,9 +10,11 @@ import play.orders.*;
 import state.Game;
 import state.Player;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shell {
@@ -29,7 +32,7 @@ public class Shell {
                 " who is automated? " + adjutant.isAutomatedPlayer());
         if(adjutant.isAutomatedPlayer()){
             try {
-                Thread.sleep(100);
+                Thread.sleep(5);
             } catch(InterruptedException ie) {
             }
             return adjutant.chooseOrderType(_game);
@@ -80,10 +83,25 @@ public class Shell {
             if (orderType == OrderType.Fortify) {
                 return handleFortify(adjutant);
             }
+            if( orderType == OrderType.ExchangeCardSet){
+                return handleExchangeCardSet(adjutant);
+            }
 
             message("Cannot handle order type " + orderType);
             return null;
         }
+    }
+
+    private Adjutant handleExchangeCardSet(Adjutant adjutant) throws IOException, QuitException {
+        List<Card> cards = new ArrayList<Card>(adjutant.getActivePlayer().getCards());
+        Card cardOne = selectFromChoices(cards, "Pick a card");
+        cards.remove(cardOne);
+        Card cardTwo = selectFromChoices(cards, "Pick a card");
+        cards.remove(cardTwo);
+        Card cardThree = selectFromChoices(cards, "Pick a card");
+
+        ExchangeCardSet exchangeCardSet = new ExchangeCardSet(adjutant, cardOne, cardTwo, cardThree);
+        return exchangeCardSet.execute(_game);
     }
 
     private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
@@ -178,17 +196,17 @@ public class Shell {
     private int readNumberInput(String prompt) throws IOException, QuitException {
         message(prompt);
         System.out.print("> ");
-        Reader reader = new InputStreamReader(System.in);
-        int character = reader.read();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String entered = reader.readLine();
 
-        if( character == 'q' ){
+        if( entered.equals("q") ){
             throw new QuitException();
         }
-        if (character == 'p' ){
+        if (entered.equals("p") ){
             message(_game.toString());
             return readNumberInput(prompt);
         }
-        int value = character - 48;
+        int value = Integer.parseInt(entered);
         message("Read number " + value);
         return value;
     }

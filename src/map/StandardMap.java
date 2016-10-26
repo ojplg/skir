@@ -35,7 +35,7 @@ public class StandardMap extends WorldMap {
             set(Country.Quebec, Country.Greenland, Country.Eastern_United_States, Country.Ontario, Country.Northwest_Territory),
             set(Country.Scandinavia, Country.Ukraine, Country.Northern_Europe, Country.Great_Britain, Country.Iceland),
             set(Country.Siam, Country.China, Country.Indonesia, Country.India),
-            set(Country.Siberia, Country.Yakutsk, Country.Irkutsk, Country.Mongolia, Country.China, Country.Siberia),
+            set(Country.Siberia, Country.Yakutsk, Country.Irkutsk, Country.Mongolia, Country.China, Country.Ural),
             set(Country.South_Africa, Country.East_Africa, Country.Madagascar, Country.Congo),
             set(Country.Southern_Europe, Country.Northern_Europe, Country.Ukraine, Country.Middle_East, Country.Egypt, Country.North_Africa, Country.Western_Europe),
             set(Country.Ukraine, Country.Ural, Country.Afghanistan, Country.Middle_East, Country.Southern_Europe, Country.Northern_Europe, Country.Scandinavia),
