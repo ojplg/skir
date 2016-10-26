@@ -37,4 +37,8 @@ public class Card {
         }
         return _type.equals(other._type);
     }
+
+    public String toString(){
+        return "Card { type=" + _type + ", country=" + _country +"}";
+    }
 }
