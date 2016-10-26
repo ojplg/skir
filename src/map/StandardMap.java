@@ -30,7 +30,7 @@ public class StandardMap extends WorldMap {
             set(Country.North_Africa, Country.Western_Europe, Country.Southern_Europe, Country.Egypt, Country.East_Africa, Country.Congo, Country.Brazil),
             set(Country.Northern_Europe, Country.Scandinavia, Country.Ukraine, Country.Southern_Europe, Country.Western_Europe, Country.Great_Britain),
             set(Country.Northwest_Territory, Country.Greenland, Country.Quebec, Country.Ontario, Country.Alberta, Country.Alaska),
-            set(Country.Ontario, Country.Northwest_Territory, Country.Greenland, Country.Quebec, Country.Eastern_United_States, Country.Western_United_States),
+            set(Country.Ontario, Country.Alberta, Country.Northwest_Territory, Country.Greenland, Country.Quebec, Country.Eastern_United_States, Country.Western_United_States),
             set(Country.Peru, Country.Venezuela, Country.Brazil, Country.Argentina),
             set(Country.Quebec, Country.Greenland, Country.Eastern_United_States, Country.Ontario, Country.Northwest_Territory),
             set(Country.Scandinavia, Country.Ukraine, Country.Northern_Europe, Country.Great_Britain, Country.Iceland),
@@ -41,7 +41,7 @@ public class StandardMap extends WorldMap {
             set(Country.Ukraine, Country.Ural, Country.Afghanistan, Country.Middle_East, Country.Southern_Europe, Country.Northern_Europe, Country.Scandinavia),
             set(Country.Ural, Country.Siberia, Country.China, Country.Afghanistan, Country.Ukraine),
             set(Country.Venezuela, Country.Central_America, Country.Brazil, Country.Peru),
-            set(Country.Western_Australia, Country.New_Guinea, Country.Eastern_Australia),
+            set(Country.Western_Australia, Country.New_Guinea, Country.Eastern_Australia, Country.Indonesia),
             set(Country.Western_Europe, Country.Great_Britain, Country.Northern_Europe, Country.Southern_Europe, Country.North_Africa),
             set(Country.Western_United_States, Country.Alberta, Country.Ontario, Country.Eastern_United_States, Country.Central_America),
             set(Country.Yakutsk, Country.Kamchatka, Country.Irkutsk, Country.Siberia)
