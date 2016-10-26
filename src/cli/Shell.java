@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Shell {
@@ -108,6 +109,7 @@ public class Shell {
         // TODO: Allow player to skip fortifications
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.possibleFortificationCountries(currentPlayer);
+        Collections.sort(countries);
         Country from = selectFromChoices(countries, "Fortify from");
         countries = _game.allies(from);
         Country to = selectFromChoices(countries, "Fortify to");
@@ -126,18 +128,29 @@ public class Shell {
         return endAttacks.execute(_game);
     }
 
-    private Adjutant handleOccupy(Adjutant adjutant){
+    private Adjutant handleOccupy(Adjutant adjutant) throws IOException, QuitException {
         Attack successfulAttack = adjutant.getSuccessfulAttack();
+
+        int dieCount = successfulAttack.getAttackersDiceCount();
+        int armiesInInvader = _game.getOccupationForce(successfulAttack.getInvader());
+        int armiesLeftInInvader = armiesInInvader - dieCount;
+        int numberToMove = dieCount;
+        if( armiesLeftInInvader > 1) {
+            numberToMove =
+                    readNumberInput("How many armies to move? (" + dieCount + "-" + (armiesInInvader -1) + ")");
+        }
         Occupy occupy = new Occupy(adjutant, successfulAttack.getInvader(), successfulAttack.getTarget(),
-                successfulAttack.getAttackersDiceCount());
+                numberToMove);
         return occupy.execute(_game);
     }
 
     private Adjutant handleCommittedAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
+        Collections.sort(countries);
         Country invader = selectFromChoices(countries, "Attack from");
         countries = _game.targets(invader);
+        Collections.sort(countries);
         Country target = selectFromChoices(countries, "Attack to");
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
@@ -152,7 +165,9 @@ public class Shell {
     private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
+        Collections.sort(countries);
         Country invader = selectFromChoices(countries, "Attack from");
+        Collections.sort(countries);
         countries = _game.targets(invader);
         Country target = selectFromChoices(countries, "Attack to");
         int numberDice = Math.min(3, _game.getOccupationForce(invader) - 1);
@@ -172,6 +187,7 @@ public class Shell {
             "Select number to place.";
         int numberToPlace = readNumberInput(prompt);
         List<Country> ownedCountries = _game.countriesOccupied(currentPlayer);
+        Collections.sort(ownedCountries);
         Country country = selectFromChoices(ownedCountries, prompt);
         PlaceArmy placeArmy = new PlaceArmy(adjutant, country, numberToPlace);
         return placeArmy.execute(_game);

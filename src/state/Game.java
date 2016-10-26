@@ -123,7 +123,7 @@ public class Game implements SignalReady {
     }
 
     private int computeCountrySupply(Player player) {
-        return Math.min(3, numberCountriesOccupied(player) / 3);
+        return Math.max(3, numberCountriesOccupied(player) / 3);
     }
 
     public int numberCountriesOccupied(Player player){
@@ -286,6 +286,11 @@ public class Game implements SignalReady {
     }
 
     public int tradeCards(Card one, Card two, Card three){
+        List<Card> cards = new ArrayList<Card>();
+        cards.add(one);
+        cards.add(two);
+        cards.add(three);
+        _currentAttacker.removeCards(cards);
         return _cardPile.tradeCards(one, two, three);
     }
 
