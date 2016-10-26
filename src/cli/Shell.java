@@ -113,7 +113,7 @@ public class Shell {
         Country from = selectFromChoices(countries, "Fortify from");
         countries = _game.allies(from);
         Country to = selectFromChoices(countries, "Fortify to");
-        int numberArmies = readNumberInput("Number armies to move 1-" + (_game.getOccupationForce(from) - 1));
+        int numberArmies = readNumberInput("Number armies to move" ,1,(_game.getOccupationForce(from) - 1));
         Fortify order = new Fortify(adjutant, from, to, numberArmies);
         return order.execute(_game);
     }
@@ -137,7 +137,7 @@ public class Shell {
         int numberToMove = dieCount;
         if( armiesLeftInInvader > 1) {
             numberToMove =
-                    readNumberInput("How many armies to move? (" + dieCount + "-" + (armiesInInvader -1) + ")");
+                    readNumberInput("How many armies to move? (" , dieCount,armiesInInvader -1);
         }
         Occupy occupy = new Occupy(adjutant, successfulAttack.getInvader(), successfulAttack.getTarget(),
                 numberToMove);
@@ -185,7 +185,7 @@ public class Shell {
         int reserveArmies = currentPlayer.reserveCount();
         String prompt = "Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.\n" +
             "Select number to place.";
-        int numberToPlace = readNumberInput(prompt);
+        int numberToPlace = readNumberInput(prompt, 1, reserveArmies);
         List<Country> ownedCountries = _game.countriesOccupied(currentPlayer);
         Collections.sort(ownedCountries);
         Country country = selectFromChoices(ownedCountries, prompt);
@@ -202,15 +202,15 @@ public class Shell {
                 buf.append(" " + (index + 1) + " " + possibilities.get(index));
                 buf.append("\n");
             }
-            int selection = readNumberInput(buf.toString() + prompt);
+            int selection = readNumberInput(buf.toString() + prompt,1,possibilities.size());
             T item = possibilities.get(selection - 1);
             message("selected " + item);
             return item;
         }
     }
 
-    private int readNumberInput(String prompt) throws IOException, QuitException {
-        message(prompt);
+    private int readNumberInput(String prompt, int min, int max) throws IOException, QuitException {
+        message(prompt + "(" + min + "-" + max + ")");
         System.out.print("> ");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String entered = reader.readLine();
@@ -220,10 +220,20 @@ public class Shell {
         }
         if (entered.equals("p") ){
             message(_game.toString());
-            return readNumberInput(prompt);
+            return readNumberInput(prompt, min, max);
         }
-        int value = Integer.parseInt(entered);
+        int value;
+        try {
+            value = Integer.parseInt(entered);
+        } catch (NumberFormatException nfe){
+            message("Could not parse " + entered);
+            return readNumberInput(prompt, min, max);
+        }
         message("Read number " + value);
+        if( value < min || value > max){
+            message("out of range " + value);
+            return readNumberInput(prompt, min, max);
+        }
         return value;
     }
 
