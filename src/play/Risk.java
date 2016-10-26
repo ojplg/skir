@@ -1,10 +1,14 @@
 package play;
 
+import ai.AutomatedPlayer;
+import ai.NeverAttacks;
 import card.StandardCardSet;
 import cli.Shell;
 import map.Country;
 import map.StandardMap;
 import map.WorldMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import play.orders.Adjutant;
 import play.orders.OrderType;
 import state.Game;
@@ -19,6 +23,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Risk {
 
+    private static final Logger _log = LogManager.getLogger(Risk.class);
+
     private Game _game;
     private Roller _roller = new RandomRoller(1);
     private UseJetty _jettyServer;
@@ -29,6 +35,8 @@ public class Risk {
     private final CountDownLatch _latch = new CountDownLatch(1);
 
     public static void main(String[] args) {
+
+        _log.info("Starting");
 
         final Risk risk = new Risk();
         boolean randomize = true;
@@ -41,7 +49,8 @@ public class Risk {
             public void run(){
                 risk.runWebServer();
             }
-        });
+        },"WebThread");
+
         webThread.start();
 
         try {
@@ -57,7 +66,7 @@ public class Risk {
             public void run() {
                 risk.runShell();
             }
-        });
+        },"ShellThread");
         shellThread.start();
     }
 
@@ -67,8 +76,7 @@ public class Risk {
             _jettyServer.StartJettyServer(_latch);
 
         } catch (Exception e){
-            System.out.println("Could not run server");
-            e.printStackTrace();
+            _log.error("Could not start jetty", e);
         }
     }
 
@@ -77,19 +85,21 @@ public class Risk {
         Shell shell = new Shell(_game);
 
         try {
-            Adjutant adjutant = new Adjutant(_game.currentAttacker(), _roller);
+            Adjutant adjutant = new Adjutant(_game.currentAttacker(), _roller, null);
             while(true) {
+                _log.info("Shell ticked to " + adjutant.getActivePlayer());
                 OrderType ot = shell.next(adjutant);
+                _log.info("Next just called with " + adjutant.getActivePlayer());
                 adjutant = shell.handeOrderType(ot, adjutant);
+                _log.info("Adjutant is for " + adjutant.getActivePlayer());
             }
 
         } catch (QuitException ex){
-            System.out.println("Quitting");
+            _log.info("Quitting");
             _jettyServer.stop();
             return;
         } catch (IOException ex){
-            System.out.println("IO problem");
-            ex.printStackTrace();
+            _log.error("IO problem", ex);
         }
 
     }
@@ -112,6 +122,11 @@ public class Risk {
         }
 
         _game = new Game(map, players, StandardCardSet.deck, roller);
+        for (int idx = 1; idx < _numberPlayers; idx++) {
+            Player player = players.get(idx);
+            AutomatedPlayer ai = new NeverAttacks(player);
+            _game.addAutomatedPlayer(ai);
+        }
     }
 
     private void startGame(boolean randomize){
@@ -124,7 +139,6 @@ public class Risk {
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_numberPlayers);
             Country country = countries.get(idx);
-            //System.out.println("Placing player " + player.getColor() + " into " + country.getName());
             _game.placeArmy(player, country);
         }
         _game.doInitialPlacements();

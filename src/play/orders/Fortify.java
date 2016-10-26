@@ -23,7 +23,8 @@ public class Fortify extends Order {
         if( getAdjutant().hasConqueredCountry() ){
             getAdjutant().setAllowableOrders(OrderType.DrawCard);
         } else {
-            return new Adjutant(game.nextPlayer(), game.getRoller());
+            Player nextPlayer = game.nextPlayer();
+            return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
         }
         return getAdjutant();
     }

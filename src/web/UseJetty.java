@@ -1,5 +1,7 @@
 package web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CountDownLatch;
 
 public class UseJetty {
+
+    private static final Logger _log = LogManager.getLogger(UseJetty.class);
 
     private final int _httpPort;
     private final Game _game;
@@ -47,20 +51,19 @@ public class UseJetty {
         socketHandler.setHandler(resource_handler);
         _server.setHandler(socketHandler);
 
-        System.out.println("Started up Jetty Web Server");
+        _log.info("Started up Jetty Web Server");
         _server.start();
-        System.out.println("Counted down latch");
+        _log.info("Counted down latch");
         latch.countDown();
         _server.join();
-        System.out.println("Joined");
+        _log.info("Joined");
     }
 
     public void stop(){
         try {
             _server.stop();
         } catch (Exception ex){
-            System.out.println("error stopping jetty");
-            ex.printStackTrace();
+            _log.error("Could not stop jetty", ex);
         }
     }
 

@@ -1,28 +1,23 @@
 package play.orders;
 
-import play.RandomRoller;
 import state.Game;
 import state.Player;
 
-import java.util.Collections;
+public class EndTurn extends Order {
 
-public class DrawCard extends Order {
-
-    public DrawCard(Adjutant adjutant){
+    public EndTurn(Adjutant adjutant){
         super(adjutant);
     }
 
     @Override
     public Adjutant execute(Game game) {
-        if( getAdjutant().hasConqueredCountry() ){
-            activePlayer().addCard(game.drawCard());
-        }
         Player nextPlayer = game.nextPlayer();
         return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
     }
 
     @Override
     OrderType getType() {
-        return OrderType.DrawCard;
+        return OrderType.EndTurn;
     }
+
 }

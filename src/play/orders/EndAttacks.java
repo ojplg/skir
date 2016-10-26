@@ -21,7 +21,8 @@ public class EndAttacks extends Order {
             if( game.hasLegalFortification(activePlayer())) {
                 getAdjutant().setAllowableOrders(OrderType.Fortify);
             } else {
-                return new Adjutant(game.nextPlayer(), game.getRoller());
+                Player nextPlayer = game.nextPlayer();
+                return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
             }
         }
         return getAdjutant();

@@ -1,6 +1,8 @@
 package cli;
 
 import map.Country;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import play.QuitException;
 import play.RandomRoller;
 import play.orders.*;
@@ -14,6 +16,8 @@ import java.util.List;
 
 public class Shell {
 
+    private final static Logger _log = LogManager.getLogger(Shell.class);
+
     private final Game _game;
 
     public Shell(Game game){
@@ -21,46 +25,65 @@ public class Shell {
     }
 
     public OrderType next(Adjutant adjutant) throws QuitException, IOException {
-        if( adjutant.mustChooseOrderType() ) {
-            String prompt = "The current attacker is " + adjutant.getActivePlayer();
-            return selectFromChoices(adjutant.allowableOrders(), prompt);
+        _log.info("next called with adjutant for " + adjutant.getActivePlayer() +
+                " who is automated? " + adjutant.isAutomatedPlayer());
+        if(adjutant.isAutomatedPlayer()){
+            try {
+                Thread.sleep(100);
+            } catch(InterruptedException ie) {
+            }
+            return adjutant.chooseOrderType(_game);
         } else {
-            OrderType ot = adjutant.allowableOrders().get(0);
-            message("Turn phase is " + _game.currentAttacker() + "." + ot);
-            return ot;
+            //        _log.info("Ended while loop after " + cnt + " iterations");
+            if (adjutant.mustChooseOrderType()) {
+                String prompt = "The current attacker is " + adjutant.getActivePlayer();
+                return selectFromChoices(adjutant.allowableOrders(), prompt);
+            } else {
+                OrderType ot = adjutant.allowableOrders().get(0);
+                message("Turn phase is " + _game.currentAttacker() + "." + ot);
+                _log.info("Adjutant thinks current player is " + adjutant.getActivePlayer());
+                return ot;
+            }
         }
     }
 
     public Adjutant handeOrderType(OrderType orderType, Adjutant adjutant)  throws IOException, QuitException {
-        if( orderType == OrderType.ClaimArmies ){
-            ClaimArmies order = new ClaimArmies(adjutant);
-            order.execute(_game);
-            return order.getAdjutant();
-        }
-        if (orderType == OrderType.PlaceArmy){
-            return handlePlaceArmies(adjutant);
-        }
-        if( orderType == OrderType.Attack ){
-            return handleAttack(adjutant);
-        }
-        if( orderType == OrderType.AttackUntilVictoryOrDeath ){
-            return handleCommittedAttack(adjutant);
-        }
-        if( orderType == OrderType.EndAttacks){
-            return handleEndAttacks(adjutant);
-        }
-        if( orderType == OrderType.Occupy){
-            return handleOccupy(adjutant);
-        }
-        if( orderType == OrderType.DrawCard){
-            return handleDrawCard(adjutant);
-        }
-        if( orderType == OrderType.Fortify){
-            return handleFortify(adjutant);
-        }
+        if( adjutant.isAutomatedPlayer()){
+            return adjutant.executeAutomatedOrder(orderType, _game);
+        } else {
 
-        message("Cannot handle order type " + orderType);
-        return null;
+            if (orderType == OrderType.ClaimArmies) {
+                _log.info("About to claim armies for " + adjutant.getActivePlayer());
+                ClaimArmies order = new ClaimArmies(adjutant);
+                Adjutant newAdjutant = order.execute(_game);
+                _log.info("New adjutant is for " + newAdjutant.getActivePlayer());
+                return newAdjutant;
+            }
+            if (orderType == OrderType.PlaceArmy) {
+                return handlePlaceArmies(adjutant);
+            }
+            if (orderType == OrderType.Attack) {
+                return handleAttack(adjutant);
+            }
+            if (orderType == OrderType.AttackUntilVictoryOrDeath) {
+                return handleCommittedAttack(adjutant);
+            }
+            if (orderType == OrderType.EndAttacks) {
+                return handleEndAttacks(adjutant);
+            }
+            if (orderType == OrderType.Occupy) {
+                return handleOccupy(adjutant);
+            }
+            if (orderType == OrderType.DrawCard) {
+                return handleDrawCard(adjutant);
+            }
+            if (orderType == OrderType.Fortify) {
+                return handleFortify(adjutant);
+            }
+
+            message("Cannot handle order type " + orderType);
+            return null;
+        }
     }
 
     private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
@@ -157,6 +180,7 @@ public class Shell {
         System.out.print("> ");
         Reader reader = new InputStreamReader(System.in);
         int character = reader.read();
+
         if( character == 'q' ){
             throw new QuitException();
         }

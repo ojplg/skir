@@ -1,8 +1,12 @@
 package play.orders;
 
+import ai.AutomatedPlayer;
 import card.Card;
 import map.Country;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import play.Roller;
+import state.Game;
 import state.Player;
 
 import java.util.ArrayList;
@@ -12,16 +16,37 @@ import java.util.List;
 
 public class Adjutant {
 
+    private static final Logger _log = LogManager.getLogger(Adjutant.class);
+
     private final Roller _roller;
     private final Player _activePlayer;
     private final List<OrderType> _allowableOrders = new ArrayList<OrderType>();
     private boolean _conqueredCountry = false;
     private Attack _successfulAttack = null;
+    private AutomatedPlayer _automatedPlayer;
 
-    public Adjutant(Player activePlayer, Roller roller){
+    public Adjutant(Player activePlayer, Roller roller, AutomatedPlayer automatedPlayer){
         this._activePlayer = activePlayer;
         this._roller = roller;
         this._allowableOrders.add(OrderType.ClaimArmies);
+        this._automatedPlayer = automatedPlayer;
+        if( automatedPlayer != null ){
+            _log.warn("Made an adjutant with an automated player " + activePlayer);
+        } else {
+            _log.warn("MADE an adjutant for a human player");
+        }
+    }
+
+    public boolean isAutomatedPlayer(){
+        return _automatedPlayer != null;
+    }
+
+    public OrderType chooseOrderType(Game game){
+        return _automatedPlayer.pickOrder(_allowableOrders, game);
+    }
+
+    public Adjutant executeAutomatedOrder(OrderType orderType, Game game){
+        return _automatedPlayer.executeOrder(orderType, this, game);
     }
 
     public List<OrderType> allowableOrders() {

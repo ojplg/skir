@@ -1,18 +1,21 @@
 package state;
 
+import ai.AutomatedPlayer;
 import card.Card;
 import card.CardStack;
 import map.Continent;
 import map.Country;
 import map.WorldMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import play.Roller;
 import play.Rolls;
 
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
+import java.util.*;
 
 public class Game implements SignalReady {
+
+    private static final Logger _log = LogManager.getLogger(Game.class);
 
     private WorldMap _map;
     private Occupations _occupations = new Occupations();
@@ -21,6 +24,7 @@ public class Game implements SignalReady {
     private Player _currentAttacker;
     private List<MapEventListener> _mapEventListeners = new ArrayList<MapEventListener>();
     private Roller _roller;
+    private Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller){
         _map = map;
@@ -28,6 +32,19 @@ public class Game implements SignalReady {
         _cardPile = new CardStack(cards);
         _currentAttacker = players.get(0);
         _roller = roller;
+    }
+
+    public void addAutomatedPlayer(AutomatedPlayer ai){
+        _log.info("Adding automated player for " + ai.getPlayer());
+        _automatedPlayers.put(ai.getPlayer(),ai);
+    }
+
+    public AutomatedPlayer getAutomatedPlayer(Player player){
+        AutomatedPlayer ai = _automatedPlayers.get(player);
+        if( ai == null ){
+            _log.info("NO AI FOR " + player);
+        }
+        return ai;
     }
 
     public Roller getRoller(){
@@ -83,10 +100,13 @@ public class Game implements SignalReady {
     }
 
     public Player nextPlayer(){
+        _log.info("Next player called while player is " + _currentAttacker);
         int playerCount = _players.size();
         int currentPlayerIndex = _players.indexOf(_currentAttacker);
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        _log.info("next player index: " + nextPlayerIndex);
         _currentAttacker = _players.get(nextPlayerIndex);
+        _log.info("active player set to " + _currentAttacker);
         return _currentAttacker;
     }
 
@@ -247,7 +267,7 @@ public class Game implements SignalReady {
                 Player player = _occupations.getOccupier(country);
                 listener.mapChanged(country, player, newCount);
             } else {
-                System.out.println("WARNING NULL MAP LISTENER");
+                _log.warn("WARNING NULL MAP LISTENER");
             }
         }
     }

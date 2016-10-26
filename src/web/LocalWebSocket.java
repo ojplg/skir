@@ -1,6 +1,8 @@
 package web;
 
 import map.Country;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import state.MapEventListener;
 import state.Player;
@@ -9,6 +11,8 @@ import state.SignalReady;
 import java.io.IOException;
 
 public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener {
+
+    private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
     private static volatile int _counter = 0;
     private String _id;
@@ -56,14 +60,13 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
                 buf.append(armyCount);
                 buf.append("}");
 
-                System.out.println("Sending message " + buf.toString());
+                _log.info("Sending message " + buf.toString());
                 _connection.sendMessage(buf.toString());
             } else {
-                System.out.println("WARN SENDING ON CLOSED (or null) WEB SOCKET");
+                _log.warn("WARN SENDING ON CLOSED (or null) WEB SOCKET");
             }
         } catch (IOException ioe){
-            System.out.println("Troubles");
-            ioe.printStackTrace();
+            _log.error("Could not send a web socket message", ioe);
         }
 
     }
