@@ -4,6 +4,7 @@ import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.json.simple.JSONObject;
 import state.MapEventListener;
 import state.Player;
 import state.SignalReady;
@@ -51,23 +52,21 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, MapEventListener
     public void mapChanged(Country country, Player player, int armyCount) {
         try {
             if( _connection != null && _connection.isOpen()) {
-                StringBuilder buf = new StringBuilder();
-                buf.append("{\"country\":\"");
-                buf.append(country.getName());
-                buf.append("\",\"color\":\"");
-                buf.append(player.getColor());
-                buf.append("\",\"count\":");
-                buf.append(armyCount);
-                buf.append("}");
 
-                _log.info("Sending message " + buf.toString());
-                _connection.sendMessage(buf.toString());
+                JSONObject jObject = new JSONObject();
+                jObject.put("country", country.getName());
+                jObject.put("color", player.getColor());
+                jObject.put("count", armyCount);
+
+                String msg = jObject.toJSONString();
+
+                _log.info("Sending message " + msg);
+                _connection.sendMessage(msg);
             } else {
                 _log.warn("WARN SENDING ON CLOSED (or null) WEB SOCKET");
             }
         } catch (IOException ioe){
             _log.error("Could not send a web socket message", ioe);
         }
-
     }
 }
