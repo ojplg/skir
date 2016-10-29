@@ -22,7 +22,7 @@ public class Game implements SignalReady {
     private List<Player> _players = new ArrayList<Player>();
     private CardStack _cardPile;
     private Player _currentAttacker;
-    private List<MapEventListener> _mapEventListeners = new ArrayList<MapEventListener>();
+    private List<GameEventListener> _gameEventListeners = new ArrayList<GameEventListener>();
     private Roller _roller;
     private Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
 
@@ -52,23 +52,29 @@ public class Game implements SignalReady {
     }
 
     public void signal(String flag){
-        for(MapEventListener listener : _mapEventListeners){
+        for(GameEventListener listener : _gameEventListeners){
             if(listener.getId().equals(flag)){
                 for(Country country : _map.getAllCountries()){
                     Player player = _occupations.getOccupier(country);
                     int armyCount = _occupations.getOccupationForce(country);
                     listener.mapChanged(country, player, armyCount);
                 }
+                for(Player player : _players){
+                    int countryCount = numberCountriesOccupied(player);
+                    int armyCount = _occupations.totalOccupationForces(player);
+                    listener.playerChanged(player, armyCount, countryCount);
+                }
             }
         }
     }
 
-    public void addMapEventListener(MapEventListener listener){
-        _mapEventListeners.add(listener);
+    public void addMapEventListener(GameEventListener listener){
+        _gameEventListeners.add(listener);
     }
 
     public void doInitialPlacements(){
         for(Player player : _players) {
+            notifyListenersOfPlayerUpdate(player);
             int index = 0;
             List<Country> countries = _occupations.countriesOccupied(player);
             while (player.hasReserves()){
@@ -141,8 +147,12 @@ public class Game implements SignalReady {
         }
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
-        notifyListeners(attacker);
-        notifyListeners(defender);
+        notifyListenersOfMapUpdate(attacker);
+        notifyListenersOfMapUpdate(defender);
+        Player attackingPlayer = _occupations.getOccupier(attacker);
+        Player defendingPlayer = _occupations.getOccupier(defender);
+        notifyListenersOfPlayerUpdate(attackingPlayer);
+        notifyListenersOfPlayerUpdate(defendingPlayer);
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -159,8 +169,8 @@ public class Game implements SignalReady {
         _occupations.killArmies(conqueror, occupyingArmyCount);
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
-        notifyListeners(conqueror);
-        notifyListeners(vanquished);
+        notifyListenersOfMapUpdate(conqueror);
+        notifyListenersOfMapUpdate(vanquished);
         return countriesOccupied(defender).size() == 0;
     }
 
@@ -257,15 +267,29 @@ public class Game implements SignalReady {
     public void placeArmies(Player player, Country country, int count){
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
-        notifyListeners(country);
+        notifyListenersOfMapUpdate(country);
     }
 
-    private void notifyListeners(Country country){
-        for(MapEventListener listener : _mapEventListeners){
+    private void notifyListenersOfMapUpdate(Country country){
+        int newCount = _occupations.getOccupationForce(country);
+        Player player = _occupations.getOccupier(country);
+        for(GameEventListener listener : _gameEventListeners){
             if( listener != null) {
-                int newCount = _occupations.getOccupationForce(country);
-                Player player = _occupations.getOccupier(country);
                 listener.mapChanged(country, player, newCount);
+            } else {
+                _log.warn("WARNING NULL MAP LISTENER");
+            }
+        }
+    }
+
+    private void notifyListenersOfPlayerUpdate(Player player){
+        int countryCount = _occupations.countriesOccupied(player).size();
+        int armyCount = _occupations.totalOccupationForces(player);
+        armyCount += player.reserveCount();
+
+        for(GameEventListener listener : _gameEventListeners){
+            if( listener != null) {
+                listener.playerChanged(player, armyCount, countryCount);
             } else {
                 _log.warn("WARNING NULL MAP LISTENER");
             }
@@ -277,8 +301,8 @@ public class Game implements SignalReady {
         Player player = getOccupier(source);
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(player, destination, armies);
-        notifyListeners(source);
-        notifyListeners(destination);
+        notifyListenersOfMapUpdate(source);
+        notifyListenersOfMapUpdate(destination);
     }
 
     public Card drawCard() {

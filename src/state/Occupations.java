@@ -64,6 +64,15 @@ public class Occupations {
         return occupied;
     }
 
+    public int totalOccupationForces(Player player){
+        int total = 0;
+        for(Country country : countriesOccupied(player)){
+            total += getOccupationForce(country);
+        }
+        return total;
+    }
+
+
     public void placeArmy(Player player, Country country){
         placeArmies(player, country, 1);
     }

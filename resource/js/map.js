@@ -165,9 +165,4 @@ function occupied_text_color(player_color){
   return name_color;
 }
 
-var connection = new WebSocket('ws://localhost:8080');
-connection.onmessage = function(event){
-  console.log("from server:" + event.data);
-  var datum = JSON.parse(event.data);
-  update_country(datum.country, datum.color, datum.count);
-}
+

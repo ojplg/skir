@@ -4,9 +4,43 @@
     <meta charset="UTF-8">
     <title>Risk</title>
     <script src="js/map.js"></script>
+    <script src="js/connection.js"></script>
+    <script src="js/status.js"></script>
 </head>
 <body onload="draw_map()">
   <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
   </canvas>
+  <div>
+      <span style="color:#FFFFFF;background-color:#000000;width:16%;float:left;">
+          Black<br/>
+          Armies: <span id="black-armies"></span><br/>
+          Countries: <span id="black-countries"></span><br/>
+      </span>
+      <span style="color:#FFFFFF;background-color:#0000FF;width:16%;float:left;">
+          Blue<br/>
+          Armies: <span id="blue-armies"></span><br/>
+          Countries: <span id="blue-countries"></span><br/>
+      </span>
+      <span style="color:black;background-color:red;width:16%;float:left;">
+          Red<br/>
+          Armies: <span id="red-armies"></span><br/>
+          Countries: <span id="red-countries"></span><br/>
+      </span>
+      <span style="color:white;background-color:green;width:16%;float:left;">
+          Green<br/>
+          Armies: <span id="green-armies"></span><br/>
+          Countries: <span id="green-countries"></span><br/>
+      </span>
+      <span style="color:black;background-color:white;width:16%;float:left;">
+          White<br/>
+          Armies: <span id="white-armies"></span><br/>
+          Countries: <span id="white-countries"></span><br/>
+      </span>
+      <span style="color:black;background-color:pink;width:16%;float:left;">
+          Pink<br/>
+          Armies: <span id="pink-armies"></span><br/>
+          Countries: <span id="pink-countries"></span><br/>
+      </span>
+  </div>
 </body>
 </html>
