@@ -5,7 +5,17 @@ connection.onmessage = function(event){
   var datum = JSON.parse(event.data);
   if (datum.message_type == 'map_update'){
     update_country(datum.country, datum.color, datum.count);
-  } else if (datum.message_type = 'player_update'){
+  } else if (datum.message_type == 'player_update'){
     update_player_stats(datum.color, datum.armies, datum.countries);
+  } else if (datum.message_type == 'possible_order_types'){
+    console.log('ORDER TYPES ' + datum.order_types);
+    update_order_console(datum.color, datum.order_types);
+  } else {
+    console.log("BAD MESSAGE ON WEB SOCKET: " + event.data);
   }
+}
+
+function sendMessage(msg){
+    console.log("Sending to server " + msg);
+    connection.send(msg);
 }

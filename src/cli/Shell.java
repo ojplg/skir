@@ -4,6 +4,7 @@ import card.Card;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import play.GameRunner;
 import play.QuitException;
 import play.RandomRoller;
 import play.orders.*;
@@ -38,7 +39,6 @@ public class Shell {
             }
             return adjutant.chooseOrderType(_game);
         } else {
-            //        _log.info("Ended while loop after " + cnt + " iterations");
             if (adjutant.mustChooseOrderType()) {
                 String prompt = "The current attacker is " + adjutant.getActivePlayer();
                 return selectFromChoices(adjutant.allowableOrders(), prompt);
@@ -161,6 +161,7 @@ public class Shell {
         return newAdjutant;
     }
 
+    //public void handleAttack(String cou)
 
     private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();

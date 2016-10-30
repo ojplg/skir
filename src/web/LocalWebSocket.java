@@ -4,14 +4,21 @@ import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import play.orders.OrderType;
 import state.GameEventListener;
+import state.OrderEventListener;
 import state.Player;
 import state.SignalReady;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListener {
+public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListener, OrderEventListener {
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
@@ -19,8 +26,10 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     private String _id;
     private Connection _connection;
     private SignalReady _signalReady;
+    private ClientMessageReceiver _clientMessageReceiver;
 
-    public LocalWebSocket(SignalReady ready){
+    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver){
+        _clientMessageReceiver = clientMessageReceiver;
         _signalReady = ready;
         _counter++ ;
         _id = String.valueOf(_counter);
@@ -33,6 +42,13 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     @Override
     public void onMessage(String s) {
         _log.info("onMessage called local web socket " + s);
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jObject = (JSONObject) parser.parse(s);
+            _log.info("PARSED a message from the client " + jObject + " of type " + jObject.getClass());
+        } catch (ParseException pe){
+            _log.error("Could not parse json from client " + s, pe);
+        }
     }
 
     @Override
@@ -65,6 +81,27 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
         jObject.put("armies", armyCount);
         jObject.put("countries", countryCount);
         sendJson(jObject);
+    }
+
+    public void possibleOrders(Player player, List<OrderType> possibilities){
+        JSONObject jObject = new JSONObject();
+        jObject.put("message_type","possible_order_types");
+        jObject.put("color", player.getColor());
+        JSONArray array = new JSONArray();
+        for(String type : orderTypesToStrings(possibilities)){
+            array.add(type);
+        }
+        jObject.put("order_types", array);
+
+        sendJson(jObject);
+    }
+
+    private List<String> orderTypesToStrings(List<OrderType> types){
+        List<String> strings = new ArrayList<String>();
+        for(OrderType type : types){
+            strings.add(type.toString());
+        }
+        return strings;
     }
 
     private void sendJson(JSONObject jObject){

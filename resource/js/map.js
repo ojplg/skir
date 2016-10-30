@@ -117,7 +117,6 @@ function new_country(name, left, top, width, height, color, text_color){
   that.text_color = text_color;
   that.wire_name = function(){
     var simplified = that.name.replace("- ","");
-    console.log("Simplified " + that.name + " to " + simplified);
     return simplified;
   }
   return that;
@@ -131,7 +130,8 @@ function map_clicked(e){
        country.top + country.height >= e.offsetY &&
        country.left + country.width >= e.offsetX ){
        console.log('Clicked on ' + country.name);
-       connection.send('{\'country\':\'' + country.name + '\'}');
+       //connection.send('{\'country\':\'' + country.name + '\'}');
+       country_clicked(country.wire_name());
     }
   }
 }
@@ -165,4 +165,12 @@ function occupied_text_color(player_color){
   return name_color;
 }
 
-
+function country_clicked(country_name){
+    if(current_status == 'select-attack-country'){
+        set_attack_country(country_name);
+    } else if ( current_status == 'select-defense-country'){
+        set_defense_country(country_name);
+    } else {
+        console.log("Current Status is " + current_status + " ignoring click on " + country_name);
+    }
+}

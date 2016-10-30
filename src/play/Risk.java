@@ -26,7 +26,8 @@ public class Risk {
     private static final Logger _log = LogManager.getLogger(Risk.class);
 
     private Game _game;
-    private Roller _roller = new RandomRoller(1);
+    private GameRunner _gameRunner;
+    private final Roller _roller = new RandomRoller(1);
     private UseJetty _jettyServer;
 
     private int _numberPlayers = 6;
@@ -42,7 +43,7 @@ public class Risk {
         boolean randomize = true;
 
         risk.initializeGame(randomize);
-        risk._jettyServer = new UseJetty(8080, risk._game);
+        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -85,13 +86,14 @@ public class Risk {
         Shell shell = new Shell(_game);
 
         try {
-            Adjutant adjutant = new Adjutant(_game.currentAttacker(), _roller, null);
-            while(true) {
-                _log.info("Shell ticked to " + adjutant.getActivePlayer());
+            // TODO: this is all screwy and needs to be reversed
+            _gameRunner = new GameRunner(_game, shell);
+            Adjutant adjutant = _gameRunner.newAdjutant(_roller);
+            while(_gameRunner.isGameRunning()) {
                 OrderType ot = shell.next(adjutant);
-                _log.info("Next just called with " + adjutant.getActivePlayer());
+//                _log.info("Next just called with " + _gameRunner.currentPlayer());
                 adjutant = shell.handeOrderType(ot, adjutant);
-                _log.info("Adjutant is for " + adjutant.getActivePlayer());
+//                _log.info("Adjutant is for " + adjutant.getActivePlayer());
             }
 
         } catch (QuitException ex){

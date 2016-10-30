@@ -1,3 +1,9 @@
 * Cards need to be corrected (horse, cannon, infantry assignments)
 * Clean up artifacts on canvas
 * Allow UI control from web page
+
+* Decide on a capitalization style for the Javascript
+* Figure out how to make new buttons other objects from Javascript
+* Incorporate Jetlang for message passing
+* Calculate and display luck statistics
+* Calculate and display number of continents and cards

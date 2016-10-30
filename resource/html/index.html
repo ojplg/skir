@@ -10,6 +10,23 @@
 <body onload="draw_map()">
   <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
   </canvas>
+  <div id="order-console">
+    <p id="active-player-field"></p>
+      <div id="order-buttons-div">
+        <button id="Attack-Button" visible="false" onclick="attack_selected()">Attack</button>
+        <button id="EndAttacks-Button" visible="false"
+                  onclick="order_type_selected('EndAttacks')">EndAttacks</button>
+        <button id="AttackUntilVictoryOrDeath-Button" visible="false"
+                  onclick="order_type_selected('AttackUntilVictoryOrDeath')">AttackUntilVictoryOrDeath</button>
+      </div>
+      <div id="attack-panel-div" visible="false">
+          <p>Attacking from: <span id="attack-country-span"></span></p>
+          <p>Into: <span id="defense-country-span"></span></p>
+          <button onclick="doAttack('once')">Attack!</button>
+          <button onclick="doAttack('all-out')">All Out Attack!</button>
+      </div>
+      </div>
+  </div>
   <div>
       <span style="color:#FFFFFF;background-color:#000000;width:16%;float:left;">
           Black<br/>
