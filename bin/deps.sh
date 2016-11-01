@@ -17,6 +17,8 @@ JSON_URL=https://storage.googleapis.com/google-code-archive-downloads/v2/code.go
 JUNIT_URL=https://repo1.maven.org/maven2/junit/junit/$JUNIT_VERSION/$JUNIT_JAR
 HAMCREST_URL=https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$HAMCREST_VERSION/$HAMCREST_JAR
 
+JETLANG_URL=https://repo1.maven.org/maven2/org/jetlang/jetlang/$JETLANG_VERSION
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -67,13 +69,20 @@ function get_junit {
 	cp $HAMCREST_JAR $LIBS_DIR/
 }
 
+function get_jetlang {
+	echo "jetlang ..."
+	curl $JETLANG_URL/$JETLANG_JAR > $JETLANG_JAR
+        cp $JETLANG_JAR $LIBS_DIR/
+}
+
 echo "Downloading dependencies ..."
 
 clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
-get_log4j
-get_jetty
-get_json
-get_junit
+#get_log4j
+#get_jetty
+#get_json
+#get_junit
+get_jetlang
 
