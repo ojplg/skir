@@ -1,31 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+
+source jars.sh
 
 echo "Starting ... "
 
-PROJECT_HOME=../
-
-JETTY_VERSION=7.6.21.v20160908
-
-DEPS_DIR=~/JavaLibs
-
-JETTY_DIR=$DEPS_DIR/jetty-distribution-$JETTY_VERSION/lib
-JETTY_DEPS=$JETTY_DIR/jetty-http-$JETTY_VERSION.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/jetty-server-$JETTY_VERSION.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/jetty-util-$JETTY_VERSION.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/servlet-api-2.5.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/jetty-io-$JETTY_VERSION.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/jetty-continuation-$JETTY_VERSION.jar
-JETTY_DEPS=$JETTY_DEPS:$JETTY_DIR/jetty-websocket-$JETTY_VERSION.jar
-
-LOG4J_DIR=$DEPS_DIR/apache-log4j-2.7-bin
-LOG4J_DEPS=$LOG4J_DIR/log4j-api-2.7.jar
-LOG4J_DEPS=$LOG4J_DEPS:$LOG4J_DIR/log4j-core-2.7.jar
-
-JSON_JAR=$DEPS_DIR/json-simple-1.1.1.jar
-
-DEPS=$JETTY_DEPS:$LOG4J_DEPS:$JSON_JAR
-
-CLASS_PATH=$PROJECT_HOME/out/production/risk:$DEPS
+CLASS_PATH=$PROJECT_HOME_DIR/out/production/risk:$LIB_PATH
 
 echo $CLASS_PATH
 

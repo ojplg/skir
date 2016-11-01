@@ -3,3 +3,5 @@ out/
 # do not keep the idea library cache under control
 .idea/libraries
 .idea/workspace.xml
+.tmp_download_dir/
+lib/
