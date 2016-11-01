@@ -1,1 +1,6 @@
-This file was created by IntelliJ IDEA 11.1.1 for binding GitHub repository
+A game.
+
+There are some scripts.
+1. Run the bin/deps.sh to download the dependencies
+2. Run the bin/build.sh to build the project
+3. Run the bin/start.sh to start the program
