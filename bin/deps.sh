@@ -14,6 +14,9 @@ LOG4J_URL=http://apache.cs.utah.edu/logging/log4j/$LOG4J_VERSION/$LOG4J_TARBALL
 
 JSON_URL=https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple
 
+JUNIT_URL=https://repo1.maven.org/maven2/junit/junit/$JUNIT_VERSION/$JUNIT_JAR
+HAMCREST_URL=https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$HAMCREST_VERSION/$HAMCREST_JAR
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -56,12 +59,21 @@ function get_json {
 	cp $JSON_JAR $LIBS_DIR/
 }
 
+function get_junit {
+	echo "junit ..."
+	curl $JUNIT_URL > $JUNIT_JAR
+	cp $JUNIT_JAR $LIBS_DIR/
+	curl $HAMCREST_URL > $HAMCREST_JAR
+	cp $HAMCREST_JAR $LIBS_DIR/
+}
+
 echo "Downloading dependencies ..."
 
 clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
-get_log4j
-get_jetty
-get_json
+#get_log4j
+#get_jetty
+#get_json
+get_junit
 
