@@ -72,8 +72,8 @@ echo "Downloading dependencies ..."
 clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
-#get_log4j
-#get_jetty
-#get_json
+get_log4j
+get_jetty
+get_json
 get_junit
 
