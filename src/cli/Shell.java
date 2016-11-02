@@ -4,17 +4,24 @@ import card.Card;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import play.GameRunner;
 import play.QuitException;
-import play.RandomRoller;
-import play.orders.*;
+import play.orders.Adjutant;
+import play.orders.Attack;
+import play.orders.AttackUntilVictoryOrDeath;
+import play.orders.ClaimArmies;
+import play.orders.DrawCard;
+import play.orders.EndAttacks;
+import play.orders.ExchangeCardSet;
+import play.orders.Fortify;
+import play.orders.Occupy;
+import play.orders.OrderType;
+import play.orders.PlaceArmy;
 import state.Game;
 import state.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +42,7 @@ public class Shell {
         if(adjutant.isAutomatedPlayer()){
             try {
                 Thread.sleep(5);
-            } catch(InterruptedException ie) {
+            } catch(InterruptedException ignored) {
             }
             return adjutant.chooseOrderType(_game);
         } else {
@@ -198,9 +205,12 @@ public class Shell {
         if( possibilities.size() == 1 ){
             return possibilities.get(0);
         } else {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             for(int index = 0; index < possibilities.size(); index++ ){
-                buf.append(" " + (index + 1) + " " + possibilities.get(index));
+                buf.append(" ");
+                buf.append(index + 1);
+                buf.append(" ");
+                buf.append(possibilities.get(index));
                 buf.append("\n");
             }
             int selection = readNumberInput(buf.toString() + prompt,1,possibilities.size());
