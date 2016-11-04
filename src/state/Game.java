@@ -9,15 +9,14 @@ import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.channels.Channel;
-import org.jetlang.channels.Subscribable;
 import org.jetlang.core.Callback;
-import org.jetlang.core.DisposingExecutor;
 import org.jetlang.fibers.ThreadFiber;
 import play.Channels;
 import play.Roller;
 import play.Rolls;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
+import state.event.PlayerChangedEvent;
 
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -38,6 +37,7 @@ public class Game implements SignalReady {
     private Roller _roller;
     private Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
     private Channel<MapChangedEvent> _mapChangedEventChannel;
+    private Channel<PlayerChangedEvent> _playerChangedEventChannel;
 
     private ThreadFiber fiber = new ThreadFiber();
 
@@ -49,6 +49,7 @@ public class Game implements SignalReady {
         _roller = roller;
         fiber.start();
         _mapChangedEventChannel = channels.MapChangedEventChannel;
+        _playerChangedEventChannel = channels.PlayerChangedEventChannel;
         channels.ClientConnectedEventChannel.subscribe(
                 fiber,
                 new Callback<ClientConnectedEvent>() {
@@ -83,6 +84,13 @@ public class Game implements SignalReady {
             int armyCount = _occupations.getOccupationForce(country);
             _mapChangedEventChannel.publish(
                     new MapChangedEvent(country, player, armyCount)
+            );
+        }
+        for(Player player : _players){
+            int countryCount = numberCountriesOccupied(player);
+            int armyCount = _occupations.totalOccupationForces(player);
+            _playerChangedEventChannel.publish(
+                    new PlayerChangedEvent(player, countryCount, armyCount)
             );
         }
     }

@@ -19,6 +19,7 @@ import state.Player;
 import state.SignalReady;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
+import state.event.PlayerChangedEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,12 +51,18 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
                 new Callback<MapChangedEvent>() {
                     @Override
                     public void onMessage(MapChangedEvent mapChangedEvent) {
-                        onMapChangedEvent(mapChangedEvent);
+                        sendJson(mapChangedEvent.toJson());
                     }
                 }
         );
-
-
+        channels.PlayerChangedEventChannel.subscribe(fiber,
+                new Callback<PlayerChangedEvent>() {
+                    @Override
+                    public void onMessage(PlayerChangedEvent playerChangedEvent) {
+                        sendJson(playerChangedEvent.toJson());
+                    }
+                }
+        );
     }
 
     public String getId(){
@@ -84,11 +91,6 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     @Override
     public void onClose(int i, String s) {
         _log.info("onClose called on LocalWebSocket " + s);
-    }
-
-    private void onMapChangedEvent(MapChangedEvent event){
-        _log.info("Map changed heard over retlang");
-        sendJson(event.toJson());
     }
 
     @Override

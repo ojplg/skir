@@ -6,6 +6,7 @@ function get_current_status(){
 }
 
 function update_player_stats(color, armies, countries){
+    console.log("Updating player " + color);
     armiesSpan = document.getElementById(color + "-armies");
     armiesSpan.textContent = armies;
     countriesSpan = document.getElementById(color+ "-countries");
@@ -81,7 +82,7 @@ function doAttack(all_out_flag){
       '"client-color":"' + color + '",' +
       '"attack-country":"' + attackCountry + '",' +
       '"defense-country":"' + defenseCountry + '",' +
-      '"all-out-flag":"' + all_out_flag + ''"}';
+      '"all-out-flag":"' + all_out_flag + '"}';
 
     sendMessage(msg);
 }
