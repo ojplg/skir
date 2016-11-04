@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
+import play.Channels;
 import play.GameRunner;
 import state.Game;
 import state.OrderBroadcasterLocator;
@@ -22,11 +23,13 @@ public class UseJetty {
     private final Game _game;
     private final MessageHandler _messageHandler;
     private Server _server;
+    private Channels _channels;
 
-    public UseJetty(int httpPort, Game game, GameRunner gameRunner){
+    public UseJetty(int httpPort, Game game, GameRunner gameRunner, Channels channels){
         _httpPort = httpPort;
         _game = game;
         _messageHandler = new MessageHandler(gameRunner);
+        _channels = channels;
     }
 
     public void StartJettyServer(CountDownLatch latch) throws Exception {
@@ -41,7 +44,7 @@ public class UseJetty {
             @Override
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
                 System.out.println("doWebSocket called " + s);
-                LocalWebSocket webSocket = new LocalWebSocket(_game, _messageHandler);
+                LocalWebSocket webSocket = new LocalWebSocket(_game, _messageHandler, _channels);
                 _game.addMapEventListener(webSocket);
                 OrderBroadcasterLocator.BROADCASTER.addListener(webSocket);
                 return webSocket;

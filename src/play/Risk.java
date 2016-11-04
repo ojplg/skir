@@ -40,10 +40,12 @@ public class Risk {
         _log.info("Starting");
 
         final Risk risk = new Risk();
+        final Channels channels = new Channels();
+
         boolean randomize = true;
 
-        risk.initializeGame(randomize);
-        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner);
+        risk.initializeGame(randomize, channels);
+        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner, channels);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -106,7 +108,7 @@ public class Risk {
 
     }
 
-    private void initializeGame(boolean randomize) {
+    private void initializeGame(boolean randomize, Channels channels) {
         List<Player> players = new ArrayList<Player>();
         int initialArmies = initialArmyCount(_numberPlayers);
         for (int idx = 0; idx < _numberPlayers; idx++) {
@@ -123,7 +125,7 @@ public class Risk {
             roller = new RandomRoller(1);
         }
 
-        _game = new Game(map, players, StandardCardSet.deck, roller);
+        _game = new Game(map, players, StandardCardSet.deck, roller, channels);
         for (int idx = 1; idx < _numberPlayers; idx++) {
             Player player = players.get(idx);
             AutomatedPlayer ai = new NeverAttacks(player);

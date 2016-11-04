@@ -4,15 +4,21 @@ import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
+import org.jetlang.channels.Channel;
+import org.jetlang.core.Callback;
+import org.jetlang.fibers.ThreadFiber;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import play.Channels;
 import play.orders.OrderType;
 import state.GameEventListener;
 import state.OrderEventListener;
 import state.Player;
 import state.SignalReady;
+import state.event.ClientConnectedEvent;
+import state.event.MapChangedEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,12 +33,29 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     private Connection _connection;
     private SignalReady _signalReady;
     private ClientMessageReceiver _clientMessageReceiver;
+    private final ThreadFiber fiber = new ThreadFiber();
 
-    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver){
+    private final Channel<ClientConnectedEvent> _clientConnectedEventChannel;
+
+    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver, Channels channels){
         _clientMessageReceiver = clientMessageReceiver;
         _signalReady = ready;
         _counter++ ;
         _id = String.valueOf(_counter);
+
+        _clientConnectedEventChannel = channels.ClientConnectedEventChannel;
+
+        fiber.start();
+        channels.MapChangedEventChannel.subscribe(fiber,
+                new Callback<MapChangedEvent>() {
+                    @Override
+                    public void onMessage(MapChangedEvent mapChangedEvent) {
+                        onMapChangedEvent(mapChangedEvent);
+                    }
+                }
+        );
+
+
     }
 
     public String getId(){
@@ -55,13 +78,17 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     public void onOpen(Connection connection) {
         _log.info("onOpen called on LocalWebSocket");
         _connection = connection;
-        // must signal here that connection was created, so that countries can be painted!
-        _signalReady.signal(_id);
+        _clientConnectedEventChannel.publish(new ClientConnectedEvent(_id));
     }
 
     @Override
     public void onClose(int i, String s) {
         _log.info("onClose called on LocalWebSocket " + s);
+    }
+
+    private void onMapChangedEvent(MapChangedEvent event){
+        _log.info("Map changed heard over retlang");
+        sendJson(event.toJson());
     }
 
     @Override
@@ -71,7 +98,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
         jObject.put("country", country.getName());
         jObject.put("color", player.getColor());
         jObject.put("count", armyCount);
-        sendJson(jObject);
+        //sendJson(jObject);
     }
 
     public void playerChanged(Player player, int armyCount, int countryCount){

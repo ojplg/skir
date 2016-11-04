@@ -8,10 +8,22 @@ import map.Country;
 import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetlang.channels.Channel;
+import org.jetlang.channels.Subscribable;
+import org.jetlang.core.Callback;
+import org.jetlang.core.DisposingExecutor;
+import org.jetlang.fibers.ThreadFiber;
+import play.Channels;
 import play.Roller;
 import play.Rolls;
+import state.event.ClientConnectedEvent;
+import state.event.MapChangedEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Game implements SignalReady {
 
@@ -25,13 +37,27 @@ public class Game implements SignalReady {
     private List<GameEventListener> _gameEventListeners = new ArrayList<GameEventListener>();
     private Roller _roller;
     private Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
+    private Channel<MapChangedEvent> _mapChangedEventChannel;
 
-    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller){
+    private ThreadFiber fiber = new ThreadFiber();
+
+    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _currentAttacker = players.get(0);
         _roller = roller;
+        fiber.start();
+        _mapChangedEventChannel = channels.MapChangedEventChannel;
+        channels.ClientConnectedEventChannel.subscribe(
+                fiber,
+                new Callback<ClientConnectedEvent>() {
+                    @Override
+                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
+                        refreshMap();
+                    }
+                }
+        );
     }
 
     public void addAutomatedPlayer(AutomatedPlayer ai){
@@ -49,6 +75,16 @@ public class Game implements SignalReady {
 
     public Roller getRoller(){
         return _roller;
+    }
+
+    private void refreshMap(){
+        for(Country country : _map.getAllCountries()){
+            Player player = _occupations.getOccupier(country);
+            int armyCount = _occupations.getOccupationForce(country);
+            _mapChangedEventChannel.publish(
+                    new MapChangedEvent(country, player, armyCount)
+            );
+        }
     }
 
     public void signal(String flag){
@@ -273,6 +309,10 @@ public class Game implements SignalReady {
     private void notifyListenersOfMapUpdate(Country country){
         int newCount = _occupations.getOccupationForce(country);
         Player player = _occupations.getOccupier(country);
+
+        MapChangedEvent event = new MapChangedEvent(country, player, newCount);
+        _mapChangedEventChannel.publish(event);
+
         for(GameEventListener listener : _gameEventListeners){
             if( listener != null) {
                 listener.mapChanged(country, player, newCount);
