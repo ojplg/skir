@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import play.Channels;
+import play.orders.Adjutant;
 import play.orders.OrderType;
 import state.Player;
 import state.event.ClientConnectedEvent;
@@ -53,6 +54,15 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
                     }
                 }
         );
+
+        channels.AdjutantChannel.subscribe(fiber,
+                new Callback<Adjutant>() {
+                    @Override
+                    public void onMessage(Adjutant adjutant) {
+                        handleNewAdjutant(adjutant);
+                    }
+                }
+        );
     }
 
     @Override
@@ -79,12 +89,13 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
         _log.info("onClose called on LocalWebSocket " + s);
     }
 
-    public void possibleOrders(Player player, List<OrderType> possibilities){
+
+    private void handleNewAdjutant(Adjutant adjutant){
         JSONObject jObject = new JSONObject();
         jObject.put("message_type","possible_order_types");
-        jObject.put("color", player.getColor());
+        jObject.put("color", adjutant.getActivePlayer().getColor());
         JSONArray array = new JSONArray();
-        for(String type : orderTypesToStrings(possibilities)){
+        for(String type : orderTypesToStrings(adjutant.allowableOrders())){
             array.add(type);
         }
         jObject.put("order_types", array);
