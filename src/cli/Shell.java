@@ -4,6 +4,9 @@ import card.Card;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetlang.core.Callback;
+import org.jetlang.fibers.Fiber;
+import play.Channels;
 import play.QuitException;
 import play.orders.Adjutant;
 import play.orders.Attack;
@@ -31,21 +34,37 @@ public class Shell {
     private final static Logger _log = LogManager.getLogger(Shell.class);
 
     private final Game _game;
+    private final Fiber _fiber;
+    private final Channels _channels;
 
-    public Shell(Game game){
+    public Shell(Game game, Channels channels, Fiber fiber){
         _game = game;
+        _fiber = fiber;
+        _channels = channels;
+
+        _channels.AdjutantChannel.subscribe(_fiber,
+                new Callback<Adjutant>() {
+                    @Override
+                    public void onMessage(Adjutant adjutant) {
+                        handleAdjutantUpdate(adjutant);
+                    }
+                }
+        );
     }
 
+    private void handleAdjutantUpdate(Adjutant adjutant){
+        try {
+            OrderType ot = next(adjutant);
+            handeOrderType(ot, adjutant);
+        } catch (Exception ex){
+            _log.error("Adjutant update exception", ex);
+        }
+    }
+
+
     public OrderType next(Adjutant adjutant) throws QuitException, IOException {
-        _log.info("next called with adjutant for " + adjutant.getActivePlayer() +
-                " who is automated? " + adjutant.isAutomatedPlayer());
-        if(adjutant.isAutomatedPlayer()){
-            try {
-                Thread.sleep(5);
-            } catch(InterruptedException ignored) {
-            }
-            return adjutant.chooseOrderType(_game);
-        } else {
+        _log.info("next called with adjutant for " + adjutant.getActivePlayer());
+
             if (adjutant.mustChooseOrderType()) {
                 String prompt = "The current attacker is " + adjutant.getActivePlayer();
                 return selectFromChoices(adjutant.allowableOrders(), prompt);
@@ -55,52 +74,41 @@ public class Shell {
                 _log.info("Adjutant thinks current player is " + adjutant.getActivePlayer());
                 return ot;
             }
-        }
+
     }
 
-    public Adjutant handeOrderType(OrderType orderType, Adjutant adjutant)  throws IOException, QuitException {
-        if( adjutant.isAutomatedPlayer()){
-            return adjutant.executeAutomatedOrder(orderType, _game);
-        } else {
+    public void handeOrderType(OrderType orderType, Adjutant adjutant)  throws IOException, QuitException {
 
             if (orderType == OrderType.ClaimArmies) {
-                _log.info("About to claim armies for " + adjutant.getActivePlayer());
-                ClaimArmies order = new ClaimArmies(adjutant);
-                Adjutant newAdjutant = order.execute(_game);
-                _log.info("New adjutant is for " + newAdjutant.getActivePlayer());
-                return newAdjutant;
-            }
-            if (orderType == OrderType.PlaceArmy) {
-                return handlePlaceArmies(adjutant);
-            }
-            if (orderType == OrderType.Attack) {
-                return handleAttack(adjutant);
-            }
-            if (orderType == OrderType.AttackUntilVictoryOrDeath) {
-                return handleCommittedAttack(adjutant);
-            }
-            if (orderType == OrderType.EndAttacks) {
-                return handleEndAttacks(adjutant);
-            }
-            if (orderType == OrderType.Occupy) {
-                return handleOccupy(adjutant);
-            }
-            if (orderType == OrderType.DrawCard) {
-                return handleDrawCard(adjutant);
-            }
-            if (orderType == OrderType.Fortify) {
-                return handleFortify(adjutant);
-            }
-            if( orderType == OrderType.ExchangeCardSet){
-                return handleExchangeCardSet(adjutant);
+                handClaimArmies(adjutant);
+            } else if (orderType == OrderType.PlaceArmy) {
+                handlePlaceArmies(adjutant);
+            } else if (orderType == OrderType.Attack) {
+                handleAttack(adjutant);
+            } else if (orderType == OrderType.AttackUntilVictoryOrDeath) {
+                handleCommittedAttack(adjutant);
+            } else if (orderType == OrderType.EndAttacks) {
+                handleEndAttacks(adjutant);
+            } else if (orderType == OrderType.Occupy) {
+                handleOccupy(adjutant);
+            } else if (orderType == OrderType.DrawCard) {
+                handleDrawCard(adjutant);
+            } else if (orderType == OrderType.Fortify) {
+                handleFortify(adjutant);
+            } else if( orderType == OrderType.ExchangeCardSet){
+                handleExchangeCardSet(adjutant);
+            } else {
+                message("Cannot handle order type " + orderType);
             }
 
-            message("Cannot handle order type " + orderType);
-            return null;
-        }
     }
 
-    private Adjutant handleExchangeCardSet(Adjutant adjutant) throws IOException, QuitException {
+    private void handClaimArmies(Adjutant adjutant){
+        ClaimArmies order = new ClaimArmies(adjutant);
+        _channels.OrderEnteredChannel.publish(order);
+    }
+
+    private void handleExchangeCardSet(Adjutant adjutant) throws IOException, QuitException {
         List<Card> cards = new ArrayList<Card>(adjutant.getActivePlayer().getCards());
         Card cardOne = selectFromChoices(cards, "Pick a card");
         cards.remove(cardOne);
@@ -109,10 +117,10 @@ public class Shell {
         Card cardThree = selectFromChoices(cards, "Pick a card");
 
         ExchangeCardSet exchangeCardSet = new ExchangeCardSet(adjutant, cardOne, cardTwo, cardThree);
-        return exchangeCardSet.execute(_game);
+        _channels.OrderEnteredChannel.publish(exchangeCardSet);
     }
 
-    private Adjutant handleFortify(Adjutant adjutant) throws IOException, QuitException {
+    private void handleFortify(Adjutant adjutant) throws IOException, QuitException {
         // TODO: Allow player to skip fortifications
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.possibleFortificationCountries(currentPlayer);
@@ -121,21 +129,21 @@ public class Shell {
         countries = _game.allies(from);
         Country to = selectFromChoices(countries, "Fortify to");
         int numberArmies = readNumberInput("Number armies to move" ,1,(_game.getOccupationForce(from) - 1));
-        Fortify order = new Fortify(adjutant, from, to, numberArmies);
-        return order.execute(_game);
+        Fortify fortify = new Fortify(adjutant, from, to, numberArmies);
+        _channels.OrderEnteredChannel.publish(fortify);
     }
 
-    private Adjutant handleDrawCard(Adjutant adjutant){
+    private void handleDrawCard(Adjutant adjutant){
         DrawCard drawcard = new DrawCard(adjutant);
-        return drawcard.execute(_game);
+        _channels.OrderEnteredChannel.publish(drawcard);
     }
 
-    private Adjutant handleEndAttacks(Adjutant adjutant){
+    private void handleEndAttacks(Adjutant adjutant){
         EndAttacks endAttacks = new EndAttacks(adjutant);
-        return endAttacks.execute(_game);
+        _channels.OrderEnteredChannel.publish(endAttacks);
     }
 
-    private Adjutant handleOccupy(Adjutant adjutant) throws IOException, QuitException {
+    private void handleOccupy(Adjutant adjutant) throws IOException, QuitException {
         Attack successfulAttack = adjutant.getSuccessfulAttack();
 
         int dieCount = successfulAttack.getAttackersDiceCount();
@@ -148,10 +156,10 @@ public class Shell {
         }
         Occupy occupy = new Occupy(adjutant, successfulAttack.getInvader(), successfulAttack.getTarget(),
                 numberToMove);
-        return occupy.execute(_game);
+        _channels.OrderEnteredChannel.publish(occupy);
     }
 
-    private Adjutant handleCommittedAttack(Adjutant adjutant) throws IOException, QuitException {
+    private void handleCommittedAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
         Collections.sort(countries);
@@ -162,15 +170,10 @@ public class Shell {
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
         AttackUntilVictoryOrDeath attack = new AttackUntilVictoryOrDeath(adjutant, invader, target, _game.getRoller());
-        Adjutant newAdjutant =  attack.execute(_game);
-        message("New counts are " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
-                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
-        return newAdjutant;
+        _channels.OrderEnteredChannel.publish(attack);
     }
 
-    //public void handleAttack(String cou)
-
-    private Adjutant handleAttack(Adjutant adjutant) throws IOException, QuitException {
+    private void handleAttack(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();
         List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
         Collections.sort(countries);
@@ -182,13 +185,10 @@ public class Shell {
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
         Attack attack = new Attack(adjutant, _game.getRoller(), invader, target, numberDice);
-        Adjutant newAdjutant =  attack.execute(_game);
-        message("New counts are " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
-                + target.getName() + " (" + _game.getOccupationForce(target) + ")");
-        return newAdjutant;
+        _channels.OrderEnteredChannel.publish(attack);
     }
 
-    private Adjutant handlePlaceArmies(Adjutant adjutant) throws IOException, QuitException {
+    private void handlePlaceArmies(Adjutant adjutant) throws IOException, QuitException {
         Player currentPlayer = _game.currentAttacker();
         int reserveArmies = currentPlayer.reserveCount();
         String prompt = "Player " + currentPlayer.getColor() + " has " + reserveArmies + " to place.\n" +
@@ -198,7 +198,7 @@ public class Shell {
         Collections.sort(ownedCountries);
         Country country = selectFromChoices(ownedCountries, prompt);
         PlaceArmy placeArmy = new PlaceArmy(adjutant, country, numberToPlace);
-        return placeArmy.execute(_game);
+        _channels.OrderEnteredChannel.publish(placeArmy);
     }
 
     private <T> T selectFromChoices(List<T> possibilities, String prompt) throws IOException, QuitException {

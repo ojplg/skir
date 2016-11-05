@@ -20,9 +20,7 @@ import state.event.PlayerChangedEvent;
 
 import java.util.ArrayList;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Game implements SignalReady {
 
@@ -35,7 +33,6 @@ public class Game implements SignalReady {
     private Player _currentAttacker;
     private List<GameEventListener> _gameEventListeners = new ArrayList<GameEventListener>();
     private Roller _roller;
-    private Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
     private Channel<MapChangedEvent> _mapChangedEventChannel;
     private Channel<PlayerChangedEvent> _playerChangedEventChannel;
 
@@ -59,19 +56,6 @@ public class Game implements SignalReady {
                     }
                 }
         );
-    }
-
-    public void addAutomatedPlayer(AutomatedPlayer ai){
-        _log.info("Adding automated player for " + ai.getPlayer());
-        _automatedPlayers.put(ai.getPlayer(),ai);
-    }
-
-    public AutomatedPlayer getAutomatedPlayer(Player player){
-        AutomatedPlayer ai = _automatedPlayers.get(player);
-        if( ai == null ){
-            _log.info("NO AI FOR " + player);
-        }
-        return ai;
     }
 
     public Roller getRoller(){

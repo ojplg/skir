@@ -18,7 +18,7 @@ public class DrawCard extends Order {
             activePlayer().addCard(game.drawCard());
         }
         Player nextPlayer = game.nextPlayer();
-        return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
+        return new Adjutant(nextPlayer, game.getRoller());
     }
 
     @Override

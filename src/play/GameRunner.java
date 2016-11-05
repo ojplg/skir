@@ -1,32 +1,70 @@
 package play;
 
-import cli.Shell;
+import ai.AutomatedPlayer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetlang.core.Callback;
+import org.jetlang.fibers.Fiber;
 import play.orders.Adjutant;
+import play.orders.Order;
+import play.orders.OrderType;
 import state.Game;
+import state.Player;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameRunner {
 
+    private final static Logger _log = LogManager.getLogger(GameRunner.class);
+
+    private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
     private final Game _game;
-    private boolean _gameRunning = true;
-    private Shell _shell;
+    private final Channels _channels;
+    private final Fiber _fiber;
 
-    public GameRunner(Game game, Shell shell){
+    public GameRunner(Game game, Channels channels, Fiber fiber){
         _game = game;
-        _shell = shell;
+        _channels = channels;
+        _fiber = fiber;
+
+        _channels.OrderEnteredChannel.subscribe(_fiber,
+                new Callback<Order>() {
+                    @Override
+                    public void onMessage(Order order) {
+                        processOrder(order);
+                    }
+                });
     }
 
-    public Adjutant newAdjutant(Roller roller){
-        return new Adjutant(_game.currentAttacker(), roller, null);
+    private void processOrder(Order order){
+        Adjutant adjutant = order.execute(_game);
+        AutomatedPlayer ai = getAutomatedPlayer(adjutant.getActivePlayer());
+        if( ai != null){
+            OrderType ot = ai.pickOrderType(adjutant.allowableOrders(), _game);
+            Order generatedOrder = ai.generateOrder(ot, adjutant, _game);
+            processOrder(generatedOrder);
+        } else {
+            _channels.AdjutantChannel.publish(adjutant);
+        }
     }
 
-    public boolean isGameRunning(){
-        return _gameRunning;
+    public void startGame(Roller roller){
+        Adjutant adjutant = new Adjutant(_game.currentAttacker(), roller);
+        adjutant.setAllowableOrders(OrderType.ClaimArmies);
+        _channels.AdjutantChannel.publish(adjutant);
+    }
+    public void addAutomatedPlayer(AutomatedPlayer ai){
+        _log.info("Adding automated player for " + ai.getPlayer());
+        _automatedPlayers.put(ai.getPlayer(),ai);
     }
 
-    public void doAttack(String color, String attackingCountry, String defendingCountry){
-
-
+    public AutomatedPlayer getAutomatedPlayer(Player player){
+        AutomatedPlayer ai = _automatedPlayers.get(player);
+        if( ai == null ){
+            _log.info("NO AI FOR " + player);
+        }
+        return ai;
     }
 
-    public void doAllOutAttack(String color, String attackingCountry, String defendingCountry){}
 }

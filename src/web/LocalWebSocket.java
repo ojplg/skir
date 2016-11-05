@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.jetlang.channels.Channel;
 import org.jetlang.core.Callback;
+import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,11 +35,10 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     private Connection _connection;
     private SignalReady _signalReady;
     private ClientMessageReceiver _clientMessageReceiver;
-    private final ThreadFiber fiber = new ThreadFiber();
 
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel;
 
-    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver, Channels channels){
+    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver, Channels channels, Fiber fiber){
         _clientMessageReceiver = clientMessageReceiver;
         _signalReady = ready;
         _counter++ ;
@@ -46,7 +46,6 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
 
         _clientConnectedEventChannel = channels.ClientConnectedEventChannel;
 
-        fiber.start();
         channels.MapChangedEventChannel.subscribe(fiber,
                 new Callback<MapChangedEvent>() {
                     @Override

@@ -1,6 +1,7 @@
 package ai;
 
 import play.orders.Adjutant;
+import play.orders.Order;
 import play.orders.OrderType;
 import state.Game;
 import state.Player;
@@ -8,7 +9,7 @@ import state.Player;
 import java.util.List;
 
 public interface AutomatedPlayer {
-    OrderType pickOrder(List<OrderType> possibleOrderTypes, Game game);
-    Adjutant executeOrder(OrderType orderType, Adjutant adjutant, Game game);
+    OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game);
+    Order generateOrder(OrderType orderType, Adjutant adjutant, Game game);
     Player getPlayer();
 }

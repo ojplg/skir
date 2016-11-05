@@ -12,7 +12,7 @@ public class EndTurn extends Order {
     @Override
     public Adjutant execute(Game game) {
         Player nextPlayer = game.nextPlayer();
-        return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
+        return new Adjutant(nextPlayer, game.getRoller());
     }
 
     @Override

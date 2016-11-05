@@ -9,10 +9,13 @@ import map.StandardMap;
 import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetlang.core.RunnableExecutorImpl;
+import org.jetlang.fibers.ThreadFiber;
 import play.orders.Adjutant;
 import play.orders.OrderType;
 import state.Game;
 import state.Player;
+import sun.util.resources.ro.CalendarData_ro;
 import web.UseJetty;
 
 import java.io.IOException;
@@ -29,6 +32,7 @@ public class Risk {
     private GameRunner _gameRunner;
     private final Roller _roller = new RandomRoller(1);
     private UseJetty _jettyServer;
+    private Shell _shell;
 
     private int _numberPlayers = 6;
     private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
@@ -36,7 +40,6 @@ public class Risk {
     private final CountDownLatch _latch = new CountDownLatch(1);
 
     public static void main(String[] args) {
-
         _log.info("Starting");
 
         final Risk risk = new Risk();
@@ -45,7 +48,9 @@ public class Risk {
         boolean randomize = true;
 
         risk.initializeGame(randomize, channels);
-        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner, channels);
+
+        ThreadFiber webFiber = new ThreadFiber(new RunnableExecutorImpl(), "WebFiber", true);
+        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner, channels, webFiber);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -55,6 +60,7 @@ public class Risk {
         },"WebThread");
 
         webThread.start();
+        webFiber.start();
 
         try {
             risk._latch.await();
@@ -64,13 +70,21 @@ public class Risk {
 
         risk.startGame(randomize);
 
-        Thread shellThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                risk.runShell();
-            }
-        },"ShellThread");
-        shellThread.start();
+        ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
+        risk._gameRunner = new GameRunner(risk._game, channels, gameRunnerFiber);
+        for (int idx = 1; idx < risk._numberPlayers; idx++) {
+            Player player = risk._game.getAllPlayers().get(idx);
+            AutomatedPlayer ai = new NeverAttacks(player);
+            risk._gameRunner.addAutomatedPlayer(ai);
+        }
+
+        gameRunnerFiber.start();
+
+        ThreadFiber shellFiber = new ThreadFiber(new RunnableExecutorImpl(), "ShellFiber", true);
+        risk._shell = new Shell(risk._game, channels, shellFiber);
+        shellFiber.start();
+
+        risk._gameRunner.startGame(risk._roller);
     }
 
     private void runWebServer(){
@@ -83,30 +97,27 @@ public class Risk {
         }
     }
 
-
-    private void runShell(){
-        Shell shell = new Shell(_game);
-
-        try {
-            // TODO: this is all screwy and needs to be reversed
-            _gameRunner = new GameRunner(_game, shell);
-            Adjutant adjutant = _gameRunner.newAdjutant(_roller);
-            while(_gameRunner.isGameRunning()) {
-                OrderType ot = shell.next(adjutant);
-//                _log.info("Next just called with " + _gameRunner.currentPlayer());
-                adjutant = shell.handeOrderType(ot, adjutant);
-//                _log.info("Adjutant is for " + adjutant.getActivePlayer());
-            }
-
-        } catch (QuitException ex){
-            _log.info("Quitting");
-            _jettyServer.stop();
-            return;
-        } catch (IOException ex){
-            _log.error("IO problem", ex);
-        }
-
-    }
+//    private void runShell(){
+//        Shell shell = new Shell(_game);
+//
+//        try {
+//            // TODO: this is all screwy and needs to be reversed
+//            _gameRunner = new GameRunner(_game, shell);
+//            Adjutant adjutant = _gameRunner.newAdjutant(_roller);
+//            while(_gameRunner.isGameRunning()) {
+//                OrderType ot = shell.next(adjutant);
+//                adjutant = shell.handeOrderType(ot, adjutant);
+//            }
+//
+//        } catch (QuitException ex){
+//            _log.info("Quitting");
+//            _jettyServer.stop();
+//            return;
+//        } catch (IOException ex){
+//            _log.error("IO problem", ex);
+//        }
+//
+//    }
 
     private void initializeGame(boolean randomize, Channels channels) {
         List<Player> players = new ArrayList<Player>();
@@ -126,11 +137,6 @@ public class Risk {
         }
 
         _game = new Game(map, players, StandardCardSet.deck, roller, channels);
-        for (int idx = 1; idx < _numberPlayers; idx++) {
-            Player player = players.get(idx);
-            AutomatedPlayer ai = new NeverAttacks(player);
-            _game.addAutomatedPlayer(ai);
-        }
     }
 
     private void startGame(boolean randomize){

@@ -20,7 +20,7 @@ public class NeverAttacks implements AutomatedPlayer {
     }
 
     @Override
-    public OrderType pickOrder(List<OrderType> possibleOrderTypes, Game game) {
+    public OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
             return OrderType.PlaceArmy;
         }
@@ -46,7 +46,7 @@ public class NeverAttacks implements AutomatedPlayer {
     }
 
     @Override
-    public Adjutant executeOrder(OrderType orderType, Adjutant adjutant, Game game){
+    public Order generateOrder(OrderType orderType, Adjutant adjutant, Game game){
         Order order;
         if( orderType == OrderType.PlaceArmy){
             order = placeArmy(adjutant, game);
@@ -62,7 +62,7 @@ public class NeverAttacks implements AutomatedPlayer {
             _log.warn("Don't know what to do with this type " + orderType);
             return null;
         }
-        return order.execute(game);
+        return order;
     }
 
     private PlaceArmy placeArmy(Adjutant adjutant, Game game){

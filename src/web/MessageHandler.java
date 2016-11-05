@@ -34,10 +34,5 @@ public class MessageHandler implements ClientMessageReceiver {
         String defendingCountry = (String) jObject.get("defense-country");
         String attackType = (String) jObject.get("all-out-flag");
         String color = (String) jObject.get("color");
-        if( attackType.equals("once")) {
-            _gameRunner.doAttack(color, attackingCountry, defendingCountry);
-        } else if ( attackType.equals("all-out")){
-            _gameRunner.doAllOutAttack(color, attackingCountry, defendingCountry);
-        }
     }
 }

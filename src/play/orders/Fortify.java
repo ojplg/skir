@@ -24,7 +24,7 @@ public class Fortify extends Order {
             getAdjutant().setAllowableOrders(OrderType.DrawCard);
         } else {
             Player nextPlayer = game.nextPlayer();
-            return new Adjutant(nextPlayer, game.getRoller(), game.getAutomatedPlayer(nextPlayer));
+            return new Adjutant(nextPlayer, game.getRoller());
         }
         return getAdjutant();
     }
