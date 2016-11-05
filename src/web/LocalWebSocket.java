@@ -55,10 +55,6 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
         );
     }
 
-    public String getId(){
-        return _id;
-    }
-
     @Override
     public void onMessage(String s) {
         _log.info("onMessage called local web socket " + s);
