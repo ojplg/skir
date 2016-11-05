@@ -13,7 +13,6 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.OrderType;
-import state.Player;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
@@ -88,7 +87,6 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
     public void onClose(int i, String s) {
         _log.info("onClose called on LocalWebSocket " + s);
     }
-
 
     private void handleNewAdjutant(Adjutant adjutant){
         JSONObject jObject = new JSONObject();

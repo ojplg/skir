@@ -7,7 +7,6 @@ import map.Country;
 import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.channels.Channel;
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.ThreadFiber;
 import play.Channels;
@@ -31,8 +30,7 @@ public class Game {
     private CardStack _cardPile;
     private Player _currentAttacker;
     private Roller _roller;
-    private Channel<MapChangedEvent> _mapChangedEventChannel;
-    private Channel<PlayerChangedEvent> _playerChangedEventChannel;
+    private Channels _channels;
 
     private ThreadFiber fiber = new ThreadFiber();
 
@@ -42,29 +40,28 @@ public class Game {
         _cardPile = new CardStack(cards);
         _currentAttacker = players.get(0);
         _roller = roller;
-        fiber.start();
-        _mapChangedEventChannel = channels.MapChangedEventChannel;
-        _playerChangedEventChannel = channels.PlayerChangedEventChannel;
+        _channels = channels;
         channels.ClientConnectedEventChannel.subscribe(
                 fiber,
                 new Callback<ClientConnectedEvent>() {
                     @Override
                     public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-                        refreshMap();
+                        publishAllState();
                     }
                 }
         );
+        fiber.start();
     }
 
     public Roller getRoller(){
         return _roller;
     }
 
-    private void refreshMap(){
+    private void publishAllState(){
         for(Country country : _map.getAllCountries()){
             Player player = _occupations.getOccupier(country);
             int armyCount = _occupations.getOccupationForce(country);
-            _mapChangedEventChannel.publish(
+            _channels.MapChangedEventChannel.publish(
                     new MapChangedEvent(country, player, armyCount)
             );
         }
@@ -76,7 +73,7 @@ public class Game {
     public void publishPlayerChanged(Player player){
         int countryCount = numberCountriesOccupied(player);
         int armyCount = _occupations.totalOccupationForces(player);
-        _playerChangedEventChannel.publish(
+        _channels.PlayerChangedEventChannel.publish(
                 new PlayerChangedEvent(player, countryCount, armyCount)
         );
     }
@@ -283,7 +280,7 @@ public class Game {
         Player player = _occupations.getOccupier(country);
 
         MapChangedEvent event = new MapChangedEvent(country, player, newCount);
-        _mapChangedEventChannel.publish(event);
+        _channels.MapChangedEventChannel.publish(event);
     }
 
     public void fortify(Country source, Country destination, int armies){

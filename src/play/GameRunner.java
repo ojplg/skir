@@ -10,6 +10,7 @@ import play.orders.Order;
 import play.orders.OrderType;
 import state.Game;
 import state.Player;
+import state.event.ClientConnectedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,8 @@ public class GameRunner {
     private final Channels _channels;
     private final Fiber _fiber;
 
+    private Adjutant currentAdjutant;
+
     public GameRunner(Game game, Channels channels, Fiber fiber){
         _game = game;
         _channels = channels;
@@ -35,6 +38,18 @@ public class GameRunner {
                         processOrder(order);
                     }
                 });
+        _channels.ClientConnectedEventChannel.subscribe(_fiber,
+                new Callback<ClientConnectedEvent>() {
+                    @Override
+                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
+                        _channels.AdjutantChannel.publish(currentAdjutant);
+                    }
+                });
+    }
+
+    private void adjutantReset(Adjutant adjutant){
+        currentAdjutant = adjutant;
+        _channels.AdjutantChannel.publish(adjutant);
     }
 
     private void processOrder(Order order){
@@ -45,15 +60,16 @@ public class GameRunner {
             Order generatedOrder = ai.generateOrder(ot, adjutant, _game);
             processOrder(generatedOrder);
         } else {
-            _channels.AdjutantChannel.publish(adjutant);
+            adjutantReset(adjutant);
         }
     }
 
-    public void startGame(Roller roller){
-        Adjutant adjutant = new Adjutant(_game.currentAttacker(), roller);
+    public void startGame(){
+        Adjutant adjutant = new Adjutant(_game.currentAttacker());
         adjutant.setAllowableOrders(OrderType.ClaimArmies);
-        _channels.AdjutantChannel.publish(adjutant);
+        adjutantReset(adjutant);
     }
+
     public void addAutomatedPlayer(AutomatedPlayer ai){
         _log.info("Adding automated player for " + ai.getPlayer());
         _automatedPlayers.put(ai.getPlayer(),ai);

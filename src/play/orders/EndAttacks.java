@@ -22,7 +22,7 @@ public class EndAttacks extends Order {
                 getAdjutant().setAllowableOrders(OrderType.Fortify);
             } else {
                 Player nextPlayer = game.nextPlayer();
-                return new Adjutant(nextPlayer, game.getRoller());
+                return new Adjutant(nextPlayer);
             }
         }
         return getAdjutant();

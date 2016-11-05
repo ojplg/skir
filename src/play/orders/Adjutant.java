@@ -1,7 +1,5 @@
 package play.orders;
 
-import card.Card;
-import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import play.Roller;
@@ -16,15 +14,13 @@ public class Adjutant {
 
     private static final Logger _log = LogManager.getLogger(Adjutant.class);
 
-    private final Roller _roller;
     private final Player _activePlayer;
     private final List<OrderType> _allowableOrders = new ArrayList<OrderType>();
     private boolean _conqueredCountry = false;
     private Attack _successfulAttack = null;
 
-    public Adjutant(Player activePlayer, Roller roller){
+    public Adjutant(Player activePlayer){
         this._activePlayer = activePlayer;
-        this._roller = roller;
         this._allowableOrders.add(OrderType.ClaimArmies);
     }
 
@@ -52,37 +48,6 @@ public class Adjutant {
 
     public boolean hasConqueredCountry(){
         return _conqueredCountry;
-    }
-
-    public Order endAttacks(){
-        checkAllowable(OrderType.EndAttacks);
-        return new EndAttacks(this);
-    }
-
-    public Order placeArmy(Country country){
-        checkAllowable(OrderType.PlaceArmy);
-        return new PlaceArmy(this, country);
-    }
-
-    public Order claimArmies() {
-        checkAllowable(OrderType.ClaimArmies);
-        return new ClaimArmies(this);
-    }
-
-    public Order occupy(int armies){
-        checkAllowable(OrderType.Occupy);
-        int toMove = Math.min(armies, _successfulAttack.getAttackersDiceCount());
-        return new Occupy(this, _successfulAttack.getInvader(), _successfulAttack.getTarget(), toMove);
-    }
-
-    public Order attack(Country from, Country to, int dice){
-        checkAllowable(OrderType.Attack);
-        return new Attack(this, _roller, from, to, dice);
-    }
-
-    public Order exchangeCardSet(Card one, Card two, Card three){
-        checkAllowable(OrderType.ExchangeCardSet);
-        return new ExchangeCardSet(this, one, two, three);
     }
 
     private void checkAllowable(OrderType played){

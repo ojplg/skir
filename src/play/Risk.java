@@ -26,9 +26,7 @@ public class Risk {
 
     private Game _game;
     private GameRunner _gameRunner;
-    private final Roller _roller = new RandomRoller(1);
     private UseJetty _jettyServer;
-    private Shell _shell;
 
     private int _numberPlayers = 6;
     private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
@@ -77,10 +75,10 @@ public class Risk {
         gameRunnerFiber.start();
 
         ThreadFiber shellFiber = new ThreadFiber(new RunnableExecutorImpl(), "ShellFiber", true);
-        risk._shell = new Shell(risk._game, channels, shellFiber);
+        new Shell(risk._game, channels, shellFiber);
         shellFiber.start();
 
-        risk._gameRunner.startGame(risk._roller);
+        risk._gameRunner.startGame();
     }
 
     private void runWebServer(){

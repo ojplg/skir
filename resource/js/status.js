@@ -15,46 +15,56 @@ function update_player_stats(color, armies, countries){
 
 function update_order_console(color, choices){
     document.getElementById("active-player-field").textContent = "Active player is " + color;
-    var order_console_div = document.getElementById("order-console");
-    for(var idx=0; idx< choices.length; idx++){
-        console.log("adding a choice");
-        var choice = choices[idx];
-        console.log(choice);
-        var button = get_order_button(choice);
-        button.visible = true;
+    if( choices.length == 1 ){
+        orderTypeSelected(choices[0]);
+    } else {
+        var orderConsoleDiv = document.getElementById("order-console");
+        for(var idx=0; idx< choices.length; idx++){
+            addButton(orderConsoleDiv, choices[idx]);
+        }
     }
+}
+
+function orderTypeSelected(orderType){
+    console.log("Selected " + orderType);
+    if( orderType == "PlaceArmy"){
+        placeArmySelected();
+    } else if( orderType == "Attack"){
+        attackSelected();
+    } else if (orderType == "EndAttacks"){
+    } else if (orderType == "AttackUntilVictoryOrDeath"){
+    } else {
+        console.log("Selection unknown " + orderType);
+    }
+}
+
+function addButton(element, label){
+    var button = document.createElement("BUTTON");
+    var text = document.createTextNode(label);
+    button.onclick = function(){
+        orderTypeSelected(label);
+    };
+    button.appendChild(text);
+    element.appendChild(button);
 }
 
 function get_order_button(order_type){
     return document.getElementById(order_type + "-Button");
 }
 
-function set_order_type_buttons_invisible(){
-    var buttons = order_type_buttons();
-    for(var idx=0; idx<buttons.length; idx++){
-        var button = buttons[idx];
-        button.visible = false;
-    }
-}
-
-function order_type_buttons(){
-    return [
-        document.getElementById("Attack-Button"),
-        document.getElementById("EndAttacks-Button"),
-        document.getElementById("AttackUntilVictoryOrDeath-Button")
-    ];
-}
-
-function order_type_selected(type){
-    console.log("Selected: " + type);
-}
-
-function attack_selected(){
+function attackSelected(){
     console.log("Attack selected");
-    set_order_type_buttons_invisible();
-    var attackDiv = document.getElementById("attack-panel-div");
-    attackDiv.visible = true;
-    current_status = 'select-attack-country';
+    var attackDiv = document.createElement("div");
+    var attackFromDiv = document.createElement("div");
+    attackFromDiv.id = "attack-from-div";
+    var attackContent = document.createTextNode("Attack from: ");
+
+    attackFromDiv.appendChild(attackContent);
+
+    attackDiv.appendChild(attackFromDiv);
+
+    var playetStatusDiv = document.getElementById("player-status-div");
+    document.body.insertBefore(attackDiv, playetStatusDiv);
 }
 
 function set_attack_country(country_name){
