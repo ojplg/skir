@@ -22,6 +22,7 @@ public class ClaimArmies extends Order {
         int geographicArmies = game.computeMapSupply(activePlayer());
         int numberToGrant = Math.max(MINIMUM, geographicArmies);
         activePlayer().grantReserves(numberToGrant);
+        game.publishPlayerChanged(activePlayer());
 
         if(Cards.hasTradeableSet(activePlayer().getCards()) ){
             getAdjutant().setAllowableOrders(OrderType.ExchangeCardSet, OrderType.PlaceArmy);

@@ -69,12 +69,16 @@ public class Game {
             );
         }
         for(Player player : _players){
-            int countryCount = numberCountriesOccupied(player);
-            int armyCount = _occupations.totalOccupationForces(player);
-            _playerChangedEventChannel.publish(
-                    new PlayerChangedEvent(player, countryCount, armyCount)
-            );
+            publishPlayerChanged(player);
         }
+    }
+
+    public void publishPlayerChanged(Player player){
+        int countryCount = numberCountriesOccupied(player);
+        int armyCount = _occupations.totalOccupationForces(player);
+        _playerChangedEventChannel.publish(
+                new PlayerChangedEvent(player, countryCount, armyCount)
+        );
     }
 
     public void doInitialPlacements(){
@@ -155,6 +159,8 @@ public class Game {
         notifyListenersOfMapUpdate(defender);
         Player attackingPlayer = _occupations.getOccupier(attacker);
         Player defendingPlayer = _occupations.getOccupier(defender);
+        publishPlayerChanged(attackingPlayer);
+        publishPlayerChanged(defendingPlayer);
         return _occupations.allArmiesDestroyed(defender);
     }
 
