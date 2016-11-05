@@ -9,8 +9,6 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 import org.jetlang.fibers.Fiber;
 import play.Channels;
-import play.GameRunner;
-import state.Game;
 import state.OrderBroadcasterLocator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,16 +19,12 @@ public class UseJetty {
     private static final Logger _log = LogManager.getLogger(UseJetty.class);
 
     private final int _httpPort;
-    private final Game _game;
-    private final MessageHandler _messageHandler;
     private Server _server;
     private Channels _channels;
     private Fiber _webFiber;
 
-    public UseJetty(int httpPort, Game game, GameRunner gameRunner, Channels channels, Fiber webFiber){
+    public UseJetty(int httpPort, Channels channels, Fiber webFiber){
         _httpPort = httpPort;
-        _game = game;
-        _messageHandler = new MessageHandler(gameRunner);
         _channels = channels;
         _webFiber = webFiber;
     }
@@ -46,10 +40,8 @@ public class UseJetty {
         WebSocketHandler socketHandler = new WebSocketHandler() {
             @Override
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
-                System.out.println("doWebSocket called " + s);
-                LocalWebSocket webSocket = new LocalWebSocket(_game, _messageHandler, _channels, _webFiber);
-                _game.addMapEventListener(webSocket);
-                OrderBroadcasterLocator.BROADCASTER.addListener(webSocket);
+                _log.info("doWebSocket called " + s);
+                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber);
                 return webSocket;
             }
         };

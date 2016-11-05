@@ -11,14 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
-import play.orders.Adjutant;
-import play.orders.OrderType;
 import state.Game;
 import state.Player;
-import sun.util.resources.ro.CalendarData_ro;
 import web.UseJetty;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +46,7 @@ public class Risk {
         risk.initializeGame(randomize, channels);
 
         ThreadFiber webFiber = new ThreadFiber(new RunnableExecutorImpl(), "WebFiber", true);
-        risk._jettyServer = new UseJetty(8080, risk._game, risk._gameRunner, channels, webFiber);
+        risk._jettyServer = new UseJetty(8080, channels, webFiber);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -96,28 +92,6 @@ public class Risk {
             _log.error("Could not start jetty", e);
         }
     }
-
-//    private void runShell(){
-//        Shell shell = new Shell(_game);
-//
-//        try {
-//            // TODO: this is all screwy and needs to be reversed
-//            _gameRunner = new GameRunner(_game, shell);
-//            Adjutant adjutant = _gameRunner.newAdjutant(_roller);
-//            while(_gameRunner.isGameRunning()) {
-//                OrderType ot = shell.next(adjutant);
-//                adjutant = shell.handeOrderType(ot, adjutant);
-//            }
-//
-//        } catch (QuitException ex){
-//            _log.info("Quitting");
-//            _jettyServer.stop();
-//            return;
-//        } catch (IOException ex){
-//            _log.error("IO problem", ex);
-//        }
-//
-//    }
 
     private void initializeGame(boolean randomize, Channels channels) {
         List<Player> players = new ArrayList<Player>();

@@ -1,23 +1,18 @@
 package web;
 
-import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.jetlang.channels.Channel;
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
-import org.jetlang.fibers.ThreadFiber;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.OrderType;
-import state.GameEventListener;
-import state.OrderEventListener;
 import state.Player;
-import state.SignalReady;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
@@ -26,21 +21,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListener, OrderEventListener {
+public class LocalWebSocket implements WebSocket.OnTextMessage {
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
     private static volatile int _counter = 0;
     private String _id;
     private Connection _connection;
-    private SignalReady _signalReady;
-    private ClientMessageReceiver _clientMessageReceiver;
 
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel;
 
-    public LocalWebSocket(SignalReady ready, ClientMessageReceiver clientMessageReceiver, Channels channels, Fiber fiber){
-        _clientMessageReceiver = clientMessageReceiver;
-        _signalReady = ready;
+    public LocalWebSocket(Channels channels, Fiber fiber){
         _counter++ ;
         _id = String.valueOf(_counter);
 
@@ -90,25 +81,6 @@ public class LocalWebSocket implements WebSocket.OnTextMessage, GameEventListene
     @Override
     public void onClose(int i, String s) {
         _log.info("onClose called on LocalWebSocket " + s);
-    }
-
-    @Override
-    public void mapChanged(Country country, Player player, int armyCount) {
-        JSONObject jObject = new JSONObject();
-        jObject.put("message_type","map_update");
-        jObject.put("country", country.getName());
-        jObject.put("color", player.getColor());
-        jObject.put("count", armyCount);
-        //sendJson(jObject);
-    }
-
-    public void playerChanged(Player player, int armyCount, int countryCount){
-        JSONObject jObject = new JSONObject();
-        jObject.put("message_type","player_update");
-        jObject.put("color",player.getColor().toLowerCase());
-        jObject.put("armies", armyCount);
-        jObject.put("countries", countryCount);
-        sendJson(jObject);
     }
 
     public void possibleOrders(Player player, List<OrderType> possibilities){
