@@ -1,13 +1,10 @@
 package play.orders;
 
-import ai.AutomatedPlayer;
 import card.Card;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import play.Roller;
-import state.Game;
-import state.OrderBroadcasterLocator;
 import state.Player;
 
 import java.util.ArrayList;
@@ -42,7 +39,6 @@ public class Adjutant {
     public void setAllowableOrders(OrderType ... types){
         _allowableOrders.clear();
         _allowableOrders.addAll(Arrays.asList(types));
-        OrderBroadcasterLocator.BROADCASTER.possibleOrderTypes(_activePlayer, _allowableOrders);
     }
 
     public void successfulAttack(Attack attack){

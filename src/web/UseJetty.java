@@ -9,7 +9,6 @@ import org.eclipse.jetty.websocket.WebSocket;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 import org.jetlang.fibers.Fiber;
 import play.Channels;
-import state.OrderBroadcasterLocator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CountDownLatch;
