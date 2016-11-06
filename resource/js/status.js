@@ -19,10 +19,23 @@ function update_order_console(color, choices){
     if( choices.length == 1 ){
         orderTypeSelected(choices[0]);
     } else {
-        var orderConsoleDiv = document.getElementById("order-console");
+        clearOrderConsole();
+        var orderButtonsDiv = document.getElementById("order-buttons-div");
         for(var idx=0; idx< choices.length; idx++){
-            addButton(orderConsoleDiv, choices[idx]);
+            addButton(orderButtonsDiv, choices[idx]);
         }
+    }
+}
+
+function clearOrderConsole(){
+    var orderConsoleDiv = document.getElementById("order-buttons-div");
+    clearElementChildren(orderConsoleDiv);
+}
+
+function clearElementChildren(element){
+    var children = element.childNodes;
+    for(var idx=0; idx<children.length; idx++){
+        element.removeChild(children[idx]);
     }
 }
 
@@ -34,9 +47,18 @@ function orderTypeSelected(orderType){
         attackSelected();
     } else if (orderType == "EndAttacks"){
     } else if (orderType == "AttackUntilVictoryOrDeath"){
+    } else if (orderType == "Occupy") {
+        occupySelected();
     } else {
         console.log("Selection unknown " + orderType);
     }
+}
+
+function occupySelected(){
+    console.log("Occupy selected");
+    removeAttackDiv();
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    addButton(orderConsoleDiv, "Occupy");
 }
 
 function placeArmySelected(){
@@ -100,18 +122,38 @@ function get_order_button(order_type){
 
 function attackSelected(){
     console.log("Attack selected");
+    removeAttackDiv();
+
     currentStatus = selectAttackCountryStatusFlag;
     var attackDiv = document.createElement("div");
+    attackDiv.id = "attack-div";
+
+    // invader text console
     var attackFromDiv = document.createElement("div");
     attackFromDiv.id = "attack-from-div";
     var attackContent = document.createTextNode("Attack from: ");
-
     attackFromDiv.appendChild(attackContent);
-
     attackDiv.appendChild(attackFromDiv);
 
-    var playetStatusDiv = document.getElementById("player-status-div");
-    document.body.insertBefore(attackDiv, playetStatusDiv);
+    // defender text console
+    var defendFromDiv = document.createElement("div");
+    defendFromDiv.id = "defend-from-div";
+    var defendContent = document.createTextNode("Invade into: ");
+    defendFromDiv.appendChild(defendContent);
+    attackDiv.appendChild(defendFromDiv);
+
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    var orderConsoleEndDiv = document.getElementById("order-console-end-div");
+    orderConsoleDiv.insertBefore(attackDiv, orderConsoleEndDiv);
+}
+
+function removeAttackDiv(){
+    var attackDiv = document.getElementById("attack-div");
+    if( attackDiv != null ){
+        clearElementChildren(attackDiv);
+        var orderConsoleDiv = document.getElementById("order-console-div");
+        orderConsoleDiv.removeChild(attackDiv);
+    }
 }
 
 function set_attack_country(country_name){
