@@ -9,7 +9,7 @@ public class StandardMap extends WorldMap {
             set(Country.Argentina, Country.Peru, Country.Brazil),
             set(Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Argentina, Country.Peru),
             set(Country.Central_America, Country.Western_United_States, Country.Eastern_United_States, Country.Venezuela),
-            set(Country.China, Country.Siberia, Country.Mongolia, Country.Siam, Country.India, Country.Afghanistan),
+            set(Country.China, Country.Siberia, Country.Mongolia, Country.Siam, Country.India, Country.Afghanistan, Country.Ural),
             set(Country.Congo, Country.North_Africa, Country.East_Africa, Country.South_Africa),
             set(Country.East_Africa, Country.Egypt, Country.Middle_East, Country.Madagascar, Country.South_Africa, Country.Congo, Country.North_Africa),
             set(Country.Eastern_Australia,Country.New_Guinea, Country.Western_Australia),

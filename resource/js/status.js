@@ -28,8 +28,16 @@ function update_order_console(color, choices){
 }
 
 function clearOrderConsole(){
-    var orderConsoleDiv = document.getElementById("order-buttons-div");
-    clearElementChildren(orderConsoleDiv);
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    var children = orderConsoleDiv.childNodes;
+    for(var idx=0; idx<children.length; idx++){
+        var element = children[idx];
+        if( element.id != "active-player-field" &&
+                element.id != "order-buttons-div" &&
+                element.id != "order-console-end-div"){
+            orderConsoleDiv.removeChild(element);
+        }
+    }
 }
 
 function clearElementChildren(element){
@@ -61,10 +69,22 @@ function occupySelected(){
     addButton(orderConsoleDiv, "Occupy");
 }
 
+function addToOrderConsole(element){
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    var orderConsoleEndDiv = document.getElementById("order-console-end-div");
+    orderConsoleDiv.insertBefore(element, orderConsoleEndDiv);
+}
+
 function placeArmySelected(){
     console.log("placeArmySelected");
+    clearOrderConsole();
     var placementDiv = document.createElement("div");
+    placementDiv.id = "place-army-text-div";
+    var placementContent = document.createTextNode("Click a country to place an army");
+    placementDiv.appendChild(placementContent);
+    addToOrderConsole(placementDiv);
     currentStatus = placeArmyStatusFlag;
+    console.log("placeArmySelected - done");
 }
 
 function doStatusDependentCountryClickedWork(country){
@@ -78,12 +98,22 @@ function doStatusDependentCountryClickedWork(country){
 }
 
 function attackCountryClick(country){
+    console.log("attackCountryClick " + country);
     currentStatus = selectDefenseCountryStatusFlag;
     attackCountry = country;
+    var attackCountryTextDiv = document.getElementById("attacker-text-div");
+    var newHtml = "Attack From: " + country.wire_name();
+    attackCountryTextDiv.innerHTML = newHtml;
+    console.log("Reset innerHTML to " + newHtml);
 }
 
 function defenseCountryClick(country){
+    console.log("defenseCountryClick " + country);
     currentStatus = null;
+    var defenderTextDiv = document.getElementById("defender-text-div");
+    var newHtml = "Defender: " + country.wire_name();
+    defenderTextDiv.innerHTML = newHtml;
+    console.log("Reset innerHTML to " + newHtml);
     var order = newOrder("Attack");
     order.attacker = attackCountry.wire_name();
     order.defender = country.wire_name();
@@ -130,14 +160,14 @@ function attackSelected(){
 
     // invader text console
     var attackFromDiv = document.createElement("div");
-    attackFromDiv.id = "attack-from-div";
+    attackFromDiv.id = "attacker-text-div";
     var attackContent = document.createTextNode("Attack from: ");
     attackFromDiv.appendChild(attackContent);
     attackDiv.appendChild(attackFromDiv);
 
     // defender text console
     var defendFromDiv = document.createElement("div");
-    defendFromDiv.id = "defend-from-div";
+    defendFromDiv.id = "defender-text-div";
     var defendContent = document.createTextNode("Invade into: ");
     defendFromDiv.appendChild(defendContent);
     attackDiv.appendChild(defendFromDiv);
