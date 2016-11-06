@@ -1,5 +1,6 @@
 package web;
 
+import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
@@ -12,7 +13,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
+import play.orders.Attack;
 import play.orders.OrderType;
+import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
@@ -28,14 +31,15 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
     private static volatile int _counter = 0;
     private String _id;
     private Connection _connection;
+    private final Channels _channels;
 
-    private final Channel<ClientConnectedEvent> _clientConnectedEventChannel;
+    private Adjutant _currentAdjutant;
 
     public LocalWebSocket(Channels channels, Fiber fiber){
         _counter++ ;
         _id = String.valueOf(_counter);
 
-        _clientConnectedEventChannel = channels.ClientConnectedEventChannel;
+        _channels = channels;
 
         channels.MapChangedEventChannel.subscribe(fiber,
                 new Callback<MapChangedEvent>() {
@@ -71,8 +75,29 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
         try {
             JSONObject jObject = (JSONObject) parser.parse(s);
             _log.info("PARSED a message from the client " + jObject + " of type " + jObject.getClass());
+            String messageType = (String) jObject.get("messageType");
+            _log.info("Message type was " + messageType);
+            if( "Order".equals(messageType)){
+                handleOrder(jObject);
+            }
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + s, pe);
+        }
+    }
+
+    private void handleOrder(JSONObject orderJson){
+
+        String orderType = (String) orderJson.get("orderType");
+        if( "PlaceArmy".equals(orderType)){
+            String countryName = (String) orderJson.get("country");
+            Country country = new Country(countryName);
+            PlaceArmy placeArmy = new PlaceArmy(_currentAdjutant, country);
+            _channels.OrderEnteredChannel.publish(placeArmy);
+        } else if ("Attack".equals(orderType)){
+            String attacker = (String) orderJson.get("attacker");
+            String defender = (String) orderJson.get("defender");
+            Attack attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
+            _channels.OrderEnteredChannel.publish(attack);
         }
     }
 
@@ -80,7 +105,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
     public void onOpen(Connection connection) {
         _log.info("onOpen called on LocalWebSocket");
         _connection = connection;
-        _clientConnectedEventChannel.publish(new ClientConnectedEvent(_id));
+        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id));
     }
 
     @Override
@@ -89,6 +114,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
     }
 
     private void handleNewAdjutant(Adjutant adjutant){
+        _currentAdjutant = adjutant;
         JSONObject jObject = new JSONObject();
         jObject.put("message_type","possible_order_types");
         jObject.put("color", adjutant.getActivePlayer().getColor());

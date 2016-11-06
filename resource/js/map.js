@@ -130,8 +130,7 @@ function map_clicked(e){
        country.top + country.height >= e.offsetY &&
        country.left + country.width >= e.offsetX ){
        console.log('Clicked on ' + country.name);
-       //connection.send('{\'country\':\'' + country.name + '\'}');
-       country_clicked(country.wire_name());
+        doStatusDependentCountryClickedWork(country);
     }
   }
 }
@@ -163,14 +162,4 @@ function occupied_text_color(player_color){
     name_color = 'black';
   }
   return name_color;
-}
-
-function country_clicked(country_name){
-    if(current_status == 'select-attack-country'){
-        set_attack_country(country_name);
-    } else if ( current_status == 'select-defense-country'){
-        set_defense_country(country_name);
-    } else {
-        console.log("Current Status is " + current_status + " ignoring click on " + country_name);
-    }
 }

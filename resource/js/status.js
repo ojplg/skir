@@ -1,9 +1,10 @@
-var statuses = ['select-attack-country','select-defense-country'];
-var current_status = null;
+var placeArmyStatusFlag = 'place-army-status-flag';
+var selectAttackCountryStatusFlag = 'select-attack-country-status-flag';
+var selectDefenseCountryStatusFlag = 'select-defense-country-status-flag';
 
-function get_current_status(){
-    return current_status;
-}
+var currentStatus = null;
+var attackCountry;
+var defenseCountry;
 
 function update_player_stats(color, armies, countries){
     console.log("Updating player " + color);
@@ -38,6 +39,51 @@ function orderTypeSelected(orderType){
     }
 }
 
+function placeArmySelected(){
+    console.log("placeArmySelected");
+    var placementDiv = document.createElement("div");
+    currentStatus = placeArmyStatusFlag;
+}
+
+function doStatusDependentCountryClickedWork(country){
+    if( currentStatus == placeArmyStatusFlag){
+        placeArmyCountryClick(country);
+    } else if (currentStatus == selectAttackCountryStatusFlag){
+        attackCountryClick(country);
+    } else if (currentStatus == selectDefenseCountryStatusFlag){
+        defenseCountryClick(country);
+    }
+}
+
+function attackCountryClick(country){
+    currentStatus = selectDefenseCountryStatusFlag;
+    attackCountry = country;
+}
+
+function defenseCountryClick(country){
+    currentStatus = null;
+    var order = newOrder("Attack");
+    order.attacker = attackCountry.wire_name();
+    order.defender = country.wire_name();
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
+}
+
+function placeArmyCountryClick(country){
+    currentStatus = null;
+    var order = newOrder("PlaceArmy");
+    order.country = country.wire_name();
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
+}
+
+function newOrder(orderType){
+    var order = {};
+    order.messageType = "Order";
+    order.orderType = orderType;
+    return order;
+}
+
 function addButton(element, label){
     var button = document.createElement("BUTTON");
     var text = document.createTextNode(label);
@@ -54,6 +100,7 @@ function get_order_button(order_type){
 
 function attackSelected(){
     console.log("Attack selected");
+    currentStatus = selectAttackCountryStatusFlag;
     var attackDiv = document.createElement("div");
     var attackFromDiv = document.createElement("div");
     attackFromDiv.id = "attack-from-div";
@@ -71,14 +118,14 @@ function set_attack_country(country_name){
     console.log("attack country selected " + country_name);
     var attackCountrySpan = document.getElementById("attack-country-span");
     attackCountrySpan.textContent = country_name;
-    current_status = 'select-defense-country';
+    currentStatus = 'select-defense-country';
 }
 
 function set_defense_country(country_name){
     console.log("defense country selected " + country_name);
     var defenseCountrySpan = document.getElementById("defense-country-span");
     defenseCountrySpan.textContent = country_name;
-    current_status = null;
+    currentStatus = null;
 }
 
 function doAttack(all_out_flag){

@@ -184,7 +184,7 @@ public class Shell {
         int numberDice = Math.min(3, _game.getOccupationForce(invader) - 1);
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
-        Attack attack = new Attack(adjutant, _game.getRoller(), invader, target, numberDice);
+        Attack attack = new Attack(adjutant, invader, target);
         _channels.OrderEnteredChannel.publish(attack);
     }
 

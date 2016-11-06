@@ -11,12 +11,17 @@ public class Attack extends Order {
     private final int _attackersDiceCount;
     private final Country _invader;
     private final Country _target;
-    private final Roller _roller;
 
-    public Attack(Adjutant adjutant, Roller roller, Country invader, Country target, int attackersDiceCount) {
+    public Attack(Adjutant adjutant, Country invader, Country target, int attackersDiceCount) {
         super(adjutant);
-        _roller = roller;
         _attackersDiceCount = attackersDiceCount;
+        _invader = invader;
+        _target = target;
+    }
+
+    public Attack(Adjutant adjutant, Country invader, Country target){
+        super(adjutant);
+        _attackersDiceCount = 3;
         _invader = invader;
         _target = target;
     }
@@ -30,10 +35,8 @@ public class Attack extends Order {
             throw new RuntimeException("Player " + activePlayer() + " trying to attack himself in " + _target);
         }
         // TODO: Allow a defender to use 1 die?
-        int numberDefenders = game.getOccupationForce(_target);
-        int dice = Math.min(numberDefenders, Constants.MAXIMUM_DEFENDER_DICE);
-        Rolls rolls = _roller.roll(_attackersDiceCount, dice);
-        boolean conquered = game.resolveAttack(_invader, _target, rolls);
+        //int numberDefenders = game.getOccupationForce(_target);
+        boolean conquered = game.resolveAttack(_invader, _target);
         if ( conquered ){
             getAdjutant().successfulAttack(this);
             getAdjutant().setAllowableOrders(OrderType.Occupy);
