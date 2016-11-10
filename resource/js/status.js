@@ -18,7 +18,7 @@ function updateOrderConsole(color, choices){
     console.log("Choices for " + color + " are " + choices);
     document.getElementById("active-player-field").textContent = "Active player is " + color;
     if( choices.length == 1 ){
-        orderTypeSelected(choices[0]);
+        buttonClicked(choices[0]);
     } else {
         clearOrderConsole();
         for(var idx=0; idx< choices.length; idx++){
@@ -47,7 +47,7 @@ function clearElementChildren(element){
     }
 }
 
-function orderTypeSelected(orderType){
+function buttonClicked(orderType){
     console.log("Selected " + orderType);
     if( orderType == "PlaceArmy"){
         placeArmySelected();
@@ -57,16 +57,20 @@ function orderTypeSelected(orderType){
     } else if (orderType == "AttackUntilVictoryOrDeath"){
     } else if (orderType == "Occupy") {
         occupySelected();
+    } else if (orderType == "DoOccupation") {
+        sendDoOccupationMessage();
     } else {
         console.log("Selection unknown " + orderType);
     }
 }
 
+
+
 function occupySelected(){
     console.log("Occupy selected");
     clearOrderConsole();
     var orderConsoleDiv = document.getElementById("order-console-div");
-    addButton("Occupy");
+    addButton("DoOccupation");
 }
 
 function addToOrderConsole(element){
@@ -121,6 +125,12 @@ function defenseCountryClick(country){
     sendMessage(jsonOrder);
 }
 
+function sendDoOccupationMessage(){
+    var order = newOrder("DoOccupation");
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
+}
+
 function placeArmyCountryClick(country){
     currentStatus = null;
     var order = newOrder("PlaceArmy");
@@ -142,7 +152,7 @@ function addButton(label){
     var text = document.createTextNode(label);
     button.id = "Button." + label;
     button.onclick = function(){
-        orderTypeSelected(label);
+        buttonClicked(label);
     };
     button.appendChild(text);
     var orderConsoleDiv = document.getElementById("order-console-div");

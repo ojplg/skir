@@ -4,7 +4,6 @@ import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
-import org.jetlang.channels.Channel;
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
 import org.json.simple.JSONArray;
@@ -14,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
+import play.orders.Occupy;
 import play.orders.OrderType;
 import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
@@ -98,6 +98,14 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
             String defender = (String) orderJson.get("defender");
             Attack attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
             _channels.OrderEnteredChannel.publish(attack);
+        } else if ("DoOccupation".equals(orderType)){
+            Attack successfulAttack = _currentAdjutant.getSuccessfulAttack();
+            int armiesToMove = successfulAttack.getAttackersDiceCount();
+            Occupy occupy = new Occupy(_currentAdjutant, successfulAttack.getInvader(),
+                    successfulAttack.getTarget(), armiesToMove);
+            _channels.OrderEnteredChannel.publish(occupy);
+        } else {
+            _log.error("Cannot handle " + orderJson);
         }
     }
 
