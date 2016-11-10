@@ -62,7 +62,9 @@ function buttonClicked(orderType){
         sendDoOccupationMessage();
     } else if (orderType == "DrawCard" ) {
         sendDrawCardMessage();
-    } else {
+    } else if (orderTYpe = "ClaimArmies") {
+        sendClaimArmiesMessage();
+    }else {
         console.log("Selection unknown " + orderType);
     }
 }
@@ -140,6 +142,12 @@ function sendEndAttacksMessage(){
 
 function sendDrawCardMessage(){
     var order = newOrder("DrawCard");
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
+}
+
+function sendClaimArmiesMessage(){
+    var order = newOrder("ClaimArmies");
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }

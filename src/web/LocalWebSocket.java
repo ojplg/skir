@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
+import play.orders.ClaimArmies;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.Occupy;
@@ -113,6 +114,9 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
         } else if ("DrawCard".equals(orderType)){
             DrawCard drawCard = new DrawCard(_currentAdjutant);
             _channels.OrderEnteredChannel.publish(drawCard);
+        } else if ("ClaimArmies".equals(orderType) ){
+            ClaimArmies claimArmies = new ClaimArmies(_currentAdjutant);
+            _channels.OrderEnteredChannel.publish(claimArmies);
         } else {
             _log.error("Cannot handle " + orderJson);
         }
