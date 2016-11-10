@@ -6,12 +6,14 @@ var currentStatus = null;
 var attackCountry;
 var defenseCountry;
 
-function update_player_stats(color, armies, countries){
+function updatePlayerStats(color, armies, countries, cardCount){
     console.log("Updating player " + color);
-    armiesSpan = document.getElementById(color + "-armies");
+    var armiesSpan = document.getElementById(color + "-armies");
     armiesSpan.textContent = armies;
-    countriesSpan = document.getElementById(color+ "-countries");
+    var countriesSpan = document.getElementById(color+ "-countries");
     countriesSpan.textContent = countries;
+    var cardSpan = document.getElementById(color + "-cardCount");
+    cardSpan.textContent = cardCount;
 }
 
 function updateOrderConsole(color, choices){

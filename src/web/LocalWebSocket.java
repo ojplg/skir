@@ -89,7 +89,6 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     }
 
     private void handleOrder(JSONObject orderJson){
-
         String orderType = (String) orderJson.get("orderType");
         if( "PlaceArmy".equals(orderType)){
             String countryName = (String) orderJson.get("country");

@@ -16,6 +16,7 @@ public class DrawCard extends Order {
     public Adjutant execute(Game game) {
         if( getAdjutant().hasConqueredCountry() ){
             activePlayer().addCard(game.drawCard());
+            game.publishPlayerChanged(activePlayer());
         }
         Player nextPlayer = game.nextPlayer();
         return new Adjutant(nextPlayer);

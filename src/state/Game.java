@@ -72,9 +72,10 @@ public class Game {
 
     public void publishPlayerChanged(Player player){
         int countryCount = numberCountriesOccupied(player);
-        int armyCount = _occupations.totalOccupationForces(player);
+        int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
+        int cardCount = player.getCards().size();
         _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount)
+                new PlayerChangedEvent(player, countryCount, armyCount, cardCount)
         );
     }
 
@@ -188,6 +189,8 @@ public class Game {
         vanquished.removeCards(cards);
         conqueror.addCards(cards);
         _players.remove(vanquished);
+        publishPlayerChanged(conqueror);
+        publishPlayerChanged(vanquished);
         return _players.size() == 1;
     }
 
