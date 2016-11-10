@@ -3,8 +3,10 @@ var selectAttackCountryStatusFlag = 'select-attack-country-status-flag';
 var selectDefenseCountryStatusFlag = 'select-defense-country-status-flag';
 
 var currentStatus = null;
+var attackType;
 var attackCountry;
 var defenseCountry;
+
 
 function updatePlayerStats(color, armies, countries, cardCount){
     console.log("Updating player " + color);
@@ -54,10 +56,11 @@ function buttonClicked(orderType){
     if( orderType == "PlaceArmy"){
         placeArmySelected();
     } else if( orderType == "Attack"){
-        attackSelected();
+        attackSelected("Attack");
     } else if (orderType == "EndAttacks"){
         sendEndAttacksMessage();
     } else if (orderType == "AttackUntilVictoryOrDeath"){
+        attackSelected("AttackUntilVictoryOrDeath");
     } else if (orderType == "Occupy") {
         occupySelected();
     } else if (orderType == "DoOccupation") {
@@ -123,7 +126,7 @@ function defenseCountryClick(country){
     var newHtml = "Defender: " + country.wire_name();
     defenderTextDiv.innerHTML = newHtml;
     console.log("Reset innerHTML to " + newHtml);
-    var order = newOrder("Attack");
+    var order = newOrder(attackType);
     order.attacker = attackCountry.wire_name();
     order.defender = country.wire_name();
     var jsonOrder = JSON.stringify(order);
@@ -182,13 +185,14 @@ function addButton(label){
     orderConsoleDiv.appendChild(button);
 }
 
-function get_order_button(order_type){
-    return document.getElementById(order_type + "-Button");
-}
+// function get_order_button(order_type){
+//     return document.getElementById(order_type + "-Button");
+// }
 
-function attackSelected(){
+function attackSelected(attackTypeFlag){
     console.log("Attack selected");
     clearOrderConsole();
+    attackType = attackTypeFlag;
 
     currentStatus = selectAttackCountryStatusFlag;
     var attackDiv = document.createElement("div");
@@ -213,19 +217,19 @@ function attackSelected(){
     orderConsoleDiv.insertBefore(attackDiv, orderConsoleEndDiv);
 }
 
-function set_attack_country(country_name){
-    console.log("attack country selected " + country_name);
-    var attackCountrySpan = document.getElementById("attack-country-span");
-    attackCountrySpan.textContent = country_name;
-    currentStatus = 'select-defense-country';
-}
-
-function set_defense_country(country_name){
-    console.log("defense country selected " + country_name);
-    var defenseCountrySpan = document.getElementById("defense-country-span");
-    defenseCountrySpan.textContent = country_name;
-    currentStatus = null;
-}
+//function set_attack_country(country_name){
+//    console.log("attack country selected " + country_name);
+//     var attackCountrySpan = document.getElementById("attack-country-span");
+//     attackCountrySpan.textContent = country_name;
+//     currentStatus = 'select-defense-country';
+// }
+//
+// function set_defense_country(country_name){
+//     console.log("defense country selected " + country_name);
+//     var defenseCountrySpan = document.getElementById("defense-country-span");
+//     defenseCountrySpan.textContent = country_name;
+//     currentStatus = null;
+// }
 
 function doAttack(all_out_flag){
     console.log("Doing attack " + all_out_flag);

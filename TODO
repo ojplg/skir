@@ -10,3 +10,4 @@
 * Decide on a capitalization style for the Javascript
 * Calculate and display luck statistics
 * Drop army in country of card on card exchange
+* Does the AttackUntilVictoryOrDeath properly handle when the number of attacking dice must change?

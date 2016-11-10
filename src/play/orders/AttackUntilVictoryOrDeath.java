@@ -9,7 +9,7 @@ public class AttackUntilVictoryOrDeath extends Order {
     private final Country _attacker;
     private final Country _defender;
 
-    public AttackUntilVictoryOrDeath(Adjutant adjutant, Country attacker, Country defender, Roller roller){
+    public AttackUntilVictoryOrDeath(Adjutant adjutant, Country attacker, Country defender){
         super(adjutant);
         _attacker = attacker;
         _defender = defender;

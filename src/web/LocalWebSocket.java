@@ -13,10 +13,12 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
+import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.Occupy;
+import play.orders.Order;
 import play.orders.OrderType;
 import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
@@ -95,10 +97,15 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             Country country = new Country(countryName);
             PlaceArmy placeArmy = new PlaceArmy(_currentAdjutant, country);
             _channels.OrderEnteredChannel.publish(placeArmy);
-        } else if ("Attack".equals(orderType)){
+        } else if ("Attack".equals(orderType) || "AttackUntilVictoryOrDeath".equals(orderType)){
             String attacker = (String) orderJson.get("attacker");
             String defender = (String) orderJson.get("defender");
-            Attack attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
+            Order attack;
+            if("Attack".equals(orderType)) {
+                attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
+            } else {
+                attack = new AttackUntilVictoryOrDeath(_currentAdjutant, new Country(attacker), new Country(defender));
+            }
             _channels.OrderEnteredChannel.publish(attack);
         } else if ("DoOccupation".equals(orderType)){
             Attack successfulAttack = _currentAdjutant.getSuccessfulAttack();

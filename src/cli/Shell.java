@@ -169,7 +169,7 @@ public class Shell {
         Country target = selectFromChoices(countries, "Attack to");
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
                 + target.getName() + " (" + _game.getOccupationForce(target) + ")");
-        AttackUntilVictoryOrDeath attack = new AttackUntilVictoryOrDeath(adjutant, invader, target, _game.getRoller());
+        AttackUntilVictoryOrDeath attack = new AttackUntilVictoryOrDeath(adjutant, invader, target);
         _channels.OrderEnteredChannel.publish(attack);
     }
 
