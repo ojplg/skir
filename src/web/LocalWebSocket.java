@@ -22,13 +22,12 @@ import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
-import sun.util.resources.uk.CalendarData_uk;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalWebSocket implements WebSocket.OnTextMessage {
+class LocalWebSocket implements WebSocket.OnTextMessage {
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
@@ -39,7 +38,7 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
 
     private Adjutant _currentAdjutant;
 
-    public LocalWebSocket(Channels channels, Fiber fiber){
+    LocalWebSocket(Channels channels, Fiber fiber){
         _counter++ ;
         _id = String.valueOf(_counter);
 
