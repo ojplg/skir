@@ -54,6 +54,7 @@ function buttonClicked(orderType){
     } else if( orderType == "Attack"){
         attackSelected();
     } else if (orderType == "EndAttacks"){
+        sendEndAttacksMessage();
     } else if (orderType == "AttackUntilVictoryOrDeath"){
     } else if (orderType == "Occupy") {
         occupySelected();
@@ -63,8 +64,6 @@ function buttonClicked(orderType){
         console.log("Selection unknown " + orderType);
     }
 }
-
-
 
 function occupySelected(){
     console.log("Occupy selected");
@@ -127,6 +126,11 @@ function defenseCountryClick(country){
 
 function sendDoOccupationMessage(){
     var order = newOrder("DoOccupation");
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
+}
+function sendEndAttacksMessage(){
+    var order = newOrder("EndAttacks");
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }
