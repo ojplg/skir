@@ -1,10 +1,12 @@
 * Cards need to be corrected (horse, cannon, infantry assignments)
 * Clean up artifacts on canvas
-* Allow UI control from web page
+* Web page UI
+** Know active user
+** Handle fortification
+** Handle occupation number of armies to send
+** Expose card contents, not just number
+** Expose number of continents, expected draw
 
 * Decide on a capitalization style for the Javascript
-* Figure out how to make new buttons other objects from Javascript
-* Incorporate Jetlang for message passing
 * Calculate and display luck statistics
-* Calculate and display number of continents and cards
 * Drop army in country of card on card exchange
