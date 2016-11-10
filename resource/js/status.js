@@ -14,27 +14,27 @@ function update_player_stats(color, armies, countries){
     countriesSpan.textContent = countries;
 }
 
-function update_order_console(color, choices){
+function updateOrderConsole(color, choices){
+    console.log("Choices for " + color + " are " + choices);
     document.getElementById("active-player-field").textContent = "Active player is " + color;
     if( choices.length == 1 ){
         orderTypeSelected(choices[0]);
     } else {
         clearOrderConsole();
-        var orderButtonsDiv = document.getElementById("order-buttons-div");
         for(var idx=0; idx< choices.length; idx++){
-            addButton(orderButtonsDiv, choices[idx]);
+            addButton(choices[idx]);
         }
     }
 }
 
 function clearOrderConsole(){
+    console.log("Clearing order console");
     var orderConsoleDiv = document.getElementById("order-console-div");
     var children = orderConsoleDiv.childNodes;
     for(var idx=0; idx<children.length; idx++){
         var element = children[idx];
-        if( element.id != "active-player-field" &&
-                element.id != "order-buttons-div" &&
-                element.id != "order-console-end-div"){
+        if(element.id != "order-console-end-div"){
+            console.log("removing " + element.id);
             orderConsoleDiv.removeChild(element);
         }
     }
@@ -64,9 +64,9 @@ function orderTypeSelected(orderType){
 
 function occupySelected(){
     console.log("Occupy selected");
-    removeAttackDiv();
+    clearOrderConsole();
     var orderConsoleDiv = document.getElementById("order-console-div");
-    addButton(orderConsoleDiv, "Occupy");
+    addButton("Occupy");
 }
 
 function addToOrderConsole(element){
@@ -136,14 +136,17 @@ function newOrder(orderType){
     return order;
 }
 
-function addButton(element, label){
+function addButton(label){
+    console.log("Adding button for " + label);
     var button = document.createElement("BUTTON");
     var text = document.createTextNode(label);
+    button.id = "Button." + label;
     button.onclick = function(){
         orderTypeSelected(label);
     };
     button.appendChild(text);
-    element.appendChild(button);
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    orderConsoleDiv.appendChild(button);
 }
 
 function get_order_button(order_type){
@@ -152,7 +155,7 @@ function get_order_button(order_type){
 
 function attackSelected(){
     console.log("Attack selected");
-    removeAttackDiv();
+    clearOrderConsole();
 
     currentStatus = selectAttackCountryStatusFlag;
     var attackDiv = document.createElement("div");
@@ -175,15 +178,6 @@ function attackSelected(){
     var orderConsoleDiv = document.getElementById("order-console-div");
     var orderConsoleEndDiv = document.getElementById("order-console-end-div");
     orderConsoleDiv.insertBefore(attackDiv, orderConsoleEndDiv);
-}
-
-function removeAttackDiv(){
-    var attackDiv = document.getElementById("attack-div");
-    if( attackDiv != null ){
-        clearElementChildren(attackDiv);
-        var orderConsoleDiv = document.getElementById("order-console-div");
-        orderConsoleDiv.removeChild(attackDiv);
-    }
 }
 
 function set_attack_country(country_name){

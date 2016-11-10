@@ -9,7 +9,7 @@ connection.onmessage = function(event){
     update_player_stats(datum.color, datum.armies, datum.countries);
   } else if (datum.message_type == 'possible_order_types'){
     console.log('ORDER TYPES ' + datum.order_types);
-    update_order_console(datum.color, datum.order_types);
+    updateOrderConsole(datum.color, datum.order_types);
   } else {
     console.log("BAD MESSAGE ON WEB SOCKET: " + event.data);
   }
