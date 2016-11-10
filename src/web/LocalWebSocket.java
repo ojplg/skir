@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
+import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.Occupy;
 import play.orders.OrderType;
@@ -20,6 +21,7 @@ import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
+import sun.util.resources.uk.CalendarData_uk;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,8 +110,10 @@ public class LocalWebSocket implements WebSocket.OnTextMessage {
         } else if ("EndAttacks".equals(orderType) ) {
             EndAttacks endAttacks = new EndAttacks(_currentAdjutant);
             _channels.OrderEnteredChannel.publish(endAttacks);
-        }
-        else {
+        } else if ("DrawCard".equals(orderType)){
+            DrawCard drawCard = new DrawCard(_currentAdjutant);
+            _channels.OrderEnteredChannel.publish(drawCard);
+        } else {
             _log.error("Cannot handle " + orderJson);
         }
     }
