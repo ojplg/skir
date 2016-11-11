@@ -77,8 +77,20 @@ function buttonClicked(orderType){
 function occupySelected(){
     console.log("Occupy selected");
     clearOrderConsole();
-    var orderConsoleDiv = document.getElementById("order-console-div");
+    // need to fill in numbers correctly
+    addNumericSelect("occupation-force-selector", 1,10);
     addButton("DoOccupation");
+}
+
+function addNumericSelect(id,min,max){
+    var selector = document.createElement("SELECT");
+    selector.id = id;
+    for(var idx=min; idx<=max; idx++){
+        var option = new Option(idx,idx);
+        selector.add(option);
+    }
+    var orderConsoleDiv = document.getElementById("order-console-div");
+    orderConsoleDiv.appendChild(selector);
 }
 
 function addToOrderConsole(element){
@@ -135,6 +147,8 @@ function defenseCountryClick(country){
 
 function sendDoOccupationMessage(){
     var order = newOrder("DoOccupation");
+    var forceSelector = document.getElementById("occupation-force-selector");
+    order.occupationForce = forceSelector.value;
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }

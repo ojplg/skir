@@ -109,7 +109,8 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             _channels.OrderEnteredChannel.publish(attack);
         } else if ("DoOccupation".equals(orderType)){
             Attack successfulAttack = _currentAdjutant.getSuccessfulAttack();
-            int armiesToMove = successfulAttack.getAttackersDiceCount();
+            String occupationForce = (String) orderJson.get("occupationForce"); //successfulAttack.getAttackersDiceCount();
+            int armiesToMove = Integer.parseInt(occupationForce);
             Occupy occupy = new Occupy(_currentAdjutant, successfulAttack.getInvader(),
                     successfulAttack.getTarget(), armiesToMove);
             _channels.OrderEnteredChannel.publish(occupy);
