@@ -35,12 +35,25 @@ function clearOrderConsole(){
     console.log("Clearing order console");
     var orderConsoleDiv = document.getElementById("order-console-div");
     var children = orderConsoleDiv.childNodes;
-    for(var idx=0; idx<children.length; idx++){
+    var limit = children.length;
+    console.log("Order console has " + children.length + " nodes");
+    var removeList = [];
+    for(var idx=0; idx<limit; idx++){
         var element = children[idx];
-        if(element.id != "order-console-end-div"){
-            console.log("removing " + element.id);
-            orderConsoleDiv.removeChild(element);
+        console.log(idx + " Studying element " + element);
+        if( element == null){
+            console.log(idx + " was null!!?")
+        } else {
+            if (element.id != "order-console-end-div") {
+                console.log("adding to remove list " + element.id);
+                removeList.push(element);
+            }
         }
+    }
+    for(var idx=0; idx<removeList.length; idx++ ){
+        var element = removeList[idx];
+        orderConsoleDiv.removeChild(element);
+        console.log("removed " + element + " with id " + element.id);
     }
 }
 
