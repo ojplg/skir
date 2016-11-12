@@ -70,8 +70,9 @@ public class Game {
         int countryCount = numberCountriesOccupied(player);
         int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
         int cardCount = player.getCards().size();
+        int continentCount = numberContinentsOccupied(player);
         _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount, cardCount)
+                new PlayerChangedEvent(player, countryCount, armyCount, cardCount, continentCount)
         );
     }
 

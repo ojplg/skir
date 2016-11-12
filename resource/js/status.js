@@ -8,14 +8,17 @@ var attackCountry;
 var defenseCountry;
 
 
-function updatePlayerStats(color, armies, countries, cardCount){
+function updatePlayerStats(playerStatus){
+    var color = playerStatus.color;
     console.log("Updating player " + color);
     var armiesSpan = document.getElementById(color + "-armies");
-    armiesSpan.textContent = armies;
+    armiesSpan.textContent = playerStatus.armies;
     var countriesSpan = document.getElementById(color+ "-countries");
-    countriesSpan.textContent = countries;
+    countriesSpan.textContent = playerStatus.countries;
     var cardSpan = document.getElementById(color + "-cardCount");
-    cardSpan.textContent = cardCount;
+    cardSpan.textContent = playerStatus.card_count;
+    var continentSpan = document.getElementById(color + "-continents");
+    continentSpan.textContent = playerStatus.continents;
 }
 
 function updateOrderConsole(color, choices){
