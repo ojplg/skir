@@ -44,10 +44,8 @@ function clearOrderConsole(){
         if( element == null){
             console.log(idx + " was null!!?")
         } else {
-            if (element.id != "order-console-end-div") {
-                console.log("adding to remove list " + element.id);
-                removeList.push(element);
-            }
+            console.log("adding to remove list " + element.id);
+            removeList.push(element);
         }
     }
     for(var idx=0; idx<removeList.length; idx++ ){
@@ -108,8 +106,7 @@ function addNumericSelect(id,min,max){
 
 function addToOrderConsole(element){
     var orderConsoleDiv = document.getElementById("order-console-div");
-    var orderConsoleEndDiv = document.getElementById("order-console-end-div");
-    orderConsoleDiv.insertBefore(element, orderConsoleEndDiv);
+    orderConsoleDiv.appendChild(element);
 }
 
 function placeArmySelected(){
@@ -240,7 +237,6 @@ function attackSelected(attackTypeFlag){
     attackDiv.appendChild(defendFromDiv);
 
     var orderConsoleDiv = document.getElementById("order-console-div");
-    var orderConsoleEndDiv = document.getElementById("order-console-end-div");
     orderConsoleDiv.appendChild(attackDiv);
 }
 
