@@ -15,11 +15,13 @@ import play.orders.Adjutant;
 import play.orders.Attack;
 import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
+import play.orders.ConstrainedOrderType;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.OccupationConstraints;
 import play.orders.Occupy;
 import play.orders.Order;
+import play.orders.OrderConstraints;
 import play.orders.OrderType;
 import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
@@ -147,11 +149,13 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         JSONObject jObject = new JSONObject();
         jObject.put("message_type","possible_order_types");
         jObject.put("color", adjutant.getActivePlayer().getColor());
-        JSONArray array = new JSONArray();
-        for(String type : orderTypesToStrings(adjutant.allowableOrders())){
-            array.add(type);
+        JSONObject orderTypes = new JSONObject();
+        for(OrderType type : adjutant.allowableOrders()){
+            OrderConstraints orderConstraints = adjutant.findConstraintsForOrderType(type);
+            JSONObject constraintJson = orderConstraints.toJsonObject();
+            orderTypes.put(type.toString(), constraintJson);
         }
-        jObject.put("order_types", array);
+        jObject.put("order_types", orderTypes);
 
         sendJson(jObject);
     }

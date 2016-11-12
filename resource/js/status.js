@@ -28,8 +28,8 @@ function updateOrderConsole(color, choices){
         buttonClicked(choices[0]);
     } else {
         clearOrderConsole();
-        for(var idx=0; idx< choices.length; idx++){
-            addButton(choices[idx]);
+        for(var key in choices){
+            addButton(key);
         }
     }
 }

@@ -2,7 +2,6 @@ package play.orders;
 
 import map.Country;
 import state.Game;
-import state.Player;
 
 public class PlaceArmy extends Order {
 
@@ -29,7 +28,7 @@ public class PlaceArmy extends Order {
         }
         game.placeArmies(activePlayer(), _country, _count);
         if ( activePlayer().hasReserves() ){
-            return getAdjutant().forOrderType(OrderType.PlaceArmy);
+            return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.placeArmy(activePlayer(), game));
         } else{
             return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }

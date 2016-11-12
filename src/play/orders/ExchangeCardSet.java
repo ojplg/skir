@@ -3,7 +3,6 @@ package play.orders;
 import card.Card;
 import card.Cards;
 import state.Game;
-import state.Player;
 
 public class ExchangeCardSet extends Order {
 
@@ -27,7 +26,7 @@ public class ExchangeCardSet extends Order {
         int armies = game.tradeCards(_one, _two, _three);
         activePlayer().grantReserves(armies);
 
-        return getAdjutant().forOrderType(OrderType.PlaceArmy);
+        return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.placeArmy(activePlayer(), game));
     }
 
     @Override
