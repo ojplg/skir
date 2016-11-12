@@ -42,7 +42,7 @@ public class Attack extends Order {
         }
         boolean conquered = game.resolveAttack(_invader, _target);
         if ( conquered ){
-            return getAdjutant().afterConquest(this);
+            return getAdjutant().afterConquest(this, game.getOccupationForce(_invader) - 1);
         } else {
             return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }

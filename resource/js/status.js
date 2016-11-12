@@ -99,14 +99,16 @@ function occupySelected(){
     console.log("Occupy selected");
     clearOrderConsole();
     // need to fill in numbers correctly
-    addNumericSelect("occupation-force-selector", 1,10);
+    var min = currentChoices.Occupy.minimum_occupation_force;
+    var max = currentChoices.Occupy.maximum_occupation_force;
+    addNumericSelect("occupation-force-selector", min, max);
     addButton("DoOccupation");
 }
 
 function addNumericSelect(id,min,max){
     var selector = document.createElement("SELECT");
     selector.id = id;
-    for(var idx=min; idx<=max; idx++){
+    for(var idx=max; idx>=min; idx--){
         var option = new Option(idx,idx);
         selector.add(option);
     }

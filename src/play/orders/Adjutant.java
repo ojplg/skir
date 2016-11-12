@@ -2,6 +2,7 @@ package play.orders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import state.Game;
 import state.Player;
 
 import java.util.ArrayList;
@@ -33,8 +34,8 @@ public class Adjutant {
         return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableType);
     }
 
-    public Adjutant afterConquest(Attack attack){
-        return new Adjutant(this._activePlayer, true, ConstrainedOrderType.occupation(attack));
+    public Adjutant afterConquest(Attack attack, int maximumAvailableToMove){
+        return new Adjutant(this._activePlayer, true, ConstrainedOrderType.occupation(attack, maximumAvailableToMove));
     }
 
     private Adjutant(Player activePlayer, boolean conqueredCountry, ConstrainedOrderType constrainedOrderType){

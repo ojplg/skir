@@ -18,8 +18,8 @@ public class ConstrainedOrderType {
         return new ConstrainedOrderType(OrderType.PlaceArmy, constraints);
     }
 
-    public static ConstrainedOrderType occupation(Attack attack){
-        OccupationConstraints constraints = new OccupationConstraints(attack);
+    public static ConstrainedOrderType occupation(Attack attack, int maximumAvailableForOccupation){
+        OccupationConstraints constraints = new OccupationConstraints(attack, maximumAvailableForOccupation);
         return new ConstrainedOrderType(OrderType.Occupy, constraints);
     }
 
