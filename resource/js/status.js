@@ -241,7 +241,7 @@ function attackSelected(attackTypeFlag){
 
     var orderConsoleDiv = document.getElementById("order-console-div");
     var orderConsoleEndDiv = document.getElementById("order-console-end-div");
-    orderConsoleDiv.insertBefore(attackDiv, orderConsoleEndDiv);
+    orderConsoleDiv.appendChild(attackDiv);
 }
 
 //function set_attack_country(country_name){
