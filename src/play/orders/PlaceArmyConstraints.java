@@ -1,5 +1,6 @@
 package play.orders;
 
+import map.Countries;
 import map.Country;
 import org.json.simple.JSONObject;
 
@@ -26,7 +27,10 @@ public class PlaceArmyConstraints implements OrderConstraints {
 
     @Override
     public JSONObject toJsonObject() {
-        return null;
+        JSONObject jObject = new JSONObject();
+        jObject.put("maximum_armies", _maximumArmies);
+        jObject.put("possible_countries", Countries.asJsonArray(_possibleCountries));
+        return jObject;
     }
 
     @Override

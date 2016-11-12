@@ -6,7 +6,7 @@ var currentStatus = null;
 var attackType;
 var attackCountry;
 var defenseCountry;
-
+var currentChoices;
 
 function updatePlayerStats(playerStatus){
     var color = playerStatus.color;
@@ -21,14 +21,21 @@ function updatePlayerStats(playerStatus){
     continentSpan.textContent = playerStatus.continents;
 }
 
-function updateOrderConsole(color, choices){
-    console.log("Choices for " + color + " are " + choices);
+function updateOrderConsole(color, choicesObject){
+    currentChoices = choicesObject;
+    console.log("Choices for " + color + " are " + choicesObject);
     document.getElementById("active-player-field").textContent = "Active player is " + color;
+    clearOrderConsole();
+    var choices = [];
+    for(var key in choicesObject){
+        console.log("Adding key " + key);
+        choices.push(key);
+    }
+    console.log("Have " + choices.length + " choices");
     if( choices.length == 1 ){
         buttonClicked(choices[0]);
     } else {
-        clearOrderConsole();
-        for(var key in choices){
+        for(var key in choicesObject){
             addButton(key);
         }
     }
@@ -117,7 +124,13 @@ function placeArmySelected(){
     clearOrderConsole();
     var placementDiv = document.createElement("div");
     placementDiv.id = "place-army-text-div";
-    var placementContent = document.createTextNode("Click a country to place an army");
+
+    console.log("choices " + currentChoices);
+    var placementConstraint = currentChoices.PlaceArmy;
+    console.log("placement constraint " + placementConstraint);
+
+    var placementContent = document.createTextNode("Click a country to place an army. You have " +
+            placementConstraint.maximum_armies + " to place");
     placementDiv.appendChild(placementContent);
     addToOrderConsole(placementDiv);
     currentStatus = placeArmyStatusFlag;
@@ -212,10 +225,6 @@ function addButton(label){
     orderConsoleDiv.appendChild(button);
 }
 
-// function get_order_button(order_type){
-//     return document.getElementById(order_type + "-Button");
-// }
-
 function attackSelected(attackTypeFlag){
     console.log("Attack selected");
     clearOrderConsole();
@@ -242,20 +251,6 @@ function attackSelected(attackTypeFlag){
     var orderConsoleDiv = document.getElementById("order-console-div");
     orderConsoleDiv.appendChild(attackDiv);
 }
-
-//function set_attack_country(country_name){
-//    console.log("attack country selected " + country_name);
-//     var attackCountrySpan = document.getElementById("attack-country-span");
-//     attackCountrySpan.textContent = country_name;
-//     currentStatus = 'select-defense-country';
-// }
-//
-// function set_defense_country(country_name){
-//     console.log("defense country selected " + country_name);
-//     var defenseCountrySpan = document.getElementById("defense-country-span");
-//     defenseCountrySpan.textContent = country_name;
-//     currentStatus = null;
-// }
 
 function doAttack(all_out_flag){
     console.log("Doing attack " + all_out_flag);
