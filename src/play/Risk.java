@@ -74,9 +74,9 @@ public class Risk {
 
         gameRunnerFiber.start();
 
-        ThreadFiber shellFiber = new ThreadFiber(new RunnableExecutorImpl(), "ShellFiber", true);
-        new Shell(risk._game, channels, shellFiber);
-        shellFiber.start();
+//        ThreadFiber shellFiber = new ThreadFiber(new RunnableExecutorImpl(), "ShellFiber", true);
+//        new Shell(risk._game, channels, shellFiber);
+//        shellFiber.start();
 
         risk._gameRunner.startGame();
     }

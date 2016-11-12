@@ -144,7 +144,7 @@ public class Shell {
     }
 
     private void handleOccupy(Adjutant adjutant) throws IOException, QuitException {
-        Attack successfulAttack = adjutant.getSuccessfulAttack();
+        Attack successfulAttack = new Attack(adjutant, Country.Afghanistan, Country.Afghanistan, 3);
 
         int dieCount = successfulAttack.getAttackersDiceCount();
         int armiesInInvader = _game.getOccupationForce(successfulAttack.getInvader());

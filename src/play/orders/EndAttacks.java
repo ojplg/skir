@@ -13,19 +13,18 @@ public class EndAttacks extends Order {
     public Adjutant execute(Game game) {
         if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ) {
             if( game.hasLegalFortification(activePlayer())) {
-                getAdjutant().setAllowableOrders(OrderType.DrawCard, OrderType.Fortify);
+                return getAdjutant().forOrderTypes(OrderType.DrawCard, OrderType.Fortify);
             } else {
-                getAdjutant().setAllowableOrders(OrderType.DrawCard);
+                return getAdjutant().forOrderType(OrderType.DrawCard);
             }
         } else {
             if( game.hasLegalFortification(activePlayer())) {
-                getAdjutant().setAllowableOrders(OrderType.Fortify);
+                return getAdjutant().forOrderType(OrderType.Fortify);
             } else {
                 Player nextPlayer = game.nextPlayer();
-                return new Adjutant(nextPlayer);
+                return Adjutant.nextPlayer(nextPlayer);
             }
         }
-        return getAdjutant();
     }
 
     @Override

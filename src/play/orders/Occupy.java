@@ -24,16 +24,15 @@ public class Occupy extends Order {
             // TODO: Check for game over?
             game.resolveElimination(activePlayer(), loser);
             if (activePlayer().hasTooManyCards()){
-                getAdjutant().setAllowableOrders(OrderType.ExchangeCardSet);
+                return getAdjutant().forOrderTypes(OrderType.ExchangeCardSet);
             } else {
-                getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks,
+                return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks,
                     OrderType.AttackUntilVictoryOrDeath);
             }
         } else {
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks,
+            return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks,
                 OrderType.AttackUntilVictoryOrDeath);
         }
-        return getAdjutant();
     }
 
     @Override

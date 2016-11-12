@@ -21,9 +21,19 @@ public class Attack extends Order {
 
     public Attack(Adjutant adjutant, Country invader, Country target){
         super(adjutant);
+        // TODO: fix this!
         _attackersDiceCount = 3;
         _invader = invader;
         _target = target;
+    }
+
+    @Override
+    public String toString() {
+        return "Attack{" +
+                "_attackersDiceCount=" + _attackersDiceCount +
+                ", _invader=" + _invader +
+                ", _target=" + _target +
+                '}';
     }
 
     @Override
@@ -38,12 +48,10 @@ public class Attack extends Order {
         //int numberDefenders = game.getOccupationForce(_target);
         boolean conquered = game.resolveAttack(_invader, _target);
         if ( conquered ){
-            getAdjutant().successfulAttack(this);
-            getAdjutant().setAllowableOrders(OrderType.Occupy);
+            return getAdjutant().afterConquest(this);
         } else {
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
+            return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }
-        return getAdjutant();
     }
 
     public int getAttackersDiceCount() {

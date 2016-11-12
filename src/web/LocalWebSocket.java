@@ -17,6 +17,7 @@ import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
+import play.orders.OccupationConstraints;
 import play.orders.Occupy;
 import play.orders.Order;
 import play.orders.OrderType;
@@ -108,11 +109,12 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             }
             _channels.OrderEnteredChannel.publish(attack);
         } else if ("DoOccupation".equals(orderType)){
-            Attack successfulAttack = _currentAdjutant.getSuccessfulAttack();
+            OccupationConstraints constraints = _currentAdjutant.getOccupationConstraints();
+            _log.info("occupation constraints " + constraints);
             String occupationForce = (String) orderJson.get("occupationForce"); //successfulAttack.getAttackersDiceCount();
             int armiesToMove = Integer.parseInt(occupationForce);
-            Occupy occupy = new Occupy(_currentAdjutant, successfulAttack.getInvader(),
-                    successfulAttack.getTarget(), armiesToMove);
+            Occupy occupy = new Occupy(_currentAdjutant, constraints.attacker(),
+                    constraints.conquered(), armiesToMove);
             _channels.OrderEnteredChannel.publish(occupy);
         } else if ("EndAttacks".equals(orderType) ) {
             EndAttacks endAttacks = new EndAttacks(_currentAdjutant);

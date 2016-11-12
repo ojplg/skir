@@ -65,8 +65,7 @@ public class GameRunner {
     }
 
     public void startGame(){
-        Adjutant adjutant = new Adjutant(_game.currentAttacker());
-        adjutant.setAllowableOrders(OrderType.ClaimArmies);
+        Adjutant adjutant =  Adjutant.nextPlayer(_game.currentAttacker());
         adjutantReset(adjutant);
     }
 

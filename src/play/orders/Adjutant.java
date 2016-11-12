@@ -2,10 +2,8 @@ package play.orders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import play.Roller;
 import state.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +13,51 @@ public class Adjutant {
     private static final Logger _log = LogManager.getLogger(Adjutant.class);
 
     private final Player _activePlayer;
-    private final List<OrderType> _allowableOrders = new ArrayList<OrderType>();
-    private boolean _conqueredCountry = false;
-    private Attack _successfulAttack = null;
+    private final List<OrderType> _allowableOrders;
+    private final OrderConstraints _orderConstraints;
+    private final boolean _hasConqueredCountry;
 
-    public Adjutant(Player activePlayer){
+    public static Adjutant nextPlayer(Player player){
+        return new Adjutant(player, false, OrderType.ClaimArmies);
+    }
+
+    public Adjutant forOrderTypes(OrderType ... allowableOrders){
+        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableOrders);
+    }
+
+    public Adjutant forOrderType(OrderType allowableType){
+        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableType);
+    }
+
+    public Adjutant forOrderType(OrderType allowableType, OrderConstraints constraints){
+        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableType, constraints);
+    }
+
+    public Adjutant afterConquest(Attack attack){
+        OccupationConstraints constraints = new OccupationConstraints(attack);
+        return new Adjutant(this._activePlayer, true, OrderType.Occupy, constraints);
+    }
+
+    private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType){
         this._activePlayer = activePlayer;
-        this._allowableOrders.add(OrderType.ClaimArmies);
+        this._allowableOrders = Collections.singletonList(allowableType);
+        this._orderConstraints = null;
+        this._hasConqueredCountry = conqueredCountry;
+    }
+
+    private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType, OrderConstraints constraints){
+        this._activePlayer = activePlayer;
+        this._allowableOrders = Collections.singletonList(allowableType);
+        this._orderConstraints = constraints;
+        this._hasConqueredCountry = conqueredCountry;
+    }
+
+
+    private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType ... allowableOrders){
+        this._activePlayer = activePlayer;
+        this._allowableOrders = Arrays.asList(allowableOrders);
+        this._orderConstraints = null;
+        this._hasConqueredCountry = conqueredCountry;
     }
 
     public List<OrderType> allowableOrders() {
@@ -32,32 +68,19 @@ public class Adjutant {
         return allowableOrders().size() > 1;
     }
 
-    public void setAllowableOrders(OrderType ... types){
-        _allowableOrders.clear();
-        _allowableOrders.addAll(Arrays.asList(types));
+    public boolean hasOrderConstraints() {
+        return _orderConstraints != null;
     }
 
-    public void successfulAttack(Attack attack){
-        _conqueredCountry = true;
-        _successfulAttack = attack;
-    }
-
-    public Attack getSuccessfulAttack(){
-        return _successfulAttack;
+    public OccupationConstraints getOccupationConstraints(){
+        return (OccupationConstraints) _orderConstraints;
     }
 
     public boolean hasConqueredCountry(){
-        return _conqueredCountry;
-    }
-
-    private void checkAllowable(OrderType played){
-        if( _allowableOrders.contains(played) ){
-            throw new RuntimeException("Cannot " + played + " at this point. Only " + _allowableOrders);
-        }
+        return _hasConqueredCountry;
     }
 
     public Player getActivePlayer(){
         return _activePlayer;
     }
-
 }

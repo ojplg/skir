@@ -27,8 +27,7 @@ public class ExchangeCardSet extends Order {
         int armies = game.tradeCards(_one, _two, _three);
         activePlayer().grantReserves(armies);
 
-        getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
-        return getAdjutant();
+        return getAdjutant().forOrderType(OrderType.PlaceArmy);
     }
 
     @Override

@@ -24,13 +24,13 @@ public class ClaimArmies extends Order {
         activePlayer().grantReserves(numberToGrant);
         game.publishPlayerChanged(activePlayer());
 
-        if(Cards.hasTradeableSet(activePlayer().getCards()) ){
-            getAdjutant().setAllowableOrders(OrderType.ExchangeCardSet, OrderType.PlaceArmy);
-        } else {
-            getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
-        }
         _log.info("Claimed armies for " + getAdjutant().getActivePlayer());
-        return getAdjutant();
+
+        if(Cards.hasTradeableSet(activePlayer().getCards()) ){
+            return getAdjutant().forOrderTypes(OrderType.ExchangeCardSet, OrderType.PlaceArmy);
+        } else {
+            return getAdjutant().forOrderType(OrderType.PlaceArmy);
+        }
     }
 
     @Override

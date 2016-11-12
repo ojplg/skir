@@ -21,7 +21,6 @@ public class PlaceArmy extends Order {
         _count = count;
     }
 
-
     @Override
     public Adjutant execute(Game game) {
         // TODO: is this the wrong thing to check? What about when a country is newly occupied?
@@ -30,11 +29,10 @@ public class PlaceArmy extends Order {
         }
         game.placeArmies(activePlayer(), _country, _count);
         if ( activePlayer().hasReserves() ){
-            getAdjutant().setAllowableOrders(OrderType.PlaceArmy);
+            return getAdjutant().forOrderType(OrderType.PlaceArmy);
         } else{
-            getAdjutant().setAllowableOrders(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
+            return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
         }
-        return getAdjutant();
     }
 
     @Override

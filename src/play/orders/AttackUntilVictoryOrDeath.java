@@ -1,7 +1,6 @@
 package play.orders;
 
 import map.Country;
-import play.Roller;
 import state.Game;
 
 public class AttackUntilVictoryOrDeath extends Order {
@@ -17,12 +16,14 @@ public class AttackUntilVictoryOrDeath extends Order {
 
     @Override
     public Adjutant execute(Game game) {
+        Adjutant finalAdjutant = getAdjutant();
         while(game.getOccupationForce(_attacker) > 1 && game.getOccupationForce(_defender) > 0){
             int dieCount = Math.min(3, game.getOccupationForce(_attacker) - 1);
             Attack attack = new Attack(getAdjutant(), _attacker, _defender);
-            attack.execute(game);
+            finalAdjutant = attack.execute(game);
         }
-        return getAdjutant();
+        // BUG!!
+        return finalAdjutant;
     }
 
     @Override
