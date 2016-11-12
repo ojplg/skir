@@ -18,7 +18,6 @@ public class AttackUntilVictoryOrDeath extends Order {
     public Adjutant execute(Game game) {
         Adjutant finalAdjutant = getAdjutant();
         while(game.getOccupationForce(_attacker) > 1 && game.getOccupationForce(_defender) > 0){
-            int dieCount = Math.min(3, game.getOccupationForce(_attacker) - 1);
             Attack attack = new Attack(getAdjutant(), _attacker, _defender);
             finalAdjutant = attack.execute(game);
         }

@@ -1,10 +1,7 @@
 package play.orders;
 
 import map.Country;
-import play.Roller;
-import state.Constants;
 import state.Game;
-import play.Rolls;
 
 public class Attack extends Order {
 
@@ -21,7 +18,6 @@ public class Attack extends Order {
 
     public Attack(Adjutant adjutant, Country invader, Country target){
         super(adjutant);
-        // TODO: fix this!
         _attackersDiceCount = 3;
         _invader = invader;
         _target = target;
@@ -44,8 +40,6 @@ public class Attack extends Order {
         if ( activePlayer() == game.getOccupier(_target) ){
             throw new RuntimeException("Player " + activePlayer() + " trying to attack himself in " + _target);
         }
-        // TODO: Allow a defender to use 1 die?
-        //int numberDefenders = game.getOccupationForce(_target);
         boolean conquered = game.resolveAttack(_invader, _target);
         if ( conquered ){
             return getAdjutant().afterConquest(this);

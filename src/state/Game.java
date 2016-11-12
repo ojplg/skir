@@ -53,10 +53,6 @@ public class Game {
         fiber.start();
     }
 
-    public Roller getRoller(){
-        return _roller;
-    }
-
     private void publishAllState(){
         for(Country country : _map.getAllCountries()){
             Player player = _occupations.getOccupier(country);
