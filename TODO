@@ -5,7 +5,7 @@
 ** Handle fortification
 ** Handle occupation number of armies to send
 ** Expose card contents, not just number
-** Expose number of continents, expected draw
+** Expose expected draw
 
 * Decide on a capitalization style for the Javascript
 * Calculate and display luck statistics
