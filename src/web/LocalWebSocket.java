@@ -12,7 +12,6 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
-import play.orders.AttackConstraints;
 import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
 import play.orders.DrawCard;
@@ -109,10 +108,6 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             Order attack;
             Country attackFrom = new Country(attacker);
             Country attackTo = new Country(defender);
-            OrderConstraints constraints = _currentAdjutant.findConstraintsForOrderType(OrderType.Attack);
-            _log.info("Current adjutant " + _currentAdjutant);
-            _log.info("order constraints are " + constraints);
-            AttackConstraints attackConstraints = (AttackConstraints) constraints;
             String numberArmiesString = (String) orderJson.get("army_count");
             int numberArmies = Integer.parseInt(numberArmiesString);
             if("Attack".equals(orderType)) {
