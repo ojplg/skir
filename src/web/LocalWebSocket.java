@@ -140,7 +140,8 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         } else if ("Fortify".equals(orderType)) {
             String from = (String) orderJson.get("from");
             String to = (String) orderJson.get("to");
-            int numberArmies = (Integer) orderJson.get("number_armies");
+            String numberArmiesString = (String) orderJson.get("army_count");
+            int numberArmies = Integer.parseInt(numberArmiesString);
             Fortify fortify = new Fortify(_currentAdjutant, new Country(from), new Country(to), numberArmies);
             _channels.OrderEnteredChannel.publish(fortify);
         } else if("EndTurn".equals(orderType)) {

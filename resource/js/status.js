@@ -166,6 +166,16 @@ function fromCountryClick(country){
     var fromCountryTextDiv = document.getElementById("from-text-div");
     var newHtml = "From: " + country.wire_name();
     fromCountryTextDiv.innerHTML = newHtml;
+
+    // possible counts select
+    console.log("currentChoices " + currentChoices);
+    var orderSpecificRestrictions = currentChoices[orderType];
+    console.log("orderSpecificRestrictions " + orderSpecificRestrictions);
+    var counts = orderSpecificRestrictions["counts"];
+    console.log("counts " + counts);
+    var maxToMove = counts[country.wire_name()];
+    console.log("army count " + maxToMove);
+    addNumericSelect("army-count-select", 1 , maxToMove);
 }
 
 function toCountryClick(country){
@@ -178,6 +188,7 @@ function toCountryClick(country){
     var order = newOrder(orderType);
     order.from = fromCountry.wire_name();
     order.to = country.wire_name();
+    order.army_count = document.getElementById("army-count-select").value;
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }
