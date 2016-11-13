@@ -52,7 +52,7 @@ public class Player {
     }
 
     public boolean hasMaximumCards(){
-        return _cards.size()  == Constants.MAXIMUM_CARD_HOLDINGS;
+        return _cards.size() >= Constants.MAXIMUM_CARD_HOLDINGS;
     }
 
     public boolean hasTooManyCards(){

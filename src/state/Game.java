@@ -125,7 +125,7 @@ public class Game {
 
     public int computeExpectedGrant(Player player){
         int geographicArmies = computeMapSupply(player);
-        int numberToGrant = Math.max(3, geographicArmies);
+        int numberToGrant = Math.max(Constants.MINIMUM_ARMY_GRANT, geographicArmies);
         return numberToGrant;
     }
 
@@ -138,7 +138,7 @@ public class Game {
     }
 
     private int computeCountrySupply(Player player) {
-        return Math.max(3, numberCountriesOccupied(player) / 3);
+        return numberCountriesOccupied(player) / 3;
     }
 
     public int numberCountriesOccupied(Player player){
@@ -154,8 +154,8 @@ public class Game {
         if (! isTarget(attacker, defender) ){
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
-        int attackerDice = Math.min(3, _occupations.getOccupationForce(attacker) - 1);
-        int defenderDice = Math.min(2, _occupations.getOccupationForce(defender));
+        int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
+        int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
