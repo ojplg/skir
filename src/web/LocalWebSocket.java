@@ -1,6 +1,5 @@
 package web;
 
-import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
@@ -11,19 +10,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
-import play.orders.Attack;
-import play.orders.AttackUntilVictoryOrDeath;
-import play.orders.ClaimArmies;
-import play.orders.DrawCard;
-import play.orders.EndAttacks;
-import play.orders.EndTurn;
-import play.orders.Fortify;
-import play.orders.OccupationConstraints;
-import play.orders.Occupy;
 import play.orders.Order;
 import play.orders.OrderConstraints;
 import play.orders.OrderType;
-import play.orders.PlaceArmy;
 import state.event.ClientConnectedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
@@ -96,55 +85,9 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     }
 
     private void handleOrder(JSONObject orderJson){
-        String orderType = (String) orderJson.get("orderType");
-        if( "PlaceArmy".equals(orderType)){
-            String countryName = (String) orderJson.get("country");
-            Country country = new Country(countryName);
-            PlaceArmy placeArmy = new PlaceArmy(_currentAdjutant, country);
-            _channels.OrderEnteredChannel.publish(placeArmy);
-        } else if ("Attack".equals(orderType) || "AttackUntilVictoryOrDeath".equals(orderType)){
-            String attacker = (String) orderJson.get("from");
-            String defender = (String) orderJson.get("to");
-            Order attack;
-            Country attackFrom = new Country(attacker);
-            Country attackTo = new Country(defender);
-            String numberArmiesString = (String) orderJson.get("army_count");
-            int numberArmies = Integer.parseInt(numberArmiesString);
-            if("Attack".equals(orderType)) {
-                attack = new Attack(_currentAdjutant, attackFrom, attackTo, numberArmies);
-            } else {
-                attack = new AttackUntilVictoryOrDeath(_currentAdjutant, attackFrom, attackTo);
-            }
-            _channels.OrderEnteredChannel.publish(attack);
-        } else if ("DoOccupation".equals(orderType)){
-            OccupationConstraints constraints = _currentAdjutant.getOccupationConstraints();
-            _log.info("occupation constraints " + constraints);
-            String occupationForce = (String) orderJson.get("occupationForce"); //successfulAttack.getAttackersDiceCount();
-            int armiesToMove = Integer.parseInt(occupationForce);
-            Occupy occupy = new Occupy(_currentAdjutant, constraints.attacker(),
-                    constraints.conquered(), armiesToMove);
-            _channels.OrderEnteredChannel.publish(occupy);
-        } else if ("EndAttacks".equals(orderType) ) {
-            EndAttacks endAttacks = new EndAttacks(_currentAdjutant);
-            _channels.OrderEnteredChannel.publish(endAttacks);
-        } else if ("DrawCard".equals(orderType)){
-            DrawCard drawCard = new DrawCard(_currentAdjutant);
-            _channels.OrderEnteredChannel.publish(drawCard);
-        } else if ("ClaimArmies".equals(orderType) ){
-            ClaimArmies claimArmies = new ClaimArmies(_currentAdjutant);
-            _channels.OrderEnteredChannel.publish(claimArmies);
-        } else if ("Fortify".equals(orderType)) {
-            String from = (String) orderJson.get("from");
-            String to = (String) orderJson.get("to");
-            String numberArmiesString = (String) orderJson.get("army_count");
-            int numberArmies = Integer.parseInt(numberArmiesString);
-            Fortify fortify = new Fortify(_currentAdjutant, new Country(from), new Country(to), numberArmies);
-            _channels.OrderEnteredChannel.publish(fortify);
-        } else if("EndTurn".equals(orderType)) {
-            _channels.OrderEnteredChannel.publish(new EndTurn(_currentAdjutant));
-        } else {
-            _log.error("Cannot handle " + orderJson);
-        }
+        OrderJsonParser orderJsonParser = new OrderJsonParser(_currentAdjutant);
+        Order order = orderJsonParser.parseOrder(orderJson);
+        _channels.OrderEnteredChannel.publish(order);
     }
 
     @Override
