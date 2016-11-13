@@ -184,36 +184,54 @@ function doStatusDependentCountryClickedWork(country){
 
 function fromCountryClick(country){
     console.log("fromCountryClick " + country);
-    currentStatus = selectToCountryStatusFlag;
-    fromCountry = country;
-    var fromCountryTextDiv = document.getElementById("from-text-div");
-    var newHtml = "From: " + country.wire_name();
-    fromCountryTextDiv.innerHTML = newHtml;
-
-    // possible counts select
-    console.log("currentChoices " + currentChoices);
     var orderSpecificRestrictions = currentChoices[orderType];
     console.log("orderSpecificRestrictions " + orderSpecificRestrictions);
-    var counts = orderSpecificRestrictions["counts"];
-    console.log("counts " + counts);
-    var maxToMove = counts[country.wire_name()];
-    console.log("army count " + maxToMove);
-    addNumericSelect("army-count-select", 1 , maxToMove);
+    var countryMap = orderSpecificRestrictions["destinations"];
+    console.log("Country map is " + countryMap);
+    if( Object.keys(countryMap).indexOf(country.wire_name()) >= 0){
+
+        currentStatus = selectToCountryStatusFlag;
+        fromCountry = country;
+        var fromCountryTextDiv = document.getElementById("from-text-div");
+        var newHtml = "From: " + country.wire_name();
+        fromCountryTextDiv.innerHTML = newHtml;
+
+        // possible counts select
+        console.log("currentChoices " + currentChoices);
+        var counts = orderSpecificRestrictions["counts"];
+        console.log("counts " + counts);
+        var maxToMove = counts[country.wire_name()];
+        console.log("army count " + maxToMove);
+        addNumericSelect("army-count-select", 1 , maxToMove);
+    } else {
+        console.log("Invalid from selection " + country.wire_name());
+    }
 }
 
 function toCountryClick(country){
     console.log("toCountryClick " + country);
-    currentStatus = null;
-    var toTextDiv = document.getElementById("to-text-div");
-    var newHtml = "To: " + country.wire_name();
-    toTextDiv.innerHTML = newHtml;
+    var orderSpecificRestrictions = currentChoices[orderType];
+    console.log("orderSpecificRestrictions " + orderSpecificRestrictions);
+    var countryMap = orderSpecificRestrictions["destinations"];
+    console.log("Country map is " + countryMap);
+    var possibleToList = countryMap[fromCountry.wire_name()];
+    console.log("Possible list " + possibleToList);
 
-    var order = newOrder(orderType);
-    order.from = fromCountry.wire_name();
-    order.to = country.wire_name();
-    order.army_count = document.getElementById("army-count-select").value;
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
+    if( possibleToList.indexOf(country.wire_name()) >= 0){
+        currentStatus = null;
+        var toTextDiv = document.getElementById("to-text-div");
+        var newHtml = "To: " + country.wire_name();
+        toTextDiv.innerHTML = newHtml;
+
+        var order = newOrder(orderType);
+        order.from = fromCountry.wire_name();
+        order.to = country.wire_name();
+        order.army_count = document.getElementById("army-count-select").value;
+        var jsonOrder = JSON.stringify(order);
+        sendMessage(jsonOrder);
+    } else {
+        console.log("Invalid to selection " + country.wire_name());
+    }
 }
 
 function sendDoOccupationMessage(){
@@ -243,11 +261,17 @@ function sendClaimArmiesMessage(){
 }
 
 function placeArmyCountryClick(country){
-    currentStatus = null;
     var order = newOrder("PlaceArmy");
-    order.country = country.wire_name();
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
+    var placeArmyConstraints = currentChoices["PlaceArmy"];
+    var countries = placeArmyConstraints["possible_countries"];
+    if( countries.indexOf(country.wire_name()) >= 0 ){
+        order.country = country.wire_name();
+        var jsonOrder = JSON.stringify(order);
+        sendMessage(jsonOrder);
+        currentStatus = null;
+    } else {
+        console.log("Cannot place an army in " + country.wire_name());
+    }
 }
 
 function newOrder(orderType){

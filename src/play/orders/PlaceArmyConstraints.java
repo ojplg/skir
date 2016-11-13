@@ -28,8 +28,8 @@ public class PlaceArmyConstraints implements OrderConstraints {
     @Override
     public JSONObject toJsonObject() {
         JSONObject jObject = new JSONObject();
-        jObject.put("maximum_armies", _maximumArmies);
-        jObject.put("possible_countries", Countries.asJsonArray(_possibleCountries));
+        jObject.put("maximum_armies", getMaximumArmies());
+        jObject.put("possible_countries", Countries.asJsonArray(getPossibleCountries()));
         return jObject;
     }
 
