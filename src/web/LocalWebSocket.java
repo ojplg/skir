@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -16,7 +15,6 @@ import play.orders.Attack;
 import play.orders.AttackConstraints;
 import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
-import play.orders.ConstrainedOrderType;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.EndTurn;
@@ -32,8 +30,6 @@ import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 class LocalWebSocket implements WebSocket.OnTextMessage {
 
@@ -180,14 +176,6 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         jObject.put("order_types", orderTypes);
 
         sendJson(jObject);
-    }
-
-    private List<String> orderTypesToStrings(List<OrderType> types){
-        List<String> strings = new ArrayList<String>();
-        for(OrderType type : types){
-            strings.add(type.toString());
-        }
-        return strings;
     }
 
     private void sendJson(JSONObject jObject){
