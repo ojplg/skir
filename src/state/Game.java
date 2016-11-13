@@ -185,6 +185,7 @@ public class Game {
         List<Card> cards = vanquished.getCards();
         vanquished.removeCards(cards);
         conqueror.addCards(cards);
+        _log.info("Removing player " + vanquished);
         _players.remove(vanquished);
         publishPlayerChanged(conqueror);
         publishPlayerChanged(vanquished);
