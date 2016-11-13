@@ -3,7 +3,6 @@ package play;
 import ai.AutomatedPlayer;
 import ai.NeverAttacks;
 import card.StandardCardSet;
-import cli.Shell;
 import map.Country;
 import map.StandardMap;
 import map.WorldMap;
@@ -74,18 +73,12 @@ public class Risk {
 
         gameRunnerFiber.start();
 
-//        ThreadFiber shellFiber = new ThreadFiber(new RunnableExecutorImpl(), "ShellFiber", true);
-//        new Shell(risk._game, channels, shellFiber);
-//        shellFiber.start();
-
         risk._gameRunner.startGame();
     }
 
     private void runWebServer(){
         try {
-
             _jettyServer.StartJettyServer(_latch);
-
         } catch (Exception e){
             _log.error("Could not start jetty", e);
         }
