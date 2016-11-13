@@ -39,7 +39,7 @@ public class PlaceArmy extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.PlaceArmy;
     }
 }

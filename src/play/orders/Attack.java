@@ -16,13 +16,6 @@ public class Attack extends Order {
         _target = target;
     }
 
-    public Attack(Adjutant adjutant, Country invader, Country target){
-        super(adjutant);
-        _attackersDiceCount = 3;
-        _invader = invader;
-        _target = target;
-    }
-
     @Override
     public String toString() {
         return "Attack{" +
@@ -44,7 +37,11 @@ public class Attack extends Order {
         if ( conquered ){
             return getAdjutant().afterConquest(this, game.getOccupationForce(_invader) - 1);
         } else {
-            return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
+            ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
+            ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
+            ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
+
+            return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
         }
     }
 
@@ -61,7 +58,7 @@ public class Attack extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.Attack;
     }
 }

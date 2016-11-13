@@ -17,16 +17,18 @@ public class AttackUntilVictoryOrDeath extends Order {
     @Override
     public Adjutant execute(Game game) {
         Adjutant finalAdjutant = getAdjutant();
+
         while(game.getOccupationForce(_attacker) > 1 && game.getOccupationForce(_defender) > 0){
-            Attack attack = new Attack(getAdjutant(), _attacker, _defender);
+            int invadingForce = game.getOccupationForce(_attacker);
+            int attackingDice = Math.min(3, invadingForce - 1);
+            Attack attack = new Attack(finalAdjutant, _attacker, _defender, attackingDice);
             finalAdjutant = attack.execute(game);
         }
-        // BUG!!
         return finalAdjutant;
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.AttackUntilVictoryOrDeath;
     }
 }

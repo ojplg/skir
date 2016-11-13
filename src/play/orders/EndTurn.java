@@ -16,7 +16,7 @@ public class EndTurn extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.EndTurn;
     }
 

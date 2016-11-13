@@ -30,7 +30,7 @@ public class ExchangeCardSet extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.ExchangeCardSet;
     }
 }

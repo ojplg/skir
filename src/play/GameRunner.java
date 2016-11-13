@@ -24,7 +24,7 @@ public class GameRunner {
     private final Channels _channels;
     private final Fiber _fiber;
 
-    private Adjutant currentAdjutant;
+    private Adjutant _currentAdjutant;
 
     public GameRunner(Game game, Channels channels, Fiber fiber){
         _game = game;
@@ -42,31 +42,27 @@ public class GameRunner {
                 new Callback<ClientConnectedEvent>() {
                     @Override
                     public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-                        _channels.AdjutantChannel.publish(currentAdjutant);
+                        _channels.AdjutantChannel.publish(_currentAdjutant);
                     }
                 });
     }
 
-    private void adjutantReset(Adjutant adjutant){
-        currentAdjutant = adjutant;
-        _channels.AdjutantChannel.publish(adjutant);
-    }
-
     private void processOrder(Order order){
-        Adjutant adjutant = order.execute(_game);
-        AutomatedPlayer ai = getAutomatedPlayer(adjutant.getActivePlayer());
-        if( ai != null){
-            OrderType ot = ai.pickOrderType(adjutant.allowableOrders(), _game);
-            Order generatedOrder = ai.generateOrder(ot, adjutant, _game);
+        _log.info("Processing order for " + _currentAdjutant.getActivePlayer() + " of type " + order.getType());
+        _currentAdjutant = order.execute(_game);
+        AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
+        if( ai != null ){
+            OrderType ot = ai.pickOrderType(_currentAdjutant.allowableOrders(), _game);
+            Order generatedOrder = ai.generateOrder(ot, _currentAdjutant, _game);
             processOrder(generatedOrder);
         } else {
-            adjutantReset(adjutant);
+            _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
 
     public void startGame(){
-        Adjutant adjutant =  Adjutant.nextPlayer(_game.currentAttacker());
-        adjutantReset(adjutant);
+        _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
+        _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
     public void addAutomatedPlayer(AutomatedPlayer ai){
@@ -81,5 +77,4 @@ public class GameRunner {
         }
         return ai;
     }
-
 }

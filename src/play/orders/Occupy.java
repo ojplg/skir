@@ -19,12 +19,13 @@ public class Occupy extends Order {
 
     @Override
     public Adjutant execute(Game game) {
+        boolean playerEliminated = game.resolveConquest(_victor, _conquered, _armies);
         ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
         ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
         ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
 
         Player loser = game.getOccupier(_conquered);
-        if ( game.resolveConquest(_victor, _conquered, _armies) ){
+        if ( playerEliminated ){
             // TODO: Check for game over?
             game.resolveElimination(activePlayer(), loser);
             if (activePlayer().hasTooManyCards()){
@@ -38,7 +39,7 @@ public class Occupy extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.Occupy;
     }
 }

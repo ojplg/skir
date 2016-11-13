@@ -33,7 +33,7 @@ public class EndAttacks extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.EndAttacks;
     }
 }

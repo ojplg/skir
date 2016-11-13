@@ -36,7 +36,7 @@ public class ClaimArmies extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.ClaimArmies;
     }
 }

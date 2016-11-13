@@ -148,7 +148,7 @@ public class Game {
         if (! isTarget(attacker, defender) ){
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
-        int attackerDice = Math.min(3, _occupations.getOccupationForce(attacker));
+        int attackerDice = Math.min(3, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(2, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
         _occupations.killArmies(attacker, rolls.attackersLosses());

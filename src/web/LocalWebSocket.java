@@ -13,11 +13,13 @@ import org.json.simple.parser.ParseException;
 import play.Channels;
 import play.orders.Adjutant;
 import play.orders.Attack;
+import play.orders.AttackConstraints;
 import play.orders.AttackUntilVictoryOrDeath;
 import play.orders.ClaimArmies;
 import play.orders.ConstrainedOrderType;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
+import play.orders.EndTurn;
 import play.orders.Fortify;
 import play.orders.OccupationConstraints;
 import play.orders.Occupy;
@@ -87,7 +89,11 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             String messageType = (String) jObject.get("messageType");
             _log.info("Message type was " + messageType);
             if( "Order".equals(messageType)){
-                handleOrder(jObject);
+                try {
+                    handleOrder(jObject);
+                } catch (Exception ex){
+                    _log.error("Could not handle order ", ex);
+                }
             }
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + s, pe);
@@ -105,10 +111,17 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             String attacker = (String) orderJson.get("from");
             String defender = (String) orderJson.get("to");
             Order attack;
+            Country attackFrom = new Country(attacker);
+            Country attackTo = new Country(defender);
+            OrderConstraints constraints = _currentAdjutant.findConstraintsForOrderType(OrderType.Attack);
+            _log.info("Current adjutant " + _currentAdjutant);
+            _log.info("order constraints are " + constraints);
+            AttackConstraints attackConstraints = (AttackConstraints) constraints;
+            int maxAttackingDice = attackConstraints.maximumAllowableDice(attackFrom);
             if("Attack".equals(orderType)) {
-                attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
+                attack = new Attack(_currentAdjutant, attackFrom, attackTo, maxAttackingDice);
             } else {
-                attack = new AttackUntilVictoryOrDeath(_currentAdjutant, new Country(attacker), new Country(defender));
+                attack = new AttackUntilVictoryOrDeath(_currentAdjutant, attackFrom, attackTo);
             }
             _channels.OrderEnteredChannel.publish(attack);
         } else if ("DoOccupation".equals(orderType)){
@@ -134,6 +147,8 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             int numberArmies = (Integer) orderJson.get("number_armies");
             Fortify fortify = new Fortify(_currentAdjutant, new Country(from), new Country(to), numberArmies);
             _channels.OrderEnteredChannel.publish(fortify);
+        } else if("EndTurn".equals(orderType)) {
+            _channels.OrderEnteredChannel.publish(new EndTurn(_currentAdjutant));
         } else {
             _log.error("Cannot handle " + orderJson);
         }

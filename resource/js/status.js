@@ -92,9 +92,17 @@ function buttonClicked(orderType){
         sendClaimArmiesMessage();
     } else if (orderType == "Fortify") {
         fromToOrderSelected("Fortify");
+    } else if (orderType == "EndTurn") {
+        endTurnSelected();
     } else {
         console.log("Selection unknown " + orderType);
     }
+}
+
+function endTurnSelected(){
+    var order = newOrder("EndTurn");
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
 }
 
 function occupySelected(){

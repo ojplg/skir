@@ -28,7 +28,7 @@ public class Fortify extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.Fortify;
     }
 }

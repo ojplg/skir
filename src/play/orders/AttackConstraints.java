@@ -18,7 +18,7 @@ public class AttackConstraints implements OrderConstraints {
     public AttackConstraints(Player player, Game game){
         Map<Country, Integer> armies = new HashMap<Country, Integer>();
         Map<Country, List<Country>> destinations = new HashMap<Country, List<Country>>();
-        List<Country> availableCountries = game.possibleFortificationCountries(player);
+        List<Country> availableCountries = game.countriesToAttackFrom(player);
         for(Country country : availableCountries){
             int count = game.getOccupationForce(country) - 1;
             List<Country> alliedNeighbors = game.enemyNeighbors(country);
@@ -48,6 +48,16 @@ public class AttackConstraints implements OrderConstraints {
         jObject.put("counts", counts);
         jObject.put("destinations", destinations);
         return jObject;
+    }
+
+    public int maximumAllowableDice(Country country){
+        Integer integer = _availableArmies.get(country);
+        return integer.intValue();
+    }
+
+    @Override
+    public String toString() {
+        return "AttackConstraints" + toJsonObject();
     }
 
 }

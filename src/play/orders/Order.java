@@ -12,7 +12,7 @@ public abstract class Order {
     }
 
     public abstract Adjutant execute(Game game);
-    abstract OrderType getType();
+    public abstract OrderType getType();
 
     public Player activePlayer(){
         return _adjutant.getActivePlayer();

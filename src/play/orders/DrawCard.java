@@ -20,7 +20,7 @@ public class DrawCard extends Order {
     }
 
     @Override
-    OrderType getType() {
+    public OrderType getType() {
         return OrderType.DrawCard;
     }
 }

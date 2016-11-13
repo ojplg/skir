@@ -2,7 +2,6 @@ package play.orders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import state.Game;
 import state.Player;
 
 import java.util.ArrayList;
@@ -57,7 +56,6 @@ public class Adjutant {
         this._hasConqueredCountry = conqueredCountry;
     }
 
-
     private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType ... allowableOrders){
         this._activePlayer = activePlayer;
         List<ConstrainedOrderType> constrainedOrderTypes = new ArrayList<ConstrainedOrderType>();
@@ -99,5 +97,14 @@ public class Adjutant {
 
     public Player getActivePlayer(){
         return _activePlayer;
+    }
+
+    @Override
+    public String toString() {
+        return "Adjutant{" +
+                "_activePlayer=" + _activePlayer +
+                ", _allowableOrders=" + _allowableOrders +
+                ", _hasConqueredCountry=" + _hasConqueredCountry +
+                '}';
     }
 }
