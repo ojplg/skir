@@ -69,10 +69,10 @@ public class Game {
     public void publishPlayerChanged(Player player){
         int countryCount = numberCountriesOccupied(player);
         int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
-        int cardCount = player.getCards().size();
         int continentCount = numberContinentsOccupied(player);
+        int expectedGrant = computeExpectedGrant(player);
         _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount, cardCount, continentCount)
+                new PlayerChangedEvent(player, countryCount, armyCount, player.getCards(), continentCount, expectedGrant)
         );
     }
 
@@ -121,6 +121,12 @@ public class Game {
 
     public int computeMapSupply(Player player){
         return computeCountrySupply(player) + computeContinentSupply(player);
+    }
+
+    public int computeExpectedGrant(Player player){
+        int geographicArmies = computeMapSupply(player);
+        int numberToGrant = Math.max(3, geographicArmies);
+        return numberToGrant;
     }
 
     public int computeContinentSupply(Player player){

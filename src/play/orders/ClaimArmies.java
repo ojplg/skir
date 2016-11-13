@@ -9,8 +9,6 @@ public class ClaimArmies extends Order {
 
     private static final Logger _log = LogManager.getLogger(ClaimArmies.class);
 
-    private static final int MINIMUM = 3;
-
     public ClaimArmies(Adjutant adjutant) {
         super(adjutant);
     }
@@ -18,8 +16,7 @@ public class ClaimArmies extends Order {
     @Override
     public Adjutant execute(Game game) {
         _log.info("Claiming armies for " + getAdjutant().getActivePlayer());
-        int geographicArmies = game.computeMapSupply(activePlayer());
-        int numberToGrant = Math.max(MINIMUM, geographicArmies);
+        int numberToGrant = game.computeExpectedGrant(activePlayer());
         activePlayer().grantReserves(numberToGrant);
         game.publishPlayerChanged(activePlayer());
 

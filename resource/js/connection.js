@@ -1,4 +1,4 @@
-var connection = new WebSocket('ws://localhost:8080');
+var connection = new WebSocket('ws://localhost:8080','skir1');
 
 connection.onmessage = function(event){
   console.log("from server:" + event.data);

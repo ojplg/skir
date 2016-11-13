@@ -40,7 +40,8 @@ public class UseJetty {
             @Override
             public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
                 _log.info("doWebSocket called " + s);
-                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber);
+                String remoteAddress = httpServletRequest.getRemoteAddr();
+                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber, remoteAddress);
                 return webSocket;
             }
         };

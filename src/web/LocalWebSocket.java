@@ -24,17 +24,22 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
     private static volatile int _counter = 0;
-    private String _id;
-    private Connection _connection;
-    private final Channels _channels;
 
+    private final String _id;
+    private final Channels _channels;
+    private final String _remoteAddress;
+
+    private Connection _connection;
     private Adjutant _currentAdjutant;
 
-    LocalWebSocket(Channels channels, Fiber fiber){
+    LocalWebSocket(Channels channels, Fiber fiber, String remoteAddress){
         _counter++ ;
         _id = String.valueOf(_counter);
+        _remoteAddress = remoteAddress;
 
         _channels = channels;
+
+        _log.info("Starting new web socket connection " + _id + " from address " + _remoteAddress);
 
         channels.MapChangedEventChannel.subscribe(fiber,
                 new Callback<MapChangedEvent>() {
@@ -65,11 +70,10 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
 
     @Override
     public void onMessage(String s) {
-        _log.info("onMessage called local web socket " + s);
+        _log.debug("onMessage called local web socket " + s);
         JSONParser parser = new JSONParser();
         try {
             JSONObject jObject = (JSONObject) parser.parse(s);
-            _log.info("PARSED a message from the client " + jObject + " of type " + jObject.getClass());
             String messageType = (String) jObject.get("messageType");
             _log.info("Message type was " + messageType);
             if( "Order".equals(messageType)){
@@ -94,7 +98,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     public void onOpen(Connection connection) {
         _log.info("onOpen called on LocalWebSocket");
         _connection = connection;
-        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id));
+        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _remoteAddress));
     }
 
     @Override

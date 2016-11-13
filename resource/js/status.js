@@ -19,6 +19,8 @@ function updatePlayerStats(playerStatus){
     cardSpan.textContent = playerStatus.card_count;
     var continentSpan = document.getElementById(color + "-continents");
     continentSpan.textContent = playerStatus.continents;
+    var expectedSpan = document.getElementById(color + "-expected");
+    expectedSpan.textContent = playerStatus.expected_armies;
 }
 
 function updateOrderConsole(color, choicesObject){
