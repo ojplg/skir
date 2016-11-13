@@ -2,13 +2,8 @@
 * Clean up artifacts on canvas
 * Web page UI
 ** Know active user
-** Handle fortification
-** Handle occupation number of armies to send
 ** Expose card contents, not just number
 ** Expose expected draw
-
-* Decide on a capitalization style for the Javascript
 * Calculate and display luck statistics
 * Drop army in country of card on card exchange
-* Does the AttackUntilVictoryOrDeath properly handle when the number of attacking dice must change?
 * Properly handle when a player is eliminated
