@@ -13,9 +13,11 @@ import org.jetlang.fibers.Fiber;
 import play.orders.Adjutant;
 import play.orders.Order;
 import play.orders.OrderType;
+import state.ClientInfo;
 import state.Game;
 import state.Player;
 import state.event.ClientConnectedEvent;
+import state.event.GameJoinedEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,12 +31,13 @@ public class GameRunner {
     private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
     private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
-    private final Map<Player, String> _remotePlayerAddresses = new HashMap<Player, String>();
+    private final Map<Player, ClientInfo> _remotePlayerInfo = new HashMap<Player, ClientInfo>();
     private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
 
     private Adjutant _currentAdjutant;
+    private boolean _gameStarted = false;
 
     public GameRunner(Channels channels, Fiber fiber){
         _channels = channels;
@@ -70,17 +73,30 @@ public class GameRunner {
         // TODO: need to count this
         int availablePlayerNumber = 0;
 
-        Player player = _game.getAllPlayers().get(availablePlayerNumber);
+        if( playerSlotAvailable()) {
+            _gameStarted = true;
+            Player player = _game.getAllPlayers().get(availablePlayerNumber);
 
+            ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
 
-        _remotePlayerAddresses.put(player, clientConnectedEvent.getClientAddress());
+            _remotePlayerInfo.put(player, clientInfo);
 
-        _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
+            _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
 
-        // this should happen when a start command comes from client
-        initializeAutomatedPlayers();
+            _channels.GameJoinedEventChannel.publish(new GameJoinedEvent(clientConnectedEvent.getClientKey(), player));
+
+            // this should happen when a start command comes from client
+            // when we know how to automate remaining players
+            initializeAutomatedPlayers();
+        } else {
+            _log.info("Could not join the game " + clientConnectedEvent);
+        }
 
         _channels.AdjutantChannel.publish(_currentAdjutant);
+    }
+
+    private boolean playerSlotAvailable(){
+        return ! _gameStarted;
     }
 
     private void processOrder(Order order){
@@ -91,13 +107,23 @@ public class GameRunner {
             OrderType ot = ai.pickOrderType(_currentAdjutant.allowableOrders(), _game);
             Order generatedOrder = ai.generateOrder(ot, _currentAdjutant, _game);
             processOrder(generatedOrder);
+            sillyDelay();
         } else {
             _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
 
+    private void sillyDelay(){
+        try {
+            Thread.sleep(100);
+        } catch(InterruptedException ie){
+            _log.error("Who interrupted me?", ie);
+        }
+    }
+
     public void startGame(){
         assignCountries();
+
 
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);

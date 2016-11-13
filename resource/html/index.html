@@ -7,11 +7,12 @@
     <script src="js/status.js"></script>
     <script src="js/connection.js"></script>
 </head>
-<body onload="draw_map()">
+<body onload="initializeClient()">
   <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
   </canvas>
 
   <div id="active-player-field"></div>
+  <div id="other-player-status-div"></div>
   <div id="order-console-div"></div>
 
   <div id="player-status-div">

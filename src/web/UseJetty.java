@@ -38,10 +38,10 @@ public class UseJetty {
 
         WebSocketHandler socketHandler = new WebSocketHandler() {
             @Override
-            public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String s) {
-                _log.info("doWebSocket called " + s);
+            public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String key) {
+                _log.info("doWebSocket called " + key);
                 String remoteAddress = httpServletRequest.getRemoteAddr();
-                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber, remoteAddress);
+                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber, remoteAddress, key);
                 return webSocket;
             }
         };

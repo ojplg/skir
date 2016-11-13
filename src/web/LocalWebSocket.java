@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.jetlang.core.Callback;
+import org.jetlang.core.Disposable;
 import org.jetlang.fibers.Fiber;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,6 +15,7 @@ import play.orders.Order;
 import play.orders.OrderConstraints;
 import play.orders.OrderType;
 import state.event.ClientConnectedEvent;
+import state.event.GameJoinedEvent;
 import state.event.MapChangedEvent;
 import state.event.PlayerChangedEvent;
 
@@ -28,14 +30,16 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     private final String _id;
     private final Channels _channels;
     private final String _remoteAddress;
+    private final String _clientKey;
 
     private Connection _connection;
     private Adjutant _currentAdjutant;
 
-    LocalWebSocket(Channels channels, Fiber fiber, String remoteAddress){
+    LocalWebSocket(Channels channels, Fiber fiber, String remoteAddress, String clientKey){
         _counter++;
         _id = String.valueOf(_counter);
         _remoteAddress = remoteAddress;
+        _clientKey = clientKey;
 
         _channels = channels;
 
@@ -66,6 +70,15 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
                     }
                 }
         );
+
+        channels.GameJoinedEventChannel.subscribe(fiber,
+                new Callback<GameJoinedEvent>() {
+                    @Override
+                    public void onMessage(GameJoinedEvent gameJoinedEvent) {
+                        handleGameJoinedEvent(gameJoinedEvent);
+                    }
+                }
+        );
     }
 
     @Override
@@ -88,6 +101,14 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         }
     }
 
+    private void handleGameJoinedEvent(GameJoinedEvent gameJoinedEvent){
+        JSONObject jObject = new JSONObject();
+        jObject.put("message_type", "player_joined");
+        jObject.put("client_key", gameJoinedEvent.getClientKey());
+        jObject.put("color", gameJoinedEvent.getPlayer().getColor());
+        sendJson(jObject);
+    }
+
     private void handleOrder(JSONObject orderJson){
         OrderJsonParser orderJsonParser = new OrderJsonParser(_currentAdjutant);
         Order order = orderJsonParser.parseOrder(orderJson);
@@ -98,7 +119,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     public void onOpen(Connection connection) {
         _log.info("onOpen called on LocalWebSocket");
         _connection = connection;
-        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _remoteAddress));
+        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _remoteAddress, _clientKey));
     }
 
     @Override

@@ -7,6 +7,25 @@ var orderType;
 var fromCountry;
 var toCountry;
 var currentChoices;
+var myColor;
+var myUniqueKey;
+
+function initializeClient(){
+    draw_map();
+    myUniqueKey = Math.floor(Math.random() * 1000000);
+    openWebSocketConnection(myUniqueKey);
+}
+
+function updatePlayerInfo(joinedObject){
+    var color = joinedObject.color;
+    var clientKey = joinedObject.client_key;
+    console.log("Client with " + clientKey + " has color " + color);
+    console.log("My client key is " + myUniqueKey);
+    if( clientKey == myUniqueKey ){
+        console.log("I am " + clientKey + " and my color is " + color);
+        myColor = color;
+    }
+}
 
 function updatePlayerStats(playerStatus){
     var color = playerStatus.color;
@@ -28,17 +47,19 @@ function updateOrderConsole(color, choicesObject){
     console.log("Choices for " + color + " are " + choicesObject);
     document.getElementById("active-player-field").textContent = "Active player is " + color;
     clearOrderConsole();
-    var choices = [];
-    for(var key in choicesObject){
-        console.log("Adding key " + key);
-        choices.push(key);
-    }
-    console.log("Have " + choices.length + " choices");
-    if( choices.length == 1 ){
-        buttonClicked(choices[0]);
-    } else {
-        for(var key in choicesObject){
-            addButton(key);
+    if (color == myColor) {
+        var choices = [];
+        for (var key in choicesObject) {
+            console.log("Adding key " + key);
+            choices.push(key);
+        }
+        console.log("Have " + choices.length + " choices");
+        if (choices.length == 1) {
+            buttonClicked(choices[0]);
+        } else {
+            for (var key in choicesObject) {
+                addButton(key);
+            }
         }
     }
 }
