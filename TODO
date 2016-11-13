@@ -1,11 +1,7 @@
 * Cards need to be corrected (horse, cannon, infantry assignments)
 * Clean up artifacts on canvas
 * Web page UI
-** Know active user
 ** Expose card contents, not just number
-** Expose expected draw
-** Use to - from constraints for country selection
 * Calculate and display luck statistics
 * Drop army in country of card on card exchange
 * Properly handle when a player is eliminated
-* automatic orders are double handled when two clients opened ... needs fixing (claim armies happens twice)
