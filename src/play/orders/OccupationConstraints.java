@@ -31,7 +31,7 @@ public class OccupationConstraints implements OrderConstraints {
     public JSONObject toJsonObject(){
         JSONObject jObject = new JSONObject();
         jObject.put("minimum_occupation_force", minimumOccupationForce());
-        jObject.put("maximum_occupation_force", minimumOccupationForce());
+        jObject.put("maximum_occupation_force", maximumOccupationForce());
         jObject.put("attacker", attacker().getName());
         jObject.put("conquered", conquered().getName());
         return jObject;

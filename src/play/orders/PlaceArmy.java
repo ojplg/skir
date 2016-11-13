@@ -29,8 +29,12 @@ public class PlaceArmy extends Order {
         game.placeArmies(activePlayer(), _country, _count);
         if ( activePlayer().hasReserves() ){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.placeArmy(activePlayer(), game));
-        } else{
-            return getAdjutant().forOrderTypes(OrderType.Attack, OrderType.EndAttacks, OrderType.AttackUntilVictoryOrDeath);
+        } else {
+            ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
+            ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
+            ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
+
+            return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
         }
     }
 

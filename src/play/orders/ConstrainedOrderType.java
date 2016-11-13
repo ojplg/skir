@@ -23,6 +23,21 @@ public class ConstrainedOrderType {
         return new ConstrainedOrderType(OrderType.Occupy, constraints);
     }
 
+    public static ConstrainedOrderType fortify(Player player, Game game){
+        FortificationConstraints constraints = new FortificationConstraints(player, game);
+        return new ConstrainedOrderType(OrderType.Fortify, constraints);
+    }
+
+    public static ConstrainedOrderType attack(Player player, Game game){
+        AttackConstraints constraints = new AttackConstraints(player, game);
+        return new ConstrainedOrderType(OrderType.Attack, constraints);
+    }
+
+    public static ConstrainedOrderType attackUntilVictoryOrDeath(Player player, Game game){
+        AttackConstraints constraints = new AttackConstraints(player, game);
+        return new ConstrainedOrderType(OrderType.AttackUntilVictoryOrDeath, constraints);
+    }
+
     public static ConstrainedOrderType unconstrainedOrder(OrderType orderType){
         return new ConstrainedOrderType(orderType, new UnconstrainedOrder());
     }

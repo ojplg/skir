@@ -1,11 +1,11 @@
 var placeArmyStatusFlag = 'place-army-status-flag';
-var selectAttackCountryStatusFlag = 'select-attack-country-status-flag';
-var selectDefenseCountryStatusFlag = 'select-defense-country-status-flag';
+var selectFromCountryStatusFlag = 'select-from-country-status-flag';
+var selectToCountryStatusFlag = 'select-to-country-status-flag';
 
 var currentStatus = null;
-var attackType;
-var attackCountry;
-var defenseCountry;
+var orderType;
+var fromCountry;
+var toCountry;
 var currentChoices;
 
 function updatePlayerStats(playerStatus){
@@ -77,20 +77,22 @@ function buttonClicked(orderType){
     if( orderType == "PlaceArmy"){
         placeArmySelected();
     } else if( orderType == "Attack"){
-        attackSelected("Attack");
+        fromToOrderSelected("Attack");
     } else if (orderType == "EndAttacks"){
         sendEndAttacksMessage();
     } else if (orderType == "AttackUntilVictoryOrDeath"){
-        attackSelected("AttackUntilVictoryOrDeath");
+        fromToOrderSelected("AttackUntilVictoryOrDeath");
     } else if (orderType == "Occupy") {
         occupySelected();
     } else if (orderType == "DoOccupation") {
         sendDoOccupationMessage();
     } else if (orderType == "DrawCard" ) {
         sendDrawCardMessage();
-    } else if (orderTYpe = "ClaimArmies") {
+    } else if (orderType == "ClaimArmies") {
         sendClaimArmiesMessage();
-    }else {
+    } else if (orderType == "Fortify") {
+        fromToOrderSelected("Fortify");
+    } else {
         console.log("Selection unknown " + orderType);
     }
 }
@@ -142,33 +144,32 @@ function placeArmySelected(){
 function doStatusDependentCountryClickedWork(country){
     if( currentStatus == placeArmyStatusFlag){
         placeArmyCountryClick(country);
-    } else if (currentStatus == selectAttackCountryStatusFlag){
-        attackCountryClick(country);
-    } else if (currentStatus == selectDefenseCountryStatusFlag){
-        defenseCountryClick(country);
+    } else if (currentStatus == selectFromCountryStatusFlag){
+        fromCountryClick(country);
+    } else if (currentStatus == selectToCountryStatusFlag){
+        toCountryClick(country);
     }
 }
 
-function attackCountryClick(country){
-    console.log("attackCountryClick " + country);
-    currentStatus = selectDefenseCountryStatusFlag;
-    attackCountry = country;
-    var attackCountryTextDiv = document.getElementById("attacker-text-div");
-    var newHtml = "Attack From: " + country.wire_name();
-    attackCountryTextDiv.innerHTML = newHtml;
-    console.log("Reset innerHTML to " + newHtml);
+function fromCountryClick(country){
+    console.log("fromCountryClick " + country);
+    currentStatus = selectToCountryStatusFlag;
+    fromCountry = country;
+    var fromCountryTextDiv = document.getElementById("from-text-div");
+    var newHtml = "From: " + country.wire_name();
+    fromCountryTextDiv.innerHTML = newHtml;
 }
 
-function defenseCountryClick(country){
-    console.log("defenseCountryClick " + country);
+function toCountryClick(country){
+    console.log("toCountryClick " + country);
     currentStatus = null;
-    var defenderTextDiv = document.getElementById("defender-text-div");
-    var newHtml = "Defender: " + country.wire_name();
-    defenderTextDiv.innerHTML = newHtml;
-    console.log("Reset innerHTML to " + newHtml);
-    var order = newOrder(attackType);
-    order.attacker = attackCountry.wire_name();
-    order.defender = country.wire_name();
+    var toTextDiv = document.getElementById("to-text-div");
+    var newHtml = "To: " + country.wire_name();
+    toTextDiv.innerHTML = newHtml;
+
+    var order = newOrder(orderType);
+    order.from = fromCountry.wire_name();
+    order.to = country.wire_name();
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }
@@ -227,31 +228,32 @@ function addButton(label){
     orderConsoleDiv.appendChild(button);
 }
 
-function attackSelected(attackTypeFlag){
-    console.log("Attack selected");
+function fromToOrderSelected(orderTypeFlag){
+    console.log("From-to order selected: " + orderTypeFlag);
+    orderType = orderTypeFlag;
+    currentStatus = selectFromCountryStatusFlag;
+
     clearOrderConsole();
-    attackType = attackTypeFlag;
 
-    currentStatus = selectAttackCountryStatusFlag;
-    var attackDiv = document.createElement("div");
-    attackDiv.id = "attack-div";
+    var fromToDiv = document.createElement("div");
+    fromToDiv.id = "from-to-div";
 
-    // invader text console
-    var attackFromDiv = document.createElement("div");
-    attackFromDiv.id = "attacker-text-div";
-    var attackContent = document.createTextNode("Attack from: ");
-    attackFromDiv.appendChild(attackContent);
-    attackDiv.appendChild(attackFromDiv);
+    // from text console
+    var fromDiv = document.createElement("div");
+    fromDiv.id = "from-text-div";
+    var fromContent = document.createTextNode("From: ");
+    fromDiv.appendChild(fromContent);
+    fromToDiv.appendChild(fromDiv);
 
-    // defender text console
-    var defendFromDiv = document.createElement("div");
-    defendFromDiv.id = "defender-text-div";
-    var defendContent = document.createTextNode("Invade into: ");
-    defendFromDiv.appendChild(defendContent);
-    attackDiv.appendChild(defendFromDiv);
+    // to text console
+    var toDiv = document.createElement("div");
+    toDiv.id = "to-text-div";
+    var toContent = document.createTextNode("To: ");
+    toDiv.appendChild(toContent);
+    fromToDiv.appendChild(toDiv);
 
     var orderConsoleDiv = document.getElementById("order-console-div");
-    orderConsoleDiv.appendChild(attackDiv);
+    orderConsoleDiv.appendChild(fromToDiv);
 }
 
 function doAttack(all_out_flag){

@@ -126,7 +126,7 @@ public class Shell {
         List<Country> countries = _game.possibleFortificationCountries(currentPlayer);
         Collections.sort(countries);
         Country from = selectFromChoices(countries, "Fortify from");
-        countries = _game.allies(from);
+        countries = _game.alliedNeighbors(from);
         Country to = selectFromChoices(countries, "Fortify to");
         int numberArmies = readNumberInput("Number armies to move" ,1,(_game.getOccupationForce(from) - 1));
         Fortify fortify = new Fortify(adjutant, from, to, numberArmies);
@@ -164,7 +164,7 @@ public class Shell {
         List<Country> countries = _game.countriesToAttackFrom(currentPlayer);
         Collections.sort(countries);
         Country invader = selectFromChoices(countries, "Attack from");
-        countries = _game.targets(invader);
+        countries = _game.enemyNeighbors(invader);
         Collections.sort(countries);
         Country target = selectFromChoices(countries, "Attack to");
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "
@@ -179,7 +179,7 @@ public class Shell {
         Collections.sort(countries);
         Country invader = selectFromChoices(countries, "Attack from");
         Collections.sort(countries);
-        countries = _game.targets(invader);
+        countries = _game.enemyNeighbors(invader);
         Country target = selectFromChoices(countries, "Attack to");
         int numberDice = Math.min(3, _game.getOccupationForce(invader) - 1);
         message("Attacking from " + invader.getName() + " (" + _game.getOccupationForce(invader) + ") to "

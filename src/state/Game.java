@@ -32,7 +32,7 @@ public class Game {
     private Roller _roller;
     private Channels _channels;
 
-    private ThreadFiber fiber = new ThreadFiber();
+    private ThreadFiber _fiber = new ThreadFiber();
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         _map = map;
@@ -42,7 +42,7 @@ public class Game {
         _roller = roller;
         _channels = channels;
         channels.ClientConnectedEventChannel.subscribe(
-                fiber,
+                _fiber,
                 new Callback<ClientConnectedEvent>() {
                     @Override
                     public void onMessage(ClientConnectedEvent clientConnectedEvent) {
@@ -50,7 +50,7 @@ public class Game {
                     }
                 }
         );
-        fiber.start();
+        _fiber.start();
     }
 
     private void publishAllState(){
@@ -96,7 +96,7 @@ public class Game {
         List<Country> sources = new ArrayList<Country>();
         for(Country country : _occupations.countriesOccupied(player)){
             if(_occupations.getOccupationForce(country) > 1){
-                if(allies(country).size() > 0){
+                if(alliedNeighbors(country).size() > 0){
                     sources.add(country);
                 }
             }
@@ -180,7 +180,7 @@ public class Game {
         return countriesOccupied(defender).size() == 0;
     }
 
-    // returns true if the game is over */
+    /** returns true if the game is over */
     public boolean resolveElimination(Player conqueror, Player vanquished){
         List<Card> cards = vanquished.getCards();
         vanquished.removeCards(cards);
@@ -232,11 +232,11 @@ public class Game {
         return cnt == continent.numberCountries();
     }
 
-    public List<Country> targets(Country country){
+    public List<Country> enemyNeighbors(Country country){
         return filterCountries(country, false);
     }
 
-    public List<Country> allies(Country country){
+    public List<Country> alliedNeighbors(Country country){
         return filterCountries(country, true);
     }
 

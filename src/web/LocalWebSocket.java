@@ -18,6 +18,7 @@ import play.orders.ClaimArmies;
 import play.orders.ConstrainedOrderType;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
+import play.orders.Fortify;
 import play.orders.OccupationConstraints;
 import play.orders.Occupy;
 import play.orders.Order;
@@ -101,8 +102,8 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             PlaceArmy placeArmy = new PlaceArmy(_currentAdjutant, country);
             _channels.OrderEnteredChannel.publish(placeArmy);
         } else if ("Attack".equals(orderType) || "AttackUntilVictoryOrDeath".equals(orderType)){
-            String attacker = (String) orderJson.get("attacker");
-            String defender = (String) orderJson.get("defender");
+            String attacker = (String) orderJson.get("from");
+            String defender = (String) orderJson.get("to");
             Order attack;
             if("Attack".equals(orderType)) {
                 attack = new Attack(_currentAdjutant, new Country(attacker), new Country(defender));
@@ -127,6 +128,12 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         } else if ("ClaimArmies".equals(orderType) ){
             ClaimArmies claimArmies = new ClaimArmies(_currentAdjutant);
             _channels.OrderEnteredChannel.publish(claimArmies);
+        } else if ("Fortify".equals(orderType)) {
+            String from = (String) orderJson.get("from");
+            String to = (String) orderJson.get("to");
+            int numberArmies = (Integer) orderJson.get("number_armies");
+            Fortify fortify = new Fortify(_currentAdjutant, new Country(from), new Country(to), numberArmies);
+            _channels.OrderEnteredChannel.publish(fortify);
         } else {
             _log.error("Cannot handle " + orderJson);
         }
