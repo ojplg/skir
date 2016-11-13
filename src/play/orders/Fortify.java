@@ -2,7 +2,6 @@ package play.orders;
 
 import map.Country;
 import state.Game;
-import state.Player;
 
 public class Fortify extends Order {
 
