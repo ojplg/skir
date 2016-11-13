@@ -8,3 +8,4 @@
 * Calculate and display luck statistics
 * Drop army in country of card on card exchange
 * Properly handle when a player is eliminated
+* automatic orders are double handled when two clients opened ... needs fixing (claim armies happens twice)

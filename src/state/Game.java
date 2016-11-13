@@ -124,9 +124,7 @@ public class Game {
     }
 
     public int computeExpectedGrant(Player player){
-        int geographicArmies = computeMapSupply(player);
-        int numberToGrant = Math.max(Constants.MINIMUM_ARMY_GRANT, geographicArmies);
-        return numberToGrant;
+        return computeMapSupply(player);
     }
 
     public int computeContinentSupply(Player player){
@@ -138,7 +136,7 @@ public class Game {
     }
 
     private int computeCountrySupply(Player player) {
-        return numberCountriesOccupied(player) / 3;
+        return Math.max(Constants.MINIMUM_ARMY_GRANT,numberCountriesOccupied(player) / 3);
     }
 
     public int numberCountriesOccupied(Player player){

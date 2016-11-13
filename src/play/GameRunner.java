@@ -1,6 +1,11 @@
 package play;
 
 import ai.AutomatedPlayer;
+import ai.NeverAttacks;
+import card.StandardCardSet;
+import map.Country;
+import map.StandardMap;
+import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.Callback;
@@ -12,24 +17,29 @@ import state.Game;
 import state.Player;
 import state.event.ClientConnectedEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameRunner {
 
     private final static Logger _log = LogManager.getLogger(GameRunner.class);
+    private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
     private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
+    private final Map<Player, String> _remotePlayerAddresses = new HashMap<Player, String>();
     private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
 
     private Adjutant _currentAdjutant;
 
-    public GameRunner(Game game, Channels channels, Fiber fiber){
-        _game = game;
+    public GameRunner(Channels channels, Fiber fiber){
         _channels = channels;
         _fiber = fiber;
+        _game = initializeGame(channels);
 
         _channels.OrderEnteredChannel.subscribe(_fiber,
                 new Callback<Order>() {
@@ -42,9 +52,35 @@ public class GameRunner {
                 new Callback<ClientConnectedEvent>() {
                     @Override
                     public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-                        _channels.AdjutantChannel.publish(_currentAdjutant);
+                        handleClientConnection(clientConnectedEvent);
                     }
                 });
+    }
+
+    private void initializeAutomatedPlayers(){
+        for (int idx = 1; idx < _colors.length; idx++) {
+            Player player = _game.getAllPlayers().get(idx);
+            AutomatedPlayer ai = new NeverAttacks(player);
+            addAutomatedPlayer(ai);
+        }
+    }
+
+    private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
+
+        // TODO: need to count this
+        int availablePlayerNumber = 0;
+
+        Player player = _game.getAllPlayers().get(availablePlayerNumber);
+
+
+        _remotePlayerAddresses.put(player, clientConnectedEvent.getClientAddress());
+
+        _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
+
+        // this should happen when a start command comes from client
+        initializeAutomatedPlayers();
+
+        _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
     private void processOrder(Order order){
@@ -61,6 +97,8 @@ public class GameRunner {
     }
 
     public void startGame(){
+        assignCountries();
+
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
@@ -77,4 +115,37 @@ public class GameRunner {
         }
         return ai;
     }
+
+    private Game initializeGame(Channels channels) {
+        List<Player> players = new ArrayList<Player>();
+        int initialArmies = initialArmyCount(_colors.length);
+        for (int idx = 0; idx < _colors.length; idx++) {
+            Player player = new Player(_colors[idx]);
+            player.grantReserves(initialArmies);
+            players.add(player);
+        }
+
+        WorldMap map = new StandardMap();
+        Roller roller = new RandomRoller(System.currentTimeMillis());
+
+        return new Game(map, players, StandardCardSet.deck, roller, channels);
+    }
+
+    private void assignCountries(){
+        List<Country> countries = _game.getAllCountries();
+        Collections.shuffle(countries);
+
+        List<Player> players = _game.getAllPlayers();
+        for(int idx=0; idx<countries.size(); idx++){
+            Player player = players.get(idx%_colors.length);
+            Country country = countries.get(idx);
+            _game.placeArmy(player, country);
+        }
+        _game.doInitialPlacements();
+    }
+
+    private int initialArmyCount(int numberPlayers){
+        return 20 + (5 * (6 - numberPlayers));
+    }
+
 }

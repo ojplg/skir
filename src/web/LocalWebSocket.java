@@ -33,7 +33,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     private Adjutant _currentAdjutant;
 
     LocalWebSocket(Channels channels, Fiber fiber, String remoteAddress){
-        _counter++ ;
+        _counter++;
         _id = String.valueOf(_counter);
         _remoteAddress = remoteAddress;
 

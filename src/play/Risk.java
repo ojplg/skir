@@ -1,34 +1,19 @@
 package play;
 
-import ai.AutomatedPlayer;
-import ai.NeverAttacks;
-import card.StandardCardSet;
-import map.Country;
-import map.StandardMap;
-import map.WorldMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
-import state.Game;
-import state.Player;
 import web.UseJetty;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class Risk {
 
     private static final Logger _log = LogManager.getLogger(Risk.class);
 
-    private Game _game;
     private GameRunner _gameRunner;
     private UseJetty _jettyServer;
-
-    private int _numberPlayers = 6;
-    private static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
     private final CountDownLatch _latch = new CountDownLatch(1);
 
@@ -37,10 +22,6 @@ public class Risk {
 
         final Risk risk = new Risk();
         final Channels channels = new Channels();
-
-        boolean randomize = true;
-
-        risk.initializeGame(randomize, channels);
 
         ThreadFiber webFiber = new ThreadFiber(new RunnableExecutorImpl(), "WebFiber", true);
         risk._jettyServer = new UseJetty(8080, channels, webFiber);
@@ -61,15 +42,8 @@ public class Risk {
             ex.printStackTrace();
         }
 
-        risk.startGame(randomize);
-
         ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
-        risk._gameRunner = new GameRunner(risk._game, channels, gameRunnerFiber);
-        for (int idx = 1; idx < risk._numberPlayers; idx++) {
-            Player player = risk._game.getAllPlayers().get(idx);
-            AutomatedPlayer ai = new NeverAttacks(player);
-            risk._gameRunner.addAutomatedPlayer(ai);
-        }
+        risk._gameRunner = new GameRunner(channels, gameRunnerFiber);
 
         gameRunnerFiber.start();
 
@@ -84,42 +58,4 @@ public class Risk {
         }
     }
 
-    private void initializeGame(boolean randomize, Channels channels) {
-        List<Player> players = new ArrayList<Player>();
-        int initialArmies = initialArmyCount(_numberPlayers);
-        for (int idx = 0; idx < _numberPlayers; idx++) {
-            Player player = new Player(_colors[idx]);
-            player.grantReserves(initialArmies);
-            players.add(player);
-        }
-
-        WorldMap map = new StandardMap();
-        Roller roller;
-        if( randomize ) {
-            roller = new RandomRoller(System.currentTimeMillis());
-        } else {
-            roller = new RandomRoller(1);
-        }
-
-        _game = new Game(map, players, StandardCardSet.deck, roller, channels);
-    }
-
-    private void startGame(boolean randomize){
-        List<Country> countries = _game.getAllCountries();
-        if( randomize) {
-            Collections.shuffle(countries);
-        }
-
-        List<Player> players = _game.getAllPlayers();
-        for(int idx=0; idx<countries.size(); idx++){
-            Player player = players.get(idx%_numberPlayers);
-            Country country = countries.get(idx);
-            _game.placeArmy(player, country);
-        }
-        _game.doInitialPlacements();
-    }
-
-    private int initialArmyCount(int numberPlayers){
-        return 20 + (5 * (6 - numberPlayers));
-    }
 }
