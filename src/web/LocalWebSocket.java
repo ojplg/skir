@@ -113,9 +113,10 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
             _log.info("Current adjutant " + _currentAdjutant);
             _log.info("order constraints are " + constraints);
             AttackConstraints attackConstraints = (AttackConstraints) constraints;
-            int maxAttackingDice = attackConstraints.maximumAllowableDice(attackFrom);
+            String numberArmiesString = (String) orderJson.get("army_count");
+            int numberArmies = Integer.parseInt(numberArmiesString);
             if("Attack".equals(orderType)) {
-                attack = new Attack(_currentAdjutant, attackFrom, attackTo, maxAttackingDice);
+                attack = new Attack(_currentAdjutant, attackFrom, attackTo, numberArmies);
             } else {
                 attack = new AttackUntilVictoryOrDeath(_currentAdjutant, attackFrom, attackTo);
             }

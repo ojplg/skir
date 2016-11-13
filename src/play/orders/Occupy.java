@@ -19,12 +19,12 @@ public class Occupy extends Order {
 
     @Override
     public Adjutant execute(Game game) {
+        Player loser = game.getOccupier(_conquered);
         boolean playerEliminated = game.resolveConquest(_victor, _conquered, _armies);
         ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
         ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
         ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
 
-        Player loser = game.getOccupier(_conquered);
         if ( playerEliminated ){
             // TODO: Check for game over?
             game.resolveElimination(activePlayer(), loser);

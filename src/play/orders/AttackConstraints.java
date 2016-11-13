@@ -20,7 +20,7 @@ public class AttackConstraints implements OrderConstraints {
         Map<Country, List<Country>> destinations = new HashMap<Country, List<Country>>();
         List<Country> availableCountries = game.countriesToAttackFrom(player);
         for(Country country : availableCountries){
-            int count = game.getOccupationForce(country) - 1;
+            int count = Math.min(3,game.getOccupationForce(country) - 1);
             List<Country> alliedNeighbors = game.enemyNeighbors(country);
             armies.put(country, count);
             destinations.put(country, alliedNeighbors);
