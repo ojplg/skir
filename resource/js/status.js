@@ -138,9 +138,17 @@ function buttonClicked(orderType){
         fromToOrderSelected("Fortify");
     } else if (orderType == "EndTurn") {
         endTurnSelected();
+    } else if (orderType == "ExchangeCardSet" ) {
+        sendExchangeCardSetMessage();
     } else {
         console.log("Selection unknown " + orderType);
     }
+}
+
+function sendExchangeCardSetMessage(){
+    var order = newOrder("ExchangeCardSet");
+    var jsonOrder = JSON.stringify(order);
+    sendMessage(jsonOrder);
 }
 
 function endTurnSelected(){

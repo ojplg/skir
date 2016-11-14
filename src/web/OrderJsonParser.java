@@ -1,5 +1,7 @@
 package web;
 
+import card.Card;
+import card.Cards;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,11 +13,14 @@ import play.orders.ClaimArmies;
 import play.orders.DrawCard;
 import play.orders.EndAttacks;
 import play.orders.EndTurn;
+import play.orders.ExchangeCardSet;
 import play.orders.Fortify;
 import play.orders.OccupationConstraints;
 import play.orders.Occupy;
 import play.orders.Order;
 import play.orders.PlaceArmy;
+
+import java.util.List;
 
 public class OrderJsonParser {
 
@@ -72,11 +77,22 @@ public class OrderJsonParser {
             int numberArmies = Integer.parseInt(numberArmiesString);
             Fortify fortify = new Fortify(_adjutant, new Country(from), new Country(to), numberArmies);
             return fortify;
+        } else if("ExchangeCardSet".equals(orderType)) {
+            return newExchangeCardSet();
         } else if("EndTurn".equals(orderType)) {
             return new EndTurn(_adjutant);
         } else {
             _log.error("Cannot handle " + orderJson);
             return null;
         }
+    }
+
+    private ExchangeCardSet newExchangeCardSet(){
+        // TODO: Allow user to select set?
+        List<Card> toExchange = Cards.findTradeableSet(_adjutant.getActivePlayer().getCards());
+        Card one = toExchange.get(0);
+        Card two = toExchange.get(1);
+        Card three = toExchange.get(2);
+        return new ExchangeCardSet(_adjutant, one, two, three);
     }
 }

@@ -4,5 +4,13 @@
 
 * Web page UI
 ** Clean up artifacts on canvas
-** Allow card exchange
 ** Show luck statistics
+** Show wider border on countries
+** Move place that occupation force is shown
+
+
+* AIs
+** Continent grabber
+** Bully - always attack countries with fewer armies
+** Keeps countries previously owned
+** Over-aggressive

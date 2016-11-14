@@ -1,5 +1,7 @@
 package card;
 
+import state.Constants;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,10 @@ public class CardStack {
         _cards.add(one);
         _cards.add(two);
         _cards.add(three);
-        return _tradeNumber;
+        return valuationOfExchange();
+    }
+
+    private int valuationOfExchange(){
+        return Math.min(Constants.MAXIMUM_CARD_EXCHANGE, 2 * _tradeNumber);
     }
 }
