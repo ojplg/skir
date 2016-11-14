@@ -54,4 +54,23 @@ public class RollsTest {
         assertEquals(0, rolls.defendersLosses());
         assertEquals(1, rolls.attackersLosses());
     }
+
+    @Test
+    public void testDifferenceFromExpectationsOneVersusOne(){
+        Rolls rolls = new Rolls(new int[]{4}, new int[]{3});
+        double attackerDifference = rolls.attackersExpectationsDifference();
+        assertEquals(0.583, attackerDifference, 0.001);
+        double defenderDifference = rolls.defendersExpectationsDifference();
+        assertEquals(-0.583, defenderDifference, 0.001);
+    }
+
+    @Test
+    public void testDifferenceFromExpectationsThreeVersusTwo(){
+        Rolls rolls = new Rolls(new int[]{4,5,6}, new int[]{6,6});
+        double attackerDifference = rolls.attackersExpectationsDifference();
+        assertEquals(-1.079, attackerDifference, 0.001);
+        double defenderDifference = rolls.defendersExpectationsDifference();
+        assertEquals(1.079, defenderDifference, 0.001);
+    }
+
 }
