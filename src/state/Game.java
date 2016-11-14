@@ -324,6 +324,7 @@ public class Game {
         if(_currentAttacker.equals(getOccupier(card.getCountry()))){
             _occupations.placeArmies(_currentAttacker, card.getCountry(),
                     Constants.CARD_COUNTRY_BONUS);
+            notifyListenersOfMapUpdate(card.getCountry());
         }
     }
 
