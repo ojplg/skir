@@ -16,14 +16,18 @@ public class PlayerChangedEvent {
     private final int _continentCount;
     private final List<Card> _cards;
     private final int _expectedGrant;
+    private final double _attackLuckFactor;
+    private final double _defenseLuckFactor;
 
-    public PlayerChangedEvent(Player player, int countryCount, int armyCount, List<Card> cards, int continentCount, int expectedGrant) {
+    public PlayerChangedEvent(Player player, int countryCount, int armyCount, int continentCount, int expectedGrant) {
         this._player = player;
         this._countryCount = countryCount;
         this._armyCount = armyCount;
         this._continentCount = continentCount;
-        this._cards = Collections.unmodifiableList(new ArrayList<Card>(cards));
+        this._cards = Collections.unmodifiableList(new ArrayList<Card>(player.getCards()));
         this._expectedGrant = expectedGrant;
+        this._attackLuckFactor = player.attackLuckFactor();
+        this._defenseLuckFactor = player.defenseLuckFactor();
     }
 
     public String getClientKey(){
@@ -39,6 +43,8 @@ public class PlayerChangedEvent {
         jObject.put("card_count", _cards.size());
         jObject.put("continents", _continentCount);
         jObject.put("expected_armies", _expectedGrant);
+        jObject.put("attack_luck_factor", _attackLuckFactor);
+        jObject.put("defense_luck_factor", _defenseLuckFactor);
         return jObject;
     }
 

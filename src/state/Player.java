@@ -12,6 +12,8 @@ public class Player {
     private final List<Card> _cards = new ArrayList<Card>();
     private int _reserveArmies;
     private String _clientKey;
+    private final BattleStats _attackStats = new BattleStats();
+    private final BattleStats _defenseStats = new BattleStats();
 
     public String getClientKey() {
         return _clientKey;
@@ -54,6 +56,22 @@ public class Player {
             throw new RuntimeException("Cannot draw " + cnt + " armies from " + _reserveArmies + " reserves");
         }
         _reserveArmies -= cnt;
+    }
+
+    public void updateAttackStatistics(double expectationsDifference, int numberArmyBattles){
+        _attackStats.updateStats(expectationsDifference, numberArmyBattles);
+    }
+
+    public void updateDefenseStatistics(double expectationsDifference, int numberArmyBattles){
+        _defenseStats.updateStats(expectationsDifference, numberArmyBattles);
+    }
+
+    public double attackLuckFactor(){
+        return _attackStats.normalizedLuckFactor();
+    }
+
+    public double defenseLuckFactor(){
+        return _defenseStats.normalizedLuckFactor();
     }
 
     public boolean hasReserves(){

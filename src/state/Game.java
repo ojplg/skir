@@ -72,7 +72,7 @@ public class Game {
         int continentCount = numberContinentsOccupied(player);
         int expectedGrant = computeExpectedGrant(player);
         _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount, player.getCards(), continentCount, expectedGrant)
+                new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant)
         );
     }
 
@@ -152,6 +152,7 @@ public class Game {
         if (! isTarget(attacker, defender) ){
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
+        // TODO: allow players to choose number of dice
         int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
@@ -160,7 +161,9 @@ public class Game {
         notifyListenersOfMapUpdate(attacker);
         notifyListenersOfMapUpdate(defender);
         Player attackingPlayer = _occupations.getOccupier(attacker);
+        attackingPlayer.updateAttackStatistics(rolls.attackersExpectationsDifference(), rolls.numberBattles());
         Player defendingPlayer = _occupations.getOccupier(defender);
+        defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
         publishPlayerChanged(attackingPlayer);
         publishPlayerChanged(defendingPlayer);
         return _occupations.allArmiesDestroyed(defender);
