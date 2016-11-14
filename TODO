@@ -1,7 +1,8 @@
 * Cards need to be corrected (horse, cannon, infantry assignments)
-* Clean up artifacts on canvas
-* Web page UI
-** Expose card contents, not just number
-* Calculate and display luck statistics
+* Calculate luck statistics
 * Drop army in country of card on card exchange
-* Properly handle when a player is eliminated
+
+* Web page UI
+** Clean up artifacts on canvas
+** Allow card exchange
+** Show luck statistics
