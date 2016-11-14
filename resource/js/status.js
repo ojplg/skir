@@ -10,6 +10,10 @@ var currentChoices;
 var myColor;
 var myUniqueKey;
 
+function isMyColor(color){
+    return color.toUpperCase() == myColor.toUpperCase();
+}
+
 function initializeClient(){
     draw_map();
     myUniqueKey = Math.floor(Math.random() * 1000000);
@@ -29,13 +33,30 @@ function updatePlayerInfo(joinedObject){
 
 function updatePlayerStats(playerStatus){
     var color = playerStatus.color;
-    console.log("Updating player " + color);
+    console.log("Updating player " + color + " my color is " + myColor);
     var armiesSpan = document.getElementById(color + "-armies");
     armiesSpan.textContent = playerStatus.armies;
     var countriesSpan = document.getElementById(color+ "-countries");
     countriesSpan.textContent = playerStatus.countries;
     var cardSpan = document.getElementById(color + "-cardCount");
-    cardSpan.textContent = playerStatus.card_count;
+    if( isMyColor(color) ){
+        var cards = playerStatus.cards;
+        var txt = "";
+        for( var idx=1; idx<=cards.length ; idx++ ){
+            var card = cards[idx-1];
+            console.log("found card " + card);
+            txt = txt.concat(idx);
+            txt = txt.concat(": ");
+            txt = txt.concat(card.country);
+            txt = txt.concat("-");
+            txt = txt.concat(card.symbol);
+            txt = txt.concat("<br/>");
+        }
+        console.log("appending text " + txt);
+        cardSpan.innerHTML = txt;
+    } else {
+        cardSpan.textContent = playerStatus.card_count;
+    }
     var continentSpan = document.getElementById(color + "-continents");
     continentSpan.textContent = playerStatus.continents;
     var expectedSpan = document.getElementById(color + "-expected");

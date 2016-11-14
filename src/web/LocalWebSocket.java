@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.WebSocket;
 import org.jetlang.core.Callback;
-import org.jetlang.core.Disposable;
 import org.jetlang.fibers.Fiber;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -57,7 +56,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
                 new Callback<PlayerChangedEvent>() {
                     @Override
                     public void onMessage(PlayerChangedEvent playerChangedEvent) {
-                        sendJson(playerChangedEvent.toJson());
+                        handlePlayerChangedEvent(playerChangedEvent);
                     }
                 }
         );
@@ -99,6 +98,16 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + s, pe);
         }
+    }
+
+    private void handlePlayerChangedEvent(PlayerChangedEvent playerChangedEvent){
+        JSONObject jObject;
+        if (_clientKey != null && _clientKey.equals(playerChangedEvent.getClientKey())){
+             jObject = playerChangedEvent.fullDetailsJson();
+        } else {
+            jObject = playerChangedEvent.toJson();
+        }
+        sendJson(jObject);
     }
 
     private void handleGameJoinedEvent(GameJoinedEvent gameJoinedEvent){

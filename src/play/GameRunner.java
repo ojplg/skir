@@ -80,6 +80,7 @@ public class GameRunner {
             ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
 
             _remotePlayerInfo.put(player, clientInfo);
+            player.setClientKey(clientInfo.getClientKey());
 
             _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
 

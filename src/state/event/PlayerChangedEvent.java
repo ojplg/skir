@@ -26,6 +26,10 @@ public class PlayerChangedEvent {
         this._expectedGrant = expectedGrant;
     }
 
+    public String getClientKey(){
+        return _player.getClientKey();
+    }
+
     public JSONObject toJson(){
         JSONObject jObject = new JSONObject();
         jObject.put("message_type","player_update");
@@ -49,7 +53,7 @@ public class PlayerChangedEvent {
 
         for(Card card : _cards){
             JSONObject jObject = new JSONObject();
-            jObject.put("country", card.getCountry());
+            jObject.put("country", card.getCountry().getName());
             jObject.put("symbol", card.getType().toString());
             jArray.add(jObject);
         }

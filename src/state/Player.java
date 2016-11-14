@@ -11,6 +11,15 @@ public class Player {
     private final String _color;
     private final List<Card> _cards = new ArrayList<Card>();
     private int _reserveArmies;
+    private String _clientKey;
+
+    public String getClientKey() {
+        return _clientKey;
+    }
+
+    public void setClientKey(String _clientKey) {
+        this._clientKey = _clientKey;
+    }
 
     public Player(String color){
         _color = color;
