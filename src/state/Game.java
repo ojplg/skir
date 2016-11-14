@@ -310,7 +310,18 @@ public class Game {
         cards.add(two);
         cards.add(three);
         _currentAttacker.removeCards(cards);
-        return _cardPile.tradeCards(one, two, three);
+        int bonusArmies = _cardPile.tradeCards(one, two, three);
+        applyCardCountryBonus(one);
+        applyCardCountryBonus(two);
+        applyCardCountryBonus(three);
+        return bonusArmies;
+    }
+
+    private void applyCardCountryBonus(Card card){
+        if(_currentAttacker.equals(getOccupier(card.getCountry()))){
+            _occupations.placeArmies(_currentAttacker, card.getCountry(),
+                    Constants.CARD_COUNTRY_BONUS);
+        }
     }
 
     public List<Country> getAllCountries(){

@@ -1,13 +1,18 @@
-* Cards need to be corrected (horse, cannon, infantry assignments)
-* Calculate luck statistics
-* Drop army in country of card on card exchange
+* Main code
+** Cards need to be corrected (horse, cannon, infantry assignments)
+** Calculate luck statistics
 
 * Web page UI
 ** Clean up artifacts on canvas
 ** Show luck statistics
 ** Show wider border on countries
 ** Move place that occupation force is shown
-
+** Support multiple players
+** First player to join starts the game
+** Allow selection of AIs for other players
+** Allow users to enter a name
+** Support reconnection/browser-refresh logic
+** Refactor code into objects of some kind
 
 * AIs
 ** Continent grabber

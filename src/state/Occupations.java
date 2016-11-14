@@ -73,10 +73,6 @@ public class Occupations {
     }
 
 
-    public void placeArmy(Player player, Country country){
-        placeArmies(player, country, 1);
-    }
-
     public void placeArmies(Player player, Country country, int cnt){
         if ( ! isOccupied(country) ){
             _records.put(country, new Force(player, cnt));
