@@ -95,14 +95,18 @@ function paint_country_name(context,country,name_color){
   for(var idx=0; idx<words.length; idx++){
     var word = words[idx];
     var downoffset = 20 + 20 * idx;
-    context.fillText(word,country.left + 4, country.top + downoffset);
+    context.fillText(word,country.left + 5, country.top + downoffset);
   }
 }
 
 function update_country_occupation_count(context,country,army_count,number_color){
   context.fillStyle = number_color;
   context.font = '9pt Arial';
-  context.fillText(army_count, country.left + country.width - 14,
+  var widthOffset = 14;
+  if (army_count >= 10){
+    widthOffset = 18;
+  }
+  context.fillText(army_count, country.left + country.width - widthOffset,
     country.top + country.height - 6 );
 }
 
@@ -142,7 +146,7 @@ function update_country(country_name, player_color, army_count){
   for(var idx=0; idx<countries.length; idx++){
     var country = countries[idx];
     if( country.wire_name() == country_name ){
-      var border = 3;
+      var border = 4;
       context.fillStyle = player_color;
       context.fillRect(country.left + border, country.top + border,
         country.width - (border*2), country.height- (border*2));

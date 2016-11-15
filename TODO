@@ -1,13 +1,9 @@
 * Main code
 ** Cards need to be corrected (horse, cannon, infantry assignments)
-** Calculate luck statistics
 
 * Web page UI
 ** Draw lines for oversea attacks
-** Clean up artifacts on canvas
 ** Show luck statistics
-** Show wider border on countries
-** Move place that occupation force is shown
 ** Support multiple players
 ** First player to join starts the game
 ** Allow selection of AIs for other players
