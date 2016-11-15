@@ -10,6 +10,8 @@
 ** Allow users to enter a name
 ** Support reconnection/browser-refresh logic
 ** Refactor code into objects of some kind
+** Switch around attacks: pick attack, after countries, pick all-out or one time
+** Fix Occupy v DoOccupation nonsense
 
 * AIs
 ** Continent grabber

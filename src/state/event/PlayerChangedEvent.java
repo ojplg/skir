@@ -59,8 +59,12 @@ public class PlayerChangedEvent {
 
         for(Card card : _cards){
             JSONObject jObject = new JSONObject();
-            jObject.put("country", card.getCountry().getName());
-            jObject.put("symbol", card.getType().toString());
+            if ( card.isJoker() ){
+                jObject.put("joker", "true");
+            } else {
+                jObject.put("country", card.getCountry().getName());
+                jObject.put("symbol", card.getType().toString());
+            }
             jArray.add(jObject);
         }
 
