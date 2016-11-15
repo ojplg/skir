@@ -19,6 +19,9 @@ HAMCREST_URL=https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$HAMCREST
 
 JETLANG_URL=https://repo1.maven.org/maven2/org/jetlang/jetlang/$JETLANG_VERSION
 
+VELOCITY_TARBALL=velocity-$VELOCITY_VERSION
+VELOCITY_URL=http://www-us.apache.org/dist//velocity/engine/$VELOCITY_VERSION/$VELOCITY_TARBALL
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -36,6 +39,12 @@ function download_and_untar {
 function copy_to_libs {
 	echo " copying" $2
 	cp $1/$2 $LIBS_DIR/
+}
+
+function get_velocity {
+	echo "velocity ..."
+	download_and_untar $VELOCITY_URL $VELOCITY_TARBALL
+        copy_to_libs $VELOCITY_TARBALL $VELOCITY_JAR
 }
 
 function get_log4j {
@@ -84,5 +93,6 @@ cd $TMP_DOWNLOAD_DIR
 #get_jetty
 #get_json
 #get_junit
-get_jetlang
+#get_jetlang
+get_velocity
 
