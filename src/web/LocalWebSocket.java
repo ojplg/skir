@@ -135,17 +135,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
 
     private void handleNewAdjutant(Adjutant adjutant){
         _currentAdjutant = adjutant;
-        JSONObject jObject = new JSONObject();
-        jObject.put("message_type","possible_order_types");
-        jObject.put("color", adjutant.getActivePlayer().getColor());
-        JSONObject orderTypes = new JSONObject();
-        for(OrderType type : adjutant.allowableOrders()){
-            OrderConstraints orderConstraints = adjutant.findConstraintsForOrderType(type);
-            JSONObject constraintJson = orderConstraints.toJsonObject();
-            orderTypes.put(type.toString(), constraintJson);
-        }
-        jObject.put("order_types", orderTypes);
-
+        JSONObject jObject = adjutant.toPossibleOrdersJson();
         sendJson(jObject);
     }
 

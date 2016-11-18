@@ -2,6 +2,7 @@ package play.orders;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONObject;
 import state.Player;
 
 import java.util.ArrayList;
@@ -97,6 +98,21 @@ public class Adjutant {
 
     public Player getActivePlayer(){
         return _activePlayer;
+    }
+
+    public JSONObject toPossibleOrdersJson(){
+        JSONObject jObject = new JSONObject();
+        jObject.put("message_type","possible_order_types");
+        jObject.put("color", getActivePlayer().getColor());
+        JSONObject orderTypes = new JSONObject();
+        for(OrderType type : allowableOrders()){
+            OrderConstraints orderConstraints = findConstraintsForOrderType(type);
+            JSONObject constraintJson = orderConstraints.toJsonObject();
+            orderTypes.put(type.toString(), constraintJson);
+        }
+        jObject.put("order_types", orderTypes);
+
+        return jObject;
     }
 
     @Override
