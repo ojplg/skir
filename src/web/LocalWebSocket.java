@@ -111,10 +111,7 @@ class LocalWebSocket implements WebSocket.OnTextMessage {
     }
 
     private void handleGameJoinedEvent(GameJoinedEvent gameJoinedEvent){
-        JSONObject jObject = new JSONObject();
-        jObject.put("message_type", "player_joined");
-        jObject.put("client_key", gameJoinedEvent.getClientKey());
-        jObject.put("color", gameJoinedEvent.getPlayer().getColor());
+        JSONObject jObject = gameJoinedEvent.toJson();
         sendJson(jObject);
     }
 

@@ -1,5 +1,6 @@
 package state.event;
 
+import org.json.simple.JSONObject;
 import state.Player;
 
 public class GameJoinedEvent {
@@ -19,4 +20,13 @@ public class GameJoinedEvent {
     public Player getPlayer() {
         return _player;
     }
+
+    public JSONObject toJson(){
+        JSONObject jObject = new JSONObject();
+        jObject.put("message_type", "player_joined");
+        jObject.put("client_key", getClientKey());
+        jObject.put("color", getPlayer().getColor());
+        return jObject;
+    }
+
 }
