@@ -21,7 +21,7 @@ for t in $TEST_SRC_FILES;
 do 
 	t=${t#../test/}
 	t=${t%.java}
- 	t=${t/\//.}
+ 	t=${t//\//.}
 	TEST_NAMES="$TEST_NAMES $t"
 done
 

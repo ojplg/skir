@@ -1,0 +1,32 @@
+package ojplg.skir.play;
+
+import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.Order;
+import org.jetlang.channels.Channel;
+import org.jetlang.channels.MemoryChannel;
+import ojplg.skir.state.event.ClientConnectedEvent;
+import ojplg.skir.state.event.GameJoinedEvent;
+import ojplg.skir.state.event.MapChangedEvent;
+import ojplg.skir.state.event.PlayerChangedEvent;
+
+public class Channels {
+
+    public final Channel<MapChangedEvent> MapChangedEventChannel
+            = new MemoryChannel<MapChangedEvent>();
+
+    public final Channel<ClientConnectedEvent> ClientConnectedEventChannel
+            = new MemoryChannel<ClientConnectedEvent>();
+
+    public final Channel<PlayerChangedEvent> PlayerChangedEventChannel
+            = new MemoryChannel<PlayerChangedEvent>();
+
+    public final Channel<Order> OrderEnteredChannel
+            = new MemoryChannel<Order>();
+
+    public final Channel<Adjutant> AdjutantChannel
+            = new MemoryChannel<Adjutant>();
+
+    public final Channel<GameJoinedEvent> GameJoinedEventChannel
+            = new MemoryChannel<GameJoinedEvent>();
+
+}
