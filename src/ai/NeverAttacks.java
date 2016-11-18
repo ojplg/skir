@@ -3,7 +3,14 @@ package ai;
 import map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import play.orders.*;
+import play.orders.Adjutant;
+import play.orders.ClaimArmies;
+import play.orders.DrawCard;
+import play.orders.EndAttacks;
+import play.orders.EndTurn;
+import play.orders.Order;
+import play.orders.OrderType;
+import play.orders.PlaceArmy;
 import state.Game;
 import state.Player;
 
@@ -36,7 +43,7 @@ public class NeverAttacks implements AutomatedPlayer {
         if( possibleOrderTypes.contains(OrderType.Fortify)){
             return OrderType.EndTurn;
         }
-        System.out.println("Don't know what to do with these options " + possibleOrderTypes);
+        _log.warn("Don't know what to do with these options " + possibleOrderTypes);
         return null;
     }
 
