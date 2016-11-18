@@ -18,9 +18,9 @@ public class UseJetty {
     private static final Logger _log = LogManager.getLogger(UseJetty.class);
 
     private final int _httpPort;
+    private final Channels _channels;
+    private final Fiber _webFiber;
     private Server _server;
-    private Channels _channels;
-    private Fiber _webFiber;
 
     public UseJetty(int httpPort, Channels channels, Fiber webFiber){
         _httpPort = httpPort;
