@@ -1,30 +1,27 @@
 package ojplg.skir.web;
 
+import ojplg.skir.play.Channels;
+import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.Order;
+import ojplg.skir.state.event.ClientConnectedEvent;
+import ojplg.skir.state.event.GameJoinedEvent;
+import ojplg.skir.state.event.PlayerChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import ojplg.skir.play.Channels;
-import ojplg.skir.play.orders.Adjutant;
-import ojplg.skir.play.orders.Order;
-import ojplg.skir.state.event.GameJoinedEvent;
-import ojplg.skir.state.event.MapChangedEvent;
-import ojplg.skir.state.event.PlayerChangedEvent;
-import ojplg.skir.state.event.ClientConnectedEvent;
 
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
-import javax.websocket.OnOpen;
 import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-
 import java.io.IOException;
 
 @ServerEndpoint(value = "/sockets/")
@@ -36,8 +33,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private final String _id;
     private final Channels _channels;
-    public String _remoteAddress;
-    public String _clientKey;
+    private String _clientKey;
 
     private Session _session;
     private Adjutant _currentAdjutant;
@@ -52,38 +48,18 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         fiber.start();
 
         _channels.MapChangedEventChannel.subscribe(fiber,
-                new Callback<MapChangedEvent>() {
-                    @Override
-                    public void onMessage(MapChangedEvent mapChangedEvent) {
-                        sendJson(mapChangedEvent.toJson());
-                    }
-                }
+                mapChangedEvent -> sendJson(mapChangedEvent.toJson())
         );
         _channels.PlayerChangedEventChannel.subscribe(fiber,
-                new Callback<PlayerChangedEvent>() {
-                    @Override
-                    public void onMessage(PlayerChangedEvent playerChangedEvent) {
-                        handlePlayerChangedEvent(playerChangedEvent);
-                    }
-                }
+                playerChangedEvent -> handlePlayerChangedEvent(playerChangedEvent)
         );
 
         _channels.AdjutantChannel.subscribe(fiber,
-                new Callback<Adjutant>() {
-                    @Override
-                    public void onMessage(Adjutant adjutant) {
-                        handleNewAdjutant(adjutant);
-                    }
-                }
+                adjutant -> handleNewAdjutant(adjutant)
         );
 
         _channels.GameJoinedEventChannel.subscribe(fiber,
-                new Callback<GameJoinedEvent>() {
-                    @Override
-                    public void onMessage(GameJoinedEvent gameJoinedEvent) {
-                        handleGameJoinedEvent(gameJoinedEvent);
-                    }
-                }
+                gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
         _log.info("Channel subscriptions made");
     }
@@ -109,8 +85,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                     _log.error("Could not handle order ", ex);
                 }
             } else if ("ClientJoined".equals(messageType)){
-                String uniqueKey = (String) jObject.get("uniqueKey");
-                _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _remoteAddress, uniqueKey));
+                _clientKey = (String) jObject.get("uniqueKey");
+                _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, "", _clientKey));
             }
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + message, pe);
@@ -151,18 +127,6 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _channels.OrderEnteredChannel.publish(order);
     }
 
-//    @Override
-//    public void onOpen(Connection connection) {
-//        _log.info("onOpen called on LocalWebSocket");
-//        _connection = connection;
-//        _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _remoteAddress, _clientKey));
-//    }
-//
-//    @Override
-//    public void onClose(int i, String s) {
-//        _log.info("onClose called on LocalWebSocket " + s);
-//    }
-
     private void handleNewAdjutant(Adjutant adjutant){
         _log.info("adjutant " + adjutant);
         _currentAdjutant = adjutant;
@@ -180,16 +144,5 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         } catch (IOException io){
             _log.error("Could not send message ", io);
         }
-//        try {
-//            if( _connection != null && _connection.isOpen()) {
-//                String msg = jObject.toJSONString();
-//                _log.info("Sending message " + msg);
-//                _connection.sendMessage(msg);
-//            } else {
-//                _log.warn("WARN SENDING ON CLOSED (or null) WEB SOCKET");
-//            }
-//        } catch (IOException ioe){
-//            _log.error("Could not send a web socket message", ioe);
-//        }
     }
 }
