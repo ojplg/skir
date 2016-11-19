@@ -2,18 +2,21 @@ package ojplg.skir.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.websocket.WebSocket;
-import org.eclipse.jetty.websocket.WebSocketHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.jetlang.fibers.Fiber;
 import ojplg.skir.play.Channels;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.ServerContainer;
 import java.util.concurrent.CountDownLatch;
 
-public class UseJetty {
+public class UseJetty  {
 
     private static final Logger _log = LogManager.getLogger(UseJetty.class);
 
@@ -26,33 +29,32 @@ public class UseJetty {
         _httpPort = httpPort;
         _channels = channels;
         _webFiber = webFiber;
+        WebSocketInitializer.Channels = _channels;
+        _log.info("Web Socket Channels initialized");
     }
 
     public void StartJettyServer(CountDownLatch latch) throws Exception {
 
         _server = new Server();
 
-        SelectChannelConnector httpConnector = new SelectChannelConnector();
+        ServerConnector httpConnector = new ServerConnector(_server);
         httpConnector.setPort(_httpPort);
         _server.addConnector(httpConnector);
 
-        WebSocketHandler socketHandler = new WebSocketHandler() {
-            @Override
-            public WebSocket doWebSocketConnect(HttpServletRequest httpServletRequest, String key) {
-                _log.info("doWebSocket called " + key);
-                String remoteAddress = httpServletRequest.getRemoteAddr();
-                LocalWebSocket webSocket = new LocalWebSocket(_channels, _webFiber, remoteAddress, key);
-                return webSocket;
-            }
-        };
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        resourceHandler.setWelcomeFiles(new String[]{ "html/index.html" });
+        resourceHandler.setResourceBase("../out/production/risk/");
 
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.setDirectoriesListed(true);
-        resource_handler.setWelcomeFiles(new String[]{ "html/index.html" });
-        resource_handler.setResourceBase("../out/production/risk/");
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/");
 
-        socketHandler.setHandler(resource_handler);
-        _server.setHandler(socketHandler);
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[] { resourceHandler, context });
+        _server.setHandler(handlers);
+
+        ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);
+        wsContainer.addEndpoint(LocalWebSocket.class);
 
         _log.info("Started up Jetty Web Server");
         _server.start();
@@ -60,14 +62,6 @@ public class UseJetty {
         latch.countDown();
         _server.join();
         _log.info("Joined");
-    }
-
-    public void stop(){
-        try {
-            _server.stop();
-        } catch (Exception ex){
-            _log.error("Could not stop jetty", ex);
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 var connection;
 
 function openWebSocketConnection(uniqueKey){
-    connection = new WebSocket("ws://" + window.location.host,uniqueKey);
+    connection = new WebSocket("ws://" + window.location.host + "/sockets/");
     connection.onmessage = function(event){
         console.log("message from server: " + event.data);
         var datum = JSON.parse(event.data);
@@ -16,7 +16,17 @@ function openWebSocketConnection(uniqueKey){
         } else {
           console.log("BAD MESSAGE ON WEB SOCKET: " + event.data);
         }
-    }
+    };
+    // need this to happen after connection created
+    connection.onopen = function(event) { sendJoinMessage(uniqueKey); };
+}
+
+function sendJoinMessage(uniqueKey){
+    var obj = {};
+    obj.messageType = "ClientJoined";
+    obj.uniqueKey = "" + uniqueKey;
+    var msg = JSON.stringify(obj);
+    sendMessage(msg);
 }
 
 function sendMessage(msg){

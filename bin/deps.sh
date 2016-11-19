@@ -57,11 +57,15 @@ function get_log4j {
 
 function get_jetty {
 	echo "jetty ..."
-	download_and_untar $JETTY_URL $JETTY_TARBALL
+	#download_and_untar $JETTY_URL $JETTY_TARBALL
 	for jar in ${JETTY_JARS[@]}; do
 		copy_to_libs $JETTY_TARBALL/lib $jar-$JETTY_VERSION.jar
 	done
+ 	for jar in ${JETTY_WEBSOCKET_JARS[@]}; do
+		copy_to_libs $JETTY_TARBALL/lib/websocket $jar-$JETTY_VERSION.jar
+	done
 	copy_to_libs $JETTY_TARBALL/lib $SERVLET_JAR
+        copy_to_libs $JETTY_TARBALL/lib/websocket $WEBSOCKET_JAR
 }
 
 function get_json {
@@ -86,13 +90,13 @@ function get_jetlang {
 
 echo "Downloading dependencies ..."
 
-clean_and_create_tmp_dir
+#clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
 #get_log4j
-#get_jetty
+get_jetty
 #get_json
 #get_junit
 #get_jetlang
-get_velocity
+#get_velocity
 

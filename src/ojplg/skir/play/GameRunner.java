@@ -84,11 +84,11 @@ public class GameRunner {
 
             _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
 
-            _channels.GameJoinedEventChannel.publish(new GameJoinedEvent(clientConnectedEvent.getClientKey(), player));
-
             // this should happen when a start command comes from client
             // when we know how to automate remaining players
             initializeAutomatedPlayers();
+            _channels.GameJoinedEventChannel.publish(new GameJoinedEvent(clientConnectedEvent.getClientKey(), player));
+            _log.info("Published game joined event");
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
         }
@@ -116,7 +116,7 @@ public class GameRunner {
 
     private void sillyDelay(){
         try {
-            Thread.sleep(100);
+            Thread.sleep(25);
         } catch(InterruptedException ie){
             _log.error("Who interrupted me?", ie);
         }
@@ -124,13 +124,11 @@ public class GameRunner {
 
     public void startGame(){
         assignCountries();
-
-
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
-    public void addAutomatedPlayer(AutomatedPlayer ai){
+    private void addAutomatedPlayer(AutomatedPlayer ai){
         _log.info("Adding automated player for " + ai.getPlayer());
         _automatedPlayers.put(ai.getPlayer(),ai);
     }
