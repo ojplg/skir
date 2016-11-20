@@ -53,11 +53,9 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _channels.PlayerChangedEventChannel.subscribe(fiber,
                 playerChangedEvent -> handlePlayerChangedEvent(playerChangedEvent)
         );
-
         _channels.AdjutantChannel.subscribe(fiber,
                 adjutant -> handleNewAdjutant(adjutant)
         );
-
         _channels.GameJoinedEventChannel.subscribe(fiber,
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );

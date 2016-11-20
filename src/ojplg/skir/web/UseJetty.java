@@ -2,10 +2,10 @@ package ojplg.skir.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -43,14 +43,18 @@ public class UseJetty  {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setWelcomeFiles(new String[]{ "html/index.html" });
+        resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
         resourceHandler.setResourceBase("../out/production/risk/");
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 
+        ContextHandler contextHandler = new ContextHandler();
+        contextHandler.setContextPath("/");
+        contextHandler.setHandler( new JoinGameHandler(_channels));
+
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { resourceHandler, context });
+        handlers.setHandlers(new Handler[] { contextHandler, resourceHandler, context });
         _server.setHandler(handlers);
 
         ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);

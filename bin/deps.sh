@@ -22,6 +22,12 @@ JETLANG_URL=https://repo1.maven.org/maven2/org/jetlang/jetlang/$JETLANG_VERSION
 VELOCITY_TARBALL=velocity-$VELOCITY_VERSION
 VELOCITY_URL=http://www-us.apache.org/dist//velocity/engine/$VELOCITY_VERSION/$VELOCITY_TARBALL
 
+APACHE_COLLECTIONS_TARBALL=commons-collections-$APACHE_COLLECTIONS_VERSION
+APACHE_COLLECTIONS_URL=http://www-us.apache.org/dist//commons/collections/binaries/$APACHE_COLLECTIONS_TARBALL-bin
+
+APACHE_LANG_TARBALL=commons-lang-$APACHE_LANG_VERSION
+APACHE_LANG_URL=http://www-us.apache.org/dist//commons/lang/binaries/$APACHE_LANG_TARBALL-bin
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -57,7 +63,7 @@ function get_log4j {
 
 function get_jetty {
 	echo "jetty ..."
-	#download_and_untar $JETTY_URL $JETTY_TARBALL
+	download_and_untar $JETTY_URL $JETTY_TARBALL
 	for jar in ${JETTY_JARS[@]}; do
 		copy_to_libs $JETTY_TARBALL/lib $jar-$JETTY_VERSION.jar
 	done
@@ -88,15 +94,29 @@ function get_jetlang {
         cp $JETLANG_JAR $LIBS_DIR/
 }
 
+function get_apache_collections {
+	echo "apache collections ..."
+	download_and_untar $APACHE_COLLECTIONS_URL $APACHE_COLLECTIONS_JAR
+        copy_to_libs $APACHE_COLLECTIONS_TARBALL $APACHE_COLLECTIONS_JAR
+}
+
+function get_apache_lang {
+	echo "apache lang ..."
+	#download_and_untar $APACHE_LANG_URL $APACHE_LANG_JAR
+        copy_to_libs $APACHE_LANG_TARBALL $APACHE_LANG_JAR.jar
+}
+
 echo "Downloading dependencies ..."
 
 #clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
 #get_log4j
-get_jetty
+#get_jetty
 #get_json
 #get_junit
 #get_jetlang
 #get_velocity
+#get_apache_collections
+get_apache_lang
 

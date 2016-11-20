@@ -9,9 +9,9 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.state.event.JoinGameRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.core.Callback;
 import org.jetlang.fibers.Fiber;
 import ojplg.skir.state.ClientInfo;
 import ojplg.skir.state.Game;
@@ -22,8 +22,10 @@ import ojplg.skir.state.event.GameJoinedEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GameRunner {
 
@@ -39,25 +41,19 @@ public class GameRunner {
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
 
+    private final Set<JoinGameRequest> _joinRequests = new HashSet<>();
+
     public GameRunner(Channels channels, Fiber fiber){
         _channels = channels;
         _fiber = fiber;
         _game = initializeGame(channels);
 
         _channels.OrderEnteredChannel.subscribe(_fiber,
-                new Callback<Order>() {
-                    @Override
-                    public void onMessage(Order order) {
-                        processOrder(order);
-                    }
-                });
+                order -> processOrder(order));
         _channels.ClientConnectedEventChannel.subscribe(_fiber,
-                new Callback<ClientConnectedEvent>() {
-                    @Override
-                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-                        handleClientConnection(clientConnectedEvent);
-                    }
-                });
+                clientConnectedEvent -> handleClientConnection(clientConnectedEvent));
+        _channels.JoinGameRequestChannel.subscribe(_fiber,
+                joinGameRequest -> { _joinRequests.add(joinGameRequest); });
     }
 
     private void initializeAutomatedPlayers(){

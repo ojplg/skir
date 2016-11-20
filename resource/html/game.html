@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Risk</title>
+    <script src="js/map.js"></script>
+    <script src="js/status.js"></script>
+    <script src="js/connection.js"></script>
+</head>
+<body onload="initializeClient()">
+  <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
+  </canvas>
+
+  <div id="active-player-field"></div>
+  <div id="other-player-status-div"></div>
+  <div id="order-console-div"></div>
+
+  <div id="player-status-div">
+      <span style="color:#FFFFFF;background-color:#000000;width:16%;float:left;">
+          Black<br/>
+          Armies: <span id="black-armies"></span><br/>
+          Countries: <span id="black-countries"></span><br/>
+          Continents: <span id="black-continents"></span><br/>
+          Cards: <span id="black-cardCount"></span><br/>
+          Expected: <span id="black-expected"></span><br/>
+      </span>
+      <span style="color:#FFFFFF;background-color:#0000FF;width:16%;float:left;">
+          Blue<br/>
+          Armies: <span id="blue-armies"></span><br/>
+          Countries: <span id="blue-countries"></span><br/>
+          Continents: <span id="blue-continents"></span><br/>
+          Cards: <span id="blue-cardCount"></span><br/>
+          Expected: <span id="blue-expected"></span><br/>
+      </span>
+      <span style="color:black;background-color:red;width:16%;float:left;">
+          Red<br/>
+          Armies: <span id="red-armies"></span><br/>
+          Countries: <span id="red-countries"></span><br/>
+          Continents: <span id="red-continents"></span><br/>
+          Cards: <span id="red-cardCount"></span><br/>
+          Expected: <span id="red-expected"></span><br/>
+      </span>
+      <span style="color:white;background-color:green;width:16%;float:left;">
+          Green<br/>
+          Armies: <span id="green-armies"></span><br/>
+          Countries: <span id="green-countries"></span><br/>
+          Continents: <span id="green-continents"></span><br/>
+          Cards: <span id="green-cardCount"></span><br/>
+          Expected: <span id="green-expected"></span><br/>
+      </span>
+      <span style="color:black;background-color:white;width:16%;float:left;">
+          White<br/>
+          Armies: <span id="white-armies"></span><br/>
+          Countries: <span id="white-countries"></span><br/>
+          Continents: <span id="white-continents"></span><br/>
+          Cards: <span id="white-cardCount"></span><br/>
+          Expected: <span id="white-expected"></span><br/>
+      </span>
+      <span style="color:black;background-color:pink;width:16%;float:left;">
+          Pink<br/>
+          Armies: <span id="pink-armies"></span><br/>
+          Countries: <span id="pink-countries"></span><br/>
+          Continents: <span id="pink-continents"></span><br/>
+          Cards: <span id="pink-cardCount"></span><br/>
+          Expected: <span id="pink-expected"></span><br/>
+      </span>
+  </div>
+</body>
+</html>
