@@ -20,6 +20,7 @@ import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,6 +57,10 @@ public class GameRunner {
                 joinGameRequest -> { _joinRequests.add(joinGameRequest); });
     }
 
+    public static List<String> getColors(){
+        return Collections.unmodifiableList(Arrays.asList(_colors));
+    }
+
     private void initializeAutomatedPlayers(){
         for (int idx = 1; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
@@ -63,6 +68,7 @@ public class GameRunner {
             addAutomatedPlayer(ai);
         }
     }
+
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
 

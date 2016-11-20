@@ -1,6 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.GameRunner;
 import ojplg.skir.state.event.JoinGameRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +58,8 @@ public class JoinGameHandler extends AbstractHandler {
         VelocityContext vc = new VelocityContext();
         vc.put("name", name);
         vc.put("address", address);
+        vc.put("colors", GuiColor.ALL_COLORS);
+
         InputStream in = this.getClass().getResourceAsStream("/template/game.vtl");
 
         Velocity.evaluate(vc, writer , "", new InputStreamReader(in));
