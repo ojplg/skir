@@ -88,13 +88,26 @@ function drawOverseaConnectors(){
     // brazil to north africa
     drawOverseaConnector(222,400,298,400);
     // greenland to iceland
-    drawOverseaConnector(260,50,302,50);
+    drawOverseaConnector(262,50,300,50);
     // iceland to great britain
     drawOverseaConnector(335,72,335,100);
     // iceland to scandinavia
+    drawOverseaConnector(355,50,430,50);
     // great britain to scandinavia
+    drawOverseaConnector(380,110,430,110);
     // great britain to western europe
+    drawOverseaConnector(355,180,355,200);
     // great britain to northern europe
+    drawOverseaConnector(380,150,410,150);
+    // northern europe to scandinavia
+    // western europe to north africa
+    // southern europe to north africa
+    // southern europe to egypt
+    // east africa to madagascar
+    // south africa to madagascar
+    // kamchatka to japan
+    // kamchatka to alaska
+    // mongolia to japan
 
 }
 
