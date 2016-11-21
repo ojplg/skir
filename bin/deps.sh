@@ -102,21 +102,21 @@ function get_apache_collections {
 
 function get_apache_lang {
 	echo "apache lang ..."
-	#download_and_untar $APACHE_LANG_URL $APACHE_LANG_JAR
+	download_and_untar $APACHE_LANG_URL $APACHE_LANG_JAR
         copy_to_libs $APACHE_LANG_TARBALL $APACHE_LANG_JAR.jar
 }
 
 echo "Downloading dependencies ..."
 
-#clean_and_create_tmp_dir
+clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
-#get_log4j
-#get_jetty
-#get_json
-#get_junit
-#get_jetlang
-#get_velocity
-#get_apache_collections
+get_log4j
+get_jetty
+get_json
+get_junit
+get_jetlang
+get_velocity
+get_apache_collections
 get_apache_lang
 
