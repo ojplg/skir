@@ -21,7 +21,8 @@ public class CardStack {
     }
 
     public int tradeCards(Card one, Card two, Card three){
-        if( ! Cards.canTrade(one, two, three)){
+        CardSet set = new CardSet(one, two, three);
+        if( ! set.isExchangeableSet()){
             throw new RuntimeException("Cannot exchange with " + one + ", " + two + ", " + three);
         }
         _tradeNumber++;

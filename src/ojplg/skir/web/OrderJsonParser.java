@@ -1,6 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.card.CardSet;
 import ojplg.skir.card.Cards;
 import ojplg.skir.map.Country;
 import org.apache.logging.log4j.LogManager;
@@ -89,10 +90,7 @@ public class OrderJsonParser {
 
     private ExchangeCardSet newExchangeCardSet(){
         // TODO: Allow user to select set?
-        List<Card> toExchange = Cards.findTradeableSet(_adjutant.getActivePlayer().getCards());
-        Card one = toExchange.get(0);
-        Card two = toExchange.get(1);
-        Card three = toExchange.get(2);
-        return new ExchangeCardSet(_adjutant, one, two, three);
+        CardSet set = Cards.findTradeableSet(_adjutant.getActivePlayer().getCards());
+        return new ExchangeCardSet(_adjutant, set.getOne(), set.getTwo(), set.getThree());
     }
 }

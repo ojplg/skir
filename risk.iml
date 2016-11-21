@@ -15,5 +15,6 @@
     <orderEntry type="library" name="jetty-websocket-7.6.3.v20120416" level="project" />
     <orderEntry type="library" name="jetty-servlet-7.6.3.v20120416" level="project" />
     <orderEntry type="library" name="cdi-websocket-9.3.14.v20161028" level="project" />
+    <orderEntry type="library" name="commons-collections-3.2.2" level="project" />
   </component>
 </module>

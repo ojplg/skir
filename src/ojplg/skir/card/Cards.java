@@ -7,20 +7,25 @@ import java.util.List;
 public class Cards {
 
     public static boolean hasTradeableSet(List<Card> cards){
-        return findTradeableSet(cards).size() > 0;
+        CardSet set = findTradeableSet(cards);
+        if (set == null){
+            return false;
+        }
+        return set.isExchangeableSet();
     }
 
-    public static List<Card> findTradeableSet(List<Card> cards){
+    public static CardSet findTradeableSet(List<Card> cards){
         if (cards.size() < 3){
-            return Collections.EMPTY_LIST;
+            return null;
         }
         List<Card> copy = new ArrayList<Card>(cards);
         for (List<Card> subset : allSubsets(3, copy) ){
-            if(canTrade(subset.get(0), subset.get(1), subset.get(2))){
-                return subset;
+            CardSet set = new CardSet(subset.get(0), subset.get(1), subset.get(2));
+            if( set.isExchangeableSet()){
+                return set;
             }
         }
-        return Collections.EMPTY_LIST;
+        return null;
     }
 
     public static <T> List<List<T>> allSubsets(int length, List<T> items){
@@ -50,15 +55,5 @@ public class Cards {
         sublists.addAll(allSubsets(length, copy));
 
         return sublists;
-    }
-
-    public static boolean canTrade(Card one, Card two, Card three){
-        if( one.matchesType(two) && one.matchesType(three) ){
-           return true;
-        }
-        if ( one.unMatchesType(two) && one.unMatchesType(three) && two.unMatchesType(three) ){
-            return true;
-        }
-        return false;
     }
 }

@@ -1,6 +1,7 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.card.CardSet;
 import ojplg.skir.card.Cards;
 import ojplg.skir.map.Country;
 import ojplg.skir.play.orders.Adjutant;
@@ -87,8 +88,8 @@ public class Bully implements AutomatedPlayer {
         } else if( orderType == OrderType.Occupy){
             order = generateOccupationOrder(adjutant, game);
         } else if( orderType == OrderType.ExchangeCardSet){
-            List<Card> set = Cards.findTradeableSet(getPlayer().getCards());
-            order = new ExchangeCardSet(adjutant, set.get(0), set.get(1), set.get(2));
+            CardSet set = Cards.findTradeableSet(getPlayer().getCards());
+            order = new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
         } else {
             _log.warn("Don't know what to do with this type " + orderType);
             return null;

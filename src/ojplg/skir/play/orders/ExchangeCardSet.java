@@ -1,6 +1,7 @@
 package ojplg.skir.play.orders;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.card.CardSet;
 import ojplg.skir.card.Cards;
 import ojplg.skir.state.Game;
 
@@ -18,8 +19,9 @@ public class ExchangeCardSet extends Order {
     }
 
     public Adjutant execute(Game game){
+        CardSet set = new CardSet(_one, _two, _three);
 
-        if( ! Cards.canTrade(_one, _two, _three) ) {
+        if( ! set.isExchangeableSet() ) {
             throw new RuntimeException("Not a good set: " + _one + "," + _two + "," + _three);
         }
 
