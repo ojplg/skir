@@ -37,6 +37,9 @@ public class Bully implements AutomatedPlayer {
 
     @Override
     public OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
+        if ( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
+            return OrderType.ExchangeCardSet;
+        }
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
             return OrderType.PlaceArmy;
         }
@@ -47,9 +50,6 @@ public class Bully implements AutomatedPlayer {
         }
         if( possibleOrderTypes.contains(OrderType.DrawCard) ){
             return OrderType.DrawCard;
-        }
-        if ( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
-            return OrderType.ExchangeCardSet;
         }
         if( possibleOrderTypes.contains(OrderType.ClaimArmies)){
             return OrderType.ClaimArmies;

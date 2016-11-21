@@ -15,6 +15,7 @@
 ** fix javascript errors (myColor) playerIdentity
 ** transmit descriptions of game actions
 ** handle end of game
+** test how card stealing works
 
 * AIs
 ** Continent grabber
