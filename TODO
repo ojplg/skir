@@ -13,9 +13,11 @@
 ** Fix Occupy v DoOccupation nonsense
 ** Connect up name entry with web socket connection and player creation
 ** fix javascript errors (myColor) playerIdentity
+** transmit descriptions of game actions
+** handle end of game
 
 * AIs
 ** Continent grabber
-** Bully - always attack countries with fewer armies
+** Bully - needs testing
 ** Keeps countries previously owned
 ** Over-aggressive

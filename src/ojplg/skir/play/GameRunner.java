@@ -1,6 +1,7 @@
 package ojplg.skir.play;
 
 import ojplg.skir.ai.AutomatedPlayer;
+import ojplg.skir.ai.Bully;
 import ojplg.skir.ai.NeverAttacks;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
@@ -64,7 +65,12 @@ public class GameRunner {
     private void initializeAutomatedPlayers(){
         for (int idx = 1; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
-            AutomatedPlayer ai = new NeverAttacks(player);
+            AutomatedPlayer ai;
+            if ( idx % 2 == 0 ) {
+                ai = new NeverAttacks(player);
+            } else {
+                ai = new Bully(player);
+            }
             addAutomatedPlayer(ai);
         }
     }
