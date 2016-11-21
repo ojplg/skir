@@ -77,9 +77,38 @@ function draw_map(){
     draw_country(context,country);
   }
 
+  drawOverseaConnectors();
+
   canvas.addEventListener('click', function(e) {
     map_clicked(e);
   });
+}
+
+function drawOverseaConnectors(){
+    // brazil to north africa
+    drawOverseaConnector(222,400,298,400);
+    // greenland to iceland
+    drawOverseaConnector(260,50,302,50);
+    // iceland to great britain
+    drawOverseaConnector(335,72,335,100);
+    // iceland to scandinavia
+    // great britain to scandinavia
+    // great britain to western europe
+    // great britain to northern europe
+
+}
+
+function drawOverseaConnector(xStart,yStart,xEnd,yEnd){
+    var canvas = document.getElementById('canvas_map');
+    var ctx = canvas.getContext("2d");
+
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(xStart,yStart);
+    ctx.lineTo(xEnd,yEnd);
+    ctx.stroke();
 }
 
 function draw_country(context,country){
