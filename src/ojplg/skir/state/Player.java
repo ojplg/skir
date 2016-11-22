@@ -28,7 +28,7 @@ public class Player {
     }
 
     public List<Card> getCards(){
-        return Collections.unmodifiableList(_cards);
+        return Collections.unmodifiableList(new ArrayList(_cards));
     }
 
     public void removeCards(List<Card> cards){
