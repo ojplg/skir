@@ -113,8 +113,7 @@ public class GameRunner {
         _currentAdjutant = order.execute(_game);
         AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
         if( ai != null ){
-            OrderType ot = ai.pickOrderType(_currentAdjutant.allowableOrders(), _game);
-            Order generatedOrder = ai.generateOrder(ot, _currentAdjutant, _game);
+            Order generatedOrder = ai.generateOrder(_currentAdjutant, _game);
             processOrder(generatedOrder);
             sillyDelay();
         } else {

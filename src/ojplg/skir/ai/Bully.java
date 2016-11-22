@@ -1,6 +1,5 @@
 package ojplg.skir.ai;
 
-import ojplg.skir.card.Card;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.card.Cards;
 import ojplg.skir.map.Country;
@@ -36,8 +35,7 @@ public class Bully implements AutomatedPlayer {
         _me = player;
     }
 
-    @Override
-    public OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
+    private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
         if ( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
             return OrderType.ExchangeCardSet;
         }
@@ -71,7 +69,10 @@ public class Bully implements AutomatedPlayer {
     }
 
     @Override
-    public Order generateOrder(OrderType orderType, Adjutant adjutant, Game game){
+    public Order generateOrder(Adjutant adjutant, Game game){
+
+        OrderType orderType = pickOrderType(adjutant.allowableOrders(), game);
+
         Order order;
         if( orderType == OrderType.PlaceArmy){
             order = placeArmy(adjutant, game);
