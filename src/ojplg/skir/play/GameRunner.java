@@ -19,6 +19,7 @@ import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
+import sun.util.resources.cldr.rm.CurrencyNames_rm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,8 +79,7 @@ public class GameRunner {
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
 
-        // TODO: need to count this
-        int availablePlayerNumber = 0;
+        int availablePlayerNumber = _remotePlayerInfo.size() - 1;
 
         if( playerSlotAvailable()) {
             _gameStarted = true;
@@ -95,7 +95,9 @@ public class GameRunner {
             // this should happen when a start command comes from client
             // when we know how to automate remaining players
             initializeAutomatedPlayers();
-            _channels.GameJoinedEventChannel.publish(new GameJoinedEvent(clientConnectedEvent.getClientKey(), player));
+            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
+                    clientConnectedEvent.getClientKey(), player, availablePlayerNumber == 0);
+            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _log.info("Published game joined event");
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
