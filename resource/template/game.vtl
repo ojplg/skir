@@ -6,14 +6,8 @@
     <script src="js/map.js"></script>
     <script src="js/status.js"></script>
     <script src="js/connection.js"></script>
-    <script>
-        var playerIdentity = {
-            var name = "$name";
-            var address = "$address";
-        }
-    </script>
 </head>
-<body onload="initializeClient()">
+<body onload="initializeClient('${name}', '${address}')">
     <p>$name @ $address</p>
   <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
   </canvas>

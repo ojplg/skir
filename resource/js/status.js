@@ -7,33 +7,35 @@ var orderType;
 var fromCountry;
 var toCountry;
 var currentChoices;
-var myColor;
-var myUniqueKey;
+var myIdentity = {};
 
 function isMyColor(color){
-    return color.toUpperCase() == myColor.toUpperCase();
+    return color.toUpperCase() == myIdentity.color.toUpperCase();
 }
 
-function initializeClient(){
+function initializeClient(name, address){
     draw_map();
-    myUniqueKey = Math.floor(Math.random() * 1000000);
-    openWebSocketConnection(myUniqueKey);
+    myIdentity.uniqueKey = Math.floor(Math.random() * 1000000);
+    openWebSocketConnection(myIdentity.uniqueKey);
+    myIdentity.name = name;
+    myIdentity.address = address;
+    myIdentity.color = "";
 }
 
 function updatePlayerInfo(joinedObject){
     var color = joinedObject.color;
     var clientKey = joinedObject.client_key;
     console.log("Client with " + clientKey + " has color " + color);
-    console.log("My client key is " + myUniqueKey);
-    if( clientKey == myUniqueKey ){
+    console.log("My client key is " + myIdentity.uniqueKey);
+    if( clientKey == myIdentity.uniqueKey ){
         console.log("I am " + clientKey + " and my color is " + color);
-        myColor = color;
+        myIdentity.color = color;
     }
 }
 
 function updatePlayerStats(playerStatus){
     var color = playerStatus.color;
-    console.log("Updating player " + color + " my color is " + myColor);
+    console.log("Updating player " + color + " my color is " + myIdentity.color);
     var armiesSpan = document.getElementById(color + "-armies");
     armiesSpan.textContent = playerStatus.armies;
     var countriesSpan = document.getElementById(color+ "-countries");
@@ -68,7 +70,7 @@ function updateOrderConsole(color, choicesObject){
     console.log("Choices for " + color + " are " + choicesObject);
     document.getElementById("active-player-field").textContent = "Active player is " + color;
     clearOrderConsole();
-    if (color == myColor) {
+    if (isMyColor(color)) {
         var choices = [];
         for (var key in choicesObject) {
             console.log("Adding key " + key);
