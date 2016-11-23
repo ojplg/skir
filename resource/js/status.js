@@ -33,7 +33,7 @@ function updatePlayerInfo(joinedObject){
     }
 }
 
-function updatePlayerStatsTable(playerStatus){
+function updatePlayerStats(playerStatus){
     var color = playerStatus.color;
     console.log("Updating player status table for " + color);
     var table = document.getElementById("player-status-" + color + "-table");
@@ -49,20 +49,9 @@ function updatePlayerStatsTable(playerStatus){
         var valueCell = row.insertCell(1);
         valueCell.innerHTML = playerStatus[item];
     }
-}
-
-function updatePlayerStats(playerStatus){
-    /*
-    var color = playerStatus.color;
-    console.log("Updating player " + color + " my color is " + myIdentity.color);
-    var armiesSpan = document.getElementById(color + "-armies");
-    armiesSpan.textContent = playerStatus.armies;
-    var countriesSpan = document.getElementById(color+ "-countries");
-    countriesSpan.textContent = playerStatus.countries;
-    var cardSpan = document.getElementById(color + "-cardCount");
     if( isMyColor(color) ){
         var cards = playerStatus.cards;
-        var txt = "";
+        var txt = "Cards:<br/>";
         for( var idx=1; idx<=cards.length ; idx++ ){
             var card = cards[idx-1];
             console.log("found card " + card);
@@ -73,17 +62,10 @@ function updatePlayerStats(playerStatus){
             txt = txt.concat(card.symbol);
             txt = txt.concat("<br/>");
         }
-        console.log("appending text " + txt);
-        cardSpan.innerHTML = txt;
-    } else {
-        cardSpan.textContent = playerStatus.card_count;
+        var cardsSpan = document.getElementById("player-cards-" + color + "-span");
+        cardsSpan.innerHTML = txt;
     }
-    var continentSpan = document.getElementById(color + "-continents");
-    continentSpan.textContent = playerStatus.continents;
-    var expectedSpan = document.getElementById(color + "-expected");
-    expectedSpan.textContent = playerStatus.expected_armies;
-    */
-    updatePlayerStatsTable(playerStatus);
+
 }
 
 function updateOrderConsole(color, choicesObject){

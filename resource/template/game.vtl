@@ -18,12 +18,13 @@
 
   <div id="player-status-div">
       #foreach( $color in $colors )
-         <span style="color:$color.foreground;background-color:$color.background;width:16%;float:left;"
-         id="player-status-${color}-div">
+         <div style="color:$color.foreground;background-color:$color.background;width:16%;float:left;"
+         id="player-status-${color.lowerCaseColor}-div">
          $color.color<br/>
           <table id="player-status-${color.lowerCaseColor}-table">
           </table>
-         </span>
+          <span id="player-cards-${color.lowerCaseColor}-span"></span>
+         </div>
       #end
   </div>
 </body>

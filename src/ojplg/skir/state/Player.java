@@ -67,11 +67,11 @@ public class Player {
     }
 
     public double attackLuckFactor(){
-        return _attackStats.normalizedLuckFactor();
+        return _attackStats.getExpectationsDifference();
     }
 
     public double defenseLuckFactor(){
-        return _defenseStats.normalizedLuckFactor();
+        return _defenseStats.getExpectationsDifference();
     }
 
     public boolean hasReserves(){

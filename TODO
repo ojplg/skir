@@ -2,6 +2,7 @@
 ** test how card stealing works - broken when user can exchange twice after elimination
 ** Respect attackers dice choice
 ** handle end of game
+** check on luck calculation: it does not look right
 
 * Web page UI
 ** Draw lines for oversea attacks
