@@ -1,24 +1,21 @@
 * Main code
+** test how card stealing works - broken when user can exchange twice after elimination
+** Respect attackers dice choice
+** handle end of game
 
 * Web page UI
 ** Draw lines for oversea attacks
-** Show luck statistics
 ** Support multiple players
 ** First player to join starts the game
 ** Allow selection of AIs for other players
-** Allow users to enter a name
 ** Support reconnection/browser-refresh logic
 ** Refactor code into objects of some kind
 ** Switch around attacks: pick attack, after countries, pick all-out or one time
 ** Fix Occupy v DoOccupation nonsense
 ** Connect up name entry with web socket connection and player creation
-** fix javascript errors (myColor) playerIdentity
 ** transmit descriptions of game actions
-** handle end of game
-** test how card stealing works
 
 * AIs
 ** Continent grabber
-** Bully - needs testing
 ** Keeps countries previously owned
 ** Over-aggressive

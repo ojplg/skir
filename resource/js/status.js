@@ -33,7 +33,26 @@ function updatePlayerInfo(joinedObject){
     }
 }
 
+function updatePlayerStatsTable(playerStatus){
+    var color = playerStatus.color;
+    console.log("Updating player status table for " + color);
+    var table = document.getElementById("player-status-" + color + "-table");
+    clearElementChildren(table);
+    var items = ['armies','countries','continents','card_count',
+                 'expected_armies', 'attack_luck_factor', 'defense_luck_factor'];
+    for(var idx=0; idx<items.length; idx++){
+        var item = items[idx];
+        console.log("adding item " + item + " at index " + idx);
+        var row = table.insertRow(idx);
+        var nameCell = row.insertCell(0);
+        nameCell.innerHTML = item;
+        var valueCell = row.insertCell(1);
+        valueCell.innerHTML = playerStatus[item];
+    }
+}
+
 function updatePlayerStats(playerStatus){
+    /*
     var color = playerStatus.color;
     console.log("Updating player " + color + " my color is " + myIdentity.color);
     var armiesSpan = document.getElementById(color + "-armies");
@@ -63,6 +82,8 @@ function updatePlayerStats(playerStatus){
     continentSpan.textContent = playerStatus.continents;
     var expectedSpan = document.getElementById(color + "-expected");
     expectedSpan.textContent = playerStatus.expected_armies;
+    */
+    updatePlayerStatsTable(playerStatus);
 }
 
 function updateOrderConsole(color, choicesObject){
@@ -351,20 +372,4 @@ function fromToOrderSelected(orderTypeFlag){
 
     var orderConsoleDiv = document.getElementById("order-console-div");
     orderConsoleDiv.appendChild(fromToDiv);
-}
-
-function doAttack(all_out_flag){
-    console.log("Doing attack " + all_out_flag);
-    var attackCountrySpan = document.getElementById("attack-country-span");
-    var attackCountry = attackCountrySpan.textContent;
-    var defenseCountrySpan = document.getElementById("defense-country-span");
-    var defenseCountry = defenseCountrySpan.textContent;
-
-    var msg = '{"message-type":"attack-command",' +
-      '"client-color":"' + color + '",' +
-      '"attack-country":"' + attackCountry + '",' +
-      '"defense-country":"' + defenseCountry + '",' +
-      '"all-out-flag":"' + all_out_flag + '"}';
-
-    sendMessage(msg);
 }

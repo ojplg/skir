@@ -18,13 +18,11 @@
 
   <div id="player-status-div">
       #foreach( $color in $colors )
-         <span style="color:$color.foreground;background-color:$color.background;width:16%;float:left;">
-            $color.color<br/>
-          Armies: <span id="${color.lowerCaseColor}-armies"></span><br/>
-          Countries: <span id="${color.lowerCaseColor}-countries"></span><br/>
-          Continents: <span id="${color.lowerCaseColor}-continents"></span><br/>
-          Cards: <span id="${color.lowerCaseColor}-cardCount"></span><br/>
-          Expected: <span id="${color.lowerCaseColor}-expected"></span><br/>
+         <span style="color:$color.foreground;background-color:$color.background;width:16%;float:left;"
+         id="player-status-${color}-div">
+         $color.color<br/>
+          <table id="player-status-${color.lowerCaseColor}-table">
+          </table>
          </span>
       #end
   </div>
