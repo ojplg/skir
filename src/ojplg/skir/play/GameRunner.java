@@ -55,6 +55,8 @@ public class GameRunner {
                 clientConnectedEvent -> handleClientConnection(clientConnectedEvent));
         _channels.JoinGameRequestChannel.subscribe(_fiber,
                 joinGameRequest -> { _joinRequests.add(joinGameRequest); });
+        _channels.StartGameChannel.subscribe(_fiber,
+                s -> startGame(s));
     }
 
     public static List<String> getColors(){
@@ -74,10 +76,9 @@ public class GameRunner {
         }
     }
 
-
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
 
-        int availablePlayerNumber = _remotePlayerInfo.size() - 1;
+        int availablePlayerNumber = _remotePlayerInfo.size();
 
         if( playerSlotAvailable()) {
             _gameStarted = true;
@@ -88,20 +89,21 @@ public class GameRunner {
             _remotePlayerInfo.put(player, clientInfo);
             player.setClientKey(clientInfo.getClientKey());
 
-            _log.info("Player " + availablePlayerNumber + " who is " + player.getColor() + " has address " + clientConnectedEvent.getClientAddress());
+            _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
 
-            // this should happen when a start command comes from client
-            // when we know how to automate remaining players
-            initializeAutomatedPlayers();
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
                     clientConnectedEvent, player, availablePlayerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
-            _log.info("Published game joined event");
+            _log.info("Published game joined event " + gameJoinedEvent);
+
+            // this should happen when a start command comes from client
+            // when we know how to automate remaining players
+            //initializeAutomatedPlayers();
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
         }
 
-        _channels.AdjutantChannel.publish(_currentAdjutant);
+        //_channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
     private boolean playerSlotAvailable(){
@@ -129,8 +131,10 @@ public class GameRunner {
         }
     }
 
-    public void startGame(){
+    private void startGame(String s){
+        _log.info("Starting game " + s);
         assignCountries();
+        initializeAutomatedPlayers();
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }

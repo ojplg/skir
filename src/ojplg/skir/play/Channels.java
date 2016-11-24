@@ -32,4 +32,7 @@ public class Channels {
 
     public final Channel<JoinGameRequest> JoinGameRequestChannel
             = new MemoryChannel<>();
+
+    public final Channel<String> StartGameChannel
+            = new MemoryChannel<>();
 }

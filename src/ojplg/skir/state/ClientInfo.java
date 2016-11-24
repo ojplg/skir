@@ -4,13 +4,13 @@ import ojplg.skir.state.event.ClientConnectedEvent;
 
 public class ClientInfo {
 
-    private final String _clientAddress;
+    private String _clientAddress;
     private final String _clientId;
     private final String _color;
     private final String _clientKey;
 
     public ClientInfo(ClientConnectedEvent clientConnectedEvent, Player player){
-        this._clientAddress = clientConnectedEvent.getClientAddress();
+        this._clientAddress = "";
         this._clientId = clientConnectedEvent.getClientId();
         this._clientKey = clientConnectedEvent.getClientKey();
         this._color = player.getColor();

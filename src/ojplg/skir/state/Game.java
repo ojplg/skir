@@ -41,15 +41,15 @@ public class Game {
         _currentAttacker = players.get(0);
         _roller = roller;
         _channels = channels;
-        channels.ClientConnectedEventChannel.subscribe(
-                _fiber,
-                new Callback<ClientConnectedEvent>() {
-                    @Override
-                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-                        publishAllState();
-                    }
-                }
-        );
+//        channels.ClientConnectedEventChannel.subscribe(
+//                _fiber,
+//                new Callback<ClientConnectedEvent>() {
+//                    @Override
+//                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
+//                        publishAllState();
+//                    }
+//                }
+//        );
         _fiber.start();
     }
 

@@ -32,4 +32,7 @@ public class GameJoinedEvent {
         return jObject;
     }
 
+    public String toString(){
+        return toJson().toString();
+    }
 }

@@ -45,7 +45,6 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _id = String.valueOf(_counter);
 
         Fiber fiber = new ThreadFiber();
-        fiber.start();
 
         _channels.MapChangedEventChannel.subscribe(fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
@@ -60,6 +59,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
         _log.info("Channel subscriptions made");
+
+        fiber.start();
     }
 
     @OnOpen
@@ -70,7 +71,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     @OnMessage
     public void onMessageReceived(String message, Session session){
-        _log.info("Got a message " + message + " from " + session);
+        _log.info("Received a message " + message + " from " + session);
         JSONParser parser = new JSONParser();
         try {
             JSONObject jObject = (JSONObject) parser.parse(message);
@@ -83,8 +84,11 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                     _log.error("Could not handle order ", ex);
                 }
             } else if ("ClientJoined".equals(messageType)){
+                _log.info("Client Joined " + message);
                 _clientKey = (String) jObject.get("uniqueKey");
-                _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, "", _clientKey));
+                _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _clientKey));
+            } else if ("StartGame".equals(messageType)){
+                _channels.StartGameChannel.publish("Start");
             }
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + message, pe);

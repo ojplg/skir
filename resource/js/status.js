@@ -127,7 +127,9 @@ function clearElementChildren(element){
 
 function buttonClicked(orderType){
     console.log("Selected " + orderType);
-    if( orderType == "PlaceArmy"){
+    if( orderType == "start" ) {
+        startGame();
+    } else if( orderType == "PlaceArmy"){
         placeArmySelected();
     } else if( orderType == "Attack"){
         fromToOrderSelected("Attack");
@@ -152,6 +154,13 @@ function buttonClicked(orderType){
     } else {
         console.log("Selection unknown " + orderType);
     }
+}
+
+function startGame(){
+    var msg = {};
+    msg.messageType = "StartGame";
+    var s = JSON.stringify(msg);
+    sendMessage(s);
 }
 
 function sendExchangeCardSetMessage(){

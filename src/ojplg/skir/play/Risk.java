@@ -47,7 +47,7 @@ public class Risk {
 
         gameRunnerFiber.start();
 
-        risk._gameRunner.startGame();
+        //risk._gameRunner.startGame();
     }
 
     private void runWebServer(){
