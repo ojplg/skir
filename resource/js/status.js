@@ -22,7 +22,7 @@ function initializeClient(name, address){
     myIdentity.color = "";
 }
 
-function updatePlayerInfo(joinedObject){
+function updatePlayerInfoAfterGameJoined(joinedObject){
     var color = joinedObject.color;
     var clientKey = joinedObject.client_key;
     console.log("Client with " + clientKey + " has color " + color);
@@ -30,6 +30,10 @@ function updatePlayerInfo(joinedObject){
     if( clientKey == myIdentity.uniqueKey ){
         console.log("I am " + clientKey + " and my color is " + color);
         myIdentity.color = color;
+    }
+    if( joinedObject.first_player ){
+        console.log("First player to join!")
+        addButton("start");
     }
 }
 

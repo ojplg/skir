@@ -5,7 +5,6 @@ import ojplg.skir.ai.Bully;
 import ojplg.skir.ai.NeverAttacks;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
-import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
@@ -19,7 +18,6 @@ import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
-import sun.util.resources.cldr.rm.CurrencyNames_rm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +94,7 @@ public class GameRunner {
             // when we know how to automate remaining players
             initializeAutomatedPlayers();
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
-                    clientConnectedEvent.getClientKey(), player, availablePlayerNumber == 0);
+                    clientConnectedEvent, player, availablePlayerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _log.info("Published game joined event");
         } else {

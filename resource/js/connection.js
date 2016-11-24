@@ -11,8 +11,8 @@ function openWebSocketConnection(uniqueKey){
           updatePlayerStats(datum);
         } else if (datum.message_type == 'possible_order_types'){
           updateOrderConsole(datum.color, datum.order_types);
-        } else if (datum.message_type == 'player_joined'){
-          updatePlayerInfo(datum);
+        } else if (datum.message_type == 'game_joined'){
+          updatePlayerInfoAfterGameJoined(datum);
         } else {
           console.log("BAD MESSAGE ON WEB SOCKET: " + event.data);
         }
