@@ -69,7 +69,7 @@ function draw_map(){
   var canvas = document.getElementById ('canvas_map');
   var context = canvas.getContext ('2d');
   context.fillStyle = '#A7B3FE';
-  context.fillRect(0,0,1000,600);
+  context.fillRect(0,0,950,600);
 
   for(var idx=0; idx<countries.length; idx++){
     var country = countries[idx];
@@ -96,19 +96,37 @@ function drawOverseaConnectors(){
     // great britain to scandinavia
     drawOverseaConnector(380,110,430,110);
     // great britain to western europe
-    drawOverseaConnector(355,180,355,200);
+    drawOverseaConnector(355,182,355,202);
     // great britain to northern europe
     drawOverseaConnector(380,150,410,150);
-    // northern europe to scandinavia
     // western europe to north africa
+    drawOverseaConnector(375,272,375,298);
     // southern europe to north africa
+    drawOverseaConnector(445,272,395,298);
     // southern europe to egypt
+    drawOverseaConnector(465,272,465,298);
     // east africa to madagascar
+    drawOverseaConnector(512,420,548,420);
     // south africa to madagascar
+    drawOverseaConnector(532,470,548,470);
     // kamchatka to japan
-    // kamchatka to alaska
+    drawOverseaConnector(858,110,877,110);
     // mongolia to japan
-
+    drawOverseaConnector(802,136,877,136);
+    // siam to indonesia
+    drawOverseaConnector(735,322,735,348);
+    // indonesia to western australia
+    drawOverseaConnector(765,402,765,418);
+    // indonesia to new guinea
+    drawOverseaConnector(792,375,808,375);
+    // new guinea to western australia
+    drawOverseaConnector(785,420,810,405);
+    // new guinea to eastern australia
+    drawOverseaConnector(825,407,825,418);
+    // border to alaska
+    drawOverseaConnector(2,40,18,40);
+    // kamchatka to border
+    drawOverseaConnector(857,40,948,40);
 }
 
 function drawOverseaConnector(xStart,yStart,xEnd,yEnd){

@@ -6,7 +6,6 @@
 ** transmit descriptions of game actions
 
 * Web page UI
-** Draw lines for oversea attacks
 ** Support multiple players
 ** Support reconnection/browser-refresh logic
 ** Allow selection of AIs for other players
