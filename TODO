@@ -3,18 +3,16 @@
 ** Respect attackers dice choice
 ** handle end of game
 ** check on luck calculation: it does not look right
+** transmit descriptions of game actions
 
 * Web page UI
 ** Draw lines for oversea attacks
 ** Support multiple players
-** First player to join starts the game
-** Allow selection of AIs for other players
 ** Support reconnection/browser-refresh logic
+** Allow selection of AIs for other players
 ** Refactor code into objects of some kind
 ** Switch around attacks: pick attack, after countries, pick all-out or one time
 ** Fix Occupy v DoOccupation nonsense
-** Connect up name entry with web socket connection and player creation
-** transmit descriptions of game actions
 
 * AIs
 ** Continent grabber

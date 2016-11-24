@@ -96,14 +96,9 @@ public class GameRunner {
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _log.info("Published game joined event " + gameJoinedEvent);
 
-            // this should happen when a start command comes from client
-            // when we know how to automate remaining players
-            //initializeAutomatedPlayers();
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
         }
-
-        //_channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
     private boolean playerSlotAvailable(){
@@ -135,6 +130,7 @@ public class GameRunner {
         _log.info("Starting game " + s);
         assignCountries();
         initializeAutomatedPlayers();
+        _game.publishAllState();
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }

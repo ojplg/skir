@@ -5,10 +5,8 @@ import ojplg.skir.card.CardStack;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
-import ojplg.skir.state.event.ClientConnectedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.core.Callback;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.Roller;
@@ -41,19 +39,10 @@ public class Game {
         _currentAttacker = players.get(0);
         _roller = roller;
         _channels = channels;
-//        channels.ClientConnectedEventChannel.subscribe(
-//                _fiber,
-//                new Callback<ClientConnectedEvent>() {
-//                    @Override
-//                    public void onMessage(ClientConnectedEvent clientConnectedEvent) {
-//                        publishAllState();
-//                    }
-//                }
-//        );
         _fiber.start();
     }
 
-    private void publishAllState(){
+    public void publishAllState(){
         for(Country country : _map.getAllCountries()){
             Player player = _occupations.getOccupier(country);
             int armyCount = _occupations.getOccupationForce(country);
