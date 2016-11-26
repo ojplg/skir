@@ -1,6 +1,6 @@
 package ojplg.skir.test.card;
 
-import ojplg.skir.card.Cards;
+import ojplg.skir.card.Subsets;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CardsTest {
+public class SubsetsTest {
 
     @Test
     public void createSublistsFromLengthFive(){
@@ -20,7 +20,7 @@ public class CardsTest {
         strings.add("d");
         strings.add("e");
 
-        List<List<String>> subLists = Cards.allSubsets(3, strings);
+        List<List<String>> subLists = Subsets.allSubsets(3, strings);
         outLists(subLists);
         assertEquals(10, subLists.size());
     }
@@ -33,7 +33,7 @@ public class CardsTest {
         strings.add("c");
         strings.add("d");
 
-        List<List<String>> subLists = Cards.allSubsets(3, strings);
+        List<List<String>> subLists = Subsets.allSubsets(3, strings);
         outLists(subLists);
         assertEquals(4, subLists.size());
     }
@@ -45,7 +45,7 @@ public class CardsTest {
         strings.add("b");
         strings.add("c");
 
-        List<List<String>> subLists = Cards.allSubsets(2, strings);
+        List<List<String>> subLists = Subsets.allSubsets(2, strings);
         outLists(subLists);
 
         assertEquals(3, subLists.size());
@@ -58,7 +58,7 @@ public class CardsTest {
         strings.add("b");
         strings.add("c");
 
-        List<List<String>> subLists = Cards.allSubsets(1, strings);
+        List<List<String>> subLists = Subsets.allSubsets(1, strings);
         outLists(subLists);
 
         assertEquals(3, subLists.size());
@@ -70,7 +70,7 @@ public class CardsTest {
         strings.add("a");
         strings.add("b");
 
-        List<List<String>> subLists = Cards.allSubsets(1, strings);
+        List<List<String>> subLists = Subsets.allSubsets(1, strings);
         outLists(subLists);
 
         assertEquals(2, subLists.size());
@@ -81,7 +81,7 @@ public class CardsTest {
         List<String> strings = new ArrayList<String>();
         strings.add("a");
 
-        List<List<String>> subs = Cards.allSubsets(1, strings);
+        List<List<String>> subs = Subsets.allSubsets(1, strings);
 
         outLists(subs);
 
@@ -96,7 +96,7 @@ public class CardsTest {
                 buf.append(item);
                 buf.append(", ");
             }
-            System.out.println(buf.toString());
+            //System.out.println(buf.toString());
         }
     }
 }

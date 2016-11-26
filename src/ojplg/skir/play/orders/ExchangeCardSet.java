@@ -2,7 +2,6 @@ package ojplg.skir.play.orders;
 
 import ojplg.skir.card.Card;
 import ojplg.skir.card.CardSet;
-import ojplg.skir.card.Cards;
 import ojplg.skir.state.Game;
 
 public class ExchangeCardSet extends Order {

@@ -1,8 +1,6 @@
 package ojplg.skir.web;
 
-import ojplg.skir.card.Card;
 import ojplg.skir.card.CardSet;
-import ojplg.skir.card.Cards;
 import ojplg.skir.map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,8 +18,6 @@ import ojplg.skir.play.orders.OccupationConstraints;
 import ojplg.skir.play.orders.Occupy;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.play.orders.PlaceArmy;
-
-import java.util.List;
 
 public class OrderJsonParser {
 

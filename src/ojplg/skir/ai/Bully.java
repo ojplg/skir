@@ -1,7 +1,6 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.card.CardSet;
-import ojplg.skir.card.Cards;
 import ojplg.skir.map.Country;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Attack;

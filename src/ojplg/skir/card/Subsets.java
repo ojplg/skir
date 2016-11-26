@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Cards {
+public class Subsets {
 
     public static <T> List<List<T>> allSubsets(int length, List<T> items){
         if (length > items.size()) {

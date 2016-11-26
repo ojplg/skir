@@ -9,7 +9,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class CardSetTest {
+public class CardSetTests {
+
     @Test
     public void testIsExchangeableSet_true_allMatched(){
         CardSet set = new CardSet(new Card(CardType.Horse, Country.Afghanistan),
