@@ -9,6 +9,11 @@ var toCountry;
 var currentChoices;
 var myIdentity = {};
 
+function displayOrderEvent(orderEvent){
+    var orderEventDiv = document.getElementById('order-event-div');
+    orderEventDiv.innerHTML = orderEvent.simple_text;
+}
+
 function isMyColor(color){
     return color.toUpperCase() == myIdentity.color.toUpperCase();
 }

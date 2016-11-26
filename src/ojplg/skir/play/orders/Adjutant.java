@@ -49,16 +49,6 @@ public class Adjutant {
         this._hasConqueredCountry = conqueredCountry;
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType... allowableOrders){
-        this._activePlayer = activePlayer;
-        List<ConstrainedOrderType> constrainedOrderTypes = new ArrayList<ConstrainedOrderType>();
-        for(OrderType orderType : allowableOrders){
-            constrainedOrderTypes.add(ConstrainedOrderType.unconstrainedOrder(orderType));
-        }
-        this._allowableOrders = Collections.unmodifiableList(constrainedOrderTypes);
-        this._hasConqueredCountry = conqueredCountry;
-    }
-
     public List<OrderType> allowableOrders() {
         List<OrderType> orderTypes = new ArrayList<OrderType>();
         for(ConstrainedOrderType constrainedOrderType : _allowableOrders) {

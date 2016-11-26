@@ -5,6 +5,7 @@ import ojplg.skir.card.CardStack;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.state.event.OrderEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
@@ -22,15 +23,15 @@ public class Game {
 
     private static final Logger _log = LogManager.getLogger(Game.class);
 
-    private WorldMap _map;
-    private Occupations _occupations = new Occupations();
-    private List<Player> _players = new ArrayList<Player>();
-    private CardStack _cardPile;
-    private Player _currentAttacker;
-    private Roller _roller;
-    private Channels _channels;
+    private final WorldMap _map;
+    private final Occupations _occupations = new Occupations();
+    private final List<Player> _players = new ArrayList<>();
+    private final CardStack _cardPile;
+    private final Roller _roller;
+    private final Channels _channels;
+    private final ThreadFiber _fiber = new ThreadFiber();
 
-    private ThreadFiber _fiber = new ThreadFiber();
+    private Player _currentAttacker;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         _map = map;
@@ -39,6 +40,9 @@ public class Game {
         _currentAttacker = players.get(0);
         _roller = roller;
         _channels = channels;
+    }
+
+    public void start(){
         _fiber.start();
     }
 
@@ -82,7 +86,7 @@ public class Game {
     }
 
     public List<Country> possibleFortificationCountries(Player player){
-        List<Country> sources = new ArrayList<Country>();
+        List<Country> sources = new ArrayList<>();
         for(Country country : _occupations.countriesOccupied(player)){
             if(_occupations.getOccupationForce(country) > 1){
                 if(alliedNeighbors(country).size() > 0){
@@ -155,6 +159,7 @@ public class Game {
         defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
         publishPlayerChanged(attackingPlayer);
         publishPlayerChanged(defendingPlayer);
+        _channels.OrderEventChannel.publish(OrderEvent.forAttack(currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -173,6 +178,7 @@ public class Game {
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
         notifyListenersOfMapUpdate(conqueror);
         notifyListenersOfMapUpdate(vanquished);
+        _channels.OrderEventChannel.publish(OrderEvent.forOccupy(currentAttacker(), conqueror, vanquished));
         return countriesOccupied(defender).size() == 0;
     }
 
@@ -210,7 +216,7 @@ public class Game {
     }
 
     public List<Continent> continentsOccupied(Player player){
-        List<Continent> occupied = new ArrayList<Continent>();
+        List<Continent> occupied = new ArrayList<>();
         for (Continent continent : _map.getContinents() ){
             if( continentOccupied(player, continent)){
                 occupied.add(continent);
@@ -238,7 +244,7 @@ public class Game {
     }
 
     private List<Country> filterCountries(Country country, boolean sameOccupier){
-        List<Country> filtered = new ArrayList<Country>();
+        List<Country> filtered = new ArrayList<>();
         Player occupier = getOccupier(country);
         for (Country neighbor : _map.getNeighbors(country)){
             if(sameOccupier && occupier.equals(getOccupier(neighbor)) ) {
@@ -288,6 +294,7 @@ public class Game {
         Player player = getOccupier(source);
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(player, destination, armies);
+        _channels.OrderEventChannel.publish(OrderEvent.forFortify(currentAttacker(), source, destination));
         notifyListenersOfMapUpdate(source);
         notifyListenersOfMapUpdate(destination);
     }
@@ -297,7 +304,7 @@ public class Game {
     }
 
     public int tradeCards(Card one, Card two, Card three){
-        List<Card> cards = new ArrayList<Card>();
+        List<Card> cards = new ArrayList<>();
         cards.add(one);
         cards.add(two);
         cards.add(three);
@@ -306,6 +313,7 @@ public class Game {
         applyCardCountryBonus(one);
         applyCardCountryBonus(two);
         applyCardCountryBonus(three);
+        _channels.OrderEventChannel.publish(OrderEvent.forCardExchange(currentAttacker()));
         return bonusArmies;
     }
 

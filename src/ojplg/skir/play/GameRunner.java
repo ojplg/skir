@@ -112,24 +112,16 @@ public class GameRunner {
         if( ai != null ){
             Order generatedOrder = ai.generateOrder(_currentAdjutant, _game);
             processOrder(generatedOrder);
-            sillyDelay();
         } else {
             _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
-
-    private void sillyDelay(){
-        try {
-            Thread.sleep(25);
-        } catch(InterruptedException ie){
-            _log.error("Who interrupted me?", ie);
-        }
-    }
-
+    
     private void startGame(String s){
         _log.info("Starting game " + s);
         assignCountries();
         initializeAutomatedPlayers();
+        _game.start();
         _game.publishAllState();
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
