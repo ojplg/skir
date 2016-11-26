@@ -89,7 +89,7 @@ public class Bully implements AutomatedPlayer {
         } else if( orderType == OrderType.Occupy){
             order = generateOccupationOrder(adjutant, game);
         } else if( orderType == OrderType.ExchangeCardSet){
-            CardSet set = Cards.findTradeableSet(getPlayer().getCards());
+            CardSet set = CardSet.findTradeableSet(getPlayer().getCards());
             order = new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
         } else {
             _log.warn("Don't know what to do with this type " + orderType);

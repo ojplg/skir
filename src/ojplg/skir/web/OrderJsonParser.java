@@ -90,7 +90,7 @@ public class OrderJsonParser {
 
     private ExchangeCardSet newExchangeCardSet(){
         // TODO: Allow user to select set?
-        CardSet set = Cards.findTradeableSet(_adjutant.getActivePlayer().getCards());
+        CardSet set = CardSet.findTradeableSet(_adjutant.getActivePlayer().getCards());
         return new ExchangeCardSet(_adjutant, set.getOne(), set.getTwo(), set.getThree());
     }
 }

@@ -1,5 +1,6 @@
 package ojplg.skir.play.orders;
 
+import ojplg.skir.card.CardSet;
 import ojplg.skir.card.Cards;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +23,7 @@ public class ClaimArmies extends Order {
 
         _log.info("Claimed armies for " + getAdjutant().getActivePlayer());
 
-        if(Cards.hasTradeableSet(activePlayer().getCards()) ){
+        if(CardSet.hasTradeableSet(activePlayer().getCards()) ){
             ConstrainedOrderType exchange = ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet);
             ConstrainedOrderType placeArmy = ConstrainedOrderType.placeArmy(activePlayer(),game);
             return getAdjutant().forConstrainedOrderTypes(exchange, placeArmy);

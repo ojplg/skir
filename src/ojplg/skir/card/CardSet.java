@@ -1,5 +1,8 @@
 package ojplg.skir.card;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CardSet {
     private final Card _one;
     private final Card _two;
@@ -9,6 +12,24 @@ public class CardSet {
         _one = one;
         _two = two;
         _three = three;
+    }
+
+    public static boolean hasTradeableSet(List<Card> cards){
+        return findTradeableSet(cards) != null;
+    }
+
+    public static CardSet findTradeableSet(List<Card> cards){
+        if (cards.size() < 3){
+            return null;
+        }
+        List<Card> copy = new ArrayList<Card>(cards);
+        for (List<Card> subset : Cards.allSubsets(3, copy) ){
+            CardSet set = new CardSet(subset.get(0), subset.get(1), subset.get(2));
+            if( set.isExchangeableSet()){
+                return set;
+            }
+        }
+        return null;
     }
 
     public Card getOne() {
