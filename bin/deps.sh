@@ -31,6 +31,7 @@ APACHE_LANG_URL=http://www-us.apache.org/dist//commons/lang/binaries/$APACHE_LAN
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
+        mkdir -p lib
 }
 
 # Pass the URL and the base name of the tar ball
