@@ -8,9 +8,9 @@ import ojplg.skir.web.UseJetty;
 
 import java.util.concurrent.CountDownLatch;
 
-public class Risk {
+public class Skir {
 
-    private static final Logger _log = LogManager.getLogger(Risk.class);
+    private static final Logger _log = LogManager.getLogger(Skir.class);
 
     private GameRunner _gameRunner;
     private UseJetty _jettyServer;
@@ -20,16 +20,16 @@ public class Risk {
     public static void main(String[] args) {
         _log.info("Starting");
 
-        final Risk risk = new Risk();
+        final Skir skir = new Skir();
         final Channels channels = new Channels();
 
         ThreadFiber webFiber = new ThreadFiber(new RunnableExecutorImpl(), "WebFiber", true);
-        risk._jettyServer = new UseJetty(8080, channels, webFiber);
+        skir._jettyServer = new UseJetty(8080, channels, webFiber);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
             public void run(){
-                risk.runWebServer();
+                skir.runWebServer();
             }
         },"WebThread");
 
@@ -37,17 +37,15 @@ public class Risk {
         webFiber.start();
 
         try {
-            risk._latch.await();
+            skir._latch.await();
         } catch (InterruptedException ex){
             ex.printStackTrace();
         }
 
         ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
-        risk._gameRunner = new GameRunner(channels, gameRunnerFiber);
+        skir._gameRunner = new GameRunner(channels, gameRunnerFiber);
 
         gameRunnerFiber.start();
-
-        //risk._gameRunner.startGame();
     }
 
     private void runWebServer(){

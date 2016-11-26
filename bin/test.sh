@@ -2,10 +2,10 @@
 
 source jars.sh
 
-OUT_DIR=$PROJECT_HOME_DIR/out/production/risk
+OUT_DIR=$PROJECT_HOME_DIR/out/production/skir
 CLASS_PATH=$LIB_PATH:$LIBS_DIR/$JUNIT_JAR:$LIBS_DIR/$HAMCREST_JAR:$OUT_DIR
 TEST_SRC_DIR=$PROJECT_HOME_DIR/test
-TEST_OUT_DIR=$PROJECT_HOME_DIR/out/test/risk
+TEST_OUT_DIR=$PROJECT_HOME_DIR/out/test/skir
 
 TEST_SRC_FILES=`find $TEST_SRC_DIR -name "*java"`
 
