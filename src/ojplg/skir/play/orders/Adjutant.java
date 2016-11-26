@@ -26,14 +26,6 @@ public class Adjutant {
         return new Adjutant(this._activePlayer, this.hasConqueredCountry(),constrained);
     }
 
-    public Adjutant forOrderTypes(OrderType... allowableOrders){
-        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableOrders);
-    }
-
-    public Adjutant forOrderType(OrderType allowableType){
-        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), allowableType);
-    }
-
     public Adjutant afterConquest(Attack attack, int maximumAvailableToMove){
         return new Adjutant(this._activePlayer, true, ConstrainedOrderType.occupation(attack, maximumAvailableToMove));
     }
@@ -73,10 +65,6 @@ public class Adjutant {
             orderTypes.add(constrainedOrderType.getOrderType());
         }
         return Collections.unmodifiableList(orderTypes);
-    }
-
-    public boolean mustChooseOrderType(){
-        return allowableOrders().size() > 1;
     }
 
     public OccupationConstraints getOccupationConstraints(){

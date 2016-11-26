@@ -29,7 +29,7 @@ public class Occupy extends Order {
             // TODO: Check for game over?
             game.resolveElimination(activePlayer(), loser);
             if (activePlayer().hasTooManyCards()){
-                return getAdjutant().forOrderTypes(OrderType.ExchangeCardSet);
+                return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
             } else {
                 return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
             }
