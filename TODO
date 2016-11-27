@@ -3,7 +3,7 @@
 ** Respect attackers dice choice
 ** handle end of game
 ** check on luck calculation: it does not look right
-** transmit descriptions of game actions
+** handle reconnection logic
 
 * Web page UI
 ** Support multiple players

@@ -68,7 +68,7 @@ public class GameRunner {
             Player player = _game.getAllPlayers().get(idx);
             AutomatedPlayer ai;
             if ( idx % 2 == 0 ) {
-                ai = new NeverAttacks(player);
+                ai = new Bully(player);
             } else {
                 ai = new Bully(player);
             }

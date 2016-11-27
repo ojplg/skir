@@ -105,29 +105,34 @@ public class Bully implements AutomatedPlayer {
     }
 
     private PlaceArmy placeArmy(Adjutant adjutant, Game game){
-        List<Country> countries = game.countriesOccupied(_me);
-        int minArmies = game.getOccupationForce(countries.get(0));
-        Country countryToFortify = countries.get(0);
-        for(Country country : countries){
-            if( game.getOccupationForce(country) < minArmies){
-                minArmies = game.getOccupationForce(country);
-                countryToFortify = country;
-            }
+        Country country;
+        PossibleAttack possibleAttack = findBestPossibleAttack(game);
+        if( possibleAttack == null ) {
+            country = game.countriesOccupied(_me).get(0);
+        } else {
+            country = possibleAttack.getAttacker();
         }
-        return new PlaceArmy(adjutant,countryToFortify);
+        return new PlaceArmy(adjutant, country);
     }
 
     private Attack findBestAttack(Game game, Adjutant adjutant){
-        List<PossibleAttack> advantages = findAdvantageousAttacks(game);
-        Collections.shuffle(advantages);
-        Collections.sort(advantages);
-        PossibleAttack chosen = advantages.get(0);
+        PossibleAttack chosen = findBestPossibleAttack(game);
         int dice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, game.getOccupationForce(chosen.getAttacker()) - 1);
         return new Attack(adjutant, chosen.getAttacker(), chosen.getDefender(),dice);
     }
 
     private boolean hasAdvantageousAttack(Game game){
         return findAdvantageousAttacks(game).size() > 0;
+    }
+
+    private PossibleAttack findBestPossibleAttack(Game game){
+        List<PossibleAttack> advantages = findAdvantageousAttacks(game);
+        if( advantages.size() == 0 ){
+            return null;
+        }
+        Collections.shuffle(advantages);
+        Collections.sort(advantages);
+        return advantages.get(0);
     }
 
     private List<PossibleAttack> findAdvantageousAttacks(Game game){
