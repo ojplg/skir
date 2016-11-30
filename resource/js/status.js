@@ -208,24 +208,6 @@ function addToOrderConsole(element){
 }
 
 function placeArmySelected(){
-//    console.log("placeArmySelected");
-//    clearOrderConsole();
-//    var placementDiv = document.createElement("div");
-//    placementDiv.id = "place-army-text-div";
-//
-//    console.log("choices " + currentChoices);
-//    var placementConstraint = currentChoices.PlaceArmy;
-//    console.log("placement constraint " + placementConstraint);
-//
-//    var placementContent = document.createTextNode("Click a country to place an army. You have " +
-//            placementConstraint.maximum_armies + " to place");
-//    placementDiv.appendChild(placementContent);
-//    addToOrderConsole(placementDiv);
-//    currentStatus = placeArmyStatusFlag;
-//    console.log("placeArmySelected - done");
-
-
-
     console.log("placeArmySelected");
     clearOrderConsole();
     var placementDiv = document.createElement("div");
