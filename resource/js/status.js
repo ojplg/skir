@@ -8,6 +8,7 @@ var fromCountry;
 var toCountry;
 var currentChoices;
 var myIdentity = {};
+var placeArmyDiv = null;
 
 function displayOrderEvent(orderEvent){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -207,21 +208,63 @@ function addToOrderConsole(element){
 }
 
 function placeArmySelected(){
+//    console.log("placeArmySelected");
+//    clearOrderConsole();
+//    var placementDiv = document.createElement("div");
+//    placementDiv.id = "place-army-text-div";
+//
+//    console.log("choices " + currentChoices);
+//    var placementConstraint = currentChoices.PlaceArmy;
+//    console.log("placement constraint " + placementConstraint);
+//
+//    var placementContent = document.createTextNode("Click a country to place an army. You have " +
+//            placementConstraint.maximum_armies + " to place");
+//    placementDiv.appendChild(placementContent);
+//    addToOrderConsole(placementDiv);
+//    currentStatus = placeArmyStatusFlag;
+//    console.log("placeArmySelected - done");
+
+
+
     console.log("placeArmySelected");
     clearOrderConsole();
     var placementDiv = document.createElement("div");
-    placementDiv.id = "place-army-text-div";
 
-    console.log("choices " + currentChoices);
-    var placementConstraint = currentChoices.PlaceArmy;
-    console.log("placement constraint " + placementConstraint);
-
-    var placementContent = document.createTextNode("Click a country to place an army. You have " +
-            placementConstraint.maximum_armies + " to place");
-    placementDiv.appendChild(placementContent);
+    placeArmyDiv = new PlaceArmyDiv(currentChoices.PlaceArmy);
+    placeArmyDiv.initialize(placementDiv);
     addToOrderConsole(placementDiv);
-    currentStatus = placeArmyStatusFlag;
+
     console.log("placeArmySelected - done");
+}
+
+function PlaceArmyDiv(constraint){
+    this.placementConstraint = constraint;
+
+    this.initialize = function(parentDiv){
+        console.log("initializing place army selector")
+        this.selector = document.createElement("SELECT");
+        for(var idx=this.placementConstraint.maximum_armies; idx>=1; idx--){
+            var option = new Option(idx,idx);
+            this.selector.add(option);
+        }
+        parentDiv.appendChild(this.selector);
+        console.log("place army selector initialized");
+    }
+
+    this.countryClicked = function placeArmyCountryClick(country){
+        console.log("place army div country clicked " + country);
+        var order = newOrder("PlaceArmy");
+        var countries = this.placementConstraint.possible_countries;
+        if( countries.indexOf(country.wire_name()) >= 0 ){
+            order.country = country.wire_name();
+            order.number_armies = this.selector.value;
+            var jsonOrder = JSON.stringify(order);
+            sendMessage(jsonOrder);
+            currentStatus = null;
+        } else {
+            console.log("Cannot place an army in " + country.wire_name());
+        }
+    }
 }
 
 function doStatusDependentCountryClickedWork(country){
@@ -231,6 +274,11 @@ function doStatusDependentCountryClickedWork(country){
         fromCountryClick(country);
     } else if (currentStatus == selectToCountryStatusFlag){
         toCountryClick(country);
+    }
+
+    if( placeArmyDiv != null){
+        placeArmyDiv.countryClicked(country);
+        placeArmyDiv = null;
     }
 }
 

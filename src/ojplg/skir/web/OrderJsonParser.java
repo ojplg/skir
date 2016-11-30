@@ -32,10 +32,7 @@ public class OrderJsonParser {
     public Order parseOrder(JSONObject orderJson){
         String orderType = (String) orderJson.get("orderType");
         if( "PlaceArmy".equals(orderType)){
-            String countryName = (String) orderJson.get("country");
-            Country country = new Country(countryName);
-            PlaceArmy placeArmy = new PlaceArmy(_adjutant, country);
-            return placeArmy;
+            return newPlaceArmy(orderJson);
         } else if ("Attack".equals(orderType) || "AttackUntilVictoryOrDeath".equals(orderType)){
             String attacker = (String) orderJson.get("from");
             String defender = (String) orderJson.get("to");
@@ -82,6 +79,14 @@ public class OrderJsonParser {
             _log.error("Cannot handle " + orderJson);
             return null;
         }
+    }
+
+    private PlaceArmy newPlaceArmy(JSONObject orderJson){
+        String countryName = (String) orderJson.get("country");
+        int numberArmies = Integer.parseInt((String) orderJson.get("number_armies"));
+        Country country = new Country(countryName);
+        PlaceArmy placeArmy = new PlaceArmy(_adjutant, country, numberArmies);
+        return placeArmy;
     }
 
     private ExchangeCardSet newExchangeCardSet(){
