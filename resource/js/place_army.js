@@ -17,7 +17,7 @@ function PlaceArmy(constraint){
         console.log("place army selector initialized");
     }
 
-    this.countryClicked = function placeArmyCountryClick(country){
+    this.countryClicked = function(country){
         console.log("place army div country clicked " + country);
         var countries = this.placementConstraint.possible_countries;
         if( countries.indexOf(country.wire_name()) >= 0 ){
