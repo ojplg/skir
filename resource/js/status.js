@@ -8,7 +8,7 @@ var fromCountry;
 var toCountry;
 var currentChoices;
 var myIdentity = {};
-var placeArmyDiv = null;
+var countryClickResponder = null;
 
 function displayOrderEvent(orderEvent){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -210,26 +210,28 @@ function addToOrderConsole(element){
 function placeArmySelected(){
     console.log("placeArmySelected");
     clearOrderConsole();
-    var placementDiv = document.createElement("div");
 
-    placeArmyDiv = new PlaceArmyDiv(currentChoices.PlaceArmy);
-    placeArmyDiv.initialize(placementDiv);
-    addToOrderConsole(placementDiv);
+    countryClickResponder = new PlaceArmy(currentChoices.PlaceArmy);
+    countryClickResponder.initialize();
 
     console.log("placeArmySelected - done");
 }
 
-function PlaceArmyDiv(constraint){
+function PlaceArmy(constraint){
     this.placementConstraint = constraint;
 
-    this.initialize = function(parentDiv){
+    this.initialize = function(){
         console.log("initializing place army selector")
+        var placementDiv = document.createElement("div");
         this.selector = document.createElement("SELECT");
+        var textNode = document.createTextNode("Choose number of armies to place ");
+        placementDiv.appendChild(textNode);
         for(var idx=this.placementConstraint.maximum_armies; idx>=1; idx--){
             var option = new Option(idx,idx);
             this.selector.add(option);
         }
-        parentDiv.appendChild(this.selector);
+        placementDiv.appendChild(this.selector);
+        addToOrderConsole(placementDiv);
         console.log("place army selector initialized");
     }
 
@@ -250,17 +252,15 @@ function PlaceArmyDiv(constraint){
 }
 
 function doStatusDependentCountryClickedWork(country){
-    if( currentStatus == placeArmyStatusFlag){
-        placeArmyCountryClick(country);
-    } else if (currentStatus == selectFromCountryStatusFlag){
+    if (currentStatus == selectFromCountryStatusFlag){
         fromCountryClick(country);
     } else if (currentStatus == selectToCountryStatusFlag){
         toCountryClick(country);
     }
 
-    if( placeArmyDiv != null){
-        placeArmyDiv.countryClicked(country);
-        placeArmyDiv = null;
+    if( countryClickResponder != null){
+        countryClickResponder.countryClicked(country);
+        countryClickResponder = null;
     }
 }
 
@@ -340,20 +340,6 @@ function sendClaimArmiesMessage(){
     var order = newOrder("ClaimArmies");
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
-}
-
-function placeArmyCountryClick(country){
-    var order = newOrder("PlaceArmy");
-    var placeArmyConstraints = currentChoices["PlaceArmy"];
-    var countries = placeArmyConstraints["possible_countries"];
-    if( countries.indexOf(country.wire_name()) >= 0 ){
-        order.country = country.wire_name();
-        var jsonOrder = JSON.stringify(order);
-        sendMessage(jsonOrder);
-        currentStatus = null;
-    } else {
-        console.log("Cannot place an army in " + country.wire_name());
-    }
 }
 
 function newOrder(orderType){
