@@ -75,7 +75,6 @@ function updatePlayerStats(playerStatus){
         var cardsSpan = document.getElementById("player-cards-" + color + "-span");
         cardsSpan.innerHTML = txt;
     }
-
 }
 
 function updateOrderConsole(color, choicesObject){
@@ -225,8 +224,10 @@ function doStatusDependentCountryClickedWork(country){
     }
 
     if( countryClickResponder != null){
-        countryClickResponder.countryClicked(country);
-        countryClickResponder = null;
+        var keepAlive = countryClickResponder.countryClicked(country);
+        if( ! keepAlive ){
+            countryClickResponder = null;
+        }
     }
 }
 

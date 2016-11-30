@@ -30,8 +30,10 @@ function PlaceArmy(constraint){
             sendMessage(jsonOrder);
             // TODO: This should not be needed
             currentStatus = null;
+            return false;
         } else {
             console.log("Cannot place an army in " + country.wire_name());
+            return true;
         }
     }
 }
