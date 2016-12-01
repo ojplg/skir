@@ -1,24 +1,28 @@
-* Skir
+Skir
+====
 
 Skir is a play-alike version of a popular board game of global genocide.
 
-* Technical Introduction
+Technical Introduction
+======================
 
 The bulk of the code is in Java. Play is through a web UI that is based
 on a canvas object and some Javascript. Communication between the client
 and server is primarily achieved through web sockets.
 
-* Getting Started
+Getting Started
+===============
 
 To build and run the program follow these steps
 
-# cd bin
-# ./deps.sh
-# ./build.sh
-# ./start.sh
-# Navigate your browswer to http://localhost:8080/
+1. cd bin
+2. ./deps.sh
+3. ./build.sh
+4. ./start.sh
+5. Navigate your browswer to http://localhost:8080/
 
-* Some Comments
+Some Comments
+=============
 
 - The BASH scripts for building and running the program are pretty ridiculous.
 I guess I should make a pom.xml or something.
@@ -26,7 +30,8 @@ I guess I should make a pom.xml or something.
 It does not require any libraries however, so at least there's that.
 - There are plenty of things to work on. See the TODO file for the most pressing.
 
-* Rules
+Rules
+=====
 
 Skir is a play-alike version of a popular board game of global genocide,
 but the rules to Skir might be slightly different from what you are used to.
@@ -38,7 +43,8 @@ to 4, 6, 8, and then a maximum of 10.
 - Fortification moves can only be to adjacent countries. Still only one
 per turn.
 
-* Computer Players
+Computer Players
+================
 
 The game is always between six players. The computer neither cheats nor
 implements a particularly good strategy. It should be relatively easy
