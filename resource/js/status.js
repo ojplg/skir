@@ -9,6 +9,7 @@ var toCountry;
 var currentChoices;
 var myIdentity = {};
 var countryClickResponder = null;
+var playerStatuses;
 
 function displayOrderEvent(orderEvent){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -26,6 +27,7 @@ function initializeClient(name, address){
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";
+    playerStatuses = new PlayerStatuses();
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){
@@ -44,37 +46,7 @@ function updatePlayerInfoAfterGameJoined(joinedObject){
 }
 
 function updatePlayerStats(playerStatus){
-    var color = playerStatus.color;
-    console.log("Updating player status table for " + color);
-    var table = document.getElementById("player-status-" + color + "-table");
-    clearElementChildren(table);
-    var items = ['armies','countries','continents','card_count',
-                 'expected_armies', 'attack_luck_factor', 'defense_luck_factor'];
-    for(var idx=0; idx<items.length; idx++){
-        var item = items[idx];
-        console.log("adding item " + item + " at index " + idx);
-        var row = table.insertRow(idx);
-        var nameCell = row.insertCell(0);
-        nameCell.innerHTML = item;
-        var valueCell = row.insertCell(1);
-        valueCell.innerHTML = playerStatus[item];
-    }
-    if( isMyColor(color) ){
-        var cards = playerStatus.cards;
-        var txt = "Cards:<br/>";
-        for( var idx=1; idx<=cards.length ; idx++ ){
-            var card = cards[idx-1];
-            console.log("found card " + card);
-            txt = txt.concat(idx);
-            txt = txt.concat(": ");
-            txt = txt.concat(card.country);
-            txt = txt.concat("-");
-            txt = txt.concat(card.symbol);
-            txt = txt.concat("<br/>");
-        }
-        var cardsSpan = document.getElementById("player-cards-" + color + "-span");
-        cardsSpan.innerHTML = txt;
-    }
+    playerStatuses.update(playerStatus);
 }
 
 function updateOrderConsole(color, choicesObject){

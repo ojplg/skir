@@ -73,7 +73,7 @@ function draw_map(){
 
   for(var idx=0; idx<countries.length; idx++){
     var country = countries[idx];
-    console.log('drawing ' + country.name);
+    //console.log('drawing ' + country.name);
     draw_country(context,country);
   }
 

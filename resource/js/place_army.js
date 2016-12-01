@@ -1,3 +1,7 @@
+// This object represents the div that is used
+// in the order console when a player is in the
+// place army phase.
+// It knows how to respond to country clicks.
 function PlaceArmy(constraint){
     this.placementConstraint = constraint;
 
