@@ -116,8 +116,6 @@ function buttonClicked(orderType){
         fromToOrderSelected("AttackUntilVictoryOrDeath");
     } else if (orderType == "Occupy") {
         occupySelected();
-    } else if (orderType == "DoOccupation") {
-        sendDoOccupationMessage();
     } else if (orderType == "DrawCard" ) {
         sendDrawCardMessage();
     } else if (orderType == "ClaimArmies") {
@@ -155,11 +153,9 @@ function endTurnSelected(){
 function occupySelected(){
     console.log("Occupy selected");
     clearOrderConsole();
-    // need to fill in numbers correctly
-    var min = currentChoices.Occupy.minimum_occupation_force;
-    var max = currentChoices.Occupy.maximum_occupation_force;
-    addNumericSelect("occupation-force-selector", min, max);
-    addButton("DoOccupation");
+    console.log("Current choices " + currentChoices);
+    var occupation = new Occupation(currentChoices.Occupy);
+    occupation.showOccupationControls(document.getElementById("order-console-div"));
 }
 
 function addNumericSelect(id,min,max){
@@ -253,14 +249,6 @@ function toCountryClick(country){
     } else {
         console.log("Invalid to selection " + country.wire_name());
     }
-}
-
-function sendDoOccupationMessage(){
-    var order = newOrder("DoOccupation");
-    var forceSelector = document.getElementById("occupation-force-selector");
-    order.occupationForce = forceSelector.value;
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
 }
 
 function sendEndAttacksMessage(){
