@@ -47,7 +47,7 @@ public class OrderJsonParser {
                 attack = new AttackUntilVictoryOrDeath(_adjutant, attackFrom, attackTo);
             }
             return attack;
-        } else if ("DoOccupation".equals(orderType)){
+        } else if ("Occupy".equals(orderType)){
             OccupationConstraints constraints = _adjutant.getOccupationConstraints();
             _log.info("occupation constraints " + constraints);
             String occupationForce = (String) orderJson.get("occupationForce"); //successfulAttack.getAttackersDiceCount();

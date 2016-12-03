@@ -14,7 +14,7 @@ function Occupation(constraint){
         var text = document.createTextNode("Occupy");
         button.onclick = function() {
             console.log("Sending occupation message");
-            var order = newOrder("DoOccupation");
+            var order = newOrder("Occupy");
             order.occupationForce = selector.value;
             var jsonOrder = JSON.stringify(order);
             sendMessage(jsonOrder);
