@@ -103,22 +103,16 @@ function buttonClicked(orderType){
         placeArmySelected();
     } else if( orderType == "Attack"){
         fromToOrderSelected("Attack");
-    } else if (orderType == "EndAttacks"){
-        sendEndAttacksMessage();
     } else if (orderType == "AttackUntilVictoryOrDeath"){
         fromToOrderSelected("AttackUntilVictoryOrDeath");
     } else if (orderType == "Occupy") {
         occupySelected();
-    } else if (orderType == "DrawCard" ) {
-        sendDrawCardMessage();
-    } else if (orderType == "ClaimArmies") {
-        sendClaimArmiesMessage();
     } else if (orderType == "Fortify") {
         fromToOrderSelected("Fortify");
-    } else if (orderType == "EndTurn") {
-        endTurnSelected();
-    } else if (orderType == "ExchangeCardSet" ) {
-        sendExchangeCardSetMessage();
+    } else if (orderType == "EndAttacks" || orderType == "DrawCard" ||
+                orderType == "ClaimArmies" || orderType == "EndTurn" ||
+                orderType == "ExchangeCardSet"){
+        sendSimpleOrderMessage(orderType);
     } else {
         console.log("Selection unknown " + orderType);
     }
@@ -129,18 +123,6 @@ function startGame(){
     msg.messageType = "StartGame";
     var s = JSON.stringify(msg);
     sendMessage(s);
-}
-
-function sendExchangeCardSetMessage(){
-    var order = newOrder("ExchangeCardSet");
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
-}
-
-function endTurnSelected(){
-    var order = newOrder("EndTurn");
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
 }
 
 function occupySelected(){
@@ -191,20 +173,8 @@ function doStatusDependentCountryClickedWork(country){
     }
 }
 
-function sendEndAttacksMessage(){
-    var order = newOrder("EndAttacks");
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
-}
-
-function sendDrawCardMessage(){
-    var order = newOrder("DrawCard");
-    var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
-}
-
-function sendClaimArmiesMessage(){
-    var order = newOrder("ClaimArmies");
+function sendSimpleOrderMessage(orderType){
+    var order = newOrder(orderType);
     var jsonOrder = JSON.stringify(order);
     sendMessage(jsonOrder);
 }
