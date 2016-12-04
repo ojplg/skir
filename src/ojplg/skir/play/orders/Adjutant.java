@@ -43,7 +43,8 @@ public class Adjutant {
                 Arrays.asList(constrainedOrderTypes));
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType){
+    // This constructor is public only for testing ... do not use
+    public Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType){
         this._activePlayer = activePlayer;
         this._allowableOrders = Collections.singletonList(ConstrainedOrderType.unconstrainedOrder(allowableType));
         this._hasConqueredCountry = conqueredCountry;

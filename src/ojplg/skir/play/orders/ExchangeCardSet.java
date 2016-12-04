@@ -27,6 +27,16 @@ public class ExchangeCardSet extends Order {
         int armies = game.tradeCards(_one, _two, _three);
         activePlayer().grantReserves(armies);
 
+        if( activePlayer().hasTooManyCards()){
+            return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
+        }
+
+        if( CardSet.hasTradeableSet(activePlayer().getCards())){
+            getAdjutant().forConstrainedOrderTypes(
+                    ConstrainedOrderType.placeArmy(activePlayer(), game),
+                    ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
+        }
+
         return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.placeArmy(activePlayer(), game));
     }
 
