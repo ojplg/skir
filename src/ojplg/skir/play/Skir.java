@@ -6,16 +6,12 @@ import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.UseJetty;
 
-import java.util.concurrent.CountDownLatch;
-
 public class Skir {
 
     private static final Logger _log = LogManager.getLogger(Skir.class);
 
     private GameRunner _gameRunner;
     private UseJetty _jettyServer;
-
-    private final CountDownLatch _latch = new CountDownLatch(1);
 
     public static void main(String[] args) {
         _log.info("Starting");
@@ -36,12 +32,6 @@ public class Skir {
         webThread.start();
         webFiber.start();
 
-        try {
-            skir._latch.await();
-        } catch (InterruptedException ex){
-            ex.printStackTrace();
-        }
-
         ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
         skir._gameRunner = new GameRunner(channels, gameRunnerFiber);
 
@@ -50,7 +40,7 @@ public class Skir {
 
     private void runWebServer(){
         try {
-            _jettyServer.StartJettyServer(_latch);
+            _jettyServer.startJettyServer();
         } catch (Exception e){
             _log.error("Could not start jetty", e);
         }

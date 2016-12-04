@@ -14,7 +14,6 @@ import org.jetlang.fibers.Fiber;
 import ojplg.skir.play.Channels;
 
 import javax.websocket.server.ServerContainer;
-import java.util.concurrent.CountDownLatch;
 
 public class UseJetty  {
 
@@ -33,7 +32,9 @@ public class UseJetty  {
         _log.info("Web Socket Channels initialized");
     }
 
-    public void StartJettyServer(CountDownLatch latch) throws Exception {
+    public void startJettyServer() throws Exception {
+
+        _log.info("Initializing web server");
 
         _server = new Server();
 
@@ -60,10 +61,8 @@ public class UseJetty  {
         ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);
         wsContainer.addEndpoint(LocalWebSocket.class);
 
-        _log.info("Started up Jetty Web Server");
+        _log.info("Starting web server");
         _server.start();
-        _log.info("Counted down latch");
-        latch.countDown();
         _server.join();
         _log.info("Joined");
     }
