@@ -203,16 +203,24 @@ public class Game {
     }
 
     public List<Country> countriesToAttackFrom(Player player){
-        List<Country> attackBases = new ArrayList<Country>();
-        for(Country country : countriesOccupied(player)){
-            if (_occupations.hasAttackingForces(country)){
-                List<Country> neighbors = _map.getNeighbors(country);
-                if( _occupations.hasEnemy(country, neighbors)){
-                    attackBases.add(country);
-                }
+        List<Country> attackers = new ArrayList<>();
+        for(Country border : borderCountries(player)){
+            if( _occupations.getOccupationForce(border) > 1){
+                attackers.add(border);
             }
         }
-        return attackBases;
+        return attackers;
+    }
+
+    public List<Country> borderCountries(Player player){
+        List<Country> borders = new ArrayList<Country>();
+        for(Country country : countriesOccupied(player)){
+            List<Country> neighbors = _map.getNeighbors(country);
+            if( _occupations.hasEnemy(country, neighbors)){
+                borders.add(country);
+            }
+        }
+        return borders;
     }
 
     public List<Continent> continentsOccupied(Player player){
