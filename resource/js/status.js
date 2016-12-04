@@ -1,11 +1,4 @@
-var placeArmyStatusFlag = 'place-army-status-flag';
-var selectFromCountryStatusFlag = 'select-from-country-status-flag';
-var selectToCountryStatusFlag = 'select-to-country-status-flag';
-
-var currentStatus = null;
 var orderType;
-var fromCountry;
-var toCountry;
 var currentChoices;
 var myIdentity = {};
 var countryClickResponder = null;
@@ -185,69 +178,16 @@ function placeArmySelected(){
 }
 
 function doStatusDependentCountryClickedWork(country){
-    if (currentStatus == selectFromCountryStatusFlag){
-        fromCountryClick(country);
-    } else if (currentStatus == selectToCountryStatusFlag){
-        toCountryClick(country);
-    }
-
     if( countryClickResponder != null){
+        console.log("Forwarding click to an object " + country);
         var keepAlive = countryClickResponder.countryClicked(country);
+        console.log("heepAlive is " + keepAlive);
         if( ! keepAlive ){
+            console.log("Nulling out responder");
             countryClickResponder = null;
+        } else {
+            console.log("Keeping responder");
         }
-    }
-}
-
-function fromCountryClick(country){
-    console.log("fromCountryClick " + country);
-    var orderSpecificRestrictions = currentChoices[orderType];
-    console.log("orderSpecificRestrictions " + orderSpecificRestrictions);
-    var countryMap = orderSpecificRestrictions["destinations"];
-    console.log("Country map is " + countryMap);
-    if( Object.keys(countryMap).indexOf(country.wire_name()) >= 0){
-
-        currentStatus = selectToCountryStatusFlag;
-        fromCountry = country;
-        var fromCountryTextDiv = document.getElementById("from-text-div");
-        var newHtml = "From: " + country.wire_name();
-        fromCountryTextDiv.innerHTML = newHtml;
-
-        // possible counts select
-        console.log("currentChoices " + currentChoices);
-        var counts = orderSpecificRestrictions["counts"];
-        console.log("counts " + counts);
-        var maxToMove = counts[country.wire_name()];
-        console.log("army count " + maxToMove);
-        addNumericSelect("army-count-select", 1 , maxToMove);
-    } else {
-        console.log("Invalid from selection " + country.wire_name());
-    }
-}
-
-function toCountryClick(country){
-    console.log("toCountryClick " + country);
-    var orderSpecificRestrictions = currentChoices[orderType];
-    console.log("orderSpecificRestrictions " + orderSpecificRestrictions);
-    var countryMap = orderSpecificRestrictions["destinations"];
-    console.log("Country map is " + countryMap);
-    var possibleToList = countryMap[fromCountry.wire_name()];
-    console.log("Possible list " + possibleToList);
-
-    if( possibleToList.indexOf(country.wire_name()) >= 0){
-        currentStatus = null;
-        var toTextDiv = document.getElementById("to-text-div");
-        var newHtml = "To: " + country.wire_name();
-        toTextDiv.innerHTML = newHtml;
-
-        var order = newOrder(orderType);
-        order.from = fromCountry.wire_name();
-        order.to = country.wire_name();
-        order.army_count = document.getElementById("army-count-select").value;
-        var jsonOrder = JSON.stringify(order);
-        sendMessage(jsonOrder);
-    } else {
-        console.log("Invalid to selection " + country.wire_name());
     }
 }
 
@@ -290,29 +230,8 @@ function addButton(label){
 }
 
 function fromToOrderSelected(orderTypeFlag){
-    console.log("From-to order selected: " + orderTypeFlag);
-    orderType = orderTypeFlag;
-    currentStatus = selectFromCountryStatusFlag;
-
     clearOrderConsole();
-
-    var fromToDiv = document.createElement("div");
-    fromToDiv.id = "from-to-div";
-
-    // from text console
-    var fromDiv = document.createElement("div");
-    fromDiv.id = "from-text-div";
-    var fromContent = document.createTextNode("From: ");
-    fromDiv.appendChild(fromContent);
-    fromToDiv.appendChild(fromDiv);
-
-    // to text console
-    var toDiv = document.createElement("div");
-    toDiv.id = "to-text-div";
-    var toContent = document.createTextNode("To: ");
-    toDiv.appendChild(toContent);
-    fromToDiv.appendChild(toDiv);
-
-    var orderConsoleDiv = document.getElementById("order-console-div");
-    orderConsoleDiv.appendChild(fromToDiv);
+    console.log("From-to order selected: " + orderTypeFlag);
+    countryClickResponder = new FromToOrder(orderTypeFlag, currentChoices[orderTypeFlag]);
+    countryClickResponder.initialize(document.getElementById("order-console-div"));
 }
