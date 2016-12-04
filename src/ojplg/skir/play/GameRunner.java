@@ -158,12 +158,7 @@ public class GameRunner {
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = new Player(_colors[idx]);
-            // TODO remove this ugly hack
-            if( idx == 0 ){
-                player.grantReserves(8);
-            } else {
-                player.grantReserves(initialArmies);
-            }
+            player.grantReserves(initialArmies);
             players.add(player);
         }
 
@@ -180,10 +175,8 @@ public class GameRunner {
         List<Player> players = _game.getAllPlayers();
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_colors.length);
-            if (player.hasReserves()) {
-                Country country = countries.get(idx);
-                _game.placeArmy(player, country);
-            }
+            Country country = countries.get(idx);
+            _game.placeArmy(player, country);
         }
         _game.doInitialPlacements();
     }
