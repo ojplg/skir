@@ -4,7 +4,6 @@
 ** check on luck calculation: it does not look right
 ** reconnection logic must recognize different clients (by name and external address)
 ** make sure all player status update events are handled and published
-** handle it correctly when non-AI players are all gone
 
 * Web page UI
 ** Support multiple players
