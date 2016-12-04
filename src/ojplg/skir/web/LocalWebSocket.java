@@ -35,6 +35,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     private final String _id;
     private final Channels _channels;
     private String _clientKey;
+    private Fiber _fiber;
 
     private Session _session;
     private Adjutant _currentAdjutant;
@@ -42,28 +43,28 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     public LocalWebSocket(){
         _log.info("instantiated with no argument constructor");
         _channels = WebSocketInitializer.Channels;
-        _counter++;
+        //_counter++;
         _id = String.valueOf(_counter);
 
-        Fiber fiber = new ThreadFiber();
+        _fiber = new ThreadFiber();
 
-        _channels.MapChangedEventChannel.subscribe(fiber,
+        _channels.MapChangedEventChannel.subscribe(_fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
         );
-        _channels.PlayerChangedEventChannel.subscribe(fiber,
+        _channels.PlayerChangedEventChannel.subscribe(_fiber,
                 playerChangedEvent -> handlePlayerChangedEvent(playerChangedEvent)
         );
-        _channels.AdjutantChannel.subscribe(fiber,
+        _channels.AdjutantChannel.subscribe(_fiber,
                 adjutant -> handleNewAdjutant(adjutant)
         );
-        _channels.GameJoinedEventChannel.subscribe(fiber,
+        _channels.GameJoinedEventChannel.subscribe(_fiber,
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
-        _channels.OrderEventChannel.subscribe(fiber,
+        _channels.OrderEventChannel.subscribe(_fiber,
                 orderEvent -> handleOrderEvent(orderEvent));
         _log.info("Channel subscriptions made");
 
-        fiber.start();
+        _fiber.start();
     }
 
     @OnOpen
@@ -101,6 +102,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     @OnClose
     public void onWebSocketClose(CloseReason closeReason){
         _log.info("Web socket closed " + closeReason);
+        _fiber.dispose();
+        _log.info("Fiber disposed");
     }
 
     @OnError

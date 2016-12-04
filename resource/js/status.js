@@ -15,7 +15,7 @@ function isMyColor(color){
 
 function initializeClient(name, address){
     draw_map();
-    myIdentity.uniqueKey = Math.floor(Math.random() * 1000000);
+    myIdentity.uniqueKey = "7";
     openWebSocketConnection(myIdentity.uniqueKey);
     myIdentity.name = name;
     myIdentity.address = address;

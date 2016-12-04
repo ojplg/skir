@@ -2,7 +2,6 @@ package ojplg.skir.play;
 
 import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.ai.Bully;
-import ojplg.skir.ai.NeverAttacks;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.card.StandardCardSet;
@@ -33,8 +32,8 @@ public class GameRunner {
     private final static Logger _log = LogManager.getLogger(GameRunner.class);
     private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
-    private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<Player,AutomatedPlayer>();
-    private final Map<Player, ClientInfo> _remotePlayerInfo = new HashMap<Player, ClientInfo>();
+    private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<>();
+    private final Map<ClientConnectedEvent, Player> _remotePlayerInfo = new HashMap<>();
     private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
@@ -78,16 +77,27 @@ public class GameRunner {
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
 
+        _log.info("Client connected " + clientConnectedEvent);
+
         int availablePlayerNumber = _remotePlayerInfo.size();
 
-        if( playerSlotAvailable()) {
+        if (_remotePlayerInfo.containsKey(clientConnectedEvent)){
+            Player player = _remotePlayerInfo.get(clientConnectedEvent);
+            _log.info("Player rejoined " + clientConnectedEvent + ", " + player);
+            _game.publishAllState();
+            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
+                    clientConnectedEvent, player, false);
+            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+            _channels.AdjutantChannel.publish(_currentAdjutant);
+        } else if( playerSlotAvailable()) {
+            _log.info("Trying to add a new player " + clientConnectedEvent);
             _gameStarted = true;
             Player player = _game.getAllPlayers().get(availablePlayerNumber);
 
-            ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
+            //ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
 
-            _remotePlayerInfo.put(player, clientInfo);
-            player.setClientKey(clientInfo.getClientKey());
+            _remotePlayerInfo.put(clientConnectedEvent, player);
+            player.setClientKey(clientConnectedEvent.getClientKey());
 
             _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
 
@@ -95,7 +105,6 @@ public class GameRunner {
                     clientConnectedEvent, player, availablePlayerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _log.info("Published game joined event " + gameJoinedEvent);
-
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
         }
