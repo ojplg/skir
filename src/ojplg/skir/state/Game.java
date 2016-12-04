@@ -183,13 +183,14 @@ public class Game {
         conqueror.addCards(cards);
         _log.info("Removing player " + vanquished);
         _players.remove(vanquished);
+        _log.info("Player count is " +_players.size());
         publishPlayerChanged(conqueror);
         publishPlayerChanged(vanquished);
         return _players.size() == 1;
     }
 
-    public boolean gameWon(){
-        return _players.size() == 0;
+    public boolean gameOver(){
+        return _players.size() <= 1;
     }
 
     public List<Country> countriesOccupied(Player player){

@@ -117,6 +117,10 @@ public class GameRunner {
     private void processOrder(Order order){
         _log.info("Processing order for " + _currentAdjutant.getActivePlayer() + " of type " + order.getType());
         _currentAdjutant = order.execute(_game);
+        if( _game.gameOver() ){
+            _log.info("Game over. Winner is " + _game.currentAttacker());
+            return;
+        }
         AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
         if( ai != null ){
             Order generatedOrder = ai.generateOrder(_currentAdjutant, _game);
@@ -154,7 +158,12 @@ public class GameRunner {
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = new Player(_colors[idx]);
-            player.grantReserves(initialArmies);
+            // TODO remove this ugly hack
+            if( idx == 0 ){
+                player.grantReserves(8);
+            } else {
+                player.grantReserves(initialArmies);
+            }
             players.add(player);
         }
 
@@ -171,8 +180,10 @@ public class GameRunner {
         List<Player> players = _game.getAllPlayers();
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_colors.length);
-            Country country = countries.get(idx);
-            _game.placeArmy(player, country);
+            if (player.hasReserves()) {
+                Country country = countries.get(idx);
+                _game.placeArmy(player, country);
+            }
         }
         _game.doInitialPlacements();
     }
