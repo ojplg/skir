@@ -18,6 +18,7 @@ import ojplg.skir.state.event.PlayerChangedEvent;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -37,12 +38,12 @@ public class Game {
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
-        _currentAttacker = players.get(0);
         _roller = roller;
         _channels = channels;
     }
 
     public void start(){
+        _currentAttacker = _players.get(0);
         _fiber.start();
     }
 
@@ -54,9 +55,7 @@ public class Game {
                     new MapChangedEvent(country, player, armyCount)
             );
         }
-        for(Player player : _players){
-            publishPlayerChanged(player);
-        }
+        _players.forEach(this::publishPlayerChanged);
     }
 
     public void publishPlayerChanged(Player player){
@@ -86,15 +85,10 @@ public class Game {
     }
 
     public List<Country> possibleFortificationCountries(Player player){
-        List<Country> sources = new ArrayList<>();
-        for(Country country : _occupations.countriesOccupied(player)){
-            if(_occupations.getOccupationForce(country) > 1){
-                if(alliedNeighbors(country).size() > 0){
-                    sources.add(country);
-                }
-            }
-        }
-        return sources;
+        return _occupations.countriesOccupied(player).stream()
+                .filter(country -> _occupations.getOccupationForce(country) > 1)
+                .filter(country -> alliedNeighbors(country).size() > 0)
+                .collect(Collectors.toList());
     }
 
     public Player currentAttacker(){
@@ -112,7 +106,7 @@ public class Game {
         return _currentAttacker;
     }
 
-    public int computeMapSupply(Player player){
+    private int computeMapSupply(Player player){
         return computeCountrySupply(player) + computeContinentSupply(player);
     }
 
@@ -120,7 +114,7 @@ public class Game {
         return computeMapSupply(player);
     }
 
-    public int computeContinentSupply(Player player){
+    private int computeContinentSupply(Player player){
         int cnt = 0;
         for( Continent continent : continentsOccupied(player)){
             cnt += continent.getBonus();
@@ -132,11 +126,11 @@ public class Game {
         return Math.max(Constants.MINIMUM_ARMY_GRANT,numberCountriesOccupied(player) / 3);
     }
 
-    public int numberCountriesOccupied(Player player){
+    private int numberCountriesOccupied(Player player){
         return countriesOccupied(player).size();
     }
 
-    public int numberContinentsOccupied(Player player){
+    private int numberContinentsOccupied(Player player){
         return continentsOccupied(player).size();
     }
 
@@ -203,13 +197,9 @@ public class Game {
     }
 
     public List<Country> countriesToAttackFrom(Player player){
-        List<Country> attackers = new ArrayList<>();
-        for(Country border : borderCountries(player)){
-            if( _occupations.getOccupationForce(border) > 1){
-                attackers.add(border);
-            }
-        }
-        return attackers;
+        return borderCountries(player).stream()
+                .filter(border -> _occupations.getOccupationForce(border) > 1)
+                .collect(Collectors.toList());
     }
 
     public List<Country> borderCountries(Player player){
@@ -223,24 +213,15 @@ public class Game {
         return borders;
     }
 
-    public List<Continent> continentsOccupied(Player player){
-        List<Continent> occupied = new ArrayList<>();
-        for (Continent continent : _map.getContinents() ){
-            if( continentOccupied(player, continent)){
-                occupied.add(continent);
-            }
-        }
-        return occupied;
+    private List<Continent> continentsOccupied(Player player){
+        return _map.getContinents().stream()
+                .filter(continent -> continentOccupied(player, continent))
+                .collect(Collectors.toList());
     }
 
-    public boolean continentOccupied(Player player, Continent continent){
-        int cnt = 0;
-        for ( Country country : continent.getCountries() ){
-            if ( player.equals(getOccupier(country)) ) {
-                cnt++;
-            }
-        }
-        return cnt == continent.numberCountries();
+    private boolean continentOccupied(Player player, Continent continent){
+        return continent.getCountries().stream()
+                .allMatch(country -> player.equals(getOccupier(country)));
     }
 
     public List<Country> enemyNeighbors(Country country){
@@ -264,7 +245,7 @@ public class Game {
         return filtered;
     }
 
-    public boolean isTarget(Country attacker, Country defender){
+    private boolean isTarget(Country attacker, Country defender){
         if( _map.areNeighbors(attacker, defender)){
             return ! getOccupier(attacker).equals(getOccupier(defender));
         }
