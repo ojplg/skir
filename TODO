@@ -4,6 +4,7 @@
 ** check on luck calculation: it does not look right
 ** reconnection logic must recognize different clients (by name and external address)
 ** make sure all player status update events are handled and published
+** Correctly suggest attack as option when it is in an option
 
 * Web page UI
 ** Support multiple players

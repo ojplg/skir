@@ -72,29 +72,28 @@ public class Bully implements AutomatedPlayer {
 
         OrderType orderType = pickOrderType(adjutant.allowableOrders(), game);
 
-        Order order;
-        if( orderType == OrderType.PlaceArmy){
-            order = placeArmy(adjutant, game);
-        } else if( orderType == OrderType.EndAttacks ){
-            order = new EndAttacks(adjutant);
-        } else if(orderType ==OrderType.DrawCard ){
-            order = new DrawCard(adjutant);
-        } else if( orderType == OrderType.ClaimArmies){
-            order = new ClaimArmies(adjutant);
-        } else if( orderType == OrderType.EndTurn){
-            order = new EndTurn(adjutant);
-        } else if( orderType == OrderType.Attack){
-            order = findBestAttack(game, adjutant);
-        } else if( orderType == OrderType.Occupy){
-            order = generateOccupationOrder(adjutant, game);
-        } else if( orderType == OrderType.ExchangeCardSet){
-            CardSet set = CardSet.findTradeableSet(getPlayer().getCards());
-            order = new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
-        } else {
-            _log.warn("Don't know what to do with this type " + orderType);
-            return null;
+        switch (orderType){
+            case Attack:
+                return findBestAttack(game, adjutant);
+            case ClaimArmies:
+                return new ClaimArmies(adjutant);
+            case DrawCard:
+                return new DrawCard(adjutant);
+            case EndAttacks:
+                return new EndAttacks(adjutant);
+            case ExchangeCardSet:
+                CardSet set = CardSet.findTradeableSet(getPlayer().getCards());
+                return new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
+            case Occupy:
+                return generateOccupationOrder(adjutant, game);
+            case PlaceArmy:
+                return placeArmy(adjutant, game);
+            case EndTurn:
+                return new EndTurn(adjutant);
+            default:
+                _log.warn("Cannot handle order type " + orderType);
+                return null;
         }
-        return order;
     }
 
     private Occupy generateOccupationOrder(Adjutant adjutant, Game game){
@@ -136,7 +135,7 @@ public class Bully implements AutomatedPlayer {
     }
 
     private List<PossibleAttack> findAdvantageousAttacks(Game game){
-        List<PossibleAttack> advantages = new ArrayList<PossibleAttack>();
+        List<PossibleAttack> advantages = new ArrayList<>();
         for(Country country : game.countriesToAttackFrom(_me)){
             int myForce = game.getOccupationForce(country);
             for(Country enemyNeighbor : game.enemyNeighbors(country)){
