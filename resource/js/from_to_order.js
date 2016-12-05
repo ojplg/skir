@@ -35,47 +35,50 @@ function FromToOrder(orderTypeFlag, restrictions){
     }
 
     this.toCountryClicked = function(country){
-        console.log("toCountryClick " + country);
+        var countryWireName = country.wire_name();
+        console.log("toCountryClick on" + countryWireName);
         var countryMap = self.orderRestrictions["destinations"];
         console.log("Country map is " + countryMap);
         var possibleToList = countryMap[self.fromCountry.wire_name()];
         console.log("Possible list " + possibleToList);
 
-        if( possibleToList.indexOf(country.wire_name()) >= 0){
-            var newHtml = "To: " + country.wire_name();
+        if( possibleToList.indexOf(countryWireName) >= 0){
+            var newHtml = "To: " + countryWireName;
             self.toDiv.innerHTML = newHtml;
 
             var order = newOrder(orderType);
             order.from = fromCountry.wire_name();
-            order.to = country.wire_name();
+            order.to = countryWireName;
             order.army_count = document.getElementById("army-count-select").value;
             var jsonOrder = JSON.stringify(order);
             sendMessage(jsonOrder);
+            return false;
         } else {
-            console.log("Invalid to selection " + country.wire_name());
+            console.log("Invalid to selection " + countryWireName + " returning true");
+            return true;
         }
-        return false;
     }
 
     this.fromCountryClicked = function(country){
-        console.log("fromCountryClick " + country);
+        var countryWireName = country.wire_name();
+        console.log("fromCountryClick " + countryWireName);
         var countryMap = self.orderRestrictions["destinations"];
-        if( Object.keys(countryMap).indexOf(country.wire_name()) >= 0){
+        if( Object.keys(countryMap).indexOf(countryWireName) >= 0){
 
             fromCountry = country;
-            var newHtml = "From: " + country.wire_name();
+            var newHtml = "From: " + countryWireName;
             self.fromDiv.innerHTML = newHtml;
 
             // possible counts select
             console.log("currentChoices " + currentChoices);
             var counts = self.orderRestrictions["counts"];
             console.log("counts " + counts);
-            var maxToMove = counts[country.wire_name()];
+            var maxToMove = counts[countryWireName];
             console.log("army count " + maxToMove);
             // hmmm, what to do about this?
             addNumericSelect("army-count-select", 1 , maxToMove);
         } else {
-            console.log("Invalid from selection " + country.wire_name());
+            console.log("Invalid from selection " + countryWireName);
         }
         console.log("Returning true!");
         return true;

@@ -164,11 +164,11 @@ function doStatusDependentCountryClickedWork(country){
         console.log("Forwarding click to an object " + country);
         var keepAlive = countryClickResponder.countryClicked(country);
         console.log("heepAlive is " + keepAlive);
-        if( ! keepAlive ){
+        if( keepAlive ){
+            console.log("Keeping responder");
+        } else {
             console.log("Nulling out responder");
             countryClickResponder = null;
-        } else {
-            console.log("Keeping responder");
         }
     }
 }
