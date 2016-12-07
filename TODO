@@ -2,13 +2,10 @@
 ** Respect attackers dice choice
 ** handle end of game
 ** check on luck calculation: it does not look right
-** reconnection logic must recognize different clients (by name and external address)
 ** make sure all player status update events are handled and published
 ** Correctly suggest attack as option when it is in an option - not when player has only 1s
 
 * Web page UI
-** Support multiple players
-** Support reconnection/browser-refresh logic
 ** Allow selection of AIs for other players
 ** Refactor code into objects of some kind
 ** Switch around attacks: pick attack, after countries, pick all-out or one time

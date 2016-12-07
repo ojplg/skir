@@ -34,6 +34,7 @@ public class GameRunner {
 
     private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<>();
     private final Map<ClientConnectedEvent, Player> _remotePlayerInfo = new HashMap<>();
+    private final Set<Player> _remotePlayers = new HashSet<>();
     private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
@@ -63,15 +64,17 @@ public class GameRunner {
     }
 
     private void initializeAutomatedPlayers(){
-        for (int idx = 1; idx < _colors.length; idx++) {
+        for (int idx = 0; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
-            AutomatedPlayer ai;
-            if ( idx % 2 == 0 ) {
-                ai = new Bully(player);
-            } else {
-                ai = new Bully(player);
+            if(! _remotePlayers.contains(player)) {
+                AutomatedPlayer ai;
+                if (idx % 2 == 0) {
+                    ai = new Bully(player);
+                } else {
+                    ai = new Bully(player);
+                }
+                addAutomatedPlayer(ai);
             }
-            addAutomatedPlayer(ai);
         }
     }
 
@@ -91,12 +94,12 @@ public class GameRunner {
             _channels.AdjutantChannel.publish(_currentAdjutant);
         } else if( playerSlotAvailable()) {
             _log.info("Trying to add a new player " + clientConnectedEvent);
-            _gameStarted = true;
             Player player = _game.getAllPlayers().get(availablePlayerNumber);
 
             //ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
 
             _remotePlayerInfo.put(clientConnectedEvent, player);
+            _remotePlayers.add(player);
             player.setClientKey(clientConnectedEvent.getClientKey());
 
             _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
@@ -144,6 +147,7 @@ public class GameRunner {
         assignCountries();
         initializeAutomatedPlayers();
         _game.start();
+        _gameStarted = true;
         _game.publishAllState();
         _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);

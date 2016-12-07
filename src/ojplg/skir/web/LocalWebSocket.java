@@ -76,6 +76,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     @OnMessage
     public void onMessageReceived(String message, Session session){
         _log.info("Received a message " + message + " from " + session);
+
         JSONParser parser = new JSONParser();
         try {
             JSONObject jObject = (JSONObject) parser.parse(message);

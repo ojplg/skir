@@ -18,7 +18,7 @@ function isMyColor(color){
 
 function initializeClient(name, address){
     draw_map();
-    myIdentity.uniqueKey = "7";
+    myIdentity.uniqueKey = name + "@" + address;
     openWebSocketConnection(myIdentity.uniqueKey);
     myIdentity.name = name;
     myIdentity.address = address;
