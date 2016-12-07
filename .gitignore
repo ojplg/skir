@@ -6,3 +6,4 @@ out/
 .idea/codeStyleSettings.xml
 .tmp_download_dir/
 lib/
+logs/
