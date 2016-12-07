@@ -124,12 +124,21 @@ public class GameRunner {
         AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
         if( ai != null ){
             Order generatedOrder = ai.generateOrder(_currentAdjutant, _game);
+            littleDelay();
             processOrder(generatedOrder);
         } else {
             _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
-    
+
+    private void littleDelay(){
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException ie){
+            _log.warn("Who interrupted me?", ie);
+        }
+    }
+
     private void startGame(String s){
         _log.info("Starting game " + s);
         assignCountries();
