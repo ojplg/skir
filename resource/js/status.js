@@ -6,7 +6,10 @@ var playerStatuses;
 
 function displayOrderEvent(orderEvent){
     var orderEventDiv = document.getElementById('order-event-div');
-    orderEventDiv.innerHTML = orderEvent.simple_text;
+    var oldHtml = orderEventDiv.innerHTML;
+    var newHtml = oldHtml + orderEvent.simple_text + "<br/>";
+    orderEventDiv.innerHTML = newHtml;
+    orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }
 
 function isMyColor(color){

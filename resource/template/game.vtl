@@ -10,14 +10,36 @@
     <script src="js/player_status.js"></script>
     <script src="js/occupation.js"></script>
     <script src="js/from_to_order.js"></script>
+    <style>
+#canvas-div {
+width: 1000px;
+float: left;
+}
+
+#order-event-div {
+height: 600px;
+width: 250px;
+overflow: scroll;
+border-style: solid;
+margin-left: 610 px;
+}
+
+    </style>
 </head>
 <body onload="initializeClient('${name}', '${address}')">
     <p>$name @ $address</p>
-  <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
-  </canvas>
+
+  <div style="width: 100%; overflow: hidden;">
+    <div id="canvas-div">
+        <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">
+        </canvas>
+    </div>
+    <div id="order-event-div">
+    </div>
+  </div>
+
 
   <div id="active-player-field"></div>
-  <div id="order-event-div"></div>
   <div id="order-console-div"></div>
 
   <div id="player-status-div">
