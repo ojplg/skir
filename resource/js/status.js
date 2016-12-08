@@ -4,10 +4,10 @@ var myIdentity = {};
 var countryClickResponder = null;
 var playerStatuses;
 
-function displayOrderEvent(orderEvent){
+function displayGameEvent(gameEvent){
     var orderEventDiv = document.getElementById('order-event-div');
     var oldHtml = orderEventDiv.innerHTML;
-    var newHtml = oldHtml + orderEvent.simple_text + "<br/>";
+    var newHtml = oldHtml + gameEvent.simple_text + "<br/>";
     orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }

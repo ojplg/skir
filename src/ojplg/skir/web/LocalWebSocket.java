@@ -5,10 +5,11 @@ import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
-import ojplg.skir.state.event.OrderEvent;
+import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import org.json.simple.JSONObject;
@@ -43,10 +44,10 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     public LocalWebSocket(){
         _log.info("instantiated with no argument constructor");
         _channels = WebSocketInitializer.Channels;
-        //_counter++;
+        _counter++;
         _id = String.valueOf(_counter);
 
-        _fiber = new ThreadFiber();
+        _fiber = new ThreadFiber(new RunnableExecutorImpl(),"WebSocketFiber-" + _id, true);
 
         _channels.MapChangedEventChannel.subscribe(_fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
@@ -60,8 +61,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _channels.GameJoinedEventChannel.subscribe(_fiber,
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
-        _channels.OrderEventChannel.subscribe(_fiber,
-                orderEvent -> handleOrderEvent(orderEvent));
+        _channels.GameEventChannel.subscribe(_fiber,
+                gameEvent -> handleOrderEvent(gameEvent));
         _log.info("Channel subscriptions made");
 
         _fiber.start();
@@ -116,15 +117,15 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _log.info("player event " + playerChangedEvent);
         JSONObject jObject;
         if (_clientKey != null && _clientKey.equals(playerChangedEvent.getClientKey())){
-             jObject = playerChangedEvent.fullDetailsJson();
+            jObject = playerChangedEvent.fullDetailsJson();
         } else {
             jObject = playerChangedEvent.toJson();
         }
         sendJson(jObject);
     }
 
-    private void handleOrderEvent(OrderEvent orderEvent){
-        JSONObject jObject = orderEvent.toJson();
+    private void handleOrderEvent(GameEvent gameEvent){
+        JSONObject jObject = gameEvent.toJson();
         _log.info("Event: " + jObject.get("simple_text"));
         sendJson(jObject);
     }
@@ -151,7 +152,6 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private void sendJson(JSONObject jObject){
         try {
-
             RemoteEndpoint.Basic endpoint = _session.getBasicRemote();
             String msg = jObject.toJSONString();
             _log.info("Sending message " + msg);

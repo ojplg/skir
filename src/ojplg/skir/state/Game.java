@@ -5,7 +5,7 @@ import ojplg.skir.card.CardStack;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
-import ojplg.skir.state.event.OrderEvent;
+import ojplg.skir.state.event.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
@@ -153,7 +153,7 @@ public class Game {
         defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
         publishPlayerChanged(attackingPlayer);
         publishPlayerChanged(defendingPlayer);
-        _channels.OrderEventChannel.publish(OrderEvent.forAttack(currentAttacker(), attacker, defender));
+        _channels.GameEventChannel.publish(GameEvent.forAttack(currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -172,8 +172,12 @@ public class Game {
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
         notifyListenersOfMapUpdate(conqueror);
         notifyListenersOfMapUpdate(vanquished);
-        _channels.OrderEventChannel.publish(OrderEvent.forOccupy(currentAttacker(), conqueror, vanquished));
-        return countriesOccupied(defender).size() == 0;
+        _channels.GameEventChannel.publish(GameEvent.forOccupy(currentAttacker(), conqueror, vanquished));
+        boolean defenderEliminated =  countriesOccupied(defender).size() == 0;
+        if (defenderEliminated){
+            _channels.GameEventChannel.publish(GameEvent.eliminated(defender));
+        }
+        return defenderEliminated;
     }
 
     /** returns true if the game is over */
@@ -186,7 +190,11 @@ public class Game {
         _log.info("Player count is " +_players.size());
         publishPlayerChanged(conqueror);
         publishPlayerChanged(vanquished);
-        return _players.size() == 1;
+        boolean gameOver = _players.size() == 1;
+        if ( gameOver ){
+            _channels.GameEventChannel.publish(GameEvent.wins(conqueror));
+        }
+        return gameOver;
     }
 
     public boolean gameOver(){
@@ -284,7 +292,7 @@ public class Game {
         Player player = getOccupier(source);
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(player, destination, armies);
-        _channels.OrderEventChannel.publish(OrderEvent.forFortify(currentAttacker(), source, destination));
+        _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
         notifyListenersOfMapUpdate(source);
         notifyListenersOfMapUpdate(destination);
     }
@@ -303,7 +311,7 @@ public class Game {
         applyCardCountryBonus(one);
         applyCardCountryBonus(two);
         applyCardCountryBonus(three);
-        _channels.OrderEventChannel.publish(OrderEvent.forCardExchange(currentAttacker()));
+        _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
         return bonusArmies;
     }
 

@@ -8,6 +8,7 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.JoinGameRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,6 +108,7 @@ public class GameRunner {
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
                     clientConnectedEvent, player, availablePlayerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+            _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
             _log.info("Published game joined event " + gameJoinedEvent);
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);

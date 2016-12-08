@@ -9,7 +9,7 @@ import java.util.List;
 public class Player {
 
     private final String _color;
-    private final List<Card> _cards = new ArrayList<Card>();
+    private final List<Card> _cards = new ArrayList<>();
     private int _reserveArmies;
     private String _clientKey;
     private final BattleStats _attackStats = new BattleStats();
