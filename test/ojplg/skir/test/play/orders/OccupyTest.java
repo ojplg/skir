@@ -18,14 +18,17 @@ public class OccupyTest {
     @Test
     public void testCardStealingRequiresExchange(){
         GameHelper gameHelper = new GameHelper();
+        Player victor = gameHelper.RedPlayer;
+        Player loser = gameHelper.WhitePlayer;
+        gameHelper.setUpPreEliminationCondition(victor, loser, Country.Afghanistan, Country.Middle_East);
         Game game = gameHelper.Game;
-        Player victor = game.getOccupier(Country.Afghanistan);
+
+        victor.grantReserves(5);
         victor.addCard(game.drawCard());
         victor.addCard(game.drawCard());
         victor.addCard(game.drawCard());
         victor.addCard(game.drawCard());
 
-        Player loser = game.getOccupier(Country.Middle_East);
         loser.addCard(game.drawCard());
         loser.addCard(game.drawCard());
         loser.addCard(game.drawCard());

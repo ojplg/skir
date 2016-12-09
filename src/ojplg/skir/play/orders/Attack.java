@@ -37,11 +37,7 @@ public class Attack extends Order {
         if ( conquered ){
             return getAdjutant().afterConquest(this, game.getOccupationForce(_invader) - 1);
         } else {
-            ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
-            ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
-            ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
-
-            return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
+            return AttackOrderHelper.possibleAttackingOrders(getAdjutant(), game);
         }
     }
 

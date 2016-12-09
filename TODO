@@ -2,7 +2,6 @@
 ** Respect attackers dice choice
 ** check on luck calculation: it does not look right
 ** make sure all player status update events are handled and published
-** Correctly suggest attack as option when it is in an option - not when player has only 1s
 
 * Web page UI
 ** Allow selection of AIs for other players

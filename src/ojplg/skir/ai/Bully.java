@@ -58,8 +58,10 @@ public class Bully implements AutomatedPlayer {
         if ( possibleOrderTypes.contains(OrderType.Occupy)){
             return OrderType.Occupy;
         }
-        _log.warn("Don't know what to do with these options " + possibleOrderTypes);
-        return null;
+        if( possibleOrderTypes.contains(OrderType.EndTurn)){
+            return OrderType.EndTurn;
+        }
+        throw new RuntimeException("Don't know what to do with these options " + possibleOrderTypes);
     }
 
 

@@ -25,23 +25,30 @@ public class Game {
     private static final Logger _log = LogManager.getLogger(Game.class);
 
     private final WorldMap _map;
-    private final Occupations _occupations = new Occupations();
+    private final Occupations _occupations;
     private final List<Player> _players = new ArrayList<>();
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
+
     private final ThreadFiber _fiber = new ThreadFiber();
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
+        this(map, players, cards, roller, channels, new Occupations());
+    }
+
+    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations){
         _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _roller = roller;
         _channels = channels;
+        _occupations = occupations;
     }
+
 
     public void start(){
         _currentAttacker = _players.get(0);
@@ -211,6 +218,10 @@ public class Game {
 
     public List<Country> countriesOccupied(Player player){
         return _occupations.countriesOccupied(player);
+    }
+
+    public boolean hasPossibleAttack(Player player){
+        return countriesToAttackFrom(player).size() > 0;
     }
 
     public List<Country> countriesToAttackFrom(Player player){
