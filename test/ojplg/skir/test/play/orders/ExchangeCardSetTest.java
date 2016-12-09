@@ -40,7 +40,7 @@ public class ExchangeCardSetTest {
 
         assertNotNull(set);
 
-        Adjutant adjutant = new Adjutant(player, true, OrderType.ExchangeCardSet);
+        Adjutant adjutant = new Adjutant(player, true, OrderType.ExchangeCardSet, 1);
 
         ExchangeCardSet exchangeCardSetOrder = new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
 

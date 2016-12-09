@@ -31,7 +31,7 @@ public class OccupyTest {
         loser.addCard(game.drawCard());
         loser.addCard(game.drawCard());
 
-        Adjutant adjutant = new Adjutant(victor, true, OrderType.Attack);
+        Adjutant adjutant = new Adjutant(victor, true, OrderType.Attack, 1);
 
         Occupy occupy = new Occupy(adjutant, Country.Afghanistan, Country.Middle_East, 1);
         Adjutant postOccupyAdjutant = occupy.execute(game);
