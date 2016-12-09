@@ -45,10 +45,11 @@ function updatePlayerStats(playerStatus){
     playerStatuses.update(playerStatus);
 }
 
-function updateOrderConsole(color, choicesObject){
+function updateOrderConsole(color, turnNumber, choicesObject){
     currentChoices = choicesObject;
     console.log("Choices for " + color + " are " + choicesObject);
-    document.getElementById("active-player-field").textContent = "Active player is " + color;
+    document.getElementById("active-player-field").textContent =
+                "Turn: " + turnNumber + "  Active player: "+ color;
     clearOrderConsole();
     if (isMyColor(color)) {
         var choices = [];

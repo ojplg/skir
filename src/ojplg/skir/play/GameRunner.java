@@ -151,7 +151,7 @@ public class GameRunner {
         _game.start();
         _gameStarted = true;
         _game.publishAllState();
-        _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker());
+        _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker(), _game.getTurnNumber());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 

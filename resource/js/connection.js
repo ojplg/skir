@@ -10,7 +10,7 @@ function openWebSocketConnection(uniqueKey){
         } else if (datum.message_type == 'player_update'){
           updatePlayerStats(datum);
         } else if (datum.message_type == 'possible_order_types'){
-          updateOrderConsole(datum.color, datum.order_types);
+          updateOrderConsole(datum.color, datum.turn_number, datum.order_types);
         } else if (datum.message_type == 'game_joined'){
           updatePlayerInfoAfterGameJoined(datum);
         } else if (datum.message_type == 'game_event') {

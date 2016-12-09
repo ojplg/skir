@@ -17,37 +17,44 @@ public class Adjutant {
     private final Player _activePlayer;
     private final List<ConstrainedOrderType> _allowableOrders;
     private final boolean _hasConqueredCountry;
+    private final int _turnNumber;
 
-    public static Adjutant nextPlayer(Player player){
-        return new Adjutant(player, false, OrderType.ClaimArmies);
+    public static Adjutant nextPlayer(Player player, int turnNumber){
+        return new Adjutant(player, false, OrderType.ClaimArmies, turnNumber);
     }
 
     public Adjutant forConstrainedOrderTypes(ConstrainedOrderType... constrained){
-        return new Adjutant(this._activePlayer, this.hasConqueredCountry(),constrained);
+        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), this._turnNumber,constrained);
     }
 
     public Adjutant afterConquest(Attack attack, int maximumAvailableToMove){
-        return new Adjutant(this._activePlayer, true, ConstrainedOrderType.occupation(attack, maximumAvailableToMove));
+        return new Adjutant(this._activePlayer, true, this._turnNumber,
+                ConstrainedOrderType.occupation(attack, maximumAvailableToMove));
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, ConstrainedOrderType constrainedOrderType){
+    private Adjutant(Player activePlayer, boolean conqueredCountry, int turnNumber,
+                     ConstrainedOrderType constrainedOrderType){
         this._activePlayer = activePlayer;
         this._hasConqueredCountry = conqueredCountry;
         this._allowableOrders = Collections.singletonList(constrainedOrderType);
+        this._turnNumber = turnNumber;
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, ConstrainedOrderType... constrainedOrderTypes){
+    private Adjutant(Player activePlayer, boolean conqueredCountry, int turnNumber,
+                     ConstrainedOrderType... constrainedOrderTypes){
         this._activePlayer = activePlayer;
         this._hasConqueredCountry = conqueredCountry;
         this._allowableOrders = Collections.unmodifiableList(
                 Arrays.asList(constrainedOrderTypes));
+        this._turnNumber = turnNumber;
     }
 
     // This constructor is public only for testing ... do not use
-    public Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType){
+    public Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType, int turnNumber){
         this._activePlayer = activePlayer;
         this._allowableOrders = Collections.singletonList(ConstrainedOrderType.unconstrainedOrder(allowableType));
         this._hasConqueredCountry = conqueredCountry;
+        this._turnNumber = turnNumber;
     }
 
     public List<OrderType> allowableOrders() {
@@ -79,10 +86,15 @@ public class Adjutant {
         return _activePlayer;
     }
 
+    public int getTurnNumber() {
+        return _turnNumber;
+    }
+
     public JSONObject toPossibleOrdersJson(){
         JSONObject jObject = new JSONObject();
         jObject.put("message_type","possible_order_types");
         jObject.put("color", getActivePlayer().getColor());
+        jObject.put("turn_number", _turnNumber);
         JSONObject orderTypes = new JSONObject();
         for(OrderType type : allowableOrders()){
             OrderConstraints orderConstraints = findConstraintsForOrderType(type);

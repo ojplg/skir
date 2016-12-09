@@ -33,6 +33,7 @@ public class Game {
     private final ThreadFiber _fiber = new ThreadFiber();
 
     private Player _currentAttacker;
+    private int _turnNumber = 1;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         _map = map;
@@ -80,6 +81,10 @@ public class Game {
         }
     }
 
+    public int getTurnNumber(){
+        return _turnNumber;
+    }
+
     public boolean hasLegalFortification(Player player){
         return possibleFortificationCountries(player).size() > 0;
     }
@@ -100,6 +105,9 @@ public class Game {
         int playerCount = _players.size();
         int currentPlayerIndex = _players.indexOf(_currentAttacker);
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+        if( nextPlayerIndex == 0 ){
+            _turnNumber++;
+        }
         _log.info("next player index: " + nextPlayerIndex);
         _currentAttacker = _players.get(nextPlayerIndex);
         _log.info("active player set to " + _currentAttacker);
