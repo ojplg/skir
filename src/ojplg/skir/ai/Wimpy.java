@@ -16,14 +16,15 @@ import ojplg.skir.state.Player;
 
 import java.util.List;
 
-public class NeverAttacks implements AutomatedPlayer {
+public class Wimpy implements AutomatedPlayer {
 
-    private final static Logger _log = LogManager.getLogger(NeverAttacks.class);
+    private final static Logger _log = LogManager.getLogger(Wimpy.class);
 
     private final Player _me;
 
-    public NeverAttacks(Player player){
+    public Wimpy(Player player){
         _me = player;
+        player.setDisplayName("Wimpy");
     }
 
     private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
