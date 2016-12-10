@@ -11,19 +11,7 @@ public class BattleStats {
         _expectationsDifference+=expectationDifference;
     }
 
-    public int getNumberBattles() {
-        return _numberBattles;
-    }
-
-    public int getNumberArmyBattles() {
-        return _numberArmyBattles;
-    }
-
     public double getExpectationsDifference() {
         return _expectationsDifference;
-    }
-
-    public double normalizedLuckFactor(){
-        return _expectationsDifference / getNumberArmyBattles();
     }
 }

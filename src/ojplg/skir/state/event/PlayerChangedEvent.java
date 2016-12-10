@@ -43,9 +43,13 @@ public class PlayerChangedEvent {
         jObject.put("card_count", _cards.size());
         jObject.put("continents", _continentCount);
         jObject.put("expected_armies", _expectedGrant);
-        jObject.put("attack_luck_factor", _attackLuckFactor);
-        jObject.put("defense_luck_factor", _defenseLuckFactor);
+        jObject.put("attack_luck_factor", lowPrecisionDouble(_attackLuckFactor));
+        jObject.put("defense_luck_factor", lowPrecisionDouble(_defenseLuckFactor));
         return jObject;
+    }
+
+    private String lowPrecisionDouble(double value){
+        return String.format("%.2f",value);
     }
 
     public JSONObject fullDetailsJson(){
