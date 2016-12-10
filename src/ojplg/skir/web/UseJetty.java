@@ -52,7 +52,7 @@ public class UseJetty  {
 
         ContextHandler contextHandler = new ContextHandler();
         contextHandler.setContextPath("/");
-        contextHandler.setHandler( new JoinGameHandler(_channels));
+        contextHandler.setHandler( new JoinGameHandler());
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] { contextHandler, resourceHandler, context });

@@ -1,8 +1,5 @@
 package ojplg.skir.web;
 
-import ojplg.skir.play.Channels;
-import ojplg.skir.play.GameRunner;
-import ojplg.skir.state.event.JoinGameRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
@@ -22,16 +19,10 @@ public class JoinGameHandler extends AbstractHandler {
 
     private static final Logger _log = LogManager.getLogger(JoinGameHandler.class);
 
-    private final Channels _channels;
-
-    public JoinGameHandler(Channels channels){
-        this._channels = channels;
-    }
-
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse) throws IOException, ServletException {
-        _log.info("Handling a request! " + request.getContextPath() + ", " + httpServletRequest.getRequestURL());
+        _log.info("Handling a request " + request.getContextPath() + ", " + httpServletRequest.getRequestURL());
 
         String query = request.getQueryString();
         String remoteAddress = request.getRemoteAddr();
@@ -39,9 +30,6 @@ public class JoinGameHandler extends AbstractHandler {
 
         if( name != null ) {
             _log.info("Got the queries " + query + " from " + remoteAddress + " has name " + name);
-
-            JoinGameRequest joinGameRequest = new JoinGameRequest(name, remoteAddress);
-            _channels.JoinGameRequestChannel.publish(joinGameRequest);
 
             httpServletResponse.setContentType("text/html");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);

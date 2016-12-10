@@ -2,7 +2,6 @@ package ojplg.skir.play;
 
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
-import ojplg.skir.state.event.JoinGameRequest;
 import ojplg.skir.state.event.GameEvent;
 import org.jetlang.channels.Channel;
 import org.jetlang.channels.MemoryChannel;
@@ -29,9 +28,6 @@ public class Channels {
             = new MemoryChannel<>();
 
     public final Channel<GameJoinedEvent> GameJoinedEventChannel
-            = new MemoryChannel<>();
-
-    public final Channel<JoinGameRequest> JoinGameRequestChannel
             = new MemoryChannel<>();
 
     public final Channel<String> StartGameChannel

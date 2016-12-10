@@ -9,11 +9,9 @@ import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
 import ojplg.skir.state.event.GameEvent;
-import ojplg.skir.state.event.JoinGameRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.Fiber;
-import ojplg.skir.state.ClientInfo;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
@@ -43,8 +41,6 @@ public class GameRunner {
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
 
-    private final Set<JoinGameRequest> _joinRequests = new HashSet<>();
-
     public GameRunner(Channels channels, Fiber fiber){
         _channels = channels;
         _fiber = fiber;
@@ -54,8 +50,6 @@ public class GameRunner {
                 order -> processOrder(order));
         _channels.ClientConnectedEventChannel.subscribe(_fiber,
                 clientConnectedEvent -> handleClientConnection(clientConnectedEvent));
-        _channels.JoinGameRequestChannel.subscribe(_fiber,
-                joinGameRequest -> { _joinRequests.add(joinGameRequest); });
         _channels.StartGameChannel.subscribe(_fiber,
                 s -> startGame(s));
     }
