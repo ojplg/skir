@@ -46,7 +46,6 @@ public class ClientConnectedEvent {
 
         ClientConnectedEvent that = (ClientConnectedEvent) o;
 
-        if (_clientId != that._clientId) return false;
         return _clientKey.equals(that._clientKey) &&
                 _displayName.equals(that._displayName) &&
                 _address.equals(that._address);
@@ -54,8 +53,7 @@ public class ClientConnectedEvent {
 
     @Override
     public int hashCode() {
-        int result = _clientId;
-        result = 31 * result + _clientKey.hashCode();
+        int result = _clientKey.hashCode();
         result = 31 * result + _displayName.hashCode();
         result = 31 * result + _address.hashCode();
         return result;

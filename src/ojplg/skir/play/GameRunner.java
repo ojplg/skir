@@ -1,7 +1,7 @@
 package ojplg.skir.play;
 
+import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
-import ojplg.skir.ai.Bully;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.card.StandardCardSet;
@@ -62,13 +62,7 @@ public class GameRunner {
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
             if(! _remotePlayers.contains(player)) {
-                AutomatedPlayer ai;
-                if (idx % 2 == 0) {
-                    ai = new Bully(player);
-                } else {
-                    ai = new Bully(player);
-                }
-                addAutomatedPlayer(ai);
+                addAutomatedPlayer(AiFactory.generateAiPlayer(player));
             }
         }
     }

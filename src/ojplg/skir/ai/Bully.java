@@ -138,16 +138,7 @@ public class Bully implements AutomatedPlayer {
     }
 
     private List<PossibleAttack> findAdvantageousAttacks(Game game){
-        List<PossibleAttack> advantages = new ArrayList<>();
-        for(Country country : game.countriesToAttackFrom(_me)){
-            int myForce = game.getOccupationForce(country);
-            for(Country enemyNeighbor : game.enemyNeighbors(country)){
-                int enemyForce = game.getOccupationForce(enemyNeighbor);
-                if( myForce > enemyForce){
-                    advantages.add(new PossibleAttack(country, enemyNeighbor, enemyForce - myForce));
-                }
-            }
-        }
-        return advantages;
+        return AiUtils.findAdvantageousAttacks(_me, game);
     }
+
 }

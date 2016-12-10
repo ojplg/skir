@@ -75,4 +75,11 @@ public class Continent implements Comparable {
     public String getName() {
         return _name;
     }
+
+    @Override
+    public String toString() {
+        return "Continent{" +
+                "_name='" + _name + '\'' +
+                '}';
+    }
 }

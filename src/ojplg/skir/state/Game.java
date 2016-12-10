@@ -346,6 +346,10 @@ public class Game {
         return _map.getAllCountries();
     }
 
+    public List<Continent> getAllContinents(){
+        return _map.getContinents();
+    }
+
     public List<Player> getAllPlayers(){
         return _players;
     }

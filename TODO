@@ -2,6 +2,7 @@
 ** Respect attackers dice choice
 ** check on luck calculation: it does not look right
 ** make sure all player status update events are handled and published
+** Deal with stack overflow with GameRunner.processOrder() call
 
 * Web page UI
 ** Allow selection of AIs for other players
@@ -11,6 +12,6 @@
 ** When a player is eliminated, make clear in status
 
 * AIs
-** Continent grabber
+** Grabby: (1) be smarter about placement, (2) attack across-continents when necessary
 ** Keeps countries previously owned
 ** Over-aggressive
