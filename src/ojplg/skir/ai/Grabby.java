@@ -120,6 +120,8 @@ public class Grabby implements AutomatedPlayer {
                 return new ClaimArmies(adjutant);
             case DrawCard:
                 return new DrawCard(adjutant);
+            case EndTurn:
+                return new EndTurn(adjutant);
             default:
                 throw new RuntimeException("No way to deal with order type " + orderType);
         }
