@@ -43,6 +43,7 @@ public class PlayerChangedEvent {
         jObject.put("card_count", _cards.size());
         jObject.put("continents", _continentCount);
         jObject.put("expected_armies", _expectedGrant);
+        jObject.put("name", _player.getDisplayName());
         jObject.put("attack_luck_factor", lowPrecisionDouble(_attackLuckFactor));
         jObject.put("defense_luck_factor", lowPrecisionDouble(_defenseLuckFactor));
         return jObject;

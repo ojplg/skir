@@ -95,6 +95,7 @@ public class GameRunner {
             _remotePlayerInfo.put(clientConnectedEvent, player);
             _remotePlayers.add(player);
             player.setClientKey(clientConnectedEvent.getClientKey());
+            player.setDisplayName(clientConnectedEvent.getDisplayName());
 
             _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
 

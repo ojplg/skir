@@ -1,6 +1,6 @@
 var connection;
 
-function openWebSocketConnection(uniqueKey){
+function openWebSocketConnection(name, address, uniqueKey){
     connection = new WebSocket("ws://" + window.location.host + "/sockets/");
     connection.onmessage = function(event){
         console.log("message from server: " + event.data);
@@ -20,13 +20,15 @@ function openWebSocketConnection(uniqueKey){
         }
     };
     // need this to happen after connection created
-    connection.onopen = function(event) { sendJoinMessage(uniqueKey); };
+    connection.onopen = function(event) { sendJoinMessage(name, address, uniqueKey); };
 }
 
-function sendJoinMessage(uniqueKey){
+function sendJoinMessage(name, address, uniqueKey){
     var obj = {};
     obj.messageType = "ClientJoined";
     obj.uniqueKey = "" + uniqueKey;
+    obj.displayName = name;
+    obj.address = address;
     var msg = JSON.stringify(obj);
     sendMessage(msg);
 }

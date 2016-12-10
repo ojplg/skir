@@ -32,6 +32,7 @@ public class Bully implements AutomatedPlayer {
 
     public Bully(Player player){
         _me = player;
+        player.setDisplayName("AI: Bully");
     }
 
     private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {

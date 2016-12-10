@@ -20,7 +20,7 @@ function PlayerStatus(playerColor){
     this.updateTable = function(playerStatus){
         // TODO: this utility function should have a home
         clearElementChildren(this.table);
-        var items = ['armies','countries','continents','card_count',
+        var items = ['name', 'armies','countries','continents','card_count',
                      'expected_armies', 'attack_luck_factor', 'defense_luck_factor'];
         for(var idx=0; idx<items.length; idx++){
             var item = items[idx];

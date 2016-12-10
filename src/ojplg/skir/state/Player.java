@@ -11,7 +11,9 @@ public class Player {
     private final String _color;
     private final List<Card> _cards = new ArrayList<>();
     private int _reserveArmies;
+    //TODO: This should be a ClientKey object, not a String
     private String _clientKey;
+    private String _displayName;
     private final BattleStats _attackStats = new BattleStats();
     private final BattleStats _defenseStats = new BattleStats();
 
@@ -21,6 +23,14 @@ public class Player {
 
     public void setClientKey(String _clientKey) {
         this._clientKey = _clientKey;
+    }
+
+    public String getDisplayName() {
+        return _displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this._displayName = displayName;
     }
 
     public Player(String color){

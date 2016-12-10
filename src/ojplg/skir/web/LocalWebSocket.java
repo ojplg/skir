@@ -92,7 +92,10 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
             } else if ("ClientJoined".equals(messageType)){
                 _log.info("Client Joined " + message);
                 _clientKey = (String) jObject.get("uniqueKey");
-                _channels.ClientConnectedEventChannel.publish(new ClientConnectedEvent(_id, _clientKey));
+                String displayName = (String) jObject.get("displayName");
+                String address = (String) jObject.get("address");
+                _channels.ClientConnectedEventChannel.publish(
+                        new ClientConnectedEvent(_id, _clientKey, displayName, address));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }
