@@ -2,15 +2,15 @@ package ojplg.skir.state.event;
 
 public class ClientConnectedEvent {
 
-    private final String _clientId;
+    private final int _clientId;
     private final String _clientKey;
 
-    public ClientConnectedEvent(String clientId, String clientKey) {
+    public ClientConnectedEvent(int clientId, String clientKey) {
         this._clientId = clientId;
         this._clientKey = clientKey;
     }
 
-    public String getClientId() {
+    public int getClientId() {
         return _clientId;
     }
     public String getClientKey() {
@@ -32,14 +32,14 @@ public class ClientConnectedEvent {
 
         ClientConnectedEvent that = (ClientConnectedEvent) o;
 
-        if (!_clientId.equals(that._clientId)) return false;
+        if (_clientId != that._clientId) return false;
         return _clientKey.equals(that._clientKey);
 
     }
 
     @Override
     public int hashCode() {
-        int result = _clientId.hashCode();
+        int result = _clientId;
         result = 31 * result + _clientKey.hashCode();
         return result;
     }

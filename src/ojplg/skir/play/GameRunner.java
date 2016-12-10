@@ -90,7 +90,6 @@ public class GameRunner {
         } else if( playerSlotAvailable()) {
             _log.info("Trying to add a new player " + clientConnectedEvent);
             Player player = _game.getAllPlayers().get(availablePlayerNumber);
-
             //ClientInfo clientInfo = new ClientInfo(clientConnectedEvent, player);
 
             _remotePlayerInfo.put(clientConnectedEvent, player);

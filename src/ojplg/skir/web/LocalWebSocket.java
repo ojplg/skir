@@ -33,7 +33,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private static volatile int _counter = 0;
 
-    private final String _id;
+    private final int _id;
     private final Channels _channels;
     private String _clientKey;
     private Fiber _fiber;
@@ -45,7 +45,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _log.info("instantiated with no argument constructor");
         _channels = WebSocketInitializer.Channels;
         _counter++;
-        _id = String.valueOf(_counter);
+        _id = _counter;
 
         _fiber = new ThreadFiber(new RunnableExecutorImpl(),"WebSocketFiber-" + _id, true);
 
