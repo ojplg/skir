@@ -10,7 +10,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
-import org.jetlang.fibers.Fiber;
 import ojplg.skir.play.Channels;
 
 import javax.websocket.server.ServerContainer;
@@ -21,13 +20,11 @@ public class UseJetty  {
 
     private final int _httpPort;
     private final Channels _channels;
-    private final Fiber _webFiber;
     private Server _server;
 
-    public UseJetty(int httpPort, Channels channels, Fiber webFiber){
+    public UseJetty(int httpPort, Channels channels){
         _httpPort = httpPort;
         _channels = channels;
-        _webFiber = webFiber;
         WebSocketInitializer.Channels = _channels;
         _log.info("Web Socket Channels initialized");
     }

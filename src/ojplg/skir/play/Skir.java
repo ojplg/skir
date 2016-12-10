@@ -19,8 +19,7 @@ public class Skir {
         final Skir skir = new Skir();
         final Channels channels = new Channels();
 
-        ThreadFiber webFiber = new ThreadFiber(new RunnableExecutorImpl(), "WebFiber", true);
-        skir._jettyServer = new UseJetty(8080, channels, webFiber);
+        skir._jettyServer = new UseJetty(8080, channels);
 
         Thread webThread = new Thread(new Runnable(){
             @Override
@@ -30,7 +29,6 @@ public class Skir {
         },"WebThread");
 
         webThread.start();
-        webFiber.start();
 
         ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
         skir._gameRunner = new GameRunner(channels, gameRunnerFiber);
