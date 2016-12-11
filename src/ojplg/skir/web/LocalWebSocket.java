@@ -1,6 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.Skir;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.event.ClientConnectedEvent;
@@ -47,7 +48,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         _counter++;
         _id = _counter;
 
-        _fiber = new ThreadFiber(new RunnableExecutorImpl(),"WebSocketFiber-" + _id, true);
+        _fiber = Skir.createThreadFiber("WebSocketFiber-" + _id);
 
         _channels.MapChangedEventChannel.subscribe(_fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())

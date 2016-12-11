@@ -27,10 +27,11 @@ public class Skir {
                 skir.runWebServer();
             }
         },"WebThread");
+        webThread.setUncaughtExceptionHandler((t, e) -> _log.error("Web thread exception caught at top level", e));
 
         webThread.start();
 
-        ThreadFiber gameRunnerFiber = new ThreadFiber(new RunnableExecutorImpl(), "GameRunnerFiber", true);
+        ThreadFiber gameRunnerFiber = createThreadFiber("GameRunnerFiber");
         skir._gameRunner = new GameRunner(channels, gameRunnerFiber);
 
         gameRunnerFiber.start();
@@ -42,6 +43,12 @@ public class Skir {
         } catch (Exception e){
             _log.error("Could not start jetty", e);
         }
+    }
+
+    public static ThreadFiber createThreadFiber(String name){
+        ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, true);
+        fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
+        return fiber;
     }
 
 }
