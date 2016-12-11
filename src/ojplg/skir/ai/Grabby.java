@@ -23,6 +23,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This AI concentrates on trying to win continents
+ */
 public class Grabby implements AutomatedPlayer {
 
     private static final Logger _log = LogManager.getLogger(Grabby.class);

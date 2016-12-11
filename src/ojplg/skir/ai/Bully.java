@@ -20,10 +20,13 @@ import ojplg.skir.state.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * An AI that only fights when it has more forces
+ * than its opponent.
+ */
 public class Bully implements AutomatedPlayer {
 
     private final static Logger _log = LogManager.getLogger(Bully.class);

@@ -16,6 +16,10 @@ import ojplg.skir.state.Player;
 
 import java.util.List;
 
+/**
+ * This AI never attacks. It just place armies equitably
+ * across the countries it owns.
+ */
 public class Wimpy implements AutomatedPlayer {
 
     private final static Logger _log = LogManager.getLogger(Wimpy.class);
