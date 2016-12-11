@@ -116,17 +116,24 @@ public class GameRunner {
         }
         AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
         if( ai != null ){
-            Order generatedOrder = ai.generateOrder(_currentAdjutant, _game);
-            littleDelay();
-            processOrder(generatedOrder);
+            handleAiOrders(ai);
         } else {
             _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
 
+    private void handleAiOrders(AutomatedPlayer ai){
+        while (ai != null){
+            Order order = ai.generateOrder(_currentAdjutant, _game);
+            littleDelay();
+            processOrder(order);
+            ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
+        }
+    }
+
     private void littleDelay(){
         try {
-            Thread.sleep(20);
+            Thread.sleep(10);
         } catch (InterruptedException ie){
             _log.warn("Who interrupted me?", ie);
         }
@@ -157,11 +164,15 @@ public class GameRunner {
     }
 
     private Game initializeGame(Channels channels) {
-        List<Player> players = new ArrayList<Player>();
+        List<Player> players = new ArrayList<>();
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = new Player(_colors[idx]);
-            player.grantReserves(initialArmies);
+//            if( idx == 0 ){
+//                player.grantReserves(7);
+//            } else {
+                player.grantReserves(initialArmies);
+//            }
             players.add(player);
         }
 

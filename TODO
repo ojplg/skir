@@ -2,7 +2,7 @@
 ** Respect attackers dice choice
 ** check on luck calculation: it does not look right
 ** make sure all player status update events are handled and published
-** Deal with stack overflow with GameRunner.processOrder() call
+** Fix bug: sometimes attacks are allowed when they should not be
 
 * Web page UI
 ** Allow selection of AIs for other players
