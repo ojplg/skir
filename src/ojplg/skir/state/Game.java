@@ -5,6 +5,7 @@ import ojplg.skir.card.CardStack;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.play.Skir;
 import ojplg.skir.state.event.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,7 +32,7 @@ public class Game {
     private final Roller _roller;
     private final Channels _channels;
 
-    private final ThreadFiber _fiber = new ThreadFiber();
+    private final ThreadFiber _fiber = Skir.createThreadFiber("GameRunnerFiber");
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
@@ -48,8 +49,7 @@ public class Game {
         _channels = channels;
         _occupations = occupations;
     }
-
-
+    
     public void start(){
         _currentAttacker = _players.get(0);
         _fiber.start();
