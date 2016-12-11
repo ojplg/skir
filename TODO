@@ -12,6 +12,4 @@
 ** When a player is eliminated, make clear in status
 
 * AIs
-** Grabby: (1) be smarter about placement, (2) attack across-continents when necessary
-** Keeps countries previously owned
-** Over-aggressive
+** Grumpy: tries to keep any country ever owned

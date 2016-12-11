@@ -84,7 +84,7 @@ public class Grabby implements AutomatedPlayer {
         Continent continent = AiUtils.findStrongestUnownedContinent(_me, game);
         if( continent == null ){
             _log.warn("need to find an off-continent attack");
-            return null;
+            return findIntercontinentalAttack(game);
         }
         _log.info("Choosing attacks on " + continent);
         List<PossibleAttack> possibleAttacks = AiUtils.findAdvantageousAttacks(_me, game);
@@ -95,17 +95,27 @@ public class Grabby implements AutomatedPlayer {
         return RandomUtils.pickRandomElement(possibleContinentAttacks);
     }
 
+    private PossibleAttack findIntercontinentalAttack(Game game){
+        List<PossibleAttack> possibleAttacks = AiUtils.findAdvantageousAttacks(_me, game);
+        return RandomUtils.pickRandomElement(possibleAttacks);
+    }
+
     private Order placeArmies(Adjutant adjutant, Game game){
         _log.info("Choosing placement for " + _me);
         Continent continent = AiUtils.findStrongestUnownedContinent(_me, game);
         _log.info("Planning to place in " + continent);
         if( continent == null ){
-            Country country = RandomUtils.pickRandomElement(game.countriesOccupied(_me));
+            List<Country> countries = game.countriesOccupied(_me);
+            List<Country> borderCountries = countries.stream()
+                    .filter(c -> game.enemyNeighbors(c).size() > 1)
+                    .collect(Collectors.toList());
+            Country country = RandomUtils.pickRandomElement(borderCountries);
             _log.info("Going to place in " + country);
             return new PlaceArmy(adjutant, country);
         }
         List<Country> myCountries = continent.getCountries().stream()
                 .filter(c -> { return game.getOccupier(c).equals(_me);})
+                .filter(c -> { return game.enemyNeighbors(c).size() > 0; })
                 .collect(Collectors.toList());
         Country country = RandomUtils.pickRandomElement(myCountries);
         _log.info("Going to place in " + country);

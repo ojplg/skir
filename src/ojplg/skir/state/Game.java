@@ -49,7 +49,7 @@ public class Game {
         _channels = channels;
         _occupations = occupations;
     }
-    
+
     public void start(){
         _currentAttacker = _players.get(0);
         _fiber.start();
