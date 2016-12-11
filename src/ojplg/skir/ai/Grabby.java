@@ -110,10 +110,10 @@ public class Grabby implements AutomatedPlayer {
         if( continent == null ){
             List<Country> countries = game.countriesOccupied(_me);
             List<Country> borderCountries = countries.stream()
-                    .filter(c -> game.enemyNeighbors(c).size() > 1)
+                    .filter(c -> game.enemyNeighbors(c).size() > 0)
                     .collect(Collectors.toList());
             Country country = RandomUtils.pickRandomElement(borderCountries);
-            _log.info("Going to place in " + country);
+            _log.info("Going to place in (after continent null) " + country);
             return new PlaceArmy(adjutant, country);
         }
         List<Country> myCountries = continent.getCountries().stream()
