@@ -52,6 +52,8 @@ public class GameRunner {
                 clientConnectedEvent -> handleClientConnection(clientConnectedEvent));
         _channels.StartGameChannel.subscribe(_fiber,
                 s -> startGame(s));
+        _channels.AdjutantChannel.subscribe(_fiber,
+                a -> aiOrderGenerator(a));
     }
 
     public static List<String> getColors(){
@@ -114,26 +116,22 @@ public class GameRunner {
             _log.info("Game over. Winner is " + _game.currentAttacker());
             return;
         }
-        AutomatedPlayer ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
-        if( ai != null ){
-            handleAiOrders(ai);
-        } else {
-            _channels.AdjutantChannel.publish(_currentAdjutant);
-        }
+        _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
-    private void handleAiOrders(AutomatedPlayer ai){
-        while (ai != null){
+    private void aiOrderGenerator(Adjutant adjutant){
+        AutomatedPlayer ai = getAutomatedPlayer(adjutant.getActivePlayer());
+
+        if( ai != null ){
             Order order = ai.generateOrder(_currentAdjutant, _game);
             littleDelay();
-            processOrder(order);
-            ai = getAutomatedPlayer(_currentAdjutant.getActivePlayer());
+            _channels.OrderEnteredChannel.publish(order);
         }
     }
 
     private void littleDelay(){
         try {
-            Thread.sleep(10);
+            Thread.sleep(15);
         } catch (InterruptedException ie){
             _log.warn("Who interrupted me?", ie);
         }
@@ -168,11 +166,11 @@ public class GameRunner {
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = new Player(_colors[idx]);
-//            if( idx == 0 ){
-//                player.grantReserves(7);
-//            } else {
+            if( idx == 0 ){
+                player.grantReserves(7);
+            } else {
                 player.grantReserves(initialArmies);
-//            }
+            }
             players.add(player);
         }
 
