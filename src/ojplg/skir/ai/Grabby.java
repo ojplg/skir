@@ -10,6 +10,7 @@ import ojplg.skir.play.orders.DrawCard;
 import ojplg.skir.play.orders.EndAttacks;
 import ojplg.skir.play.orders.EndTurn;
 import ojplg.skir.play.orders.ExchangeCardSet;
+import ojplg.skir.play.orders.Fortify;
 import ojplg.skir.play.orders.OccupationConstraints;
 import ojplg.skir.play.orders.Occupy;
 import ojplg.skir.play.orders.Order;
@@ -57,10 +58,43 @@ public class Grabby implements AutomatedPlayer {
         if( possibleOrderTypes.contains(OrderType.Attack)){
             return possiblyAttack(adjutant, game);
         }
+        if( possibleOrderTypes.contains(OrderType.Fortify)){
+            Fortify fortification = possiblyFortify(adjutant, game);
+            if( fortification != null){
+                _log.info("Fortifying! from " + fortification.getSource() + " to " + fortification.getDestination());
+                return fortification;
+            }
+        }
         if( possibleOrderTypes.contains(OrderType.DrawCard)){
             return new DrawCard(adjutant);
         }
         return new EndTurn(adjutant);
+    }
+
+    private Fortify possiblyFortify(Adjutant adjutant, Game game){
+        List<Country> mine = game.interiorCountries(_me);
+        _log.info("Searching for fortifications from " + mine.size() + " countries");
+        int numberToFortify = 0;
+        Country from = null;
+        Country to = null;
+        for(Country country : mine){
+            int possibleNumber = game.getOccupationForce(country) - 1;
+            if( possibleNumber > numberToFortify){
+                List<Country> neighbors = game.allNeighbors(country);
+                _log.info("Fortifying from " + country + " has " + neighbors.size() + " options");
+                for(Country neighbor : neighbors){
+                    if(game.enemyNeighbors(neighbor).size() > 0){
+                        numberToFortify = possibleNumber;
+                        from = country;
+                        to = neighbor;
+                    }
+                }
+            }
+        }
+        if( numberToFortify > 0 ){
+            return new Fortify(adjutant, from, to, numberToFortify);
+        }
+        return null;
     }
 
     private Order possiblyAttack(Adjutant adjutant, Game game){
@@ -77,9 +111,15 @@ public class Grabby implements AutomatedPlayer {
 
     private Order occupy(Adjutant adjutant, Game game){
         OccupationConstraints constraints = adjutant.getOccupationConstraints();
-        int occupationForce = Math.max(constraints.minimumOccupationForce(),
-                game.getOccupationForce(constraints.attacker())/2);
-        return new Occupy(adjutant, constraints.attacker(), constraints.conquered(),occupationForce);
+        Country from = constraints.attacker();
+        int occupationForce;
+        if( game.enemyNeighbors(from).size() == 1 ){
+            occupationForce = game.getOccupationForce(from) - 1;
+        } else {
+            occupationForce = Math.max(constraints.minimumOccupationForce(),
+                    game.getOccupationForce(from)/2);
+        }
+        return new Occupy(adjutant, from, constraints.conquered(), occupationForce);
     }
 
     private PossibleAttack findPossibleAttack(Game game){

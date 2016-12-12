@@ -231,7 +231,7 @@ public class Game {
     }
 
     public List<Country> borderCountries(Player player){
-        List<Country> borders = new ArrayList<Country>();
+        List<Country> borders = new ArrayList<>();
         for(Country country : countriesOccupied(player)){
             List<Country> neighbors = _map.getNeighbors(country);
             if( _occupations.hasEnemy(country, neighbors)){
@@ -240,6 +240,18 @@ public class Game {
         }
         return borders;
     }
+
+    public List<Country> interiorCountries(Player player){
+        List<Country> internal = new ArrayList<>();
+        for(Country country : countriesOccupied(player)){
+            List<Country> neighbors = _map.getNeighbors(country);
+            if( ! _occupations.hasEnemy(country, neighbors)){
+                internal.add(country);
+            }
+        }
+        return internal;
+    }
+
 
     private List<Continent> continentsOccupied(Player player){
         return _map.getContinents().stream()
@@ -258,6 +270,10 @@ public class Game {
 
     public List<Country> alliedNeighbors(Country country){
         return filterCountries(country, true);
+    }
+
+    public List<Country> allNeighbors(Country country){
+        return _map.getNeighbors(country);
     }
 
     private List<Country> filterCountries(Country country, boolean sameOccupier){

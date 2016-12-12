@@ -26,6 +26,18 @@ public class Fortify extends Order {
         }
     }
 
+    public Country getSource() {
+        return _source;
+    }
+
+    public Country getDestination() {
+        return _destination;
+    }
+
+    public int getArmies() {
+        return _armies;
+    }
+
     @Override
     public OrderType getType() {
         return OrderType.Fortify;
