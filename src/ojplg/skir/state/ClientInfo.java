@@ -5,7 +5,7 @@ import ojplg.skir.state.event.ClientConnectedEvent;
 public class ClientInfo {
 
     private String _clientAddress;
-    private final String _clientId;
+    private final int _clientId;
     private final String _color;
     private final String _clientKey;
 
@@ -20,7 +20,7 @@ public class ClientInfo {
         return _clientAddress;
     }
 
-    public String getClientId() {
+    public int getClientId() {
         return _clientId;
     }
 
