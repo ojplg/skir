@@ -21,9 +21,6 @@ public class Occupy extends Order {
     public Adjutant execute(Game game) {
         Player loser = game.getOccupier(_conquered);
         boolean playerEliminated = game.resolveConquest(_victor, _conquered, _armies);
-        ConstrainedOrderType attack = ConstrainedOrderType.attack(activePlayer(), game);
-        ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(activePlayer(), game);
-        ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
 
         if ( playerEliminated ){
             // TODO: Check for game over?
@@ -31,10 +28,10 @@ public class Occupy extends Order {
             if (activePlayer().hasTooManyCards()){
                 return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
             } else {
-                return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
+                return AttackOrderHelper.possibleAttackingOrders(getAdjutant(), game);
             }
         } else {
-            return getAdjutant().forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
+            return AttackOrderHelper.possibleAttackingOrders(getAdjutant(), game);
         }
     }
 

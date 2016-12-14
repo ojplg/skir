@@ -9,7 +9,6 @@ public class AttackOrderHelper {
             ConstrainedOrderType attack = ConstrainedOrderType.attack(adjutant.getActivePlayer(), game);
             ConstrainedOrderType attackUntilVictoryOrDeath = ConstrainedOrderType.attackUntilVictoryOrDeath(adjutant.getActivePlayer(), game);
             ConstrainedOrderType endAttacks = ConstrainedOrderType.unconstrainedOrder(OrderType.EndAttacks);
-
             return adjutant.forConstrainedOrderTypes(attack, attackUntilVictoryOrDeath, endAttacks);
         } else if( game.hasLegalFortification(adjutant.getActivePlayer()) && adjutant.hasConqueredCountry()) {
             ConstrainedOrderType fortify = ConstrainedOrderType.fortify(adjutant.getActivePlayer(), game);
