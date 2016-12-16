@@ -17,7 +17,7 @@ public class RandomRoller implements Roller {
         return new Rolls(attackerRolls, defenderRolls);
     }
 
-    private int[] generateRolls(int number){
+    public int[] generateRolls(int number){
         int[] rolls = new int[number];
 
         for( int idx=0; idx<number ; idx++ ){
@@ -28,6 +28,6 @@ public class RandomRoller implements Roller {
     }
 
     private int next(){
-        return 1 + (_random.nextInt() % 6);
+        return 1 + (_random.nextInt(6));
     }
 }
