@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class TestStandardMap {
+public class StandardMapTest {
 
     @Test
     public void neighborsAreSymmetric(){
