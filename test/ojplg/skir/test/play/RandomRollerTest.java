@@ -23,7 +23,7 @@ public class RandomRollerTest {
     }
 
     private void runExpectationsDifferenceTest(int numberOfTests, int attackingDiceCount, int defendingDiceCount){
-        int allowableAmountOff = numberOfTests / 1000;
+        int allowableAmountOff = numberOfTests / 500;
         RandomRoller randomRoller = new RandomRoller(System.currentTimeMillis());
 
         float accumulatedDifferenceFromAttackerExpectations = 0;
