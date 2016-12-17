@@ -45,14 +45,14 @@ public class GameRunner {
         _fiber = fiber;
         _game = initializeGame(channels);
 
-        _channels.OrderEnteredChannel.subscribe(_fiber,
-                order -> processOrder(order));
-        _channels.ClientConnectedEventChannel.subscribe(_fiber,
-                clientConnectedEvent -> handleClientConnection(clientConnectedEvent));
-        _channels.StartGameChannel.subscribe(_fiber,
-                s -> startGame(s));
-        _channels.AdjutantChannel.subscribe(_fiber,
-                a -> aiOrderGenerator(a));
+        _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
+        _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
+        _channels.StartGameChannel.subscribe(_fiber, this::startGame);
+        _channels.AdjutantChannel.subscribe(_fiber, this::aiOrderGenerator);
+    }
+
+    public void start(){
+        _fiber.start();
     }
 
     private void addAutomatedPlayers(){
@@ -116,7 +116,7 @@ public class GameRunner {
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
-        AutomatedPlayer ai = getAutomatedPlayer(adjutant.getActivePlayer());
+        AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
 
         if( ai != null ){
             Order order = ai.generateOrder(_currentAdjutant, _game);
@@ -147,14 +147,6 @@ public class GameRunner {
     private void addAutomatedPlayer(AutomatedPlayer ai){
         _log.info("Adding automated player for " + ai.getPlayer());
         _automatedPlayers.put(ai.getPlayer(),ai);
-    }
-
-    public AutomatedPlayer getAutomatedPlayer(Player player){
-        AutomatedPlayer ai = _automatedPlayers.get(player);
-        if( ai == null ){
-            _log.info("NO AI FOR " + player);
-        }
-        return ai;
     }
 
     private Game initializeGame(Channels channels) {

@@ -31,10 +31,8 @@ public class Skir {
 
         webThread.start();
 
-        ThreadFiber gameRunnerFiber = createThreadFiber("GameRunnerFiber");
-        skir._gameRunner = new GameRunner(channels, gameRunnerFiber);
-
-        gameRunnerFiber.start();
+        skir._gameRunner = new GameRunner(channels, createThreadFiber("GameRunnerFiber"));
+        skir._gameRunner.start();
     }
 
     private void runWebServer(){
