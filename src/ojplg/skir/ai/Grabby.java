@@ -39,6 +39,11 @@ public class Grabby implements AutomatedPlayer {
     }
 
     @Override
+    public void initialize(Game game) {
+        // do nothing
+    }
+
+    @Override
     public Order generateOrder(Adjutant adjutant, Game game) {
         List<OrderType> possibleOrderTypes = adjutant.allowableOrders();
         _log.info("Selecting from order types " + possibleOrderTypes);

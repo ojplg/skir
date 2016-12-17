@@ -13,8 +13,10 @@ public class AiFactory {
 
         if (number < 0.1){
             return new Wimpy(player);
-        } else if (number < 0.7){
+        } else if (number < 0.4){
             return new Grabby(player);
+        } else if (number < 0.9 ) {
+            return new Grumpy(player);
         } else {
             return new Bully(player);
         }

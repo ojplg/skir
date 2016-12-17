@@ -60,11 +60,13 @@ public class GameRunner {
         return Collections.unmodifiableList(Arrays.asList(_colors));
     }
 
-    private void initializeAutomatedPlayers(){
+    private void addAutomatedPlayers(){
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
             if(! _remotePlayers.contains(player)) {
-                addAutomatedPlayer(AiFactory.generateAiPlayer(player));
+                AutomatedPlayer ai = AiFactory.generateAiPlayer(player);
+                addAutomatedPlayer(ai);
+                ai.initialize(_game);
             }
         }
     }
@@ -140,7 +142,7 @@ public class GameRunner {
     private void startGame(String s){
         _log.info("Starting game " + s);
         assignCountries();
-        initializeAutomatedPlayers();
+        addAutomatedPlayers();
         _game.start();
         _gameStarted = true;
         _game.publishAllState();

@@ -370,6 +370,10 @@ public class Game {
         return _players;
     }
 
+    public WorldMap getMap() {
+        return _map;
+    }
+
     public String toString(){
         StringBuilder sbuf = new StringBuilder();
 

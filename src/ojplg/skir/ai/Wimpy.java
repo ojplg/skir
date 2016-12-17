@@ -31,6 +31,11 @@ public class Wimpy implements AutomatedPlayer {
         player.setDisplayName("Wimpy");
     }
 
+    @Override
+    public void initialize(Game game) {
+        // do nothing
+    }
+
     private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
             return OrderType.PlaceArmy;
@@ -79,15 +84,7 @@ public class Wimpy implements AutomatedPlayer {
     }
 
     private PlaceArmy placeArmy(Adjutant adjutant, Game game){
-        List<Country> countries = game.countriesOccupied(_me);
-        int minArmies = game.getOccupationForce(countries.get(0));
-        Country countryToFortify = countries.get(0);
-        for(Country country : countries){
-            if( game.getOccupationForce(country) < minArmies){
-                minArmies = game.getOccupationForce(country);
-                countryToFortify = country;
-            }
-        }
+        Country countryToFortify = AiUtils.findWeakestPossession(_me, game);
         return new PlaceArmy(adjutant,countryToFortify);
     }
 }

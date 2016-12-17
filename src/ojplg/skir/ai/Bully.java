@@ -38,6 +38,11 @@ public class Bully implements AutomatedPlayer {
         player.setDisplayName("AI: Bully");
     }
 
+    @Override
+    public void initialize(Game game) {
+        // do nothing
+    }
+
     private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
         if ( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
             return OrderType.ExchangeCardSet;

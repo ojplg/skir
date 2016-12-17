@@ -28,6 +28,7 @@ public class WorldMap {
     public boolean areNeighbors(Country one, Country two){
         return _neighbors.areNeighbors(one, two);
     }
+
     public List<Country> getAllCountries(){
         List<Country> countries = new ArrayList<Country>();
 

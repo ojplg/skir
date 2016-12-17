@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AiUtils {
 
@@ -91,6 +92,13 @@ public class AiUtils {
             }
         }
         return advantages;
+    }
+
+    public static Country findWeakestPossession(Player player, Game game){
+        List<Country> possessions = game.countriesOccupied(player);
+        return possessions.stream()
+                .min((c1, c2) -> (game.getOccupationForce(c1) - game.getOccupationForce(c2)))
+                .get();
     }
 
     public static int attackingDice(Game game, Country country){
