@@ -133,7 +133,7 @@ public class GameRunner {
 
     private void littleDelay(){
         try {
-            Thread.sleep(15);
+            Thread.sleep(25);
         } catch (InterruptedException ie){
             _log.warn("Who interrupted me?", ie);
         }
