@@ -2,9 +2,11 @@
 ** Respect attackers dice choice
 ** Make sure all player status update events are handled and published
 ** Should be able to start new game without restarting server
+** Run in stand-alone mode for AI testing
 
 * Web page UI
 ** Allow selection of AIs for other players
 ** Refactor status.js into more objects
 ** Switch around attacks: pick attack, after countries, pick all-out or one time
 ** Start putting in some CSS
+** Correct flaw when 3 digit armies uglify country on canvas
