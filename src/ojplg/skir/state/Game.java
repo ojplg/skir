@@ -114,6 +114,7 @@ public class Game {
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
         if( nextPlayerIndex == 0 ){
             _turnNumber++;
+            _log.info("Turn number " + _turnNumber);
         }
         _log.info("next player index: " + nextPlayerIndex);
         _currentAttacker = _players.get(nextPlayerIndex);

@@ -16,9 +16,11 @@ public class Skir {
         _log.info("Starting");
 
         final Channels channels = new Channels();
-        startGameRunner(channels);
+        final boolean benchTest = Arrays.asList(args).contains("-bench");
 
-        if ( Arrays.asList(args).contains("-bench") ){
+        startGameRunner(channels, benchTest);
+
+        if ( benchTest ){
             channels.StartGameChannel.publish("Test bench starting");
         } else {
             startWebServer(channels);
@@ -27,8 +29,9 @@ public class Skir {
         _log.info("Start up complete");
     }
 
-    private static void startGameRunner(Channels channels){
-        GameRunner gameRunner = new GameRunner(channels, createThreadFiber("GameRunnerFiber"));
+    private static void startGameRunner(Channels channels, boolean benchTest){
+        int turnDelay = benchTest ? 0 : 30;
+        GameRunner gameRunner = new GameRunner(channels, createThreadFiber("GameRunnerFiber"), turnDelay);
         gameRunner.start();
     }
 

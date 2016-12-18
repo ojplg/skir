@@ -36,14 +36,16 @@ public class GameRunner {
     private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
+    private final int _orderDelay;
 
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
 
-    public GameRunner(Channels channels, Fiber fiber){
+    public GameRunner(Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
         _game = initializeGame(channels);
+        _orderDelay = orderDelay;
 
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
@@ -60,7 +62,8 @@ public class GameRunner {
             Player player = _game.getAllPlayers().get(idx);
             if(! _remotePlayers.contains(player)) {
                 AutomatedPlayer ai = AiFactory.generateAiPlayer(player);
-                addAutomatedPlayer(ai);
+                _log.info("Adding ai for " + player + ", " + ai.getClass());
+                _automatedPlayers.put(ai.getPlayer(),ai);
                 ai.initialize(_game);
             }
         }
@@ -106,10 +109,16 @@ public class GameRunner {
     }
 
     private void processOrder(Order order){
-        _log.info("Processing order for " + _currentAdjutant.getActivePlayer() + " of type " + order.getType());
+        Player player = _currentAdjutant.getActivePlayer();
+        _log.info("Processing order for " + player + " of type " + order.getType());
         _currentAdjutant = order.execute(_game);
         if( _game.gameOver() ){
-            _log.info("Game over. Winner is " + _game.currentAttacker());
+            AutomatedPlayer ai = _automatedPlayers.get(player);
+            String aiMessage = "";
+            if( ai != null){
+                aiMessage = " AI of type " + ai.getClass();
+            }
+            _log.info("Game over on turn " + _game.getTurnNumber() + " Winner is " + player + aiMessage);
             return;
         }
         _channels.AdjutantChannel.publish(_currentAdjutant);
@@ -126,10 +135,12 @@ public class GameRunner {
     }
 
     private void littleDelay(){
-        try {
-            Thread.sleep(25);
-        } catch (InterruptedException ie){
-            _log.warn("Who interrupted me?", ie);
+        if( _orderDelay > 0) {
+            try {
+                Thread.sleep(_orderDelay);
+            } catch (InterruptedException ie) {
+                _log.warn("Who interrupted me?", ie);
+            }
         }
     }
 
@@ -144,21 +155,12 @@ public class GameRunner {
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
-    private void addAutomatedPlayer(AutomatedPlayer ai){
-        _log.info("Adding automated player for " + ai.getPlayer());
-        _automatedPlayers.put(ai.getPlayer(),ai);
-    }
-
     private Game initializeGame(Channels channels) {
         List<Player> players = new ArrayList<>();
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = new Player(_colors[idx]);
-            if( idx == 0 ){
-                player.grantReserves(7);
-            } else {
-                player.grantReserves(initialArmies);
-            }
+            player.grantReserves(initialArmies);
             players.add(player);
         }
 
