@@ -32,7 +32,6 @@ public class UseJetty  {
     public void startJettyServer() throws Exception {
 
         _log.info("Initializing web server");
-
         _server = new Server();
 
         ServerConnector httpConnector = new ServerConnector(_server);
@@ -60,8 +59,7 @@ public class UseJetty  {
 
         _log.info("Starting web server");
         _server.start();
-        _server.join();
-        _log.info("Joined");
+        _log.info("Started");
     }
 
 }
