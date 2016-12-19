@@ -3,6 +3,7 @@ package ojplg.skir.test.helper;
 import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
+import ojplg.skir.map.WorldMap;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.RandomRoller;
 import ojplg.skir.state.Game;
@@ -25,7 +26,6 @@ public class GameHelper {
     public Player BlackPlayer = new Player("Black");
 
     public GameHelper(){
-        _occupations = new Occupations();
         Game = baseGameState();
     }
 
@@ -47,8 +47,11 @@ public class GameHelper {
 
         Channels channels = new Channels();
 
+        WorldMap worldMap = new StandardMap();
+        _occupations = new Occupations(worldMap);
+
         Game game = new Game(
-                new StandardMap(),
+                worldMap,
                 players,
                 StandardCardSet.deck,
                 new RandomRoller(0),

@@ -26,7 +26,6 @@ public class Game {
 
     private static final Logger _log = LogManager.getLogger(Game.class);
 
-    private final WorldMap _map;
     private final Occupations _occupations;
     private final List<Player> _players = new ArrayList<>();
     private final CardStack _cardPile;
@@ -40,11 +39,10 @@ public class Game {
     private int _lastAttackTurn = 0;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
-        this(map, players, cards, roller, channels, new Occupations());
+        this(map, players, cards, roller, channels, new Occupations(map));
     }
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations){
-        _map = map;
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _roller = roller;
@@ -58,7 +56,7 @@ public class Game {
     }
 
     public void publishAllState(){
-        _map.getAllCountries().forEach(this::notifyListenersOfMapUpdate);
+        _occupations.getMap().getAllCountries().forEach(this::notifyListenersOfMapUpdate);
         _players.forEach(this::publishPlayerChanged);
     }
 
@@ -229,30 +227,19 @@ public class Game {
     }
 
     public List<Country> borderCountries(Player player){
-        List<Country> borders = new ArrayList<>();
-        for(Country country : countriesOccupied(player)){
-            List<Country> neighbors = _map.getNeighbors(country);
-            if( _occupations.hasEnemy(country, neighbors)){
-                borders.add(country);
-            }
-        }
-        return borders;
+        return countriesOccupied(player).stream()
+                .filter(c -> _occupations.hasEnemyNeighbor(c))
+                .collect(Collectors.toList());
     }
 
     public List<Country> interiorCountries(Player player){
-        List<Country> internal = new ArrayList<>();
-        for(Country country : countriesOccupied(player)){
-            List<Country> neighbors = _map.getNeighbors(country);
-            if( ! _occupations.hasEnemy(country, neighbors)){
-                internal.add(country);
-            }
-        }
-        return internal;
+        return countriesOccupied(player).stream()
+                .filter(c -> ! _occupations.hasEnemyNeighbor(c))
+                .collect(Collectors.toList());
     }
 
-
     private List<Continent> continentsOccupied(Player player){
-        return _map.getContinents().stream()
+        return _occupations.getMap().getContinents().stream()
                 .filter(continent -> continentOccupied(player, continent))
                 .collect(Collectors.toList());
     }
@@ -263,32 +250,19 @@ public class Game {
     }
 
     public List<Country> enemyNeighbors(Country country){
-        return filterCountries(country, false);
+        return _occupations.enemyNeighbors(country);
     }
 
     public List<Country> alliedNeighbors(Country country){
-        return filterCountries(country, true);
+        return _occupations.alliedNeighbors(country);
     }
 
     public List<Country> allNeighbors(Country country){
-        return _map.getNeighbors(country);
+        return _occupations.getMap().getNeighbors(country);
     }
-
-    private List<Country> filterCountries(Country country, boolean sameOccupier){
-        List<Country> filtered = new ArrayList<>();
-        Player occupier = getOccupier(country);
-        for (Country neighbor : _map.getNeighbors(country)){
-            if(sameOccupier && occupier.equals(getOccupier(neighbor)) ) {
-                filtered.add(neighbor);
-            } else if ( ! sameOccupier && ! occupier.equals(getOccupier(neighbor))) {
-                filtered.add(neighbor);
-            }
-        }
-        return filtered;
-    }
-
+    
     private boolean isTarget(Country attacker, Country defender){
-        if( _map.areNeighbors(attacker, defender)){
+        if( _occupations.getMap().areNeighbors(attacker, defender)){
             return ! getOccupier(attacker).equals(getOccupier(defender));
         }
         return false;
@@ -351,11 +325,11 @@ public class Game {
     }
 
     public List<Country> getAllCountries(){
-        return _map.getAllCountries();
+        return _occupations.getMap().getAllCountries();
     }
 
     public List<Continent> getAllContinents(){
-        return _map.getContinents();
+        return _occupations.getMap().getContinents();
     }
 
     public List<Player> getAllPlayers(){
@@ -363,13 +337,13 @@ public class Game {
     }
 
     public WorldMap getMap() {
-        return _map;
+        return _occupations.getMap();
     }
 
     public String toString(){
         StringBuilder sbuf = new StringBuilder();
 
-        for ( Continent con : _map.getContinents()) {
+        for ( Continent con : _occupations.getMap().getContinents()) {
             sbuf.append(con.getName());
             sbuf.append("\n");
             List<Country> countries = con.getCountries();

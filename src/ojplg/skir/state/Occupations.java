@@ -1,15 +1,22 @@
 package ojplg.skir.state;
 
 import ojplg.skir.map.Country;
+import ojplg.skir.map.WorldMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Occupations {
 
-    private Map<Country, Force> _records = new HashMap<Country, Force>();
+    private final WorldMap _map;
+    private final Map<Country, Force> _records = new HashMap<>();
+
+    public Occupations(WorldMap map){
+        _map = map;
+    }
 
     public boolean isOccupied(Country country){
         return _records.containsKey(country);
@@ -44,15 +51,26 @@ public class Occupations {
         return _records.get(country).getArmies() > 1;
     }
 
-    public boolean hasEnemy(Country country, List<Country> others){
-        boolean value = false;
-        for(Country other : others){
-            if (getOccupier(country) != getOccupier(other)){
-                value = true;
-            }
-        }
-        return value;
+    public boolean hasEnemyNeighbor(Country country){
+        Player occupier = getOccupier(country);
+        return _map.getNeighbors(country).stream()
+                .anyMatch(c -> ! getOccupier(c).equals(occupier));
     }
+
+    public List<Country> alliedNeighbors(Country country){
+        Player occupier = getOccupier(country);
+        return _map.getNeighbors(country).stream()
+                .filter(c -> getOccupier(c).equals(occupier))
+                .collect(Collectors.toList());
+    }
+
+    public List<Country> enemyNeighbors(Country country){
+        Player occupier = getOccupier(country);
+        return _map.getNeighbors(country).stream()
+                .filter(c -> ! getOccupier(c).equals(occupier))
+                .collect(Collectors.toList());
+    }
+
 
     public List<Country> countriesOccupied(Player player){
         List<Country> occupied = new ArrayList<Country>();
@@ -72,7 +90,6 @@ public class Occupations {
         return total;
     }
 
-
     public void placeArmies(Player player, Country country, int cnt){
         if ( ! isOccupied(country) ){
             _records.put(country, new Force(player, cnt));
@@ -89,4 +106,7 @@ public class Occupations {
         }
     }
 
+    public WorldMap getMap(){
+        return _map;
+    }
 }
