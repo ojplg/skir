@@ -1,6 +1,7 @@
 package ojplg.skir.state;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.card.CardSet;
 import ojplg.skir.card.CardStack;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
@@ -341,16 +342,10 @@ public class Game {
         return _cardPile.drawCard();
     }
 
-    public int tradeCards(Card one, Card two, Card three){
-        List<Card> cards = new ArrayList<>();
-        cards.add(one);
-        cards.add(two);
-        cards.add(three);
-        _currentAttacker.removeCards(cards);
-        int bonusArmies = _cardPile.tradeCards(one, two, three);
-        applyCardCountryBonus(one);
-        applyCardCountryBonus(two);
-        applyCardCountryBonus(three);
+    public int tradeCards(CardSet set){
+        _currentAttacker.removeCards(set.asList());
+        int bonusArmies = _cardPile.tradeCards(set);
+        set.asList().forEach(this::applyCardCountryBonus);
         _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
         return bonusArmies;
     }

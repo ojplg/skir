@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CardStack {
 
-    private final List<Card> _cards = new ArrayList<Card>();
+    private final List<Card> _cards = new ArrayList<>();
     private int _tradeNumber = 0;
 
     public CardStack(List<Card> cards){
@@ -20,15 +20,12 @@ public class CardStack {
         return _cards.remove(0);
     }
 
-    public int tradeCards(Card one, Card two, Card three){
-        CardSet set = new CardSet(one, two, three);
+    public int tradeCards(CardSet set){
         if( ! set.isExchangeableSet()){
-            throw new RuntimeException("Cannot exchange with " + one + ", " + two + ", " + three);
+            throw new RuntimeException("Cannot exchange with " + set);
         }
         _tradeNumber++;
-        _cards.add(one);
-        _cards.add(two);
-        _cards.add(three);
+        _cards.addAll(set.asList());
         return valuationOfExchange();
     }
 

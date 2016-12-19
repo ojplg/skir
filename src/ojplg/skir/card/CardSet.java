@@ -44,6 +44,14 @@ public class CardSet {
         return _three;
     }
 
+    public List<Card> asList(){
+        List<Card> list = new ArrayList<>();
+        list.add(_one);
+        list.add(_two);
+        list.add(_three);
+        return list;
+    }
+
     public boolean isExchangeableSet(){
         if (_one == null || _two == null || _three == null){
             return false;
