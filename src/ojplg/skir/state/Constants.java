@@ -8,5 +8,6 @@ public class Constants {
     public static final int MINIMUM_ARMY_GRANT = 3;
     public static final int MAXIMUM_CARD_EXCHANGE = 10;
     public static final int CARD_COUNTRY_BONUS = 1;
+    public static final int MAX_TURNS_WITHOUT_ATTACK = 50;
 
 }

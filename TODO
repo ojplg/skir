@@ -2,7 +2,7 @@
 ** Respect attackers dice choice
 ** Make sure all player status update events are handled and published
 ** Should be able to start new game without restarting server
-** Run in stand-alone mode for AI testing
+** Need to be able to determine when there's a draw: 50 moves without an attack?
 
 * Web page UI
 ** Allow selection of AIs for other players

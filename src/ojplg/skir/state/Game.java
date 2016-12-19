@@ -36,6 +36,7 @@ public class Game {
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
+    private int _lastAttackTurn = 0;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         this(map, players, cards, roller, channels, new Occupations());
@@ -155,6 +156,7 @@ public class Game {
         if (! isTarget(attacker, defender) ){
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
+        _lastAttackTurn = _turnNumber;
         // TODO: allow players to choose number of dice
         int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
@@ -213,8 +215,9 @@ public class Game {
         return gameOver;
     }
 
-    public boolean gameOver(){
-        return _players.size() <= 1;
+    public boolean gameOver() {
+        return _players.size() <= 1
+                || _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK;
     }
 
     public List<Country> countriesOccupied(Player player){

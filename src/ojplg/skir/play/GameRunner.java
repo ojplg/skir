@@ -113,20 +113,33 @@ public class GameRunner {
         _log.info("Processing order for " + player + " of type " + order.getType());
         _currentAdjutant = order.execute(_game);
         if( _game.gameOver() ){
-            AutomatedPlayer ai = _automatedPlayers.get(player);
+            handleGameOver();
+        } else {
+            _channels.AdjutantChannel.publish(_currentAdjutant);
+        }
+    }
+
+    private void handleGameOver(){
+        List<Player> remainingPlayers = _game.getAllPlayers();
+        boolean draw = remainingPlayers.size() > 1;
+        String result = draw ? "Draw" : "Victory";
+        _log.info("Game over on turn " + _game.getTurnNumber() + ". Result: " + result);
+        remainingPlayers.forEach( p-> {
+            AutomatedPlayer ai = _automatedPlayers.get(p);
             String aiMessage = "";
             if( ai != null){
                 aiMessage = " AI of type " + ai.getClass();
             }
-            _log.info("Game over on turn " + _game.getTurnNumber() + " Winner is " + player + aiMessage);
-            return;
-        }
-        _channels.AdjutantChannel.publish(_currentAdjutant);
+            if( draw ) {
+                _log.info("Survivor: " + p + aiMessage);
+            } else {
+                _log.info("Victor: " + p + aiMessage);
+            }
+        });
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
         AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
-
         if( ai != null ){
             Order order = ai.generateOrder(_currentAdjutant, _game);
             littleDelay();
