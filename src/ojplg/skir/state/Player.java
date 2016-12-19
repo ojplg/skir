@@ -102,6 +102,7 @@ public class Player {
                 "_color='" + _color + '\'' +
                 ", _cards=" + _cards +
                 ", _reserveArmies=" + _reserveArmies +
+                ", _displayName=" + _displayName +
                 '}';
     }
 
