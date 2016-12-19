@@ -51,7 +51,6 @@ public class GameHelper {
         _occupations = new Occupations(worldMap);
 
         Game game = new Game(
-                worldMap,
                 players,
                 StandardCardSet.deck,
                 new RandomRoller(0),

@@ -39,10 +39,10 @@ public class Game {
     private int _lastAttackTurn = 0;
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
-        this(map, players, cards, roller, channels, new Occupations(map));
+        this(players, cards, roller, channels, new Occupations(map));
     }
 
-    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations){
+    public Game(List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations){
         _players.addAll(players);
         _cardPile = new CardStack(cards);
         _roller = roller;
@@ -126,7 +126,7 @@ public class Game {
 
     private int computeContinentSupply(Player player){
         return continentsOccupied(player).stream()
-                .map(c -> c.getBonus())
+                .map(Continent::getBonus)
                 .reduce(0, Integer::sum);
     }
 
@@ -260,7 +260,7 @@ public class Game {
     public List<Country> allNeighbors(Country country){
         return _occupations.getMap().getNeighbors(country);
     }
-    
+
     private boolean isTarget(Country attacker, Country defender){
         if( _occupations.getMap().areNeighbors(attacker, defender)){
             return ! getOccupier(attacker).equals(getOccupier(defender));
