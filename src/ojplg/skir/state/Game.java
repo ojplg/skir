@@ -133,11 +133,9 @@ public class Game {
     }
 
     private int computeContinentSupply(Player player){
-        int cnt = 0;
-        for( Continent continent : continentsOccupied(player)){
-            cnt += continent.getBonus();
-        }
-        return cnt;
+        return continentsOccupied(player).stream()
+                .map(c -> c.getBonus())
+                .reduce(0, Integer::sum);
     }
 
     private int computeCountrySupply(Player player) {
