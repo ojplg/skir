@@ -228,7 +228,7 @@ public class Game {
 
     public List<Country> borderCountries(Player player){
         return countriesOccupied(player).stream()
-                .filter(c -> _occupations.hasEnemyNeighbor(c))
+                .filter(_occupations::hasEnemyNeighbor)
                 .collect(Collectors.toList());
     }
 
