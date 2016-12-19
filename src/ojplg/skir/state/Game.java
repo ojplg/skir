@@ -217,7 +217,8 @@ public class Game {
 
     public boolean gameOver() {
         return _players.size() <= 1
-                || _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK;
+                || _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
+                || _turnNumber > Constants.MAXIMUM_GAME_LENGTH;
     }
 
     public List<Country> countriesOccupied(Player player){
