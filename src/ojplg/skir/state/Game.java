@@ -58,13 +58,7 @@ public class Game {
     }
 
     public void publishAllState(){
-        for(Country country : _map.getAllCountries()){
-            Player player = _occupations.getOccupier(country);
-            int armyCount = _occupations.getOccupationForce(country);
-            _channels.MapChangedEventChannel.publish(
-                    new MapChangedEvent(country, player, armyCount)
-            );
-        }
+        _map.getAllCountries().forEach(this::notifyListenersOfMapUpdate);
         _players.forEach(this::publishPlayerChanged);
     }
 
