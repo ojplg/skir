@@ -131,6 +131,7 @@ public class GameRunner {
                 aiMessage = " AI of type " + ai.getClass();
             }
             if( draw ) {
+                _channels.GameEventChannel.publish(GameEvent.draw(_game.getTurnNumber()));
                 _log.info("Survivor: " + p + aiMessage);
             } else {
                 _log.info("Victor: " + p + aiMessage);

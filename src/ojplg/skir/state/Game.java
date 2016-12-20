@@ -184,7 +184,7 @@ public class Game {
         _channels.GameEventChannel.publish(GameEvent.forOccupy(currentAttacker(), conqueror, vanquished));
         boolean defenderEliminated =  countriesOccupied(defender).size() == 0;
         if (defenderEliminated){
-            _channels.GameEventChannel.publish(GameEvent.eliminated(defender));
+            _channels.GameEventChannel.publish(GameEvent.eliminated(defender, _turnNumber));
         }
         return defenderEliminated;
     }
@@ -201,7 +201,7 @@ public class Game {
         publishPlayerChanged(vanquished);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
-            _channels.GameEventChannel.publish(GameEvent.wins(conqueror));
+            _channels.GameEventChannel.publish(GameEvent.wins(conqueror, _turnNumber));
         }
         return gameOver;
     }
