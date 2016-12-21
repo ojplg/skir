@@ -207,9 +207,15 @@ public class Game {
     }
 
     public boolean gameOver() {
-        return _players.size() <= 1
-                || _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
-                || _turnNumber > Constants.MAXIMUM_GAME_LENGTH;
+        if( _players.size() <= 1 ){
+            return true;
+        }
+        if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
+                || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
+            _channels.GameEventChannel.publish(GameEvent.draw(getTurnNumber()));
+            return true;
+        }
+        return false;
     }
 
     public List<Country> countriesOccupied(Player player){

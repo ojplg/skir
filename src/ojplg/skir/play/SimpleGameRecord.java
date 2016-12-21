@@ -10,6 +10,7 @@ public class SimpleGameRecord {
 
     private int _gameLength;
     private boolean _gameDrawn;
+    private String _winner;
 
     public void playerJoined(String playerType){
         _playerTypes.add(playerType);
@@ -27,6 +28,7 @@ public class SimpleGameRecord {
     public void win(String playerType, int gameLength){
         _gameLength = gameLength;
         _gameDrawn = false;
+        _winner = playerType;
     }
 
     public String produceLogRecord(){
@@ -48,7 +50,7 @@ public class SimpleGameRecord {
         if(_gameDrawn){
             buf.append("draw,");
         } else {
-            buf.append("victory,");
+            buf.append("victory for " + _winner + ",");
         }
         buf.append(_gameLength);
         return buf.toString();
