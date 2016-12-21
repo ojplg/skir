@@ -21,7 +21,8 @@ public class Skir {
         startGameRunner(channels, benchTest);
 
         if ( benchTest ){
-            channels.StartGameChannel.publish("Test bench starting");
+            AiTestBench testBench = new AiTestBench(channels, createThreadFiber("AiTestBenchFiber"),5);
+            testBench.start();
         } else {
             startWebServer(channels);
         }

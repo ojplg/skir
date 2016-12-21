@@ -8,55 +8,65 @@ public class GameEvent {
 
     private final String _simpleText;
     private final Integer _turnNumber;
+    private final GameEventType _gameEventType;
+    private final String _playerIdentifier;
 
-    private GameEvent(String text){
+    private GameEvent(String text, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = null;
+        _gameEventType = gameEventType;
+        _playerIdentifier = playerIdentifier;
     }
 
-    private GameEvent(String text, int turnNumber){
+    private GameEvent(String text, int turnNumber, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = turnNumber;
+        _gameEventType = gameEventType;
+        _playerIdentifier = playerIdentifier;
     }
 
     public static GameEvent joinsGame(Player player){
-        return new GameEvent(player.getColor() + " joins game", 0);
+        return new GameEvent(player.getColor() + " joins game", 0, GameEventType.PlayerJoins, player.getDisplayName());
     }
 
     public static GameEvent eliminated(Player player, int turnNumber){
-        return new GameEvent(player.getColor() + " was eliminated", turnNumber);
+        return new GameEvent(player.getColor() + " was eliminated", turnNumber, GameEventType.PlayerEliminated, player.getDisplayName());
     }
 
     public static GameEvent wins(Player player, int turnNumber){
-        return new GameEvent(player.getColor() + " wins the game", turnNumber);
+        return new GameEvent(player.getColor() + " wins the game", turnNumber, GameEventType.Win, player.getDisplayName());
     }
 
     public static GameEvent draw(int turnNumber){
-        return new GameEvent("Game was drawn", turnNumber);
+        return new GameEvent("Game was drawn", turnNumber, GameEventType.Draw, "MultiplePlayers");
     }
 
     public static GameEvent forAttack(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(attackText(player, fromCountry, toCountry));
+        return new GameEvent(attackText(player, fromCountry, toCountry), GameEventType.Attack, player.getDisplayName());
     }
 
     public static GameEvent forOccupy(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(occupyText(player, fromCountry, toCountry));
+        return new GameEvent(occupyText(player, fromCountry, toCountry),GameEventType.Occupy, player.getDisplayName());
     }
 
     public static GameEvent forFortify(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(fortifyText(player, fromCountry, toCountry));
+        return new GameEvent(fortifyText(player, fromCountry, toCountry),GameEventType.Fortify, player.getDisplayName());
     }
 
     public static GameEvent forCardExchange(Player player){
-        return new GameEvent(player.getColor() + " exchanges cards");
+        return new GameEvent(player.getColor() + " exchanges cards", GameEventType.ExchangeCards, player.getDisplayName());
     }
 
     public int getTurnNumber(){
         return _turnNumber;
     }
 
-    public boolean isMajorEvent(){
-        return _turnNumber != null;
+    public GameEventType getGameEventType(){
+        return _gameEventType;
+    }
+
+    public String getPlayerIdentifier(){
+        return _playerIdentifier;
     }
 
     public JSONObject toJson(){

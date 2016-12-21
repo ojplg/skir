@@ -19,6 +19,10 @@ public class Adjutant {
     private final boolean _hasConqueredCountry;
     private final int _turnNumber;
 
+    public static Adjutant newGameAdjutant(Player player){
+        return new Adjutant(player, false, OrderType.ClaimArmies, 1);
+    }
+
     public static Adjutant nextPlayer(Player player, int turnNumber){
         return new Adjutant(player, false, OrderType.ClaimArmies, turnNumber);
     }

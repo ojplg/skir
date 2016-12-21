@@ -33,18 +33,17 @@ public class GameRunner {
     private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<>();
     private final Map<ClientConnectedEvent, Player> _remotePlayerInfo = new HashMap<>();
     private final Set<Player> _remotePlayers = new HashSet<>();
-    private final Game _game;
     private final Channels _channels;
     private final Fiber _fiber;
     private final int _orderDelay;
 
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
+    private Game _game;
 
     public GameRunner(Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
-        _game = initializeGame(channels);
         _orderDelay = orderDelay;
 
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
@@ -160,12 +159,14 @@ public class GameRunner {
 
     private void startGame(String s){
         _log.info("Starting game " + s);
+        _automatedPlayers.clear();
+        _game = initializeGame(_channels);
         assignCountries();
         addAutomatedPlayers();
         _game.start();
         _gameStarted = true;
         _game.publishAllState();
-        _currentAdjutant = Adjutant.nextPlayer(_game.currentAttacker(), _game.getTurnNumber());
+        _currentAdjutant = Adjutant.newGameAdjutant(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
