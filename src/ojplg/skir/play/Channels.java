@@ -33,6 +33,9 @@ public class Channels {
     public final Channel<String> StartGameChannel
             = new MemoryChannel<>();
 
+    public final Channel<String> InitializeGameChannel
+            = new MemoryChannel<>();
+
     public final Channel<GameEvent> GameEventChannel
             = new MemoryChannel<>();
 }

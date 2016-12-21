@@ -32,6 +32,7 @@ public class AiTestBench {
     public void start(){
         _fiber.start();
         _currentGameRecord = new SimpleGameRecord();
+        _channels.InitializeGameChannel.publish("Test bench initializing");
         _channels.StartGameChannel.publish("Test bench starting");
     }
 
@@ -61,6 +62,7 @@ public class AiTestBench {
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
             _currentGameRecord = new SimpleGameRecord();
+            _channels.InitializeGameChannel.publish("TestBenchInitialize");
             _channels.StartGameChannel.publish("TestBenchGame " + _gameRecords.size() + 1);
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));

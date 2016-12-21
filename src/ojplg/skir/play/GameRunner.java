@@ -49,6 +49,7 @@ public class GameRunner {
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
         _channels.StartGameChannel.subscribe(_fiber, this::startGame);
+        _channels.InitializeGameChannel.subscribe(_fiber, this::initializeGame);
         _channels.AdjutantChannel.subscribe(_fiber, this::aiOrderGenerator);
     }
 
@@ -73,6 +74,9 @@ public class GameRunner {
         _log.info("Client connected " + clientConnectedEvent);
 
         int availablePlayerNumber = _remotePlayerInfo.size();
+        if( availablePlayerNumber == 0 ){
+            initializeGame("Crap");
+        }
 
         if (_remotePlayerInfo.containsKey(clientConnectedEvent)){
             Player player = _remotePlayerInfo.get(clientConnectedEvent);
@@ -156,10 +160,14 @@ public class GameRunner {
         }
     }
 
-    private void startGame(String s){
-        _log.info("Starting game " + s);
+    private void initializeGame(String s){
+        _log.info("Intializing game " + s);
         _automatedPlayers.clear();
         _game = initializeGame(_channels);
+    }
+
+    private void startGame(String s){
+        _log.info("Starting game " + s);
         assignCountries();
         addAutomatedPlayers();
         _game.start();
