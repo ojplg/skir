@@ -63,6 +63,7 @@ public class AiTestBench {
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
             _currentGameRecord = new SimpleGameRecord();
+            _log.info("Starting game " + _gameRecords.size() + 1);
             _channels.InitializeGameChannel.publish("TestBenchInitialize");
             _channels.StartGameChannel.publish("TestBenchGame " + _gameRecords.size() + 1);
         } else {
