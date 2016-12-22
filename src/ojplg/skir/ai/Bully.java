@@ -39,6 +39,11 @@ public class Bully implements AutomatedPlayer {
     }
 
     @Override
+    public Object getIdentification() {
+        return "AI: Bully";
+    }
+
+    @Override
     public void initialize(Game game) {
         // do nothing
     }

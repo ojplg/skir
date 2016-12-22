@@ -39,6 +39,11 @@ public class Grumpy implements AutomatedPlayer {
     }
 
     @Override
+    public Object getIdentification() {
+        return "AI: Grumpy";
+    }
+
+    @Override
     public void initialize(Game game) {
         _owned.addAll(game.countriesOccupied(_me));
     }

@@ -4,25 +4,35 @@ import ojplg.skir.map.Country;
 import ojplg.skir.state.Player;
 import org.json.simple.JSONObject;
 
+import java.util.Collections;
+import java.util.List;
+
 public class GameEvent {
 
     private final String _simpleText;
     private final Integer _turnNumber;
     private final GameEventType _gameEventType;
-    private final String _playerIdentifier;
+    private final List<String> _playerIdentifiers;
 
     private GameEvent(String text, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = null;
         _gameEventType = gameEventType;
-        _playerIdentifier = playerIdentifier;
+        _playerIdentifiers = Collections.singletonList(playerIdentifier);
+    }
+
+    private GameEvent(int turnNumber, List<String> playerIdentifiers){
+        _simpleText = "Game was drawn";
+        _playerIdentifiers = playerIdentifiers;
+        _gameEventType = GameEventType.Draw;
+        _turnNumber = turnNumber;
     }
 
     private GameEvent(String text, int turnNumber, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = turnNumber;
         _gameEventType = gameEventType;
-        _playerIdentifier = playerIdentifier;
+        _playerIdentifiers = Collections.singletonList(playerIdentifier);
     }
 
     public static GameEvent joinsGame(Player player){
@@ -37,8 +47,8 @@ public class GameEvent {
         return new GameEvent(player.getColor() + " wins the game", turnNumber, GameEventType.Win, player.getDisplayName());
     }
 
-    public static GameEvent draw(int turnNumber){
-        return new GameEvent("Game was drawn", turnNumber, GameEventType.Draw, "MultiplePlayers");
+    public static GameEvent draw(int turnNumber, List<String>  playerIdentifiers){
+        return new GameEvent(turnNumber, playerIdentifiers);
     }
 
     public static GameEvent forAttack(Player player, Country fromCountry, Country toCountry){
@@ -66,7 +76,11 @@ public class GameEvent {
     }
 
     public String getPlayerIdentifier(){
-        return _playerIdentifier;
+        return _playerIdentifiers.get(0);
+    }
+
+    public List<String> getPlayerIdentifiers(){
+        return _playerIdentifiers;
     }
 
     public JSONObject toJson(){

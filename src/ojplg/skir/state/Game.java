@@ -212,7 +212,8 @@ public class Game {
         }
         if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
                 || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
-            _channels.GameEventChannel.publish(GameEvent.draw(getTurnNumber()));
+            _channels.GameEventChannel.publish(GameEvent.draw(getTurnNumber(),
+                    _players.stream().map(p -> p.getDisplayName()).collect(Collectors.toList())));
             return true;
         }
         return false;

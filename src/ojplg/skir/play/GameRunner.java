@@ -30,7 +30,6 @@ public class GameRunner {
     private final static Logger _log = LogManager.getLogger(GameRunner.class);
     private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
-    private final Map<Player,AutomatedPlayer> _automatedPlayers = new HashMap<>();
     private final Map<ClientConnectedEvent, Player> _remotePlayerInfo = new HashMap<>();
     private final Set<Player> _remotePlayers = new HashSet<>();
     private final Channels _channels;
@@ -63,7 +62,8 @@ public class GameRunner {
             if(! _remotePlayers.contains(player)) {
                 AutomatedPlayer ai = AiFactory.generateAiPlayer(player);
                 _log.info("Adding ai for " + player + ", " + ai.getClass());
-                _automatedPlayers.put(ai.getPlayer(),ai);
+                _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
+                player.setAutomatedPlayer(ai);
                 ai.initialize(_game);
             }
         }
@@ -128,7 +128,7 @@ public class GameRunner {
         String result = draw ? "Draw" : "Victory";
         _log.info("Game over on turn " + _game.getTurnNumber() + ". Result: " + result);
         remainingPlayers.forEach( p-> {
-            AutomatedPlayer ai = _automatedPlayers.get(p);
+            AutomatedPlayer ai = p.getAutomatedPlayer();
             String aiMessage = "";
             if( ai != null){
                 aiMessage = " AI of type " + ai.getClass();
@@ -142,7 +142,7 @@ public class GameRunner {
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
-        AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
+        AutomatedPlayer ai = adjutant.getActivePlayer().getAutomatedPlayer();
         if( ai != null ){
             Order order = ai.generateOrder(_currentAdjutant, _game);
             littleDelay();
@@ -162,7 +162,6 @@ public class GameRunner {
 
     private void initializeGame(String s){
         _log.info("Intializing game " + s);
-        _automatedPlayers.clear();
         _game = initializeGame(_channels);
     }
 

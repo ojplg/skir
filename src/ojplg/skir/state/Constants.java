@@ -9,6 +9,6 @@ public class Constants {
     public static final int MAXIMUM_CARD_EXCHANGE = 10;
     public static final int CARD_COUNTRY_BONUS = 1;
     public static final int MAX_TURNS_WITHOUT_ATTACK = 50;
-    public static final int MAXIMUM_GAME_LENGTH = 10000;
+    public static final int MAXIMUM_GAME_LENGTH = 1000;
 
 }

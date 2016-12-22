@@ -28,8 +28,14 @@ public class Wimpy implements AutomatedPlayer {
 
     public Wimpy(Player player){
         _me = player;
-        player.setDisplayName("Wimpy");
+        player.setDisplayName("AI: Wimpy");
     }
+
+    @Override
+    public Object getIdentification() {
+        return "AI: Wimpy";
+    }
+
 
     @Override
     public void initialize(Game game) {

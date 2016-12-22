@@ -1,5 +1,6 @@
 package ojplg.skir.state;
 
+import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.card.Card;
 
 import java.util.ArrayList;
@@ -10,12 +11,14 @@ public class Player {
 
     private final String _color;
     private final List<Card> _cards = new ArrayList<>();
+    private final BattleStats _attackStats = new BattleStats();
+    private final BattleStats _defenseStats = new BattleStats();
+
     private int _reserveArmies;
     //TODO: This should be a ClientKey object, not a String
     private String _clientKey;
     private String _displayName;
-    private final BattleStats _attackStats = new BattleStats();
-    private final BattleStats _defenseStats = new BattleStats();
+    private AutomatedPlayer _automatedPlayer;
 
     public String getClientKey() {
         return _clientKey;
@@ -94,6 +97,21 @@ public class Player {
 
     public boolean hasTooManyCards(){
         return _cards.size() > Constants.MAXIMUM_CARD_HOLDINGS;
+    }
+
+    public AutomatedPlayer getAutomatedPlayer() {
+        return _automatedPlayer;
+    }
+
+    public void setAutomatedPlayer(AutomatedPlayer _automatedPlayer) {
+        this._automatedPlayer = _automatedPlayer;
+    }
+
+    public Object getAutomatedPlayerIdentification(){
+        if( _automatedPlayer != null ){
+            return _automatedPlayer.getIdentification();
+        }
+        return null;
     }
 
     @Override

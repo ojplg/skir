@@ -39,6 +39,12 @@ public class Grabby implements AutomatedPlayer {
     }
 
     @Override
+    public Object getIdentification() {
+        return "AI: Grabby";
+    }
+
+
+    @Override
     public void initialize(Game game) {
         // do nothing
     }

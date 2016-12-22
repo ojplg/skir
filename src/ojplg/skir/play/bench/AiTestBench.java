@@ -1,5 +1,6 @@
-package ojplg.skir.play;
+package ojplg.skir.play.bench;
 
+import ojplg.skir.play.Channels;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventType;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,7 @@ public class AiTestBench {
                 _currentGameRecord.playerEliminated(gameEvent.getPlayerIdentifier(), gameEvent.getTurnNumber());
                 return;
             case Draw:
-                _currentGameRecord.draw(gameEvent.getTurnNumber());
+                _currentGameRecord.draw(gameEvent.getPlayerIdentifiers(), gameEvent.getTurnNumber());
                 processGame();
                 return;
             case Win:
@@ -66,6 +67,13 @@ public class AiTestBench {
             _channels.StartGameChannel.publish("TestBenchGame " + _gameRecords.size() + 1);
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
+            _log.info("Scores\n" + computeScores());
         }
+    }
+
+    private GameScores computeScores(){
+        return _gameRecords.stream()
+                .map(r -> r.scoreGame() )
+                .reduce(new GameScores(), (s1, s2) -> s1.accumulate(s2));
     }
 }
