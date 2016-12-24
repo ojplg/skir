@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class AiUtils {
 
@@ -91,6 +93,23 @@ public class AiUtils {
             }
         }
         return advantages;
+    }
+
+    public static int computeTotalOccupyingForces(List<Country> countries, Game game){
+        return countries.stream()
+                .map(game::getOccupationForce)
+                .reduce(new Integer(0), (a,b) -> new Integer(a.intValue() + b.intValue()))
+                .intValue();
+    }
+
+    public static int highestOccupyingForce(List<Country> countries, Game game){
+        Optional<Integer> possibleHighest = countries.stream()
+                .map(game::getOccupationForce)
+                .max((a,b) -> a.compareTo(b));
+        if( possibleHighest.isPresent()){
+            return possibleHighest.get().intValue();
+        }
+        return 0;
     }
 
     public static Country findWeakestPossession(Player player, Game game){
