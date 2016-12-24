@@ -1,5 +1,6 @@
 package ojplg.skir.ai;
 
+import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
@@ -13,11 +14,15 @@ public class Tuner implements AutomatedPlayer {
 
     private static final String BorderCountryPlacementKey = "BorderCountryPlacementKey";
     private static final String ContinentalBorderPlacementKey = "ContinentalBorderPlacementKey";
+    private static final String ContinentOwnedPlacementKey = "ContinentOwnedPlacementKey";
+    private static final String ContinentBorderAndOwnedPlacementKey = "ContinentBorderAndOwnedPlacementKey";
+    private static final String LargestEnemyRatioPlacementKey = "LargestEnemyRatioPlacementKey";
+    private static final String TotalEnemyRatioPlacementKey = "TotalEnemyRatioPlacementKey";
+    private static final String NumberEnemyCountriesPlacementKey = "NumberEnemyCountriesPlacementKey";
 
     private Map<String,Float> tunings = new HashMap<>();
 
     private final Player _me;
-
 
 
     public Tuner(Player player){
@@ -47,9 +52,15 @@ public class Tuner implements AutomatedPlayer {
     private float computePlacementScore(Country country, Game game){
         float score = 1;
 
+        Continent continent = Continent.find(country);
+        boolean isContinentalBorder = game.isContinentalBorder(country);
+        boolean isOwnedContinent = game.isContinentOwner(_me, continent);
+
         score = booleanAdjust(score, AiUtils.isBorderCountry(_me, game, country), BorderCountryPlacementKey);
-        score = booleanAdjust(score, game.isContinentalBorder(country),  ContinentalBorderPlacementKey);
-        
+        score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
+        score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
+        score = booleanAdjust(score, isContinentalBorder && isOwnedContinent, ContinentBorderAndOwnedPlacementKey);
+
         return score;
     }
 

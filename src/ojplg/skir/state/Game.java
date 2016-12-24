@@ -230,10 +230,10 @@ public class Game {
     }
 
     private List<Continent> findContinentsOccupied(Player player){
-        return filter(getAllContinents(), continent -> continentOccupied(player, continent));
+        return filter(getAllContinents(), continent -> isContinentOwner(player, continent));
     }
 
-    private boolean continentOccupied(Player player, Continent continent){
+    public boolean isContinentOwner(Player player, Continent continent){
         return continent.getCountries().stream()
                 .allMatch(country -> player.equals(getOccupier(country)));
     }
@@ -276,7 +276,9 @@ public class Game {
     }
 
     public Card processDrawCardOrder() {
-        return _cardPile.drawCard();
+        Card card =  _cardPile.drawCard();
+        publishPlayerState(_currentAttacker);
+        return card;
     }
 
     public int processExchangeCardSetOrder(CardSet set){
@@ -284,6 +286,7 @@ public class Game {
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
         _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
+        publishPlayerState(_currentAttacker);
         return bonusArmies;
     }
 
