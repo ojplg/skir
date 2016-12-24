@@ -12,8 +12,8 @@ public class DrawCard extends Order {
     @Override
     public Adjutant execute(Game game) {
         if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ){
-            activePlayer().addCard(game.drawCard());
-            game.publishPlayerChanged(activePlayer());
+            activePlayer().addCard(game.processDrawCardOrder());
+            game.publishPlayerState(activePlayer());
         }
         Player nextPlayer = game.nextPlayer();
         return Adjutant.nextPlayer(nextPlayer, game.getTurnNumber());

@@ -45,7 +45,7 @@ public class Grumpy implements AutomatedPlayer {
 
     @Override
     public void initialize(Game game) {
-        _owned.addAll(game.countriesOccupied(_me));
+        _owned.addAll(game.findOccupiedCountries(_me));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Grumpy implements AutomatedPlayer {
 
     private List<Country> findShortestPathTo(Country destination, Game game){
         List<List<Country>> paths = new ArrayList<>();
-        for(Country country : game.countriesOccupied(_me)){
+        for(Country country : game.findOccupiedCountries(_me)){
             List<Country> path = MapUtils.findShortestPath(game.getMap(), country, destination);
             paths.add(path);
         }
@@ -120,7 +120,7 @@ public class Grumpy implements AutomatedPlayer {
     }
 
     private List<Country> findMissingCountries(Game game){
-        List<Country> currentPossessions = game.countriesOccupied(_me);
+        List<Country> currentPossessions = game.findOccupiedCountries(_me);
         return _owned.stream()
                 .filter(c -> ! currentPossessions.contains(c))
                 .collect(Collectors.toList());

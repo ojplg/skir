@@ -23,15 +23,15 @@ public class ExchangeCardSetTest {
         Game game = gameHelper.Game;
         Player player = game.getOccupier(Country.Afghanistan);
 
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
-        player.addCard(game.drawCard());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
+        player.addCard(game.processDrawCardOrder());
 
         List<Card> cards = player.getCards();
         assertEquals(9, cards.size());

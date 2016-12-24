@@ -159,7 +159,7 @@ public class Grabby implements AutomatedPlayer {
         Continent continent = AiUtils.findStrongestUnownedContinent(_me, game);
         _log.info("Planning to place in " + continent);
         if( continent == null ){
-            List<Country> countries = game.countriesOccupied(_me);
+            List<Country> countries = game.findOccupiedCountries(_me);
             List<Country> borderCountries = countries.stream()
                     .filter(c -> game.findEnemyNeighbors(c).size() > 0)
                     .collect(Collectors.toList());

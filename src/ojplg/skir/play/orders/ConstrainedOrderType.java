@@ -13,7 +13,7 @@ public class ConstrainedOrderType {
 
     public static ConstrainedOrderType placeArmy(Player player, Game game){
         int maximumArmies = player.reserveCount();
-        List<Country> countries = game.countriesOccupied(player);
+        List<Country> countries = game.findOccupiedCountries(player);
         PlaceArmyConstraints constraints = new PlaceArmyConstraints(maximumArmies, countries);
         return new ConstrainedOrderType(OrderType.PlaceArmy, constraints);
     }

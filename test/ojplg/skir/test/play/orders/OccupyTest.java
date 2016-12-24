@@ -24,15 +24,15 @@ public class OccupyTest {
         Game game = gameHelper.Game;
 
         victor.grantReserves(5);
-        victor.addCard(game.drawCard());
-        victor.addCard(game.drawCard());
-        victor.addCard(game.drawCard());
-        victor.addCard(game.drawCard());
+        victor.addCard(game.processDrawCardOrder());
+        victor.addCard(game.processDrawCardOrder());
+        victor.addCard(game.processDrawCardOrder());
+        victor.addCard(game.processDrawCardOrder());
 
-        loser.addCard(game.drawCard());
-        loser.addCard(game.drawCard());
-        loser.addCard(game.drawCard());
-        loser.addCard(game.drawCard());
+        loser.addCard(game.processDrawCardOrder());
+        loser.addCard(game.processDrawCardOrder());
+        loser.addCard(game.processDrawCardOrder());
+        loser.addCard(game.processDrawCardOrder());
 
         Adjutant adjutant = new Adjutant(victor, true, OrderType.Attack, 1);
 

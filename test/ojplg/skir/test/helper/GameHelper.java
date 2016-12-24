@@ -70,14 +70,14 @@ public class GameHelper {
     }
 
     public void setUpPlayerForAttack(Player attacker){
-        for(Country country: Game.countriesOccupied(attacker)){
+        for(Country country: Game.findOccupiedCountries(attacker)){
             attacker.grantReserves(4);
             Game.processPlaceArmyOrder(attacker, country, 4);
         }
     }
 
     public void setUpPreEliminationCondition(Player victor, Player deathbedPlayer, Country attackingCountry, Country conqueredCountry){
-        for(Country country : Game.countriesOccupied(deathbedPlayer)){
+        for(Country country : Game.findOccupiedCountries(deathbedPlayer)){
             _occupations.killArmies(country, 1);
             _occupations.placeArmies(victor,country, 1);
         }

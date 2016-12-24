@@ -18,7 +18,7 @@ public class ClaimArmies extends Order {
         _log.info("Claiming armies for " + getAdjutant().getActivePlayer());
         int numberToGrant = game.computeExpectedGrant(activePlayer());
         activePlayer().grantReserves(numberToGrant);
-        game.publishPlayerChanged(activePlayer());
+        game.publishPlayerState(activePlayer());
 
         _log.info("Claimed armies for " + getAdjutant().getActivePlayer());
 

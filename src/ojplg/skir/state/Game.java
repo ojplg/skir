@@ -20,6 +20,7 @@ import org.jetlang.fibers.ThreadFiber;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -67,20 +68,6 @@ public class Game {
         }
     }
 
-    public void publishAllState(){
-        _occupations.getMap().getAllCountries().forEach(this::notifyListenersOfMapUpdate);
-        _players.forEach(this::publishPlayerChanged);
-    }
-
-    public void publishPlayerChanged(Player player){
-        int countryCount = numberCountriesOccupied(player);
-        int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
-        int continentCount = numberContinentsOccupied(player);
-        int expectedGrant = computeExpectedGrant(player);
-        _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant)
-        );
-    }
 
     public int getTurnNumber(){
         return _turnNumber;
@@ -135,7 +122,7 @@ public class Game {
     }
 
     private int numberCountriesOccupied(Player player){
-        return countriesOccupied(player).size();
+        return findOccupiedCountries(player).size();
     }
 
     private int numberContinentsOccupied(Player player){
@@ -154,14 +141,14 @@ public class Game {
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
-        notifyListenersOfMapUpdate(attacker);
-        notifyListenersOfMapUpdate(defender);
+        publishCountryState(attacker);
+        publishCountryState(defender);
         Player attackingPlayer = _occupations.getOccupier(attacker);
         attackingPlayer.updateAttackStatistics(rolls.attackersExpectationsDifference(), rolls.numberBattles());
         Player defendingPlayer = _occupations.getOccupier(defender);
         defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
-        publishPlayerChanged(attackingPlayer);
-        publishPlayerChanged(defendingPlayer);
+        publishPlayerState(attackingPlayer);
+        publishPlayerState(defendingPlayer);
         _channels.GameEventChannel.publish(GameEvent.forAttack(currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
@@ -179,10 +166,10 @@ public class Game {
         _occupations.killArmies(conqueror, occupyingArmyCount);
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
-        notifyListenersOfMapUpdate(conqueror);
-        notifyListenersOfMapUpdate(vanquished);
+        publishCountryState(conqueror);
+        publishCountryState(vanquished);
         _channels.GameEventChannel.publish(GameEvent.forOccupy(currentAttacker(), conqueror, vanquished));
-        boolean defenderEliminated =  countriesOccupied(defender).size() == 0;
+        boolean defenderEliminated =  findOccupiedCountries(defender).size() == 0;
         if (defenderEliminated){
             _channels.GameEventChannel.publish(GameEvent.eliminated(defender, _turnNumber));
         }
@@ -197,8 +184,8 @@ public class Game {
         _log.info("Removing player " + vanquished);
         _players.remove(vanquished);
         _log.info("Player count is " +_players.size());
-        publishPlayerChanged(conqueror);
-        publishPlayerChanged(vanquished);
+        publishPlayerState(conqueror);
+        publishPlayerState(vanquished);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
             _channels.GameEventChannel.publish(GameEvent.wins(conqueror, _turnNumber));
@@ -219,7 +206,7 @@ public class Game {
         return false;
     }
 
-    public List<Country> countriesOccupied(Player player){
+    public List<Country> findOccupiedCountries(Player player){
         return _occupations.countriesOccupied(player);
     }
 
@@ -228,27 +215,23 @@ public class Game {
     }
 
     public List<Country> findCountriesToAttackFrom(Player player){
-        return findBorderCountries(player).stream()
-                .filter(border -> _occupations.getOccupationForce(border) > 1)
-                .collect(Collectors.toList());
+        return filter(findBorderCountries(player), _occupations::hasAttackingForces);
     }
 
     public List<Country> findBorderCountries(Player player){
-        return countriesOccupied(player).stream()
-                .filter(_occupations::hasEnemyNeighbor)
-                .collect(Collectors.toList());
+        return filter(findOccupiedCountries(player), _occupations::hasEnemyNeighbor);
+    }
+
+    private static <T> List<T> filter(List<T> items, Predicate<? super T> predicate){
+        return items.stream().filter(predicate).collect(Collectors.toList());
     }
 
     public List<Country> findInteriorCountries(Player player){
-        return countriesOccupied(player).stream()
-                .filter(c -> ! _occupations.hasEnemyNeighbor(c))
-                .collect(Collectors.toList());
+        return filter(findOccupiedCountries(player), c -> ! _occupations.hasEnemyNeighbor(c));
     }
 
     private List<Continent> findContinentsOccupied(Player player){
-        return _occupations.getMap().getContinents().stream()
-                .filter(continent -> continentOccupied(player, continent))
-                .collect(Collectors.toList());
+        return filter(getAllContinents(), continent -> continentOccupied(player, continent));
     }
 
     private boolean continentOccupied(Player player, Continent continent){
@@ -275,26 +258,10 @@ public class Game {
         return false;
     }
 
-    public Player getOccupier(Country country){
-        return _occupations.getOccupier(country);
-    }
-
-    public int getOccupationForce(Country country){
-        return _occupations.getOccupationForce(country);
-    }
-
     public void processPlaceArmyOrder(Player player, Country country, int count){
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
-        notifyListenersOfMapUpdate(country);
-    }
-
-    private void notifyListenersOfMapUpdate(Country country){
-        int newCount = _occupations.getOccupationForce(country);
-        Player player = _occupations.getOccupier(country);
-
-        MapChangedEvent event = new MapChangedEvent(country, player, newCount);
-        _channels.MapChangedEventChannel.publish(event);
+        publishCountryState(country);
     }
 
     public void processFortifyOrder(Country source, Country destination, int armies){
@@ -303,11 +270,11 @@ public class Game {
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(player, destination, armies);
         _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
-        notifyListenersOfMapUpdate(source);
-        notifyListenersOfMapUpdate(destination);
+        publishCountryState(source);
+        publishCountryState(destination);
     }
 
-    public Card drawCard() {
+    public Card processDrawCardOrder() {
         return _cardPile.drawCard();
     }
 
@@ -323,8 +290,31 @@ public class Game {
         if(_currentAttacker.equals(getOccupier(card.getCountry()))){
             _occupations.placeArmies(_currentAttacker, card.getCountry(),
                     Constants.CARD_COUNTRY_BONUS);
-            notifyListenersOfMapUpdate(card.getCountry());
+            publishCountryState(card.getCountry());
         }
+    }
+
+    public void publishAllState(){
+        getAllCountries().forEach(this::publishCountryState);
+        _players.forEach(this::publishPlayerState);
+    }
+
+    public void publishPlayerState(Player player){
+        int countryCount = numberCountriesOccupied(player);
+        int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
+        int continentCount = numberContinentsOccupied(player);
+        int expectedGrant = computeExpectedGrant(player);
+        _channels.PlayerChangedEventChannel.publish(
+                new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant)
+        );
+    }
+
+    private void publishCountryState(Country country){
+        int newCount = _occupations.getOccupationForce(country);
+        Player player = _occupations.getOccupier(country);
+
+        MapChangedEvent event = new MapChangedEvent(country, player, newCount);
+        _channels.MapChangedEventChannel.publish(event);
     }
 
     public List<Country> getAllCountries(){
@@ -337,6 +327,14 @@ public class Game {
 
     public List<Player> getAllPlayers(){
         return _players;
+    }
+
+    public Player getOccupier(Country country){
+        return _occupations.getOccupier(country);
+    }
+
+    public int getOccupationForce(Country country){
+        return _occupations.getOccupationForce(country);
     }
 
     public WorldMap getMap() {
