@@ -68,7 +68,6 @@ public class Game {
         }
     }
 
-
     public int getTurnNumber(){
         return _turnNumber;
     }
