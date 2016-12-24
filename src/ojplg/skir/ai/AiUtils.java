@@ -105,4 +105,8 @@ public class AiUtils {
                 game.getOccupationForce(country) - 1);
     }
 
+    public static boolean isBorderCountry(Player player, Game game, Country country){
+        return game.findBorderCountries(player).contains(country);
+    }
+
 }

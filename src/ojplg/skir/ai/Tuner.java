@@ -41,6 +41,7 @@ public class Tuner implements AutomatedPlayer {
     private float computePlacementScore(Country country, Game game){
         float score = 1;
 
+        boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
 
         return score;
     }
