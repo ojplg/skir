@@ -30,7 +30,7 @@ public class WorldMap {
     }
 
     public List<Country> getAllCountries(){
-        List<Country> countries = new ArrayList<Country>();
+        List<Country> countries = new ArrayList<>();
 
         for (Continent con : getContinents()){
             countries.addAll(con.getCountries());
@@ -39,4 +39,14 @@ public class WorldMap {
         return countries;
     }
 
+    public boolean isContinentalBorder(Country country){
+        Continent continent = Continent.find(country);
+        for( Country other : getNeighbors(country)){
+            Continent otherContinent = Continent.find(other);
+            if( ! otherContinent.equals(continent)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

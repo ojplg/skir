@@ -106,6 +106,10 @@ public class Occupations {
         }
     }
 
+    public boolean isContinentalBorder(Country country){
+        return _map.isContinentalBorder(country);
+    }
+
     public WorldMap getMap(){
         return _map;
     }

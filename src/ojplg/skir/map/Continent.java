@@ -1,14 +1,13 @@
 package ojplg.skir.map;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Continent implements Comparable {
-
-    private final String _name;
-    private final List<Country> _countries;
-    private final int _bonus;
 
     public static final Continent Africa = new Continent("Africa", new Country[]{ Country.Egypt, Country.Congo,
             Country.East_Africa, Country.North_Africa, Country.South_Africa, Country.Madagascar }, 3 );
@@ -30,6 +29,29 @@ public class Continent implements Comparable {
 
     public static final Continent South_America = new Continent("South America", new Country[] {Country.Argentina,
             Country.Brazil, Country.Peru, Country.Venezuela}, 2);
+
+    private static final Map<Country,Continent> _continentsByCountry;
+    private static final List<Continent> _continents;
+
+    static {
+        _continents = Collections.unmodifiableList(Arrays.asList(Africa, Asia,
+                Australia, Europe, North_America, South_America));
+        Map<Country, Continent> countries = new HashMap<>();
+        for(Continent continent : _continents){
+            for(Country country : continent.getCountries()){
+                countries.put(country, continent);
+            }
+        }
+        _continentsByCountry = Collections.unmodifiableMap(countries);
+    }
+
+    public static Continent find(Country country){
+        return _continentsByCountry.get(country);
+    }
+
+    private final String _name;
+    private final List<Country> _countries;
+    private final int _bonus;
 
     public Continent(String name, Country[] countries, int bonus){
         _name = name;

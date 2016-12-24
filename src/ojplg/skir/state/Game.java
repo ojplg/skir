@@ -250,6 +250,8 @@ public class Game {
         return _occupations.getMap().getNeighbors(country);
     }
 
+    public boolean isContinentalBorder(Country country){ return _occupations.isContinentalBorder(country); }
+
     private boolean isTarget(Country attacker, Country defender){
         if( _occupations.getMap().areNeighbors(attacker, defender)){
             return ! getOccupier(attacker).equals(getOccupier(defender));
