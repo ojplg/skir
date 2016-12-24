@@ -83,7 +83,7 @@ public class Grabby implements AutomatedPlayer {
     }
 
     private Fortify possiblyFortify(Adjutant adjutant, Game game){
-        List<Country> mine = game.interiorCountries(_me);
+        List<Country> mine = game.findInteriorCountries(_me);
         _log.info("Searching for fortifications from " + mine.size() + " countries");
         int numberToFortify = 0;
         Country from = null;
@@ -91,10 +91,10 @@ public class Grabby implements AutomatedPlayer {
         for(Country country : mine){
             int possibleNumber = game.getOccupationForce(country) - 1;
             if( possibleNumber > numberToFortify){
-                List<Country> neighbors = game.allNeighbors(country);
+                List<Country> neighbors = game.findAllNeighbors(country);
                 _log.info("Fortifying from " + country + " has " + neighbors.size() + " options");
                 for(Country neighbor : neighbors){
-                    if(game.enemyNeighbors(neighbor).size() > 0){
+                    if(game.findEnemyNeighbors(neighbor).size() > 0){
                         numberToFortify = possibleNumber;
                         from = country;
                         to = neighbor;
@@ -124,7 +124,7 @@ public class Grabby implements AutomatedPlayer {
         OccupationConstraints constraints = adjutant.getOccupationConstraints();
         Country from = constraints.attacker();
         int occupationForce;
-        if( game.enemyNeighbors(from).size() == 1 ){
+        if( game.findEnemyNeighbors(from).size() == 1 ){
             occupationForce = game.getOccupationForce(from) - 1;
         } else {
             occupationForce = Math.max(constraints.minimumOccupationForce(),
@@ -161,7 +161,7 @@ public class Grabby implements AutomatedPlayer {
         if( continent == null ){
             List<Country> countries = game.countriesOccupied(_me);
             List<Country> borderCountries = countries.stream()
-                    .filter(c -> game.enemyNeighbors(c).size() > 0)
+                    .filter(c -> game.findEnemyNeighbors(c).size() > 0)
                     .collect(Collectors.toList());
             Country country = RandomUtils.pickRandomElement(borderCountries);
             _log.info("Going to place in (after continent null) " + country);
@@ -169,7 +169,7 @@ public class Grabby implements AutomatedPlayer {
         }
         List<Country> myCountries = continent.getCountries().stream()
                 .filter(c -> { return game.getOccupier(c).equals(_me);})
-                .filter(c -> { return game.enemyNeighbors(c).size() > 0; })
+                .filter(c -> { return game.findEnemyNeighbors(c).size() > 0; })
                 .collect(Collectors.toList());
         Country country = RandomUtils.pickRandomElement(myCountries);
         _log.info("Going to place in " + country);

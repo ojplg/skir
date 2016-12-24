@@ -16,12 +16,12 @@ public class AttackConstraints implements OrderConstraints {
     private final Map<Country, List<Country>> _availableDestinations;
 
     public AttackConstraints(Player player, Game game){
-        Map<Country, Integer> armies = new HashMap<Country, Integer>();
-        Map<Country, List<Country>> destinations = new HashMap<Country, List<Country>>();
-        List<Country> availableCountries = game.countriesToAttackFrom(player);
+        Map<Country, Integer> armies = new HashMap<>();
+        Map<Country, List<Country>> destinations = new HashMap<>();
+        List<Country> availableCountries = game.findCountriesToAttackFrom(player);
         for(Country country : availableCountries){
             int count = Math.min(3,game.getOccupationForce(country) - 1);
-            List<Country> alliedNeighbors = game.enemyNeighbors(country);
+            List<Country> alliedNeighbors = game.findEnemyNeighbors(country);
             armies.put(country, count);
             destinations.put(country, alliedNeighbors);
         }

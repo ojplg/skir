@@ -199,7 +199,7 @@ public class GameRunner {
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_colors.length);
             Country country = countries.get(idx);
-            _game.placeArmy(player, country);
+            _game.processPlaceArmyOrder(player, country, 1);
         }
         _game.doInitialPlacements();
     }

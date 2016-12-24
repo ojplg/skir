@@ -81,9 +81,9 @@ public class AiUtils {
      */
     public static List<PossibleAttack> findAdvantageousAttacks(Player player, Game game){
         List<PossibleAttack> advantages = new ArrayList<>();
-        for(Country country : game.countriesToAttackFrom(player)){
+        for(Country country : game.findCountriesToAttackFrom(player)){
             int myForce = game.getOccupationForce(country);
-            for(Country enemyNeighbor : game.enemyNeighbors(country)){
+            for(Country enemyNeighbor : game.findEnemyNeighbors(country)){
                 int enemyForce = game.getOccupationForce(enemyNeighbor);
                 if( myForce > enemyForce){
                     advantages.add(new PossibleAttack(country, enemyNeighbor, enemyForce - myForce));

@@ -20,7 +20,7 @@ public class Occupy extends Order {
     @Override
     public Adjutant execute(Game game) {
         Player loser = game.getOccupier(_conquered);
-        boolean playerEliminated = game.resolveConquest(_victor, _conquered, _armies);
+        boolean playerEliminated = game.processOccupyOrder(_victor, _conquered, _armies);
 
         if ( playerEliminated ){
             // TODO: Check for game over?

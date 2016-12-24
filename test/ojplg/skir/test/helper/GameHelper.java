@@ -9,7 +9,6 @@ import ojplg.skir.play.RandomRoller;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Occupations;
 import ojplg.skir.state.Player;
-import ojplg.skir.web.GuiColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,7 @@ public class GameHelper {
         for(Country country : game.getAllCountries()){
             Player player = players.get(cnt % players.size());
             player.grantReserves(1);
-            game.placeArmies(player, country, 1);
+            game.processPlaceArmyOrder(player, country, 1);
             cnt++;
         }
 
@@ -73,7 +72,7 @@ public class GameHelper {
     public void setUpPlayerForAttack(Player attacker){
         for(Country country: Game.countriesOccupied(attacker)){
             attacker.grantReserves(4);
-            Game.placeArmies(attacker, country, 4);
+            Game.processPlaceArmyOrder(attacker, country, 4);
         }
     }
 
@@ -83,10 +82,10 @@ public class GameHelper {
             _occupations.placeArmies(victor,country, 1);
         }
         victor.grantReserves(5);
-        Game.placeArmies(victor, attackingCountry, 5);
+        Game.processPlaceArmyOrder(victor, attackingCountry, 5);
         deathbedPlayer.grantReserves(1);
         _occupations.killArmies(conqueredCountry, 1);
-        Game.placeArmies(deathbedPlayer, conqueredCountry, 1);
+        Game.processPlaceArmyOrder(deathbedPlayer, conqueredCountry, 1);
         setCountryTroopLevel(conqueredCountry, 0);
     }
 }

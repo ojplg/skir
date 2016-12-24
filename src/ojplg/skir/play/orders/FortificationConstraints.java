@@ -22,7 +22,7 @@ public class FortificationConstraints implements OrderConstraints {
         List<Country> availableCountries = game.possibleFortificationCountries(player);
         for(Country country : availableCountries){
             int count = game.getOccupationForce(country) - 1;
-            List<Country> alliedNeighbors = game.alliedNeighbors(country);
+            List<Country> alliedNeighbors = game.findAlliedNeighbors(country);
             armies.put(country, count);
             destinations.put(country, alliedNeighbors);
         }

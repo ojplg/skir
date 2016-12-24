@@ -55,6 +55,18 @@ public class Game {
         _fiber.start();
     }
 
+    public void doInitialPlacements(){
+        for(Player player : _players) {
+            int index = 0;
+            List<Country> countries = _occupations.countriesOccupied(player);
+            while (player.hasReserves()){
+                processPlaceArmyOrder(player, countries.get(index), 1);
+                index++;
+                index = index % countries.size();
+            }
+        }
+    }
+
     public void publishAllState(){
         _occupations.getMap().getAllCountries().forEach(this::notifyListenersOfMapUpdate);
         _players.forEach(this::publishPlayerChanged);
@@ -70,20 +82,12 @@ public class Game {
         );
     }
 
-    public void doInitialPlacements(){
-        for(Player player : _players) {
-            int index = 0;
-            List<Country> countries = _occupations.countriesOccupied(player);
-            while (player.hasReserves()){
-                placeArmy(player, countries.get(index));
-                index++;
-                index = index % countries.size();
-            }
-        }
-    }
-
     public int getTurnNumber(){
         return _turnNumber;
+    }
+
+    public Player currentAttacker(){
+        return _currentAttacker;
     }
 
     public boolean hasLegalFortification(Player player){
@@ -93,12 +97,8 @@ public class Game {
     public List<Country> possibleFortificationCountries(Player player){
         return _occupations.countriesOccupied(player).stream()
                 .filter(country -> _occupations.getOccupationForce(country) > 1)
-                .filter(country -> alliedNeighbors(country).size() > 0)
+                .filter(country -> findAlliedNeighbors(country).size() > 0)
                 .collect(Collectors.toList());
-    }
-
-    public Player currentAttacker(){
-        return _currentAttacker;
     }
 
     public Player nextPlayer(){
@@ -125,7 +125,7 @@ public class Game {
     }
 
     private int computeContinentSupply(Player player){
-        return continentsOccupied(player).stream()
+        return findContinentsOccupied(player).stream()
                 .map(Continent::getBonus)
                 .reduce(0, Integer::sum);
     }
@@ -139,11 +139,11 @@ public class Game {
     }
 
     private int numberContinentsOccupied(Player player){
-        return continentsOccupied(player).size();
+        return findContinentsOccupied(player).size();
     }
 
     /** returns true if a country is conquered, false otherwise */
-    public boolean resolveAttack(Country attacker, Country defender){
+    public boolean processAttackOrder(Country attacker, Country defender){
         if (! isTarget(attacker, defender) ){
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
@@ -167,7 +167,7 @@ public class Game {
     }
 
     /** returns true if a player has been eliminated */
-    public boolean resolveConquest(Country conqueror, Country vanquished, int occupyingArmyCount){
+    public boolean processOccupyOrder(Country conqueror, Country vanquished, int occupyingArmyCount){
         if (! _occupations.allArmiesDestroyed(vanquished)) {
             throw new RuntimeException(vanquished.getName() + " still has " + _occupations.getOccupationForce(vanquished) + " armies in it");
         }
@@ -224,28 +224,28 @@ public class Game {
     }
 
     public boolean hasPossibleAttack(Player player){
-        return countriesToAttackFrom(player).size() > 0;
+        return findCountriesToAttackFrom(player).size() > 0;
     }
 
-    public List<Country> countriesToAttackFrom(Player player){
-        return borderCountries(player).stream()
+    public List<Country> findCountriesToAttackFrom(Player player){
+        return findBorderCountries(player).stream()
                 .filter(border -> _occupations.getOccupationForce(border) > 1)
                 .collect(Collectors.toList());
     }
 
-    public List<Country> borderCountries(Player player){
+    public List<Country> findBorderCountries(Player player){
         return countriesOccupied(player).stream()
                 .filter(_occupations::hasEnemyNeighbor)
                 .collect(Collectors.toList());
     }
 
-    public List<Country> interiorCountries(Player player){
+    public List<Country> findInteriorCountries(Player player){
         return countriesOccupied(player).stream()
                 .filter(c -> ! _occupations.hasEnemyNeighbor(c))
                 .collect(Collectors.toList());
     }
 
-    private List<Continent> continentsOccupied(Player player){
+    private List<Continent> findContinentsOccupied(Player player){
         return _occupations.getMap().getContinents().stream()
                 .filter(continent -> continentOccupied(player, continent))
                 .collect(Collectors.toList());
@@ -256,15 +256,15 @@ public class Game {
                 .allMatch(country -> player.equals(getOccupier(country)));
     }
 
-    public List<Country> enemyNeighbors(Country country){
+    public List<Country> findEnemyNeighbors(Country country){
         return _occupations.enemyNeighbors(country);
     }
 
-    public List<Country> alliedNeighbors(Country country){
+    public List<Country> findAlliedNeighbors(Country country){
         return _occupations.alliedNeighbors(country);
     }
 
-    public List<Country> allNeighbors(Country country){
+    public List<Country> findAllNeighbors(Country country){
         return _occupations.getMap().getNeighbors(country);
     }
 
@@ -283,11 +283,7 @@ public class Game {
         return _occupations.getOccupationForce(country);
     }
 
-    public void placeArmy(Player player, Country country) {
-        placeArmies(player, country, 1);
-    }
-
-    public void placeArmies(Player player, Country country, int count){
+    public void processPlaceArmyOrder(Player player, Country country, int count){
         player.drawReserves(count);
         _occupations.placeArmies(player, country, count);
         notifyListenersOfMapUpdate(country);
@@ -301,7 +297,7 @@ public class Game {
         _channels.MapChangedEventChannel.publish(event);
     }
 
-    public void fortify(Country source, Country destination, int armies){
+    public void processFortifyOrder(Country source, Country destination, int armies){
         // TODO: check for constraints
         Player player = getOccupier(source);
         _occupations.killArmies(source, armies);
@@ -315,7 +311,7 @@ public class Game {
         return _cardPile.drawCard();
     }
 
-    public int tradeCards(CardSet set){
+    public int processExchangeCardSetOrder(CardSet set){
         _currentAttacker.removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);

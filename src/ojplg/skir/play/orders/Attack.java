@@ -33,7 +33,7 @@ public class Attack extends Order {
         if ( activePlayer() == game.getOccupier(_target) ){
             throw new RuntimeException("Player " + activePlayer() + " trying to attack himself in " + _target);
         }
-        boolean conquered = game.resolveAttack(_invader, _target);
+        boolean conquered = game.processAttackOrder(_invader, _target);
         if ( conquered ){
             return getAdjutant().afterConquest(this, game.getOccupationForce(_invader) - 1);
         } else {

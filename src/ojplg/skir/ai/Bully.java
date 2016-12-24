@@ -123,7 +123,7 @@ public class Bully implements AutomatedPlayer {
         Country country;
         PossibleAttack possibleAttack = findBestPossibleAttack(game);
         if( possibleAttack == null ) {
-            country = RandomUtils.pickRandomElement(game.borderCountries(_me));
+            country = RandomUtils.pickRandomElement(game.findBorderCountries(_me));
         } else {
             country = possibleAttack.getAttacker();
         }
