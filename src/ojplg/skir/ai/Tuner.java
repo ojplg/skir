@@ -7,6 +7,7 @@ import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ public class Tuner implements AutomatedPlayer {
     private Map<String,Float> tunings = new HashMap<>();
 
     private final Player _me;
-
 
     public Tuner(Player player){
         player.setDisplayName("Tuner");
@@ -79,8 +79,14 @@ public class Tuner implements AutomatedPlayer {
                 LargestEnemyRatioTestPlacementKey, LargestEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, enemyNeighbors.size(), totalNeighbors,
                 NumberEnemyCountriesRatioTestPlacementKey, NumberEnemyCountriesRatioApplicationPlacementKey);
-        
+
         return score;
+    }
+
+    private List<Country> chooseGoalCountries(){
+        List<Country> goals = new ArrayList<>();
+
+        return goals;
     }
 
     private float ratioAdjust(float current, int numerator, int denominator, String testKey, String scaleKey){

@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
 import java.util.function.Predicate;
@@ -134,20 +135,17 @@ public class Game {
             throw new RuntimeException("Cannot attack " + defender.getName() + " from " + attacker.getName());
         }
         _lastAttackTurn = _turnNumber;
+        Player attackingPlayer = _occupations.getOccupier(attacker);
+        Player defendingPlayer = _occupations.getOccupier(defender);
         // TODO: allow players to choose number of dice
         int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
+        attackingPlayer.updateAttackStatistics(rolls.attackersExpectationsDifference(), rolls.numberBattles());
+        defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
-        publishCountryState(attacker);
-        publishCountryState(defender);
-        Player attackingPlayer = _occupations.getOccupier(attacker);
-        attackingPlayer.updateAttackStatistics(rolls.attackersExpectationsDifference(), rolls.numberBattles());
-        Player defendingPlayer = _occupations.getOccupier(defender);
-        defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
-        publishPlayerState(attackingPlayer);
-        publishPlayerState(defendingPlayer);
+        publishState(new Player[] { attackingPlayer, defendingPlayer}, new Country[]{attacker, defender});
         _channels.GameEventChannel.publish(GameEvent.forAttack(currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
@@ -165,8 +163,7 @@ public class Game {
         _occupations.killArmies(conqueror, occupyingArmyCount);
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
-        publishCountryState(conqueror);
-        publishCountryState(vanquished);
+        publishState(new Player[] {attacker, defender}, new Country[]{conqueror, vanquished});
         _channels.GameEventChannel.publish(GameEvent.forOccupy(currentAttacker(), conqueror, vanquished));
         boolean defenderEliminated =  findOccupiedCountries(defender).size() == 0;
         if (defenderEliminated){
@@ -183,8 +180,7 @@ public class Game {
         _log.info("Removing player " + vanquished);
         _players.remove(vanquished);
         _log.info("Player count is " +_players.size());
-        publishPlayerState(conqueror);
-        publishPlayerState(vanquished);
+        publishState(new Player[] { conqueror, vanquished}, new Country[0]);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
             _channels.GameEventChannel.publish(GameEvent.wins(conqueror, _turnNumber));
@@ -296,6 +292,11 @@ public class Game {
                     Constants.CARD_COUNTRY_BONUS);
             publishCountryState(card.getCountry());
         }
+    }
+
+    private void publishState(Player[] players, Country[] countries){
+        Arrays.asList(players).forEach(this::publishPlayerState);
+        Arrays.asList(countries).forEach(this::publishCountryState);
     }
 
     public void publishAllState(){
