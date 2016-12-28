@@ -29,6 +29,7 @@ public class Tuner implements AutomatedPlayer {
     private static final String TotalEnemyRatioApplicationPlacementKey = "TotalEnemyRatioApplicationPlacementKey";
     private static final String NumberEnemyCountriesRatioTestPlacementKey = "NumberEnemyCountriesRatioTestPlacementKey";
     private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
+    private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
 
     private Map<String,Float> tunings = new HashMap<>();
 
@@ -66,9 +67,11 @@ public class Tuner implements AutomatedPlayer {
 
         List<Country> alliedNeighbors = game.findAlliedNeighbors(country);
         List<Country> enemyNeighbors = game.findEnemyNeighbors(country);
+        List<Country> allNeighbors = game.findAllNeighbors(country);
+        List<Country> goalCountries = chooseGoalCountries(game);
 
         int currentOccupationStrength = game.getOccupationForce(country);
-        int totalNeighbors = alliedNeighbors.size() + enemyNeighbors.size();
+        int totalNeighbors = allNeighbors.size();
         int totalEnemyForces = AiUtils.computeTotalOccupyingForces(enemyNeighbors, game);
         int largestEnemyForce = AiUtils.highestOccupyingForce(enemyNeighbors, game);
 
@@ -84,6 +87,8 @@ public class Tuner implements AutomatedPlayer {
                 LargestEnemyRatioTestPlacementKey, LargestEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, enemyNeighbors.size(), totalNeighbors,
                 NumberEnemyCountriesRatioTestPlacementKey, NumberEnemyCountriesRatioApplicationPlacementKey);
+        score = booleanAdjust(score, CollectionUtils.containsAny(goalCountries, enemyNeighbors),
+                GoalCountryNeighborPlacementKey);
 
         return score;
     }
