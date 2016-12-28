@@ -2,6 +2,7 @@ package ojplg.skir.ai;
 
 import ojplg.skir.state.Player;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class AiFactory {
@@ -10,6 +11,8 @@ public class AiFactory {
 
     public static AutomatedPlayer generateAiPlayer(Player player){
         float number = _random.nextFloat();
+
+        Tuner tuner = new Tuner(player, new HashMap<>());
 
         if (number < 0.1){
             return new Wimpy(player);
