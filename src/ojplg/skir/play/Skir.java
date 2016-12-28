@@ -22,7 +22,7 @@ public class Skir {
         startGameRunner(channels, benchTest);
 
         if ( benchTest ){
-            AiTestBench testBench = new AiTestBench(channels, createThreadFiber("AiTestBenchFiber"),1000);
+            AiTestBench testBench = new AiTestBench(channels, createThreadFiber("AiTestBenchFiber"),10);
             testBench.start();
         } else {
             startWebServer(channels);
