@@ -5,12 +5,15 @@ import ojplg.skir.map.Country;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.utils.ListUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class AiUtils {
 
@@ -22,7 +25,7 @@ class AiUtils {
         float highest = 0;
         for(Continent continent : game.getAllContinents()){
             Float total = countryPercentages.get(continent) + armyPercentages.get(continent);
-            if( total > 1.99999 ){
+            if( total > 1.9999999 ){
                 continue;
             }
             if( total > highest ){
@@ -81,17 +84,20 @@ class AiUtils {
      * than a neighboring enemy occupied country.
      */
     static List<PossibleAttack> findAdvantageousAttacks(Player player, Game game){
-        List<PossibleAttack> advantages = new ArrayList<>();
+        List<PossibleAttack> possibilities = findAllPossibleAttacks(player, game);
+        return ListUtils.filter(possibilities, p -> p.getAdvantage() > 0);
+    }
+
+    static List<PossibleAttack> findAllPossibleAttacks(Player player, Game game){
+        List<PossibleAttack> possibilities = new ArrayList<>();
         for(Country country : game.findCountriesToAttackFrom(player)){
             int myForce = game.getOccupationForce(country);
             for(Country enemyNeighbor : game.findEnemyNeighbors(country)){
                 int enemyForce = game.getOccupationForce(enemyNeighbor);
-                if( myForce > enemyForce){
-                    advantages.add(new PossibleAttack(country, enemyNeighbor, enemyForce - myForce));
-                }
+                possibilities.add(new PossibleAttack(country, enemyNeighbor, enemyForce - myForce));
             }
         }
-        return advantages;
+        return possibilities;
     }
 
     static int computeTotalOccupyingForces(List<Country> countries, Game game){
@@ -110,11 +116,22 @@ class AiUtils {
         return 0;
     }
 
+    static List<Continent> enemyOwnedContinents(Player player, Game game){
+        List<Continent> ownedContinents = game.findOwnedContinents();
+        return ListUtils.filter(ownedContinents, c -> ! game.isContinentOwner(player, c));
+    }
+
     static Country findWeakestPossession(Player player, Game game){
         List<Country> possessions = game.findOccupiedCountries(player);
         return possessions.stream()
                 .min((c1, c2) -> (game.getOccupationForce(c1) - game.getOccupationForce(c2)))
                 .get();
+    }
+
+    static List<Country> findEnemyBorders(Player player, Game game){
+        List<PossibleAttack> possibleAttacks = findAllPossibleAttacks(player, game);
+        Set<Country> defendingCountries = possibleAttacks.stream().map(p -> p.getDefender()).collect(Collectors.toSet());
+        return new ArrayList<>(defendingCountries);
     }
 
     static int attackingDice(Game game, Country country){

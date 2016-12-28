@@ -1,5 +1,6 @@
 package ojplg.skir.state;
 
+import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
 
@@ -109,6 +110,11 @@ public class Occupations {
     public boolean isContinentalBorder(Country country){
         return _map.isContinentalBorder(country);
     }
+
+    public List<Country> findContinentalBorders(Continent continent){
+        return _map.findContinentalBorders(continent);
+    }
+
 
     public WorldMap getMap(){
         return _map;

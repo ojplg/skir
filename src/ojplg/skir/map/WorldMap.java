@@ -49,4 +49,17 @@ public class WorldMap {
         }
         return false;
     }
+
+    public List<Country> findContinentalBorders(Continent continent){
+        List<Country> borders = new ArrayList<>();
+        for(Country country : continent.getCountries()){
+            for(Country neighbor : getNeighbors(country)){
+                Continent neighborContinent = Continent.find(neighbor);
+                if(!neighborContinent.equals(continent)){
+                    borders.add(country);
+                }
+            }
+        }
+        return borders;
+    }
 }

@@ -13,6 +13,7 @@ import ojplg.skir.play.Skir;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.MapChangedEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
+import ojplg.skir.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -210,28 +210,33 @@ public class Game {
     }
 
     public List<Country> findCountriesToAttackFrom(Player player){
-        return filter(findBorderCountries(player), _occupations::hasAttackingForces);
+        return ListUtils.filter(findBorderCountries(player), _occupations::hasAttackingForces);
     }
 
     public List<Country> findBorderCountries(Player player){
-        return filter(findOccupiedCountries(player), _occupations::hasEnemyNeighbor);
-    }
-
-    private static <T> List<T> filter(List<T> items, Predicate<? super T> predicate){
-        return items.stream().filter(predicate).collect(Collectors.toList());
+        return ListUtils.filter(findOccupiedCountries(player), _occupations::hasEnemyNeighbor);
     }
 
     public List<Country> findInteriorCountries(Player player){
-        return filter(findOccupiedCountries(player), c -> ! _occupations.hasEnemyNeighbor(c));
+        return ListUtils.filter(findOccupiedCountries(player), c -> ! _occupations.hasEnemyNeighbor(c));
     }
 
     private List<Continent> findContinentsOccupied(Player player){
-        return filter(getAllContinents(), continent -> isContinentOwner(player, continent));
+        return ListUtils.filter(getAllContinents(), continent -> isContinentOwner(player, continent));
+    }
+
+    public List<Continent> findOwnedContinents(){
+        return ListUtils.filter(getAllContinents(), this::isOwnedContinent);
     }
 
     public boolean isContinentOwner(Player player, Continent continent){
         return continent.getCountries().stream()
                 .allMatch(country -> player.equals(getOccupier(country)));
+    }
+
+    public boolean isOwnedContinent(Continent continent){
+        Player owner = getOccupier(continent.getCountries().get(0));
+        return isContinentOwner(owner, continent);
     }
 
     public List<Country> findEnemyNeighbors(Country country){
@@ -247,6 +252,34 @@ public class Game {
     }
 
     public boolean isContinentalBorder(Country country){ return _occupations.isContinentalBorder(country); }
+
+    public List<Country> findContinentalBorders(Continent continent){
+        return _occupations.findContinentalBorders(continent);
+    }
+
+    public List<Country> getAllCountries(){
+        return _occupations.getMap().getAllCountries();
+    }
+
+    public List<Continent> getAllContinents(){
+        return _occupations.getMap().getContinents();
+    }
+
+    public List<Player> getAllPlayers(){
+        return _players;
+    }
+
+    public Player getOccupier(Country country){
+        return _occupations.getOccupier(country);
+    }
+
+    public int getOccupationForce(Country country){
+        return _occupations.getOccupationForce(country);
+    }
+
+    public WorldMap getMap() {
+        return _occupations.getMap();
+    }
 
     private boolean isTarget(Country attacker, Country defender){
         if( _occupations.getMap().areNeighbors(attacker, defender)){
@@ -320,30 +353,6 @@ public class Game {
 
         MapChangedEvent event = new MapChangedEvent(country, player, newCount);
         _channels.MapChangedEventChannel.publish(event);
-    }
-
-    public List<Country> getAllCountries(){
-        return _occupations.getMap().getAllCountries();
-    }
-
-    public List<Continent> getAllContinents(){
-        return _occupations.getMap().getContinents();
-    }
-
-    public List<Player> getAllPlayers(){
-        return _players;
-    }
-
-    public Player getOccupier(Country country){
-        return _occupations.getOccupier(country);
-    }
-
-    public int getOccupationForce(Country country){
-        return _occupations.getOccupationForce(country);
-    }
-
-    public WorldMap getMap() {
-        return _occupations.getMap();
     }
 
     public String toString(){

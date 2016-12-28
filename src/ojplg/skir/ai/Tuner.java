@@ -6,11 +6,16 @@ import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.utils.ListUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Tuner implements AutomatedPlayer {
 
@@ -83,10 +88,23 @@ public class Tuner implements AutomatedPlayer {
         return score;
     }
 
-    private List<Country> chooseGoalCountries(){
-        List<Country> goals = new ArrayList<>();
+    private List<Country> chooseGoalCountries(Game game){
+        Continent goalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
+        List continentalGoals = ListUtils.filter(goalContinent.getCountries(),
+                        c -> ! game.getOccupier(c).equals(_me));
 
-        return goals;
+        List<Continent> enemyOwnedContinents = AiUtils.enemyOwnedContinents(_me, game);
+        List<Country> enemyContinentBorders = enemyOwnedContinents.stream()
+                .map(c -> game.findContinentalBorders(c))
+                .reduce(new ArrayList<>(), (l1,l2) -> ListUtils.concat(l1, l2));
+        List<Country> enemyBorders = AiUtils.findEnemyBorders(_me, game);
+        Collection<Country> borderingEnemyContinentsCountries =
+                CollectionUtils.intersection(enemyContinentBorders, enemyBorders);
+
+        Set<Country> goals = new HashSet<>();
+        goals.addAll(continentalGoals);
+        goals.addAll(borderingEnemyContinentsCountries);
+        return new ArrayList<>(goals);
     }
 
     private float ratioAdjust(float current, int numerator, int denominator, String testKey, String scaleKey){
