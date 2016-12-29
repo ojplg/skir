@@ -31,8 +31,7 @@ public class ExchangeCardSet extends Order {
             throw new RuntimeException("Not a good set: " + _one + "," + _two + "," + _three);
         }
 
-        int armies = game.processExchangeCardSetOrder(set);
-        activePlayer().grantReserves(armies);
+        game.processExchangeCardSetOrder(set);
 
         if( activePlayer().hasTooManyCards()){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));

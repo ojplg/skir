@@ -187,6 +187,45 @@ public class Game {
         }
         return gameOver;
     }
+    
+    public void processPlaceArmyOrder(Player player, Country country, int count){
+        player.drawReserves(count);
+        _occupations.placeArmies(player, country, count);
+        publishCountryState(country);
+    }
+
+    public void processFortifyOrder(Country source, Country destination, int armies){
+        // TODO: check for constraints
+        Player player = getOccupier(source);
+        _occupations.killArmies(source, armies);
+        _occupations.placeArmies(player, destination, armies);
+        _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
+        publishCountryState(source);
+        publishCountryState(destination);
+    }
+
+    public Card processDrawCardOrder() {
+        Card card =  _cardPile.drawCard();
+        publishPlayerState(_currentAttacker);
+        return card;
+    }
+
+    public void processExchangeCardSetOrder(CardSet set){
+        _currentAttacker.removeCards(set.asList());
+        int bonusArmies = _cardPile.tradeCards(set);
+        set.asList().forEach(this::applyCardCountryBonus);
+        _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
+        _currentAttacker.grantReserves(bonusArmies);
+        publishPlayerState(_currentAttacker);
+    }
+
+    private void applyCardCountryBonus(Card card){
+        if(_currentAttacker.equals(getOccupier(card.getCountry()))){
+            _occupations.placeArmies(_currentAttacker, card.getCountry(),
+                    Constants.CARD_COUNTRY_BONUS);
+            publishCountryState(card.getCountry());
+        }
+    }
 
     public boolean gameOver() {
         if( _players.size() <= 1 ){
@@ -286,45 +325,6 @@ public class Game {
             return ! getOccupier(attacker).equals(getOccupier(defender));
         }
         return false;
-    }
-
-    public void processPlaceArmyOrder(Player player, Country country, int count){
-        player.drawReserves(count);
-        _occupations.placeArmies(player, country, count);
-        publishCountryState(country);
-    }
-
-    public void processFortifyOrder(Country source, Country destination, int armies){
-        // TODO: check for constraints
-        Player player = getOccupier(source);
-        _occupations.killArmies(source, armies);
-        _occupations.placeArmies(player, destination, armies);
-        _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
-        publishCountryState(source);
-        publishCountryState(destination);
-    }
-
-    public Card processDrawCardOrder() {
-        Card card =  _cardPile.drawCard();
-        publishPlayerState(_currentAttacker);
-        return card;
-    }
-
-    public int processExchangeCardSetOrder(CardSet set){
-        _currentAttacker.removeCards(set.asList());
-        int bonusArmies = _cardPile.tradeCards(set);
-        set.asList().forEach(this::applyCardCountryBonus);
-        _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
-        publishPlayerState(_currentAttacker);
-        return bonusArmies;
-    }
-
-    private void applyCardCountryBonus(Card card){
-        if(_currentAttacker.equals(getOccupier(card.getCountry()))){
-            _occupations.placeArmies(_currentAttacker, card.getCountry(),
-                    Constants.CARD_COUNTRY_BONUS);
-            publishCountryState(card.getCountry());
-        }
     }
 
     private void publishState(Player[] players, Country[] countries){
