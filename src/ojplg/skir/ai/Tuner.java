@@ -1,9 +1,18 @@
 package ojplg.skir.ai;
 
+import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.ClaimArmies;
+import ojplg.skir.play.orders.DrawCard;
+import ojplg.skir.play.orders.EndAttacks;
+import ojplg.skir.play.orders.EndTurn;
+import ojplg.skir.play.orders.ExchangeCardSet;
+import ojplg.skir.play.orders.OccupationConstraints;
+import ojplg.skir.play.orders.Occupy;
 import ojplg.skir.play.orders.Order;
+import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
@@ -12,6 +21,7 @@ import ojplg.skir.utils.RatioDistributor;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -34,15 +44,33 @@ public class Tuner implements AutomatedPlayer {
     private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
     private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
 
-    private final Map<String,Float> _tunings;
+    private final Map<String,Double> _tunings;
     private final Player _me;
 
     private Map<Country, Integer> _placementsToMake = null;
 
-    public Tuner(Player player, Map<String,Float> tunings){
-        player.setDisplayName("Tuner");
+    public static List<String> tuningKeys(){
+        return Collections.unmodifiableList(Arrays.asList(
+                new String[] {
+                        BorderCountryPlacementKey,
+                        ContinentalBorderPlacementKey,
+                        ContinentOwnedPlacementKey,
+                        ContinentBorderAndOwnedPlacementKey,
+                        LargestEnemyRatioApplicationPlacementKey,
+                        LargestEnemyRatioTestPlacementKey,
+                        TotalEnemyRatioApplicationPlacementKey,
+                        TotalEnemyRatioTestPlacementKey,
+                        NumberEnemyCountriesRatioApplicationPlacementKey,
+                        NumberEnemyCountriesRatioTestPlacementKey,
+                        GoalCountryNeighborPlacementKey
+                }
+        ));
+    }
+
+    public Tuner(Player player, Map<String,Double> tunings, String name){
+        player.setDisplayName(name);
         _me = player;
-        Map<String,Float> tuningsCopy = new HashMap<>();
+        Map<String,Double> tuningsCopy = new HashMap<>();
         tuningsCopy.putAll(tunings);
         _tunings = Collections.unmodifiableMap(tunings);
     }
@@ -53,7 +81,26 @@ public class Tuner implements AutomatedPlayer {
 
     @Override
     public Order generateOrder(Adjutant adjutant, Game game) {
-        return null;
+        List<OrderType> allowableOrders = adjutant.allowableOrders();
+        if( allowableOrders.contains(OrderType.ExchangeCardSet)){
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
+        }
+        if( allowableOrders.contains(OrderType.ClaimArmies)){
+            return new ClaimArmies(adjutant);
+        }
+        if( allowableOrders.contains(OrderType.PlaceArmy) ){
+            return generatePlaceArmyOrder(adjutant, game);
+        }
+        if( allowableOrders.contains(OrderType.Attack)){
+            return new EndAttacks(adjutant);
+        }
+        if( allowableOrders.contains(OrderType.Occupy)){
+            return doOccupy(adjutant, game);
+        }
+        if (allowableOrders.contains(OrderType.DrawCard)){
+            return new DrawCard(adjutant);
+        }
+        return new EndTurn(adjutant);
     }
 
     @Override
@@ -63,7 +110,7 @@ public class Tuner implements AutomatedPlayer {
 
     @Override
     public Object getIdentification() {
-        return "Tuner";
+        return _me.getDisplayName();
     }
 
     private PlaceArmy generatePlaceArmyOrder(Adjutant adjutant, Game game){
@@ -78,6 +125,13 @@ public class Tuner implements AutomatedPlayer {
         }
         return order;
     }
+
+    private Occupy doOccupy(Adjutant adjutant, Game game){
+        OccupationConstraints constraints = adjutant.getOccupationConstraints();
+        int existingForce = game.getOccupationForce(constraints.attacker());
+        return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce - 1);
+    }
+
 
     private Map<Country,Integer> computePlacements(Game game){
         Map<Country, Double> ratios = new HashMap<>();
@@ -104,7 +158,7 @@ public class Tuner implements AutomatedPlayer {
         int totalEnemyForces = AiUtils.computeTotalOccupyingForces(enemyNeighbors, game);
         int largestEnemyForce = AiUtils.highestOccupyingForce(enemyNeighbors, game);
 
-        float score = 1;
+        double score = 1;
 
         score = booleanAdjust(score, AiUtils.isBorderCountry(_me, game, country), BorderCountryPlacementKey);
         score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
@@ -141,15 +195,15 @@ public class Tuner implements AutomatedPlayer {
         return new ArrayList<>(goals);
     }
 
-    private float ratioAdjust(float current, int numerator, int denominator, String testKey, String scaleKey){
-        float ratio = numerator/denominator;
-        float scale = _tunings.get(scaleKey);
-        float test = _tunings.get(testKey);
+    private double ratioAdjust(double current, int numerator, int denominator, String testKey, String scaleKey){
+        double ratio = numerator/denominator;
+        double scale = _tunings.get(scaleKey);
+        double test = _tunings.get(testKey);
         return test < ratio ? scale * current : (1-scale) * current;
     }
 
-    private float booleanAdjust(float current, boolean test, String key){
-        float scale = _tunings.get(key);
+    private double booleanAdjust(double current, boolean test, String key){
+        double scale = _tunings.get(key);
         return test ? scale * current : (1-scale) * current;
     }
 }

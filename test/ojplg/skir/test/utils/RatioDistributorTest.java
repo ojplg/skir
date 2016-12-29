@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class RatioDistributorTest
 {
@@ -54,6 +55,8 @@ public class RatioDistributorTest
 
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 1);
 
+        System.out.println("distributed " + distributed);
+
         Assert.assertEquals(1, distributed.size());
         Assert.assertEquals(new Integer(1), distributed.get("B"));
     }
@@ -100,6 +103,26 @@ public class RatioDistributorTest
         Assert.assertEquals(2, distributed.size());
         Assert.assertEquals(new Integer(1), distributed.get("A"));
         Assert.assertEquals(new Integer(7), distributed.get("B"));
+    }
+
+    @Test
+    public void ratioDistributorAlwaysDistributesCorrectAmount(){
+        Random random = new Random();
+        for(int idx=0; idx<100; idx ++) {
+            int amount = random.nextInt(200);
+            int optionCount = random.nextInt(25) + 1;
+            testPreservesAmountDistributedInvariant(amount, optionCount, random);
+        }
+    }
+
+    private void testPreservesAmountDistributedInvariant(int amount, int optionCount, Random random){
+        Map<Integer, Double> ratios = new HashMap<>();
+        for(int idx=0; idx<optionCount; idx++){
+            ratios.put(new Integer(idx), random.nextDouble());
+        }
+        Map<Integer,Integer> distributed = RatioDistributor.distribute(ratios, amount);
+        int totalAmountDistributed = distributed.values().stream().reduce(0, (a,b) -> a+b);
+        Assert.assertEquals("Failed for amount " + amount + " with " + optionCount + " options", amount, totalAmountDistributed );
     }
 
 }
