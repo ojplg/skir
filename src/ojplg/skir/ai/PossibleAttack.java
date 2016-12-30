@@ -1,17 +1,20 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.map.Country;
+import ojplg.skir.state.Constants;
 
 public class PossibleAttack implements Comparable<PossibleAttack> {
 
     private final Country _attacker;
     private final Country _defender;
-    private final int _advantage;
+    private final int _attackerForce;
+    private final int _defenderForce;
 
-    public PossibleAttack(Country attacker, Country defender, int advantage) {
+    public PossibleAttack(Country attacker, Country defender, int attackerForce, int defenderForce) {
         this._attacker = attacker;
         this._defender = defender;
-        this._advantage = advantage;
+        this._attackerForce = attackerForce;
+        this._defenderForce = defenderForce;
     }
 
     public Country getAttacker() {
@@ -22,8 +25,16 @@ public class PossibleAttack implements Comparable<PossibleAttack> {
         return _defender;
     }
 
+    public double getAttackerArmyPercentage(){
+        return (double) _attackerForce / (_attackerForce + _defenderForce);
+    }
+
     public int getAdvantage() {
-        return _advantage;
+        return _attackerForce - _defenderForce;
+    }
+
+    public int maximumAttackingDice(){
+        return Math.max(Constants.MAXIMUM_ATTACKER_DICE, _attackerForce - 1);
     }
 
     @Override

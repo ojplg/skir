@@ -65,6 +65,10 @@ public class Continent implements Comparable {
         return _countries;
     }
 
+    public boolean contains(Country country){
+        return getCountries().contains(country);
+    }
+
     public int numberCountries(){
         return _countries.size();
     }

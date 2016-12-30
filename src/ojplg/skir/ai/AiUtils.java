@@ -94,7 +94,7 @@ class AiUtils {
             int myForce = game.getOccupationForce(country);
             for(Country enemyNeighbor : game.findEnemyNeighbors(country)){
                 int enemyForce = game.getOccupationForce(enemyNeighbor);
-                possibilities.add(new PossibleAttack(country, enemyNeighbor, myForce - enemyForce));
+                possibilities.add(new PossibleAttack(country, enemyNeighbor, myForce , enemyForce));
             }
         }
         return possibilities;

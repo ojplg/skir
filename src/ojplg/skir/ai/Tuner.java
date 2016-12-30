@@ -4,6 +4,7 @@ import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.Attack;
 import ojplg.skir.play.orders.ClaimArmies;
 import ojplg.skir.play.orders.DrawCard;
 import ojplg.skir.play.orders.EndAttacks;
@@ -44,6 +45,11 @@ public class Tuner implements AutomatedPlayer {
     private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
     private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
 
+    private static final String TargetInBestGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
+    private static final String AttackerArmyPercentageTestAttackKey = "AttackerArmyPercentageTestAttackKey";
+    private static final String AttackerArmyPercentageApplicationAttackKey = "AttackerArmyPercentageApplicationAttackKey";
+    private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
+
     private final Map<String,Double> _tunings;
     private final Player _me;
 
@@ -51,20 +57,21 @@ public class Tuner implements AutomatedPlayer {
 
     public static List<String> tuningKeys(){
         return Collections.unmodifiableList(Arrays.asList(
-                new String[] {
-                        BorderCountryPlacementKey,
-                        ContinentalBorderPlacementKey,
-                        ContinentOwnedPlacementKey,
-                        ContinentBorderAndOwnedPlacementKey,
-                        LargestEnemyRatioApplicationPlacementKey,
-                        LargestEnemyRatioTestPlacementKey,
-                        TotalEnemyRatioApplicationPlacementKey,
-                        TotalEnemyRatioTestPlacementKey,
-                        NumberEnemyCountriesRatioApplicationPlacementKey,
-                        NumberEnemyCountriesRatioTestPlacementKey,
-                        GoalCountryNeighborPlacementKey
-                }
-        ));
+                BorderCountryPlacementKey,
+                ContinentalBorderPlacementKey,
+                ContinentOwnedPlacementKey,
+                ContinentBorderAndOwnedPlacementKey,
+                LargestEnemyRatioApplicationPlacementKey,
+                LargestEnemyRatioTestPlacementKey,
+                TotalEnemyRatioApplicationPlacementKey,
+                TotalEnemyRatioTestPlacementKey,
+                NumberEnemyCountriesRatioApplicationPlacementKey,
+                NumberEnemyCountriesRatioTestPlacementKey,
+                GoalCountryNeighborPlacementKey,
+                TargetInBestGoalContinentAttackKey,
+                AttackerArmyPercentageTestAttackKey,
+                AttackerArmyPercentageApplicationAttackKey,
+                MinimumAttackScoreAttackKey));
     }
 
     public Tuner(Player player, Map<String,Double> tunings, String name){
@@ -92,7 +99,7 @@ public class Tuner implements AutomatedPlayer {
             return generatePlaceArmyOrder(adjutant, game);
         }
         if( allowableOrders.contains(OrderType.Attack)){
-            return new EndAttacks(adjutant);
+            return generateAttackOrder(adjutant, game);
         }
         if( allowableOrders.contains(OrderType.Occupy)){
             return doOccupy(adjutant, game);
@@ -148,7 +155,6 @@ public class Tuner implements AutomatedPlayer {
         boolean isContinentalBorder = game.isContinentalBorder(country);
         boolean isOwnedContinent = game.isContinentOwner(_me, continent);
 
-        List<Country> alliedNeighbors = game.findAlliedNeighbors(country);
         List<Country> enemyNeighbors = game.findEnemyNeighbors(country);
         List<Country> allNeighbors = game.findAllNeighbors(country);
         List<Country> goalCountries = chooseGoalCountries(game);
@@ -176,10 +182,53 @@ public class Tuner implements AutomatedPlayer {
         return score;
     }
 
+    private double computePossibleAttackScore(PossibleAttack attack, Game game){
+        double score = 1;
+
+        Country target = attack.getDefender();
+
+        Continent bestGoalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
+        if( bestGoalContinent != null ) {
+            boolean targetInBestGoalContinent = bestGoalContinent.contains(target);
+            score = booleanAdjust(score, targetInBestGoalContinent, TargetInBestGoalContinentAttackKey);
+        }
+        double attackerArmyPercentage = attack.getAttackerArmyPercentage();
+
+        score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey, AttackerArmyPercentageApplicationAttackKey);
+
+        return score;
+    }
+
+    private Order generateAttackOrder(Adjutant adjutant, Game game){
+        List<PossibleAttack> possibleAttacks = AiUtils.findAllPossibleAttacks(_me, game);
+
+        double bestAttackScore = Double.MIN_VALUE;
+        PossibleAttack bestPossibleAttack = null;
+
+        for(PossibleAttack possibleAttack : possibleAttacks){
+            double score = computePossibleAttackScore(possibleAttack, game);
+            if( score > bestAttackScore && aboveTuningValue(score, MinimumAttackScoreAttackKey)){
+                bestAttackScore = score;
+                bestPossibleAttack = possibleAttack;
+            }
+        }
+        if( bestPossibleAttack != null ){
+            return new Attack(adjutant, bestPossibleAttack.getAttacker(),
+                    bestPossibleAttack.getDefender(), bestPossibleAttack.maximumAttackingDice());
+        } else {
+            return new EndAttacks(adjutant);
+        }
+    }
+
     private List<Country> chooseGoalCountries(Game game){
         Continent goalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
-        List continentalGoals = ListUtils.filter(goalContinent.getCountries(),
-                        c -> ! game.getOccupier(c).equals(_me));
+
+        Set<Country> goals = new HashSet<>();
+        if( goalContinent != null) {
+            List continentalGoals = ListUtils.filter(goalContinent.getCountries(),
+                    c -> !game.getOccupier(c).equals(_me));
+            goals.addAll(continentalGoals);
+        }
 
         List<Continent> enemyOwnedContinents = AiUtils.enemyOwnedContinents(_me, game);
         List<Country> enemyContinentBorders = enemyOwnedContinents.stream()
@@ -189,21 +238,30 @@ public class Tuner implements AutomatedPlayer {
         Collection<Country> borderingEnemyContinentsCountries =
                 CollectionUtils.intersection(enemyContinentBorders, enemyBorders);
 
-        Set<Country> goals = new HashSet<>();
-        goals.addAll(continentalGoals);
         goals.addAll(borderingEnemyContinentsCountries);
         return new ArrayList<>(goals);
     }
 
-    private double ratioAdjust(double current, int numerator, int denominator, String testKey, String scaleKey){
-        double ratio = numerator/denominator;
+    private double ratioAdjust(double current, double ratio, String testKey, String scaleKey){
         double scale = _tunings.get(scaleKey);
         double test = _tunings.get(testKey);
         return test < ratio ? scale * current : (1-scale) * current;
     }
 
+    private double ratioAdjust(double current, int numerator, int denominator, String testKey, String scaleKey){
+        if( numerator == 0 && denominator == 0){
+            return current;
+        }
+        double ratio = numerator/(denominator + numerator);
+        return ratioAdjust(current, ratio, testKey, scaleKey);
+    }
+
     private double booleanAdjust(double current, boolean test, String key){
         double scale = _tunings.get(key);
         return test ? scale * current : (1-scale) * current;
+    }
+
+    private boolean aboveTuningValue(double score, String key){
+        return score > _tunings.get(key);
     }
 }
