@@ -20,6 +20,8 @@ import ojplg.skir.state.Player;
 import ojplg.skir.utils.ListUtils;
 import ojplg.skir.utils.RatioDistributor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Tuner implements AutomatedPlayer {
+
+    private static final Logger _log = LogManager.getLogger(Tuner.class);
 
     private static final String BorderCountryPlacementKey = "BorderCountryPlacementKey";
     private static final String ContinentalBorderPlacementKey = "ContinentalBorderPlacementKey";
@@ -213,6 +217,7 @@ public class Tuner implements AutomatedPlayer {
             }
         }
         if( bestPossibleAttack != null ){
+            _log.warn(_me + " Attacking! from " + bestPossibleAttack.getAttacker() + " to " + bestPossibleAttack.getDefender());
             return new Attack(adjutant, bestPossibleAttack.getAttacker(),
                     bestPossibleAttack.getDefender(), bestPossibleAttack.maximumAttackingDice());
         } else {
