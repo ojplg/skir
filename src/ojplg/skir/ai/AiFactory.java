@@ -13,17 +13,14 @@ public class AiFactory {
     public static AutomatedPlayer generateAiPlayer(Player player){
         float number = _random.nextFloat();
 
-        if (number < 0.1){
-            return new Wimpy(player);
-        } else if (number < 0.3){
-            return new Grabby(player);
-        } else if (number < 0.45 ) {
+        if( number < 0.5) {
+            return new Massy(player);
+        } else if (number < 0.75){
             return new Grumpy(player);
-        } else if (number < 0.6) {
-            return new Bully(player);
         } else {
-            return generateRandom(player);
+            return new Grabby(player);
         }
+
     }
 
     private static Tuner generateRandom(Player player){

@@ -1,5 +1,6 @@
 package ojplg.skir.ai;
 
+import javafx.geometry.Pos;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Constants;
@@ -88,6 +89,15 @@ class AiUtils {
         return ListUtils.filter(possibilities, p -> p.getAdvantage() > 0);
     }
 
+    static PossibleAttack findBestPossibleAttack(Player player, Game game){
+        List<PossibleAttack> advantageousAttacks = findAdvantageousAttacks(player, game);
+        if( advantageousAttacks.isEmpty()){
+            return null;
+        }
+        return advantageousAttacks.stream().max(
+                (pa, pb) -> { return pa.getAdvantage() -  pb.getAdvantage();} ).get();
+    }
+
     static List<PossibleAttack> findAllPossibleAttacks(Player player, Game game){
         List<PossibleAttack> possibilities = new ArrayList<>();
         for(Country country : game.findCountriesToAttackFrom(player)){
@@ -119,6 +129,13 @@ class AiUtils {
     static List<Continent> enemyOwnedContinents(Player player, Game game){
         List<Continent> ownedContinents = game.findOwnedContinents();
         return ListUtils.filter(ownedContinents, c -> ! game.isContinentOwner(player, c));
+    }
+
+    static Country findStrongestPossession(Player player, Game game){
+        List<Country> possessions = game.findOccupiedCountries(player);
+        return possessions.stream()
+                .max((c1, c2) -> (game.getOccupationForce(c1) - game.getOccupationForce(c2)))
+                .get();
     }
 
     static Country findWeakestPossession(Player player, Game game){
