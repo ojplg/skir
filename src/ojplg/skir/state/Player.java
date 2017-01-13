@@ -10,6 +10,8 @@ import java.util.List;
 public class Player {
 
     private final String _color;
+    private final int _number;
+
     private final List<Card> _cards = new ArrayList<>();
     private final BattleStats _attackStats = new BattleStats();
     private final BattleStats _defenseStats = new BattleStats();
@@ -19,6 +21,11 @@ public class Player {
     private String _clientKey;
     private String _displayName;
     private AutomatedPlayer _automatedPlayer;
+
+    public Player(String color, int number){
+        _color = color;
+        _number = number;
+    }
 
     public String getClientKey() {
         return _clientKey;
@@ -34,10 +41,6 @@ public class Player {
 
     public void setDisplayName(String displayName) {
         this._displayName = displayName;
-    }
-
-    public Player(String color){
-        _color = color;
     }
 
     public List<Card> getCards(){
@@ -112,6 +115,10 @@ public class Player {
             return _automatedPlayer.getIdentification();
         }
         return null;
+    }
+
+    public int getNumber(){
+        return _number;
     }
 
     @Override

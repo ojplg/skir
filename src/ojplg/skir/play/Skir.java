@@ -1,5 +1,6 @@
 package ojplg.skir.play;
 
+import ojplg.skir.ai.AiFactory;
 import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +20,11 @@ public class Skir {
         final Channels channels = new Channels();
         final boolean benchTest = Arrays.asList(args).contains("-bench");
 
-        startGameRunner(channels, benchTest);
+        AiFactory aiFactory = new AiFactory();
+        startGameRunner(aiFactory, channels, benchTest);
 
         if ( benchTest ){
-            AiTestBench testBench = new AiTestBench(channels, createThreadFiber("AiTestBenchFiber"),10);
+            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),10);
             testBench.start();
         } else {
             startWebServer(channels);
@@ -31,9 +33,10 @@ public class Skir {
         _log.info("Start up complete");
     }
 
-    private static void startGameRunner(Channels channels, boolean benchTest){
+    private static void startGameRunner(AiFactory aiFactory, Channels channels, boolean benchTest){
         int turnDelay = benchTest ? 0 : 30;
-        GameRunner gameRunner = new GameRunner(channels, createThreadFiber("GameRunnerFiber"), turnDelay);
+        GameRunner gameRunner = new GameRunner(aiFactory, channels,
+                createThreadFiber("GameRunnerFiber"), turnDelay);
         gameRunner.start();
     }
 

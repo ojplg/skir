@@ -35,15 +35,17 @@ public class GameRunner {
     private final Channels _channels;
     private final Fiber _fiber;
     private final int _orderDelay;
+    private final AiFactory _aiFactory;
 
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
     private Game _game;
 
-    public GameRunner(Channels channels, Fiber fiber, int orderDelay){
+    public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
         _orderDelay = orderDelay;
+        _aiFactory = aiFactory;
 
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
@@ -60,7 +62,7 @@ public class GameRunner {
         for (int idx = 0; idx < _colors.length; idx++) {
             Player player = _game.getAllPlayers().get(idx);
             if(! _remotePlayers.contains(player)) {
-                AutomatedPlayer ai = AiFactory.generateAiPlayer(player);
+                AutomatedPlayer ai = _aiFactory.generateAiPlayer(player);
                 _log.info("Adding ai for " + player + ", " + ai.getClass());
                 _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
                 player.setAutomatedPlayer(ai);
@@ -180,7 +182,7 @@ public class GameRunner {
         List<Player> players = new ArrayList<>();
         int initialArmies = initialArmyCount(_colors.length);
         for (int idx = 0; idx < _colors.length; idx++) {
-            Player player = new Player(_colors[idx]);
+            Player player = new Player(_colors[idx], idx);
             player.grantReserves(initialArmies);
             players.add(player);
         }

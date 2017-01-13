@@ -1,6 +1,9 @@
 package ojplg.skir.play.bench;
 
+import ojplg.skir.ai.AiFactory;
+import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.play.Channels;
+import ojplg.skir.state.Player;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventType;
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +12,7 @@ import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class AiTestBench {
 
@@ -19,15 +23,21 @@ public class AiTestBench {
     private final int _gamesToRun;
 
     private final List<SimpleGameRecord> _gameRecords = new ArrayList<>();
+    private final AiFactory _aiFactory;
 
     private SimpleGameRecord _currentGameRecord;
 
-    public AiTestBench(Channels channels, Fiber fiber, int gamesToRun){
+    public AiTestBench(AiFactory aiFactory, Channels channels, Fiber fiber, int gamesToRun){
         this._channels = channels;
         this._fiber = fiber;
         this._gamesToRun = gamesToRun;
+        this._aiFactory = aiFactory;
 
         _channels.GameEventChannel.subscribe(fiber, this::handleGameEvent);
+    }
+
+    public void setAiToTest(Function<Player,AutomatedPlayer> playerGenerator){
+        _aiFactory.setFirstPlayerFactory(playerGenerator);
     }
 
     public void start(){

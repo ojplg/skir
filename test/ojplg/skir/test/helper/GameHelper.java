@@ -18,11 +18,11 @@ public class GameHelper {
     public Game Game;
     private Occupations _occupations;
 
-    public Player RedPlayer = new Player("Red");
-    public Player WhitePlayer = new Player("White");
-    public Player GreenPlayer = new Player("Green");
-    public Player BluePlayer = new Player("Blue");
-    public Player BlackPlayer = new Player("Black");
+    public Player RedPlayer = new Player("Red",0);
+    public Player WhitePlayer = new Player("White",1);
+    public Player GreenPlayer = new Player("Green",2);
+    public Player BluePlayer = new Player("Blue",3);
+    public Player BlackPlayer = new Player("Black",4);
 
     public GameHelper(){
         Game = baseGameState();
