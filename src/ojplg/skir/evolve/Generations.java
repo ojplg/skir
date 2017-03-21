@@ -5,14 +5,13 @@ import java.util.List;
 
 public class Generations {
 
-    private final List<Generation> _generations = new ArrayList<>();
     private final Scorer _scorer;
 
     public Generations(Scorer scorer){
         _scorer = scorer;
     }
 
-    private Generation next(Generation generation){
+    public Generation next(Generation generation){
         while(generation.hasUnscoredIndividual()){
             Individual individual = generation.getUnscoredIndividual();
             double score = _scorer.score(individual);

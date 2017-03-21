@@ -1,6 +1,7 @@
 package ojplg.skir.play;
 
 import ojplg.skir.ai.AiFactory;
+import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,22 +20,27 @@ public class Skir {
 
         final Channels channels = new Channels();
         final boolean benchTest = Arrays.asList(args).contains("-bench");
+        final boolean evolve = Arrays.asList(args).contains("-evolve");
 
-        AiFactory aiFactory = new AiFactory();
-        startGameRunner(aiFactory, channels, benchTest);
 
         if ( benchTest ){
+            AiFactory aiFactory = new AiFactory();
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),10);
             testBench.start();
+        } else if ( evolve ) {
+            EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
+            evolutionRunner.evolve();
         } else {
+            AiFactory aiFactory = new AiFactory();
+            startGameRunner(aiFactory, channels, true);
             startWebServer(channels);
         }
 
         _log.info("Start up complete");
     }
 
-    private static void startGameRunner(AiFactory aiFactory, Channels channels, boolean benchTest){
-        int turnDelay = benchTest ? 0 : 30;
+    private static void startGameRunner(AiFactory aiFactory, Channels channels, boolean useDelay){
+        int turnDelay = useDelay ? 0 : 30;
         GameRunner gameRunner = new GameRunner(aiFactory, channels,
                 createThreadFiber("GameRunnerFiber"), turnDelay);
         gameRunner.start();
