@@ -18,6 +18,8 @@ public class AiFactory {
             return _firstPlayerFactory.apply(player);
         }
 
+//        return new Grumpy(player);
+
         float number = _random.nextFloat();
 
         if( number < 0.25) {

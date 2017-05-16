@@ -17,6 +17,7 @@ function isMyColor(color){
 }
 
 function initializeClient(name, address){
+    console.log("initializing client with name " + name)
     draw_map();
     myIdentity.uniqueKey = name + "@" + address;
     openWebSocketConnection(name, address, myIdentity.uniqueKey);
@@ -24,6 +25,9 @@ function initializeClient(name, address){
     myIdentity.address = address;
     myIdentity.color = "";
     playerStatuses = new PlayerStatuses();
+    if( name == "demo"){
+        addButton("start");
+    }
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){

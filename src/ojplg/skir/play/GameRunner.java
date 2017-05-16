@@ -88,7 +88,9 @@ public class GameRunner {
                     clientConnectedEvent, player, false);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _channels.AdjutantChannel.publish(_currentAdjutant);
-        } else if( playerSlotAvailable()) {
+        } else if ( "demo".equalsIgnoreCase(clientConnectedEvent.getDisplayName()) ) {
+            _log.info("Demo");
+        } else if ( playerSlotAvailable() ) {
             _log.info("Trying to add a new player " + clientConnectedEvent);
             Player player = _game.getAllPlayers().get(availablePlayerNumber);
 
