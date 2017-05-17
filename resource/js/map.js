@@ -39,9 +39,9 @@ var afghanistan = new_country('Afghanistan',570,140,80,100,'#107229','white');
 var india = new_country('India',590,240,100,100,'#0FAF38','white');
 var ural = new_country('Ural',570,40,100,100,'#058D28','white');
 var siberia = new_country('Siberia',670,40,60,100,'#76CF8D','white');
-var yakutsk = new_country('Yakutsk', 730, 30, 70, 40, '#107A06', 'white');
-var irkutsk = new_country('Irkutsk', 730, 70, 70, 40, '#3ca824', 'white');
-var mongolia = new_country('Mongolia', 730, 110, 70, 30, '#52864D', 'white');
+var yakutsk = new_country('Yakutsk', 730, 20, 70, 40, '#107A06', 'white');
+var irkutsk = new_country('Irkutsk', 730, 60, 70, 40, '#3ca824', 'white');
+var mongolia = new_country('Mongolia', 730, 100, 70, 40, '#52864D', 'white');
 var china = new_country('China', 650, 140, 140, 100, '#18E304', 'white');
 var siam = new_country('Siam',690,240,80,80,'#0F7E04','white');
 var japan = new_country('Japan',880,100,45,125, '#2aab0e', 'white');
@@ -163,7 +163,10 @@ function update_country_occupation_count(context,country,army_count,number_color
   context.fillStyle = number_color;
   context.font = '9pt Arial';
   var widthOffset = 14;
-  if (army_count >= 10){
+  if (army_count >= 100 ) {
+    widthOffset = 26;
+  }
+  else if (army_count >= 10){
     widthOffset = 18;
   }
   context.fillText(army_count, country.left + country.width - widthOffset,
