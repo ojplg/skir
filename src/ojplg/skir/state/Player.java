@@ -125,7 +125,7 @@ public class Player {
     public String toString() {
         return "Player{" +
                 "_color='" + _color + '\'' +
-                ", _cards=" + _cards +
+                ", _cards=" + getCards() +
                 ", _reserveArmies=" + _reserveArmies +
                 ", _displayName=" + _displayName +
                 '}';
