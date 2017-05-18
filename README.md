@@ -21,6 +21,8 @@ To build and run the program follow these steps
 4. ./start.sh
 5. Navigate your browswer to http://localhost:8080/
 
+If you are using Windows (Cygwin) you need to set an environment variable JAVA\_PATH\_SEPARATOR=";"
+
 Some Comments
 =============
 
