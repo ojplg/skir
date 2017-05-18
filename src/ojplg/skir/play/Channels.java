@@ -1,5 +1,6 @@
 package ojplg.skir.play;
 
+import ojplg.skir.play.bench.GameScores;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.event.GameEvent;

@@ -28,8 +28,10 @@ public class Skir {
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),10);
             testBench.start();
         } else if ( evolve ) {
+            AiFactory aiFactory = new AiFactory();
             EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
-            evolutionRunner.evolve();
+            startGameRunner(aiFactory, channels, false);
+            evolutionRunner.evolve(aiFactory);
         } else {
             AiFactory aiFactory = new AiFactory();
             startGameRunner(aiFactory, channels, true);

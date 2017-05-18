@@ -26,8 +26,8 @@ public class EvolutionRunner {
         _evolveThread = evolveThread;
     }
 
-    public void evolve(){
-        AiFactory aiFactory = new AiFactory();
+    public void evolve(AiFactory aiFactory){
+        _log.info("Evolving");
         AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 10);
         SkirScorer scorer = new SkirScorer(bench);
         Generations generations = new Generations(scorer);

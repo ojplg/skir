@@ -12,6 +12,7 @@ import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class AiTestBench {
@@ -24,6 +25,7 @@ public class AiTestBench {
 
     private final List<SimpleGameRecord> _gameRecords = new ArrayList<>();
     private final AiFactory _aiFactory;
+    private Consumer<GameScores> _resultsConsumer;
 
     private SimpleGameRecord _currentGameRecord;
 
@@ -38,6 +40,10 @@ public class AiTestBench {
 
     public void setAiToTest(Function<Player,AutomatedPlayer> playerGenerator){
         _aiFactory.setFirstPlayerFactory(playerGenerator);
+    }
+
+    public void setResultsConsumer(Consumer<GameScores> resultsConsumer){
+        this._resultsConsumer = resultsConsumer;
     }
 
     public void start(){
@@ -78,7 +84,11 @@ public class AiTestBench {
             _channels.StartGameChannel.publish("TestBenchGame " + _gameRecords.size() + 1);
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
-            _log.info("Scores\n" + computeScores());
+            GameScores scores = computeScores();
+            _log.info("Scores\n" + scores);
+            if( _resultsConsumer != null) {
+                _resultsConsumer.accept(scores);
+            }
         }
     }
 

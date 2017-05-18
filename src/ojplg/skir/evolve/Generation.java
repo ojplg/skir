@@ -31,6 +31,7 @@ public class Generation {
 
     public List<Individual> findTopTenPercent(){
         Collections.sort(_members);
+        Collections.reverse(_members);
         int cnt = _members.size() / 10;
         return _members.subList(0, cnt);
     }
