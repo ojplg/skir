@@ -9,14 +9,12 @@ import ojplg.skir.map.WorldMap;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.Roller;
 import ojplg.skir.play.Rolls;
-import ojplg.skir.play.Skir;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.MapChangedEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import ojplg.skir.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.fibers.ThreadFiber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +31,6 @@ public class Game {
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
-
-    private final ThreadFiber _fiber = Skir.createThreadFiber("GameRunnerFiber");
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
@@ -54,7 +50,6 @@ public class Game {
 
     public void start(){
         _currentAttacker = _players.get(0);
-        _fiber.start();
     }
 
     public void doInitialPlacements(){
