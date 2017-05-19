@@ -42,7 +42,7 @@ public class Skir {
     }
 
     private static void startGameRunner(AiFactory aiFactory, Channels channels, boolean useDelay){
-        int turnDelay = useDelay ? 0 : 40;
+        int turnDelay = useDelay ? 40 : 0;
         GameRunner gameRunner = new GameRunner(aiFactory, channels,
                 createThreadFiber("GameRunnerFiber"), turnDelay);
         gameRunner.start();
