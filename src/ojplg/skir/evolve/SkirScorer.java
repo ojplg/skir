@@ -21,12 +21,16 @@ public class SkirScorer implements Scorer {
         this._aiTestBench = aiTestBench;
     }
 
+    public void start(){
+        _aiTestBench.start();
+    }
+
     @Override
     public double score(Individual individual) {
         _aiTestBench.setAiToTest(p -> new Tuner(p, individual.getGenes(), "TunerTesting!"));
         _aiTestBench.setResultsConsumer(this::acceptScores);
         _latch = new CountDownLatch(1);
-        _aiTestBench.start();
+        _aiTestBench.startRun();
         try {
             _latch.await();
         } catch (InterruptedException ie){

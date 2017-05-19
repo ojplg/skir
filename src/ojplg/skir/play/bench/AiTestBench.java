@@ -48,6 +48,9 @@ public class AiTestBench {
 
     public void start(){
         _fiber.start();
+    }
+
+    public void startRun(){
         _currentGameRecord = new SimpleGameRecord();
         _channels.InitializeGameChannel.publish("Test bench initializing");
         _channels.StartGameChannel.publish("Test bench starting");
