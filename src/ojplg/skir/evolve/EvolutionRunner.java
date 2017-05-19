@@ -21,7 +21,7 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
-    private final int _numberOfGenerations = 10;
+    private final int _numberOfGenerations = 1000;
 
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
