@@ -24,7 +24,7 @@ public class Generations {
                 Individual left = survivors.get(idx);
                 Individual right = survivors.get(jdx);
                 Zygote zygote = new Zygote(left.getGenes(), right.getGenes());
-                Individual child = new Individual("Child [" + left.getIdentifier() +  "," + right.getIdentifier() + "]",
+                Individual child = new Individual("Child",
                         zygote.getGenes());
                 successors.add(child);
             }
