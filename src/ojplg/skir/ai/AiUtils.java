@@ -159,5 +159,4 @@ class AiUtils {
     static boolean isBorderCountry(Player player, Game game, Country country){
         return game.findBorderCountries(player).contains(country);
     }
-
 }

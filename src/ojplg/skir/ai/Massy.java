@@ -2,18 +2,7 @@ package ojplg.skir.ai;
 
 import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Country;
-import ojplg.skir.play.orders.Adjutant;
-import ojplg.skir.play.orders.Attack;
-import ojplg.skir.play.orders.ClaimArmies;
-import ojplg.skir.play.orders.DrawCard;
-import ojplg.skir.play.orders.EndAttacks;
-import ojplg.skir.play.orders.EndTurn;
-import ojplg.skir.play.orders.ExchangeCardSet;
-import ojplg.skir.play.orders.OccupationConstraints;
-import ojplg.skir.play.orders.Occupy;
-import ojplg.skir.play.orders.Order;
-import ojplg.skir.play.orders.OrderType;
-import ojplg.skir.play.orders.PlaceArmy;
+import ojplg.skir.play.orders.*;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 
@@ -66,12 +55,29 @@ public class Massy implements AutomatedPlayer {
                     game.getOccupationForce(oc.attacker()) - 1);
             return occupy;
         }
+        if( shouldFortify(orderTypeList, game)){
+            Country strongestCountry = AiUtils.findStrongestPossession(_me, game);
+            int numberTroopsToMove = game.getOccupationForce(strongestCountry) - 1;
+            List<Country> neighbors = game.findAlliedNeighbors(strongestCountry);
+            Country destination = RandomUtils.pickRandomElement(neighbors);
+            return new Fortify(adjutant, strongestCountry, destination, numberTroopsToMove);
+        }
         if( orderTypeList.contains(OrderType.DrawCard)){
             _conqueredOne = false;
             return new DrawCard(adjutant);
         }
         _conqueredOne = false;
         return new EndTurn(adjutant);
+    }
+
+    private boolean shouldFortify(List<OrderType> orderTypeList, Game game){
+        if( orderTypeList.contains(OrderType.Fortify)){
+            Country strongestCountry = AiUtils.findStrongestPossession(_me, game);
+            if( game.findEnemyNeighbors(strongestCountry).size() == 0 ){
+                return game.getOccupationForce(strongestCountry) > 1;
+            }
+        }
+        return false;
     }
 
     @Override

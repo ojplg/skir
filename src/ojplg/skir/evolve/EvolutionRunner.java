@@ -36,10 +36,10 @@ public class EvolutionRunner {
         scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
-        for(int generation=0; generation < _numberOfGenerations ; generation++) {
+        for(int cnt=0; cnt < _numberOfGenerations ; cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
             _log.info("next generation determined");
-            logGeneration(generation, nextGeneration);
+            logGeneration(cnt, nextGeneration);
             currentGeneration = nextGeneration;
         }
     }

@@ -140,9 +140,9 @@ public class Grabby implements AutomatedPlayer {
             _log.warn("need to find an off-continent attack");
             return findIntercontinentalAttack(game);
         }
-        _log.info("Choosing attacks on " + continent);
+        _log.debug("Choosing attacks on " + continent);
         List<PossibleAttack> possibleAttacks = AiUtils.findAdvantageousAttacks(_me, game);
-        _log.info("Possible attack count " + possibleAttacks.size());
+        _log.debug("Possible attack count " + possibleAttacks.size());
         List<PossibleAttack> possibleContinentAttacks = possibleAttacks.stream()
                                 .filter( pa -> { return continent.getCountries().contains(pa.getDefender());})
                                 .collect(Collectors.toList());
@@ -155,16 +155,16 @@ public class Grabby implements AutomatedPlayer {
     }
 
     private Order placeArmies(Adjutant adjutant, Game game){
-        _log.info("Choosing placement for " + _me);
+        _log.debug("Choosing placement for " + _me);
         Continent continent = AiUtils.findStrongestUnownedContinent(_me, game);
-        _log.info("Planning to place in " + continent);
+        _log.debug("Planning to place in " + continent);
         if( continent == null ){
             List<Country> countries = game.findOccupiedCountries(_me);
             List<Country> borderCountries = countries.stream()
                     .filter(c -> game.findEnemyNeighbors(c).size() > 0)
                     .collect(Collectors.toList());
             Country country = RandomUtils.pickRandomElement(borderCountries);
-            _log.info("Going to place in (after continent null) " + country);
+            _log.debug("Going to place in (after continent null) " + country);
             return new PlaceArmy(adjutant, country);
         }
         List<Country> myCountries = continent.getCountries().stream()
@@ -172,7 +172,7 @@ public class Grabby implements AutomatedPlayer {
                 .filter(c -> { return game.findEnemyNeighbors(c).size() > 0; })
                 .collect(Collectors.toList());
         Country country = RandomUtils.pickRandomElement(myCountries);
-        _log.info("Going to place in " + country);
+        _log.debug("Going to place in " + country);
         return new PlaceArmy(adjutant,country);
     }
 
