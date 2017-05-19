@@ -30,6 +30,10 @@ public class Generation {
         return _members.size();
     }
 
+    public List<Individual> allMembers(){
+        return _members;
+    }
+
     public List<Individual> findTopTenPercent(){
         List<Individual> members = new ArrayList<>(_members);
         Collections.sort(members);

@@ -45,7 +45,7 @@ public class EvolutionRunner {
     }
 
     private void logGeneration(int number, Generation generation){
-        for (Individual individual:generation.findTopTenPercent()) {
+        for (Individual individual:generation.allMembers()) {
             Map<String, Double> genes = individual.getGenes();
             JSONObject jObject = new JSONObject(genes);
             _log.info("Individual in generation " + number + ": " + jObject);
