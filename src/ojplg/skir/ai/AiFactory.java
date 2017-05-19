@@ -2,9 +2,7 @@ package ojplg.skir.ai;
 
 import ojplg.skir.state.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 public class AiFactory {
@@ -18,21 +16,24 @@ public class AiFactory {
             return _firstPlayerFactory.apply(player);
         }
 
-//        return new Grumpy(player);
-
-        float number = _random.nextFloat();
-
-        if( number < 0.20) {
-            return new Grabby(player);
-        } else if (number < 0.80){
-            return new Bully(player);
-        } else {
-            return new Massy(player);
+        String name = randomKey();
+        switch(name){
+            case "Grabby": return new Grabby(player);
+            case "Bully": return new Bully(player);
+            case "Massy": return new Massy(player);
+            case "Grumpy": return new Grumpy(player);
+            case "Wimpy": return new Wimpy(player);
+            default: return new Wimpy(player);
         }
     }
 
     public void setFirstPlayerFactory(Function<Player, AutomatedPlayer> firstPlayerFactory){
         this._firstPlayerFactory = firstPlayerFactory;
+    }
+
+    private String randomKey(){
+        String[] names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy" };
+        return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
     private Tuner generateRandom(Player player){

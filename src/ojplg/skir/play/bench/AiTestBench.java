@@ -88,7 +88,7 @@ public class AiTestBench {
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
             GameScores scores = computeScores();
-            _log.info("Scores\n" + scores);
+            _log.info("Scores " + scores);
             if( _resultsConsumer != null) {
                 _resultsConsumer.accept(scores);
             }
