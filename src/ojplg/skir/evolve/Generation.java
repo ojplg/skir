@@ -1,5 +1,6 @@
 package ojplg.skir.evolve;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +31,10 @@ public class Generation {
     }
 
     public List<Individual> findTopTenPercent(){
-        Collections.sort(_members);
-        Collections.reverse(_members);
-        int cnt = _members.size() / 10;
-        return _members.subList(0, cnt);
+        List<Individual> members = new ArrayList<>(_members);
+        Collections.sort(members);
+        Collections.reverse(members);
+        int cnt = members.size() / 10;
+        return members.subList(0, cnt);
     }
 }
