@@ -117,7 +117,7 @@ public class GameRunner {
 
     private void processOrder(Order order){
         Player player = _currentAdjutant.getActivePlayer();
-        _log.info("Processing order for " + player + " of type " + order.getType());
+        _log.debug("Processing order for " + player + " of type " + order.getType());
         _currentAdjutant = order.execute(_game);
         if( _game.gameOver() ){
             handleGameOver();

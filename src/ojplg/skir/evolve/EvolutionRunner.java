@@ -33,6 +33,7 @@ public class EvolutionRunner {
         _log.info("Evolving");
         AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 10);
         SkirScorer scorer = new SkirScorer(bench);
+        scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
         for(int generation=0; generation < _numberOfGenerations ; generation++) {
