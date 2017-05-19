@@ -22,16 +22,12 @@ public class AiFactory {
 
         float number = _random.nextFloat();
 
-        if( number < 0.25) {
-            return new Massy(player);
-        } else if (number < 0.5){
-            return new Grumpy(player);
-        } else if (number < 0.75){
+        if( number < 0.20) {
             return new Grabby(player);
-        } else if (number < 0.9 ){
+        } else if (number < 0.80){
             return new Bully(player);
         } else {
-            return new Wimpy(player);
+            return new Massy(player);
         }
     }
 

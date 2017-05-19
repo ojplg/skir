@@ -32,7 +32,7 @@ public class SkirScorer implements Scorer {
         } catch (InterruptedException ie){
             _log.warn("Why was I interrupted?", ie);
         }
-        return _scores.getScore(individual.getIdentifier());
+        return _scores.getScore("TunerTesting!");
     }
 
     private void acceptScores(GameScores scores){

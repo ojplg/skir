@@ -7,6 +7,7 @@ import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
+    private final int _numberOfGenerations = 10;
+
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
         _channels = channels;
@@ -31,9 +34,21 @@ public class EvolutionRunner {
         AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 10);
         SkirScorer scorer = new SkirScorer(bench);
         Generations generations = new Generations(scorer);
-        Generation first = createFirstGeneration();
-        Generation next = generations.next(first);
-        _log.info("next generation determined");
+        Generation currentGeneration = createFirstGeneration();
+        for(int generation=0; generation < _numberOfGenerations ; generation++) {
+            Generation nextGeneration = generations.next(currentGeneration);
+            _log.info("next generation determined");
+            logGeneration(generation, nextGeneration);
+            currentGeneration = nextGeneration;
+        }
+    }
+
+    private void logGeneration(int number, Generation generation){
+        for (Individual individual:generation.findTopTenPercent()) {
+            Map<String, Double> genes = individual.getGenes();
+            JSONObject jObject = new JSONObject(genes);
+            _log.info("Individual in generation " + number + ": " + jObject);
+        }
     }
 
     private Generation createFirstGeneration(){
