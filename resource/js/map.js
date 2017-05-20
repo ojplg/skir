@@ -163,7 +163,9 @@ function update_country_occupation_count(context,country,army_count,number_color
   context.fillStyle = number_color;
   context.font = '9pt Arial';
   var widthOffset = 14;
-  if (army_count >= 100 ) {
+  if (army_count >= 1000 ){
+    width_offset = 34;
+  } else if (army_count >= 100 ) {
     widthOffset = 26;
   }
   else if (army_count >= 10){
