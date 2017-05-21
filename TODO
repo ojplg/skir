@@ -8,4 +8,3 @@
 ** Refactor status.js into more objects
 ** Switch around attacks: pick attack, after countries, pick all-out or one time
 ** Start putting in some CSS
-** Correct flaw when 3 digit armies uglify country on canvas
