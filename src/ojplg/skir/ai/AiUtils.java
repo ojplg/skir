@@ -85,8 +85,12 @@ class AiUtils {
      * than a neighboring enemy occupied country.
      */
     static List<PossibleAttack> findAdvantageousAttacks(Player player, Game game){
+        return findAdvantageousAttacks(player, game, 0);
+    }
+
+    static List<PossibleAttack> findAdvantageousAttacks(Player player, Game game, int minimumAmount){
         List<PossibleAttack> possibilities = findAllPossibleAttacks(player, game);
-        return ListUtils.filter(possibilities, p -> p.getAdvantage() > 0);
+        return ListUtils.filter(possibilities, p -> p.getAdvantage() > minimumAmount);
     }
 
     static PossibleAttack findBestPossibleAttack(Player player, Game game){

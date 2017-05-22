@@ -26,9 +26,9 @@ public class AiFactory {
             case "Massy": return new Massy(player);
             case "Grumpy": return new Grumpy(player);
             case "Wimpy": return new Wimpy(player);
-            case "PsTuney": return firstTuned(player);
-            case "AiTuney": return presetTuned(player);
-            default: return firstTuned(player);
+            case "AiTuney": return firstTuned(player);
+            case "PsTuney": return presetTuned(player);
+            default: return new Wimpy(player);
         }
     }
 
@@ -37,7 +37,8 @@ public class AiFactory {
     }
 
     private String randomKey(){
-        String[] names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "AiTuney", "PsTuney" };
+        //String[] names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "AiTuney", "PsTuney" };
+        String[] names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 

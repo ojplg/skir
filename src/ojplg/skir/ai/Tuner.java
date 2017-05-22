@@ -270,11 +270,17 @@ public class Tuner implements AutomatedPlayer {
     }
 
     private Order generateAttackOrder(Adjutant adjutant, Game game){
+        List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, 15);
+        if( majorAdvantages.size() > 0){
+            PossibleAttack possibleAttack = majorAdvantages.get(0);
+            return new Attack(adjutant, possibleAttack.getAttacker(), possibleAttack.getDefender(),
+                    possibleAttack.maximumAttackingDice());
+        }
+
         List<PossibleAttack> possibleAttacks = AiUtils.findAllPossibleAttacks(_me, game);
 
         double bestAttackScore = Double.MIN_VALUE;
         PossibleAttack bestPossibleAttack = null;
-
 
 
         for(PossibleAttack possibleAttack : possibleAttacks){
