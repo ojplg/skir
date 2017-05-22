@@ -92,8 +92,8 @@ public class Tuner implements AutomatedPlayer {
         map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
-        map.put(AttackerArmyPercentageTestAttackKey, 0.5);
-        map.put(AttackerArmyPercentageApplicationAttackKey, 0.5);
+        map.put(AttackerArmyPercentageTestAttackKey, 0.95);
+        map.put(AttackerArmyPercentageApplicationAttackKey, 0.67);
         map.put(MinimumAttackScoreAttackKey, 0.15);
         map.put(PostCardMinimumAttackScoreAttackKey, 0.35);
 
@@ -189,14 +189,21 @@ public class Tuner implements AutomatedPlayer {
             }
         }
         Country destinationCountry = null;
-        int numberInDestination = 0;
+        int numberInDestination = 1;
         if( numberToMove > 0 && sourceCountry != null){
             List<Country> allies = game.findAlliedNeighbors(sourceCountry);
             for(Country ally : allies){
-                int allyArmyCount = game.getOccupationForce(ally);
-                if ( allyArmyCount > numberInDestination){
-                    numberInDestination = allyArmyCount;
+                if( game.findEnemyNeighbors(ally).size() > 0){
                     destinationCountry = ally;
+                }
+            }
+            if (destinationCountry == null ){
+                for(Country ally : allies ){
+                    int allyArmyCount = game.getOccupationForce(ally);
+                    if ( allyArmyCount > numberInDestination){
+                        numberInDestination = allyArmyCount;
+                        destinationCountry = ally;
+                    }
                 }
             }
         }
@@ -208,7 +215,13 @@ public class Tuner implements AutomatedPlayer {
 
     private Map<Country,Integer> computePlacements(Game game){
         Map<Country, Double> ratios = new HashMap<>();
-        game.findOccupiedCountries(_me).forEach( c ->
+        int countryCount = game.findOccupiedCountries(_me).size();
+        if( _me.reserveCount() <= 5 ){
+            countryCount = 1;
+        } else if ( _me.reserveCount() <= 10 ){
+            countryCount = 2;
+        }
+        game.findOccupiedCountries(_me).subList(0, countryCount).forEach( c ->
         {
             ratios.put(c, computePlacementScore(c, game));
         });
