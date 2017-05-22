@@ -62,4 +62,18 @@ public class WorldMap {
         }
         return borders;
     }
+
+    public boolean isBorderToContinent(Country country, Continent continent){
+        Continent countryContinent = Continent.find(country);
+        if (countryContinent.equals(continent)){
+            return false;
+        }
+        for(Country neighbor : getNeighbors(country)){
+            Continent neighborContinent = Continent.find(neighbor);
+            if (neighborContinent.equals(continent)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

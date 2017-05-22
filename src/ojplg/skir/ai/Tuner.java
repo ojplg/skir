@@ -3,6 +3,7 @@ package ojplg.skir.ai;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
+import ojplg.skir.map.MapUtils;
 import ojplg.skir.play.orders.*;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
@@ -38,13 +39,14 @@ public class Tuner implements AutomatedPlayer {
     private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
     private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
     private static final String BorderCountryAndContinentBorderAndOwnedPlacementKey = "BorderCountryAndContinentBorderAndOwnedPlacementKey";
+    private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
 
     private static final String TargetInBestGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
     private static final String AttackerArmyPercentageTestAttackKey = "AttackerArmyPercentageTestAttackKey";
     private static final String AttackerArmyPercentageApplicationAttackKey = "AttackerArmyPercentageApplicationAttackKey";
     private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
     private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
-
+    private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
 
 
     private final Map<String,Double> _tunings;
@@ -62,6 +64,7 @@ public class Tuner implements AutomatedPlayer {
                 LargestEnemyRatioTestPlacementKey,
                 TotalEnemyRatioApplicationPlacementKey,
                 TotalEnemyRatioTestPlacementKey,
+                BordersEnemyOwnedContinentPlacementKey,
                 NumberEnemyCountriesRatioApplicationPlacementKey,
                 NumberEnemyCountriesRatioTestPlacementKey,
                 GoalCountryNeighborPlacementKey,
@@ -90,12 +93,14 @@ public class Tuner implements AutomatedPlayer {
         map.put(NumberEnemyCountriesRatioTestPlacementKey, 0.5);
         map.put(GoalCountryNeighborPlacementKey, 0.999);
         map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
+        map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(AttackerArmyPercentageTestAttackKey, 0.95);
         map.put(AttackerArmyPercentageApplicationAttackKey, 0.67);
-        map.put(MinimumAttackScoreAttackKey, 0.15);
-        map.put(PostCardMinimumAttackScoreAttackKey, 0.35);
+        map.put(MinimumAttackScoreAttackKey, 0.1);
+        map.put(PostCardMinimumAttackScoreAttackKey, 0.3);
+        map.put(BustEnemyContinentAttackKey, 0.85);
 
         return map;
     }
@@ -239,6 +244,9 @@ public class Tuner implements AutomatedPlayer {
         List<Country> allNeighbors = game.findAllNeighbors(country);
         List<Country> goalCountries = chooseGoalCountries(game);
 
+        List<Continent> enemyContinents = AiUtils.enemyOwnedContinents(_me, game);
+        boolean bordersEnemyOwnedContinent = MapUtils.bordersContinent(game.getMap(), country, enemyContinents);
+
         int currentOccupationStrength = game.getOccupationForce(country);
         int totalNeighbors = allNeighbors.size();
         int totalEnemyForces = AiUtils.computeTotalOccupyingForces(enemyNeighbors, game);
@@ -252,6 +260,7 @@ public class Tuner implements AutomatedPlayer {
         score = booleanAdjust(score, isContinentalBorder && isOwnedContinent, ContinentBorderAndOwnedPlacementKey);
         score = booleanAdjust(score, isContinentalBorder && isOwnedContinent && isBorderCountry,
                 BorderCountryAndContinentBorderAndOwnedPlacementKey);
+        score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, totalEnemyForces,
                 TotalEnemyRatioTestPlacementKey, TotalEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, largestEnemyForce,
@@ -276,6 +285,14 @@ public class Tuner implements AutomatedPlayer {
         }
         double attackerArmyPercentage = attack.getAttackerArmyPercentage();
 
+        boolean targetInEnemyOwnedContinent = false;
+        for(Continent continent : AiUtils.enemyOwnedContinents(_me, game)){
+            if ( Continent.find(target).equals(continent) ){
+                targetInEnemyOwnedContinent = true;
+            }
+        }
+
+        score = booleanAdjust(score, targetInEnemyOwnedContinent, BustEnemyContinentAttackKey);
         score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey,
                 AttackerArmyPercentageApplicationAttackKey);
 

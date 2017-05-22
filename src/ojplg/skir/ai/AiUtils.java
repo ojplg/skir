@@ -1,6 +1,5 @@
 package ojplg.skir.ai;
 
-import javafx.geometry.Pos;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Constants;
