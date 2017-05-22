@@ -190,10 +190,17 @@ public class Game {
     }
 
     public void processFortifyOrder(Country source, Country destination, int armies){
-        // TODO: check for constraints
-        Player player = getOccupier(source);
+        Player sourcePlayer = getOccupier(source);
+        Player destinationPlayer = getOccupier(destination);
+        if ( ! sourcePlayer.equals(destinationPlayer)){
+            throw new RuntimeException("Cannot fortify from " + source + " to " + destination + ". Different owners.");
+        }
+        int currentArmies = getOccupationForce(source);
+        if (armies >= currentArmies){
+            throw new RuntimeException("Cannot fortify " + armies +  " from " + source);
+        }
         _occupations.killArmies(source, armies);
-        _occupations.placeArmies(player, destination, armies);
+        _occupations.placeArmies(sourcePlayer, destination, armies);
         _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
         publishCountryState(source);
         publishCountryState(destination);

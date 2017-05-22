@@ -3,18 +3,7 @@ package ojplg.skir.ai;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
-import ojplg.skir.play.orders.Adjutant;
-import ojplg.skir.play.orders.Attack;
-import ojplg.skir.play.orders.ClaimArmies;
-import ojplg.skir.play.orders.DrawCard;
-import ojplg.skir.play.orders.EndAttacks;
-import ojplg.skir.play.orders.EndTurn;
-import ojplg.skir.play.orders.ExchangeCardSet;
-import ojplg.skir.play.orders.OccupationConstraints;
-import ojplg.skir.play.orders.Occupy;
-import ojplg.skir.play.orders.Order;
-import ojplg.skir.play.orders.OrderType;
-import ojplg.skir.play.orders.PlaceArmy;
+import ojplg.skir.play.orders.*;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.utils.ListUtils;
@@ -48,11 +37,15 @@ public class Tuner implements AutomatedPlayer {
     private static final String NumberEnemyCountriesRatioTestPlacementKey = "NumberEnemyCountriesRatioTestPlacementKey";
     private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
     private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
+    private static final String BorderCountryAndContinentBorderAndOwnedPlacementKey = "BorderCountryAndContinentBorderAndOwnedPlacementKey";
 
     private static final String TargetInBestGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
     private static final String AttackerArmyPercentageTestAttackKey = "AttackerArmyPercentageTestAttackKey";
     private static final String AttackerArmyPercentageApplicationAttackKey = "AttackerArmyPercentageApplicationAttackKey";
     private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
+    private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
+
+
 
     private final Map<String,Double> _tunings;
     private final Player _me;
@@ -72,10 +65,39 @@ public class Tuner implements AutomatedPlayer {
                 NumberEnemyCountriesRatioApplicationPlacementKey,
                 NumberEnemyCountriesRatioTestPlacementKey,
                 GoalCountryNeighborPlacementKey,
+                BorderCountryAndContinentBorderAndOwnedPlacementKey,
                 TargetInBestGoalContinentAttackKey,
                 AttackerArmyPercentageTestAttackKey,
                 AttackerArmyPercentageApplicationAttackKey,
-                MinimumAttackScoreAttackKey));
+                MinimumAttackScoreAttackKey,
+                PostCardMinimumAttackScoreAttackKey));
+    }
+
+    public static Map<String, Double> presetTunings(){
+
+        Map<String, Double> map = new HashMap<>();
+
+        // placement tunings
+        map.put(BorderCountryPlacementKey, 0.9999);
+        map.put(ContinentalBorderPlacementKey, 0.55);
+        map.put(ContinentOwnedPlacementKey, 0.4);
+        map.put(ContinentBorderAndOwnedPlacementKey, 0.4);
+        map.put(LargestEnemyRatioApplicationPlacementKey, 0.6);
+        map.put(LargestEnemyRatioTestPlacementKey, 0.6);
+        map.put(TotalEnemyRatioApplicationPlacementKey, 0.6);
+        map.put(TotalEnemyRatioTestPlacementKey, 0.6);
+        map.put(NumberEnemyCountriesRatioApplicationPlacementKey, 0.5);
+        map.put(NumberEnemyCountriesRatioTestPlacementKey, 0.5);
+        map.put(GoalCountryNeighborPlacementKey, 0.999);
+        map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
+
+        map.put(TargetInBestGoalContinentAttackKey, 0.8);
+        map.put(AttackerArmyPercentageTestAttackKey, 0.5);
+        map.put(AttackerArmyPercentageApplicationAttackKey, 0.5);
+        map.put(MinimumAttackScoreAttackKey, 0.15);
+        map.put(PostCardMinimumAttackScoreAttackKey, 0.35);
+
+        return map;
     }
 
     public Tuner(Player player, Map<String,Double> tunings, String name){
@@ -108,6 +130,12 @@ public class Tuner implements AutomatedPlayer {
         if( allowableOrders.contains(OrderType.Occupy)){
             return doOccupy(adjutant, game);
         }
+        if (allowableOrders.contains(OrderType.Fortify)){
+            Fortify fortify = maybeFortify(adjutant, game);
+            if (fortify != null){
+                return fortify;
+            }
+        }
         if (allowableOrders.contains(OrderType.DrawCard)){
             return new DrawCard(adjutant);
         }
@@ -139,10 +167,44 @@ public class Tuner implements AutomatedPlayer {
 
     private Occupy doOccupy(Adjutant adjutant, Game game){
         OccupationConstraints constraints = adjutant.getOccupationConstraints();
+
         int existingForce = game.getOccupationForce(constraints.attacker());
-        return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce - 1);
+        List<Country> enemies = game.findEnemyNeighbors(constraints.attacker());
+        if( enemies.size() > 1 ){
+            return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce / 2);
+        } else {
+            return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce - 1);
+        }
     }
 
+    private Fortify maybeFortify(Adjutant adjutant, Game game){
+        List<Country> interiors = game.findInteriorCountries(_me);
+        int numberToMove = 0;
+        Country sourceCountry = null;
+        for(Country interior : interiors){
+            int excessForces = game.getOccupationForce(interior);
+            if (excessForces> numberToMove){
+                numberToMove = excessForces -1;
+                sourceCountry = interior;
+            }
+        }
+        Country destinationCountry = null;
+        int numberInDestination = 0;
+        if( numberToMove > 0 && sourceCountry != null){
+            List<Country> allies = game.findAlliedNeighbors(sourceCountry);
+            for(Country ally : allies){
+                int allyArmyCount = game.getOccupationForce(ally);
+                if ( allyArmyCount > numberInDestination){
+                    numberInDestination = allyArmyCount;
+                    destinationCountry = ally;
+                }
+            }
+        }
+        if ( destinationCountry != null){
+            return new Fortify(adjutant, sourceCountry, destinationCountry, numberToMove);
+        }
+        return null;
+    }
 
     private Map<Country,Integer> computePlacements(Game game){
         Map<Country, Double> ratios = new HashMap<>();
@@ -156,6 +218,7 @@ public class Tuner implements AutomatedPlayer {
     private double computePlacementScore(Country country, Game game){
 
         Continent continent = Continent.find(country);
+        boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
         boolean isContinentalBorder = game.isContinentalBorder(country);
         boolean isOwnedContinent = game.isContinentOwner(_me, continent);
 
@@ -170,10 +233,12 @@ public class Tuner implements AutomatedPlayer {
 
         double score = 1;
 
-        score = booleanAdjust(score, AiUtils.isBorderCountry(_me, game, country), BorderCountryPlacementKey);
+        score = booleanAdjust(score, isBorderCountry, BorderCountryPlacementKey);
         score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
         score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
         score = booleanAdjust(score, isContinentalBorder && isOwnedContinent, ContinentBorderAndOwnedPlacementKey);
+        score = booleanAdjust(score, isContinentalBorder && isOwnedContinent && isBorderCountry,
+                BorderCountryAndContinentBorderAndOwnedPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, totalEnemyForces,
                 TotalEnemyRatioTestPlacementKey, TotalEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, largestEnemyForce,
@@ -198,7 +263,8 @@ public class Tuner implements AutomatedPlayer {
         }
         double attackerArmyPercentage = attack.getAttackerArmyPercentage();
 
-        score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey, AttackerArmyPercentageApplicationAttackKey);
+        score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey,
+                AttackerArmyPercentageApplicationAttackKey);
 
         return score;
     }
@@ -209,9 +275,13 @@ public class Tuner implements AutomatedPlayer {
         double bestAttackScore = Double.MIN_VALUE;
         PossibleAttack bestPossibleAttack = null;
 
+
+
         for(PossibleAttack possibleAttack : possibleAttacks){
             double score = computePossibleAttackScore(possibleAttack, game);
-            if( score > bestAttackScore && aboveTuningValue(score, MinimumAttackScoreAttackKey)){
+            String minimumAttackKey = adjutant.hasConqueredCountry() ?
+                    PostCardMinimumAttackScoreAttackKey : MinimumAttackScoreAttackKey;
+            if( score > bestAttackScore && aboveTuningValue(score, minimumAttackKey)){
                 bestAttackScore = score;
                 bestPossibleAttack = possibleAttack;
             }
@@ -247,6 +317,9 @@ public class Tuner implements AutomatedPlayer {
         return new ArrayList<>(goals);
     }
 
+    /**
+     * Adjusts by scaling by amount if ratio is better than scale key or 1-amount otherwise.
+     */
     private double ratioAdjust(double current, double ratio, String testKey, String scaleKey){
         double scale = _tunings.get(scaleKey);
         double test = _tunings.get(testKey);
@@ -261,6 +334,9 @@ public class Tuner implements AutomatedPlayer {
         return ratioAdjust(current, ratio, testKey, scaleKey);
     }
 
+    /**
+     * Adjusts downward by amount if test is true, or by 1 - amount if false.
+     */
     private double booleanAdjust(double current, boolean test, String key){
         double scale = _tunings.get(key);
         return test ? scale * current : (1-scale) * current;
