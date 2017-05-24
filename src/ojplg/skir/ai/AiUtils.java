@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class AiUtils {
+public class AiUtils {
 
     static Continent findStrongestUnownedContinent(Player player, Game game){
         Map<Continent, Float> countryPercentages = computeCountryPercentages(player, game);
@@ -129,7 +129,7 @@ class AiUtils {
         return 0;
     }
 
-    static List<Continent> enemyOwnedContinents(Player player, Game game){
+    public static List<Continent> enemyOwnedContinents(Player player, Game game){
         List<Continent> ownedContinents = game.findOwnedContinents();
         return ListUtils.filter(ownedContinents, c -> ! game.isContinentOwner(player, c));
     }

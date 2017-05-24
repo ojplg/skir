@@ -35,6 +35,12 @@ public class GameHelper {
         _occupations.placeArmies( currentOwner, country, level);
     }
 
+    public void setCountry(Country country, Player owner, int level){
+        int currentLevel = _occupations.getOccupationForce(country);
+        _occupations.killArmies(country, currentLevel);
+        _occupations.placeArmies(owner, country, level);
+    }
+
     private Game baseGameState(){
 
         List<Player> players = new ArrayList<>();

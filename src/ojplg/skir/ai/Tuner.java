@@ -233,7 +233,7 @@ public class Tuner implements AutomatedPlayer {
         return RatioDistributor.distribute(ratios,_me.reserveCount());
     }
 
-    private double computePlacementScore(Country country, Game game){
+    public double computePlacementScore(Country country, Game game){
 
         Continent continent = Continent.find(country);
         boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);

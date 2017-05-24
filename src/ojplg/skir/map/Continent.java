@@ -84,7 +84,7 @@ public class Continent implements Comparable {
 
         Continent continent = (Continent) o;
 
-        return (_name != null ? !_name.equals(continent._name) : continent._name != null);
+        return (_name != null ? _name.equals(continent._name) : continent._name != null);
     }
 
     @Override
