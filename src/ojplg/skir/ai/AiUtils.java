@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class AiUtils {
 
-    static Continent findStrongestUnownedContinent(Player player, Game game){
+    public static Continent findStrongestUnownedContinent(Player player, Game game){
         Map<Continent, Float> countryPercentages = computeCountryPercentages(player, game);
         Map<Continent, Float> armyPercentages = computeArmyPercentages(player, game);
 

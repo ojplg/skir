@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AiUtilsTest {
@@ -30,6 +32,34 @@ public class AiUtilsTest {
         assertTrue( enemyContinents.size() == 1);
         assertTrue(enemyContinents.contains(Continent.South_America));
 
+    }
+
+    @Test
+    public void testFindStrongestUnownedContinent(){
+        GameHelper gameHelper = new GameHelper();
+
+        gameHelper.setCountry(Country.Argentina, gameHelper.BluePlayer, 3);
+        gameHelper.setCountry(Country.Brazil, gameHelper.BluePlayer, 4);
+        gameHelper.setCountry(Country.Peru, gameHelper.BluePlayer, 5);
+        gameHelper.setCountry(Country.Venezuela, gameHelper.RedPlayer, 2);
+
+        Continent continent = AiUtils.findStrongestUnownedContinent(gameHelper.BluePlayer, gameHelper.Game);
+
+        assertEquals(Continent.South_America, continent);
+    }
+
+    @Test
+    public void testFindStrongestUnownedContinent_RejectsOwnedContinent(){
+        GameHelper gameHelper = new GameHelper();
+
+        gameHelper.setCountry(Country.Argentina, gameHelper.BluePlayer, 3);
+        gameHelper.setCountry(Country.Brazil, gameHelper.BluePlayer, 4);
+        gameHelper.setCountry(Country.Peru, gameHelper.BluePlayer, 5);
+        gameHelper.setCountry(Country.Venezuela, gameHelper.BluePlayer, 2);
+
+        Continent continent = AiUtils.findStrongestUnownedContinent(gameHelper.BluePlayer, gameHelper.Game);
+
+        assertNotEquals(Continent.South_America, continent);
     }
 
 

@@ -40,6 +40,8 @@ public class Tuney implements AutomatedPlayer {
     private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
     private static final String BorderCountryAndContinentBorderAndOwnedPlacementKey = "BorderCountryAndContinentBorderAndOwnedPlacementKey";
     private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
+    private static final String InStrongestUnownedContinentPlacementKey = "InStrongestUnownedContinentPlacementKey";
+
 
     private static final String TargetInBestGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
     private static final String AttackerArmyPercentageTestAttackKey = "AttackerArmyPercentageTestAttackKey";
@@ -94,6 +96,7 @@ public class Tuney implements AutomatedPlayer {
         map.put(GoalCountryNeighborPlacementKey, 0.999);
         map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
         map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
+        map.put(InStrongestUnownedContinentPlacementKey, 0.8);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(AttackerArmyPercentageTestAttackKey, 0.95);
@@ -236,9 +239,11 @@ public class Tuney implements AutomatedPlayer {
     public double computePlacementScore(Country country, Game game){
 
         Continent continent = Continent.find(country);
+        Continent strongestUnownedContinent = AiUtils.findStrongestUnownedContinent(_me, game);
         boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
         boolean isContinentalBorder = game.isContinentalBorder(country);
         boolean isOwnedContinent = game.isContinentOwner(_me, continent);
+        boolean inStrongestUnownedContinent = continent.equals(strongestUnownedContinent);
 
         List<Country> enemyNeighbors = game.findEnemyNeighbors(country);
         List<Country> allNeighbors = game.findAllNeighbors(country);
@@ -257,18 +262,22 @@ public class Tuney implements AutomatedPlayer {
         score = booleanAdjust(score, isBorderCountry, BorderCountryPlacementKey);
         score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
         score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
+        score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
+        score = booleanAdjust(score, inStrongestUnownedContinent, InStrongestUnownedContinentPlacementKey);
+
+        /*
+        score = booleanAdjust(score, CollectionUtils.containsAny(goalCountries, enemyNeighbors),
+                GoalCountryNeighborPlacementKey);
         score = booleanAdjust(score, isContinentalBorder && isOwnedContinent, ContinentBorderAndOwnedPlacementKey);
         score = booleanAdjust(score, isContinentalBorder && isOwnedContinent && isBorderCountry,
                 BorderCountryAndContinentBorderAndOwnedPlacementKey);
-        score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, totalEnemyForces,
                 TotalEnemyRatioTestPlacementKey, TotalEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, currentOccupationStrength, largestEnemyForce,
                 LargestEnemyRatioTestPlacementKey, LargestEnemyRatioApplicationPlacementKey);
         score = ratioAdjust(score, enemyNeighbors.size(), totalNeighbors,
                 NumberEnemyCountriesRatioTestPlacementKey, NumberEnemyCountriesRatioApplicationPlacementKey);
-        score = booleanAdjust(score, CollectionUtils.containsAny(goalCountries, enemyNeighbors),
-                GoalCountryNeighborPlacementKey);
+        */
 
         return score;
     }
@@ -293,8 +302,8 @@ public class Tuney implements AutomatedPlayer {
         }
 
         score = booleanAdjust(score, targetInEnemyOwnedContinent, BustEnemyContinentAttackKey);
-        score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey,
-                AttackerArmyPercentageApplicationAttackKey);
+        //score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey,
+        //        AttackerArmyPercentageApplicationAttackKey);
 
         return score;
     }

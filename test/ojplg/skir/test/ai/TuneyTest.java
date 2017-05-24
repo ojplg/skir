@@ -31,4 +31,27 @@ public class TuneyTest {
         assertTrue( continentSplitValue < continentOwnedValue);
 
     }
+
+
+    @Test
+    public void testIsBorderIncreasesPlacementChances(){
+
+        GameHelper gameHelper = new GameHelper();
+
+        gameHelper.setCountry(Country.Alaska, gameHelper.BlackPlayer, 1);
+        gameHelper.setCountry(Country.Northwest_Territory, gameHelper.BlackPlayer, 1);
+        gameHelper.setCountry(Country.Alberta, gameHelper.BlackPlayer, 1);
+        gameHelper.setCountry(Country.Ontario, gameHelper.BlackPlayer, 1);
+        gameHelper.setCountry(Country.Western_United_States, gameHelper.BlackPlayer, 1);
+
+        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings(),"TuneyUnitTest");
+
+        double albertaNotOnBorderScore = tuney.computePlacementScore(Country.Alberta, gameHelper.Game);
+
+        gameHelper.setCountry(Country.Ontario, gameHelper.RedPlayer, 1);
+
+        double albertaIsOnBorderScore = tuney.computePlacementScore(Country.Alberta, gameHelper.Game);
+
+        assertTrue( albertaIsOnBorderScore > albertaNotOnBorderScore);
+    }
 }
