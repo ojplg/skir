@@ -62,5 +62,18 @@ public class AiUtilsTest {
         assertNotEquals(Continent.South_America, continent);
     }
 
+    @Test
+    public void testContinentalArmyPercentage(){
+        GameHelper gameHelper = new GameHelper();
 
+        gameHelper.setCountry(Country.Argentina, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Brazil, gameHelper.WhitePlayer, 4);
+        gameHelper.setCountry(Country.Peru, gameHelper.BluePlayer, 5);
+        gameHelper.setCountry(Country.Venezuela, gameHelper.BlackPlayer, 2);
+
+        double armyPercentage = AiUtils.continentalArmyPercentage(gameHelper.BluePlayer, gameHelper.Game,
+                Continent.South_America);
+
+        assertEquals(0.5, armyPercentage, 0.00001);
+    }
 }

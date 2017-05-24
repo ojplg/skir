@@ -162,4 +162,46 @@ public class AiUtils {
     static boolean isBorderCountry(Player player, Game game, Country country){
         return game.findBorderCountries(player).contains(country);
     }
+
+    public static List<Continent> possibleGoalContinents(Player player, Game game,
+                                                         double minArmyPercentage, double minCountryPercentage){
+        List<Continent> goals = new ArrayList<>();
+        for(Continent continent : game.getAllContinents()){
+            double  armyPercentage = continentalArmyPercentage(player, game, continent);
+            double countryPercentage = continentalCountryPercentage(player, game, continent);
+            if( ! (countryPercentage > 0.9999) &&
+                    (armyPercentage > minArmyPercentage || countryPercentage > minCountryPercentage )){
+                goals.add(continent);
+            }
+        }
+        return goals;
+    }
+
+    public static double continentalArmyPercentage(Player player, Game game, Continent continent){
+        double playerArmyCount = 0;
+        double enemyArmyCount = 0;
+        for(Country country : continent.getCountries()){
+            int force = game.getOccupationForce(country);
+            if( player.equals(game.getOccupier(country))){
+                playerArmyCount += force;
+            } else {
+                enemyArmyCount += force;
+            }
+        }
+        return playerArmyCount / (enemyArmyCount + playerArmyCount);
+    }
+
+    static double continentalCountryPercentage(Player player, Game game, Continent continent){
+        double playerCountryCount = 0;
+        double enemyCountryCount = 0;
+        for(Country country : continent.getCountries()){
+            if( player.equals(game.getOccupier(country))){
+                playerCountryCount++;
+            } else {
+                enemyCountryCount++;
+            }
+        }
+        return playerCountryCount / (enemyCountryCount + playerCountryCount);
+    }
+
 }
