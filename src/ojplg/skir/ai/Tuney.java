@@ -260,8 +260,8 @@ public class Tuney implements AutomatedPlayer {
         double score = 1;
 
         score = booleanAdjust(score, isBorderCountry, BorderCountryPlacementKey);
-        score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
-        score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
+//          score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
+        //score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
         score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = booleanAdjust(score, inStrongestUnownedContinent, InStrongestUnownedContinentPlacementKey);
 
@@ -282,7 +282,7 @@ public class Tuney implements AutomatedPlayer {
         return score;
     }
 
-    private double computePossibleAttackScore(PossibleAttack attack, Game game){
+    public double computePossibleAttackScore(PossibleAttack attack, Game game){
         double score = 1;
 
         Country target = attack.getDefender();
@@ -302,8 +302,7 @@ public class Tuney implements AutomatedPlayer {
         }
 
         score = booleanAdjust(score, targetInEnemyOwnedContinent, BustEnemyContinentAttackKey);
-        //score = ratioAdjust(score, attackerArmyPercentage, AttackerArmyPercentageTestAttackKey,
-        //        AttackerArmyPercentageApplicationAttackKey);
+        score = score * attackerArmyPercentage;
 
         return score;
     }
