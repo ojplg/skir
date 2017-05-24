@@ -1,7 +1,7 @@
 package ojplg.skir.evolve;
 
 import ojplg.skir.ai.AiFactory;
-import ojplg.skir.ai.Tuner;
+import ojplg.skir.ai.Tuney;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
@@ -63,7 +63,7 @@ public class EvolutionRunner {
     private Individual generateRandomTunerGenes(){
         Map<String, Double> genes = new HashMap<>();
         Random random = new Random(System.currentTimeMillis());
-        for (String gene : Tuner.tuningKeys() ) {
+        for (String gene : Tuney.tuningKeys() ) {
             genes.put(gene, random.nextDouble());
         }
         // TODO: Does this need a name?

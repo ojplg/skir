@@ -1,6 +1,6 @@
 package ojplg.skir.test.ai;
 
-import ojplg.skir.ai.Tuner;
+import ojplg.skir.ai.Tuney;
 import ojplg.skir.map.Country;
 import ojplg.skir.test.helper.GameHelper;
 import org.junit.Test;
@@ -20,19 +20,13 @@ public class TuneyTest {
 
         gameHelper.setCountry(Country.Central_America, gameHelper.BlackPlayer, 1);
 
-        Tuner tuney = new Tuner(gameHelper.BlackPlayer, Tuner.presetTunings(),"TuneyUnitTest");
+        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings(),"TuneyUnitTest");
 
         double continentSplitValue = tuney.computePlacementScore(Country.Central_America, gameHelper.Game);
-
-//        assertTrue(value <= 1.0);
-//        assertTrue(value >= 0.0);
 
         gameHelper.setCountry(Country.Venezuela, gameHelper.BluePlayer, 1);
 
         double continentOwnedValue = tuney.computePlacementScore(Country.Central_America, gameHelper.Game);
-
-        System.out.println("continent split value " + continentSplitValue);
-        System.out.println("continent owned value " + continentOwnedValue);
 
         assertTrue( continentSplitValue < continentOwnedValue);
 

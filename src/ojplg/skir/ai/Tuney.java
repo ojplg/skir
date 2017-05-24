@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 
-public class Tuner implements AutomatedPlayer {
+public class Tuney implements AutomatedPlayer {
 
-    private static final Logger _log = LogManager.getLogger(Tuner.class);
+    private static final Logger _log = LogManager.getLogger(Tuney.class);
 
     private static final String BorderCountryPlacementKey = "BorderCountryPlacementKey";
     private static final String ContinentalBorderPlacementKey = "ContinentalBorderPlacementKey";
@@ -105,7 +105,7 @@ public class Tuner implements AutomatedPlayer {
         return map;
     }
 
-    public Tuner(Player player, Map<String,Double> tunings, String name){
+    public Tuney(Player player, Map<String,Double> tunings, String name){
         player.setDisplayName(name);
         _me = player;
         Map<String,Double> tuningsCopy = new HashMap<>();

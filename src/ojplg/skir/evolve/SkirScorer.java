@@ -1,6 +1,6 @@
 package ojplg.skir.evolve;
 
-import ojplg.skir.ai.Tuner;
+import ojplg.skir.ai.Tuney;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.play.bench.GameScores;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +27,7 @@ public class SkirScorer implements Scorer {
 
     @Override
     public double score(Individual individual) {
-        _aiTestBench.setAiToTest(p -> new Tuner(p, individual.getGenes(), "TunerTesting!"));
+        _aiTestBench.setAiToTest(p -> new Tuney(p, individual.getGenes(), "TunerTesting!"));
         _aiTestBench.setResultsConsumer(this::acceptScores);
         _latch = new CountDownLatch(1);
         _aiTestBench.startRun();
