@@ -101,7 +101,7 @@ public class Tuney implements AutomatedPlayer {
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(AttackerArmyPercentageTestAttackKey, 0.95);
         map.put(AttackerArmyPercentageApplicationAttackKey, 0.67);
-        map.put(MinimumAttackScoreAttackKey, 0.1);
+        map.put(MinimumAttackScoreAttackKey, 0.05);
         map.put(PostCardMinimumAttackScoreAttackKey, 0.3);
         map.put(BustEnemyContinentAttackKey, 0.85);
 
@@ -229,11 +229,11 @@ public class Tuney implements AutomatedPlayer {
         } else if ( _me.reserveCount() <= 10 ){
             countryCount = 2;
         }
-        game.findOccupiedCountries(_me).subList(0, countryCount).forEach( c ->
+        game.findOccupiedCountries(_me).forEach( c ->
         {
             ratios.put(c, computePlacementScore(c, game));
         });
-        return RatioDistributor.distribute(ratios,_me.reserveCount());
+        return RatioDistributor.distribute(ratios,_me.reserveCount(), countryCount);
     }
 
     public double computePlacementScore(Country country, Game game){
@@ -292,7 +292,6 @@ public class Tuney implements AutomatedPlayer {
             boolean targetInBestGoalContinent = bestGoalContinent.contains(target);
             score = booleanAdjust(score, targetInBestGoalContinent, TargetInBestGoalContinentAttackKey);
         }
-        double attackerArmyPercentage = attack.getAttackerArmyPercentage();
 
         boolean targetInEnemyOwnedContinent = false;
         for(Continent continent : AiUtils.enemyOwnedContinents(_me, game)){
@@ -302,6 +301,8 @@ public class Tuney implements AutomatedPlayer {
         }
 
         score = booleanAdjust(score, targetInEnemyOwnedContinent, BustEnemyContinentAttackKey);
+
+        double attackerArmyPercentage = attack.getAttackerArmyPercentage();
         score = score * attackerArmyPercentage;
 
         return score;
