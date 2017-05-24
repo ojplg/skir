@@ -22,11 +22,12 @@ public class Skir {
         final boolean benchTest = Arrays.asList(args).contains("-bench");
         final boolean evolve = Arrays.asList(args).contains("-evolve");
 
-
         if ( benchTest ){
             AiFactory aiFactory = new AiFactory();
+            startGameRunner(aiFactory, channels, false);
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),10);
             testBench.start();
+            testBench.startRun();
         } else if ( evolve ) {
             AiFactory aiFactory = new AiFactory();
             EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
