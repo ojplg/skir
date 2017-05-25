@@ -286,7 +286,7 @@ public class Tuney implements AutomatedPlayer {
             }
         }
         if( bestPossibleAttack != null ){
-            _log.warn(_me + " Attacking! from " + bestPossibleAttack.getAttacker() + " to " + bestPossibleAttack.getDefender());
+            _log.debug(_me + " Attacking! from " + bestPossibleAttack.getAttacker() + " to " + bestPossibleAttack.getDefender());
             return new Attack(adjutant, bestPossibleAttack.getAttacker(),
                     bestPossibleAttack.getDefender(), bestPossibleAttack.maximumAttackingDice());
         } else {

@@ -116,7 +116,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     }
 
     private void handlePlayerChangedEvent(PlayerChangedEvent playerChangedEvent){
-        _log.info("player event " + playerChangedEvent);
+        _log.debug("player event " + playerChangedEvent);
         JSONObject jObject;
         if (_clientKey != null && _clientKey.equals(playerChangedEvent.getClientKey())){
             jObject = playerChangedEvent.fullDetailsJson();
@@ -128,7 +128,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private void handleOrderEvent(GameEvent gameEvent){
         JSONObject jObject = gameEvent.toJson();
-        _log.info("Event: " + jObject.get("simple_text"));
+        _log.debug("Event: " + jObject.get("simple_text"));
         sendJson(jObject);
     }
 
@@ -139,14 +139,14 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     }
 
     private void handleOrder(JSONObject orderJson){
-        _log.info("Order " + orderJson);
+        _log.debug("Order " + orderJson);
         OrderJsonParser orderJsonParser = new OrderJsonParser(_currentAdjutant);
         Order order = orderJsonParser.parseOrder(orderJson);
         _channels.OrderEnteredChannel.publish(order);
     }
 
     private void handleNewAdjutant(Adjutant adjutant){
-        _log.info("adjutant " + adjutant);
+        _log.debug("adjutant " + adjutant);
         _currentAdjutant = adjutant;
         JSONObject jObject = adjutant.toPossibleOrdersJson();
         sendJson(jObject);
@@ -156,7 +156,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
         try {
             RemoteEndpoint.Basic endpoint = _session.getBasicRemote();
             String msg = jObject.toJSONString();
-            _log.info("Sending message " + msg);
+            _log.debug("Sending message " + msg);
             endpoint.sendText(msg);
         } catch (IOException io){
             _log.error("Could not send message ", io);

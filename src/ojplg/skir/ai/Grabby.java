@@ -52,7 +52,7 @@ public class Grabby implements AutomatedPlayer {
     @Override
     public Order generateOrder(Adjutant adjutant, Game game) {
         List<OrderType> possibleOrderTypes = adjutant.allowableOrders();
-        _log.info("Selecting from order types " + possibleOrderTypes);
+        _log.debug("Selecting from order types " + possibleOrderTypes);
         if(possibleOrderTypes.size() == 1){
             OrderType orderType = possibleOrderTypes.get(0);
             if( orderType == OrderType.PlaceArmy){
@@ -72,7 +72,7 @@ public class Grabby implements AutomatedPlayer {
         if( possibleOrderTypes.contains(OrderType.Fortify)){
             Fortify fortification = possiblyFortify(adjutant, game);
             if( fortification != null){
-                _log.info("Fortifying! from " + fortification.getSource() + " to " + fortification.getDestination());
+                _log.debug("Fortifying! from " + fortification.getSource() + " to " + fortification.getDestination());
                 return fortification;
             }
         }
@@ -84,7 +84,7 @@ public class Grabby implements AutomatedPlayer {
 
     private Fortify possiblyFortify(Adjutant adjutant, Game game){
         List<Country> mine = game.findInteriorCountries(_me);
-        _log.info("Searching for fortifications from " + mine.size() + " countries");
+        _log.debug("Searching for fortifications from " + mine.size() + " countries");
         int numberToFortify = 0;
         Country from = null;
         Country to = null;
@@ -92,7 +92,7 @@ public class Grabby implements AutomatedPlayer {
             int possibleNumber = game.getOccupationForce(country) - 1;
             if( possibleNumber > numberToFortify){
                 List<Country> neighbors = game.findAllNeighbors(country);
-                _log.info("Fortifying from " + country + " has " + neighbors.size() + " options");
+                _log.debug("Fortifying from " + country + " has " + neighbors.size() + " options");
                 for(Country neighbor : neighbors){
                     if(game.findEnemyNeighbors(neighbor).size() > 0){
                         numberToFortify = possibleNumber;
@@ -111,10 +111,10 @@ public class Grabby implements AutomatedPlayer {
     private Order possiblyAttack(Adjutant adjutant, Game game){
         PossibleAttack possibleAttack = findPossibleAttack(game);
         if( possibleAttack == null) {
-            _log.info("ending attacks");
+            _log.debug("ending attacks");
             return new EndAttacks(adjutant);
         } else {
-            _log.info(_me + " attacking ! from  " + possibleAttack.getAttacker() + " to  " + possibleAttack.getDefender());
+            _log.debug(_me + " attacking ! from  " + possibleAttack.getAttacker() + " to  " + possibleAttack.getDefender());
             return new Attack(adjutant, possibleAttack.getAttacker(),
                     possibleAttack.getDefender(), AiUtils.attackingDice(game, possibleAttack.getAttacker()));
         }
@@ -134,10 +134,10 @@ public class Grabby implements AutomatedPlayer {
     }
 
     private PossibleAttack findPossibleAttack(Game game){
-        _log.info("Choosing attacks for " + _me);
+        _log.debug("Choosing attacks for " + _me);
         Continent continent = AiUtils.findStrongestUnownedContinent(_me, game);
         if( continent == null ){
-            _log.warn("need to find an off-continent attack");
+            _log.debug("need to find an off-continent attack");
             return findIntercontinentalAttack(game);
         }
         _log.debug("Choosing attacks on " + continent);

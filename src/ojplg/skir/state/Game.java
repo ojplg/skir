@@ -84,17 +84,17 @@ public class Game {
     }
 
     public Player nextPlayer(){
-        _log.info("Next player called while player is " + _currentAttacker);
         int playerCount = _players.size();
         int currentPlayerIndex = _players.indexOf(_currentAttacker);
+        Player oldAttacker = _currentAttacker;
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
         if( nextPlayerIndex == 0 ){
             _turnNumber++;
             _log.info("Turn number " + _turnNumber);
         }
-        _log.info("next player index: " + nextPlayerIndex);
         _currentAttacker = _players.get(nextPlayerIndex);
-        _log.info("active player set to " + _currentAttacker);
+        _log.debug("nextPlayer from " + oldAttacker + " to " + _currentAttacker + " index " + nextPlayerIndex +
+                " in turn " + _turnNumber);
         return _currentAttacker;
     }
 
@@ -172,9 +172,8 @@ public class Game {
         List<Card> cards = vanquished.getCards();
         vanquished.removeCards(cards);
         conqueror.addCards(cards);
-        _log.info("Removing player " + vanquished);
         _players.remove(vanquished);
-        _log.info("Player count is " +_players.size());
+        _log.info("Removed player " + vanquished + " new player count is " +_players.size() + " in turn " + _turnNumber);
         publishState(new Player[] { conqueror, vanquished}, new Country[0]);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
