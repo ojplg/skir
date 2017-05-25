@@ -267,8 +267,8 @@ public class Tuney implements AutomatedPlayer {
         double score = 1;
 
         score = booleanAdjust(score, isBorderCountry, BorderCountryPlacementKey);
-//          score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
-        //score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
+        score = booleanAdjust(score, isContinentalBorder,  ContinentalBorderPlacementKey);
+        score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
         score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = booleanAdjust(score, inStrongestUnownedContinent, InStrongestUnownedContinentPlacementKey);
 
