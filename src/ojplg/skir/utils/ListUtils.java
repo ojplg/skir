@@ -16,4 +16,13 @@ public class ListUtils {
         concatenatedList.addAll(list2);
         return concatenatedList;
     }
+
+    public static <T> boolean hasIntersection(List<T> as, List<T> bs){
+        for(T a : as){
+            if( bs.contains(a)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -41,6 +41,7 @@ public class Tuney implements AutomatedPlayer {
     private static final String BorderCountryAndContinentBorderAndOwnedPlacementKey = "BorderCountryAndContinentBorderAndOwnedPlacementKey";
     private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
     private static final String InStrongestUnownedContinentPlacementKey = "InStrongestUnownedContinentPlacementKey";
+    private static final String BordersGoalCountryPlacementKey = "BordersGoalCountryPlacementKey";
 
     private static final String GoalContinentArmyPercentage = "GoalContinentArmyPercentage";
     private static final String GoalContinentCountryPercentage = "GoalContinentCountryPercentage";
@@ -100,6 +101,7 @@ public class Tuney implements AutomatedPlayer {
         map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
         map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
         map.put(InStrongestUnownedContinentPlacementKey, 0.8);
+        map.put(BordersGoalCountryPlacementKey, 0.75);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(TargetInGoalContinentAttackKey, 0.7);
@@ -256,6 +258,8 @@ public class Tuney implements AutomatedPlayer {
         List<Country> allNeighbors = game.findAllNeighbors(country);
         List<Country> goalCountries = chooseGoalCountries(game);
 
+        boolean bordersGoalCountry = ListUtils.hasIntersection(game.findAllNeighbors(country), goalCountries);
+
         List<Continent> enemyContinents = AiUtils.enemyOwnedContinents(_me, game);
         boolean bordersEnemyOwnedContinent = MapUtils.bordersContinent(game.getMap(), country, enemyContinents);
 
@@ -271,6 +275,7 @@ public class Tuney implements AutomatedPlayer {
         score = booleanAdjust(score, isOwnedContinent, ContinentOwnedPlacementKey);
         score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = booleanAdjust(score, inStrongestUnownedContinent, InStrongestUnownedContinentPlacementKey);
+        score = booleanAdjust(score, bordersGoalCountry, BordersGoalCountryPlacementKey);
 
         /*
         score = booleanAdjust(score, CollectionUtils.containsAny(goalCountries, enemyNeighbors),
