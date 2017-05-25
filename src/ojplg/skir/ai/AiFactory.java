@@ -42,14 +42,6 @@ public class AiFactory {
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
-    private Tuney generateRandom(Player player){
-        Map<String, Double> tunings = new HashMap<>();
-        Tuney.tuningKeys().forEach(
-                k -> tunings.put(k, _random.nextDouble())
-        );
-        return new Tuney(player, tunings, "Random");
-    }
-    
     private Tuney firstTuned(Player player) {
         try {
             String json = "{\"PostCardMinimumAttackScoreAttackKey\":0.263,\"MinimumAttackScoreAttackKey\":0.163,\"BorderCountryAndContinentBorderAndOwnedPlacementKey\":0.5,\"ContinentOwnedPlacementKey\":0.8538706489631215,\"AttackerArmyPercentageApplicationAttackKey\":0.24684478218139208,\"TotalEnemyRatioTestPlacementKey\":0.20615565922592521,\"GoalCountryNeighborPlacementKey\":0.9384065660400394,\"BorderCountryPlacementKey\":0.3994079673402347,\"ContinentalBorderPlacementKey\":0.824445756987892,\"NumberEnemyCountriesRatioApplicationPlacementKey\":0.7574274879878028,\"NumberEnemyCountriesRatioTestPlacementKey\":0.49018590987510907,\"LargestEnemyRatioTestPlacementKey\":0.5012023976181936,\"TotalEnemyRatioApplicationPlacementKey\":0.25781357714342085,\"AttackerArmyPercentageTestAttackKey\":0.3886617734830039,\"LargestEnemyRatioApplicationPlacementKey\":0.28730408608044056,\"TargetInBestGoalContinentAttackKey\":0.6730583013337731,\"ContinentBorderAndOwnedPlacementKey\":0.32115732746860803}";

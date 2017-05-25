@@ -14,7 +14,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,15 +29,6 @@ public class Tuney implements AutomatedPlayer {
     private static final String BorderCountryPlacementKey = "BorderCountryPlacementKey";
     private static final String ContinentalBorderPlacementKey = "ContinentalBorderPlacementKey";
     private static final String ContinentOwnedPlacementKey = "ContinentOwnedPlacementKey";
-    private static final String ContinentBorderAndOwnedPlacementKey = "ContinentBorderAndOwnedPlacementKey";
-    private static final String LargestEnemyRatioTestPlacementKey = "LargestEnemyRatioTestPlacementKey";
-    private static final String LargestEnemyRatioApplicationPlacementKey = "LargestEnemyRatioApplicationPlacementKey";
-    private static final String TotalEnemyRatioTestPlacementKey = "TotalEnemyRatioTestPlacementKey";
-    private static final String TotalEnemyRatioApplicationPlacementKey = "TotalEnemyRatioApplicationPlacementKey";
-    private static final String NumberEnemyCountriesRatioTestPlacementKey = "NumberEnemyCountriesRatioTestPlacementKey";
-    private static final String NumberEnemyCountriesRatioApplicationPlacementKey = "NumberEnemyCountriesRatioApplicationPlacementKey";
-    private static final String GoalCountryNeighborPlacementKey = "GoalCountryNeighborPlacementKey";
-    private static final String BorderCountryAndContinentBorderAndOwnedPlacementKey = "BorderCountryAndContinentBorderAndOwnedPlacementKey";
     private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
     private static final String InStrongestUnownedContinentPlacementKey = "InStrongestUnownedContinentPlacementKey";
     private static final String BordersGoalCountryPlacementKey = "BordersGoalCountryPlacementKey";
@@ -48,8 +38,6 @@ public class Tuney implements AutomatedPlayer {
 
     private static final String TargetInGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
     private static final String TargetInBestGoalContinentAttackKey = "TargetInGoalContinentAttackKey";
-    private static final String AttackerArmyPercentageTestAttackKey = "AttackerArmyPercentageTestAttackKey";
-    private static final String AttackerArmyPercentageApplicationAttackKey = "AttackerArmyPercentageApplicationAttackKey";
     private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
     private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
     private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
@@ -60,28 +48,6 @@ public class Tuney implements AutomatedPlayer {
 
     private Map<Country, Integer> _placementsToMake = null;
 
-    public static List<String> tuningKeys(){
-        return Collections.unmodifiableList(Arrays.asList(
-                BorderCountryPlacementKey,
-                ContinentalBorderPlacementKey,
-                ContinentOwnedPlacementKey,
-                ContinentBorderAndOwnedPlacementKey,
-                LargestEnemyRatioApplicationPlacementKey,
-                LargestEnemyRatioTestPlacementKey,
-                TotalEnemyRatioApplicationPlacementKey,
-                TotalEnemyRatioTestPlacementKey,
-                BordersEnemyOwnedContinentPlacementKey,
-                NumberEnemyCountriesRatioApplicationPlacementKey,
-                NumberEnemyCountriesRatioTestPlacementKey,
-                GoalCountryNeighborPlacementKey,
-                BorderCountryAndContinentBorderAndOwnedPlacementKey,
-                TargetInBestGoalContinentAttackKey,
-                AttackerArmyPercentageTestAttackKey,
-                AttackerArmyPercentageApplicationAttackKey,
-                MinimumAttackScoreAttackKey,
-                PostCardMinimumAttackScoreAttackKey));
-    }
-
     public static Map<String, Double> presetTunings(){
 
         Map<String, Double> map = new HashMap<>();
@@ -90,23 +56,12 @@ public class Tuney implements AutomatedPlayer {
         map.put(BorderCountryPlacementKey, 0.9999);
         map.put(ContinentalBorderPlacementKey, 0.55);
         map.put(ContinentOwnedPlacementKey, 0.4);
-        map.put(ContinentBorderAndOwnedPlacementKey, 0.4);
-        map.put(LargestEnemyRatioApplicationPlacementKey, 0.6);
-        map.put(LargestEnemyRatioTestPlacementKey, 0.6);
-        map.put(TotalEnemyRatioApplicationPlacementKey, 0.6);
-        map.put(TotalEnemyRatioTestPlacementKey, 0.6);
-        map.put(NumberEnemyCountriesRatioApplicationPlacementKey, 0.5);
-        map.put(NumberEnemyCountriesRatioTestPlacementKey, 0.5);
-        map.put(GoalCountryNeighborPlacementKey, 0.999);
-        map.put(BorderCountryAndContinentBorderAndOwnedPlacementKey, 0.9);
         map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
         map.put(InStrongestUnownedContinentPlacementKey, 0.8);
         map.put(BordersGoalCountryPlacementKey, 0.75);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(TargetInGoalContinentAttackKey, 0.7);
-        map.put(AttackerArmyPercentageTestAttackKey, 0.95);
-        map.put(AttackerArmyPercentageApplicationAttackKey, 0.67);
         map.put(MinimumAttackScoreAttackKey, 0.05);
         map.put(PostCardMinimumAttackScoreAttackKey, 0.19);
         map.put(BustEnemyContinentAttackKey, 0.85);
@@ -254,19 +209,12 @@ public class Tuney implements AutomatedPlayer {
         boolean isOwnedContinent = game.isContinentOwner(_me, continent);
         boolean inStrongestUnownedContinent = continent.equals(strongestUnownedContinent);
 
-        List<Country> enemyNeighbors = game.findEnemyNeighbors(country);
-        List<Country> allNeighbors = game.findAllNeighbors(country);
         List<Country> goalCountries = chooseGoalCountries(game);
 
         boolean bordersGoalCountry = ListUtils.hasIntersection(game.findAllNeighbors(country), goalCountries);
 
         List<Continent> enemyContinents = AiUtils.enemyOwnedContinents(_me, game);
         boolean bordersEnemyOwnedContinent = MapUtils.bordersContinent(game.getMap(), country, enemyContinents);
-
-        int currentOccupationStrength = game.getOccupationForce(country);
-        int totalNeighbors = allNeighbors.size();
-        int totalEnemyForces = AiUtils.computeTotalOccupyingForces(enemyNeighbors, game);
-        int largestEnemyForce = AiUtils.highestOccupyingForce(enemyNeighbors, game);
 
         double score = 1;
 
@@ -276,20 +224,6 @@ public class Tuney implements AutomatedPlayer {
         score = booleanAdjust(score, bordersEnemyOwnedContinent, BordersEnemyOwnedContinentPlacementKey);
         score = booleanAdjust(score, inStrongestUnownedContinent, InStrongestUnownedContinentPlacementKey);
         score = booleanAdjust(score, bordersGoalCountry, BordersGoalCountryPlacementKey);
-
-        /*
-        score = booleanAdjust(score, CollectionUtils.containsAny(goalCountries, enemyNeighbors),
-                GoalCountryNeighborPlacementKey);
-        score = booleanAdjust(score, isContinentalBorder && isOwnedContinent, ContinentBorderAndOwnedPlacementKey);
-        score = booleanAdjust(score, isContinentalBorder && isOwnedContinent && isBorderCountry,
-                BorderCountryAndContinentBorderAndOwnedPlacementKey);
-        score = ratioAdjust(score, currentOccupationStrength, totalEnemyForces,
-                TotalEnemyRatioTestPlacementKey, TotalEnemyRatioApplicationPlacementKey);
-        score = ratioAdjust(score, currentOccupationStrength, largestEnemyForce,
-                LargestEnemyRatioTestPlacementKey, LargestEnemyRatioApplicationPlacementKey);
-        score = ratioAdjust(score, enemyNeighbors.size(), totalNeighbors,
-                NumberEnemyCountriesRatioTestPlacementKey, NumberEnemyCountriesRatioApplicationPlacementKey);
-        */
 
         return score;
     }

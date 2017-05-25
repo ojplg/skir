@@ -63,7 +63,7 @@ public class EvolutionRunner {
     private Individual generateRandomTunerGenes(){
         Map<String, Double> genes = new HashMap<>();
         Random random = new Random(System.currentTimeMillis());
-        for (String gene : Tuney.tuningKeys() ) {
+        for (String gene : Tuney.presetTunings().keySet() ) {
             genes.put(gene, random.nextDouble());
         }
         // TODO: Does this need a name?
