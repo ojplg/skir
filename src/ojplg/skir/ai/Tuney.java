@@ -41,7 +41,7 @@ public class Tuney implements AutomatedPlayer {
     private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
     private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
     private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
-
+    private static final String MajorAdvantageAttackKey = "MajorAdvantageAttackKey";
 
     private final Map<String,Double> _tunings;
     private final Player _me;
@@ -65,6 +65,7 @@ public class Tuney implements AutomatedPlayer {
         map.put(MinimumAttackScoreAttackKey, 0.05);
         map.put(PostCardMinimumAttackScoreAttackKey, 0.19);
         map.put(BustEnemyContinentAttackKey, 0.85);
+        map.put(MajorAdvantageAttackKey, 0.10);
 
         map.put(GoalContinentArmyPercentage, 0.65);
         map.put(GoalContinentCountryPercentage, 0.65);
@@ -138,6 +139,8 @@ public class Tuney implements AutomatedPlayer {
     }
 
     private Occupy doOccupy(Adjutant adjutant, Game game){
+        // TODO: this should have some configuration or better smarts
+
         OccupationConstraints constraints = adjutant.getOccupationConstraints();
 
         int existingForce = game.getOccupationForce(constraints.attacker());
@@ -260,7 +263,8 @@ public class Tuney implements AutomatedPlayer {
     }
 
     private Order generateAttackOrder(Adjutant adjutant, Game game){
-        List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, 15);
+        int majorAdvantageCutoff = (int) Math.round( 100 * tunedValue(MajorAdvantageAttackKey) );
+        List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, majorAdvantageCutoff);
         if( majorAdvantages.size() > 0){
             PossibleAttack possibleAttack = majorAdvantages.get(0);
             return new Attack(adjutant, possibleAttack.getAttacker(), possibleAttack.getDefender(),
@@ -271,7 +275,6 @@ public class Tuney implements AutomatedPlayer {
 
         double bestAttackScore = Double.MIN_VALUE;
         PossibleAttack bestPossibleAttack = null;
-
 
         for(PossibleAttack possibleAttack : possibleAttacks){
             double score = computePossibleAttackScore(possibleAttack, game);
