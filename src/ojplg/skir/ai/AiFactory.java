@@ -38,7 +38,7 @@ public class AiFactory {
         String[] names;
 
         names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney" };
-        //String[] names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
+        //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
         //names = new String[] { "PsTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }

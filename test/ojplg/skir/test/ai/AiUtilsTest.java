@@ -7,6 +7,7 @@ import ojplg.skir.test.helper.GameHelper;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -76,4 +77,56 @@ public class AiUtilsTest {
 
         assertEquals(0.5, armyPercentage, 0.00001);
     }
+
+    @Test
+    public void testFindContiguousOwnedCountries(){
+        GameHelper gameHelper = new GameHelper();
+
+        for(Country country : Continent.Asia.getCountries()){
+            gameHelper.setCountry(country, gameHelper.RedPlayer,1);
+        }
+        gameHelper.setCountry(Country.China, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.India, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Mongolia, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Siberia, gameHelper.BluePlayer, 1);
+
+        Set<Country> bloc = AiUtils.findContiguousOwnedCountries(gameHelper.Game, Country.China);
+
+        assertEquals(4, bloc.size());
+        assertTrue(bloc.contains(Country.China));
+        assertTrue(bloc.contains(Country.India));
+        assertTrue(bloc.contains(Country.Mongolia));
+        assertTrue(bloc.contains(Country.Siberia));
+    }
+
+    @Test
+    public void testFindContiguousOwnedCountriesSpansContinents(){
+        GameHelper gameHelper = new GameHelper();
+
+        for(Country country : Continent.Asia.getCountries()){
+            gameHelper.setCountry(country, gameHelper.RedPlayer,1);
+        }
+        for(Country country : Continent.Australia.getCountries()){
+            gameHelper.setCountry(country, gameHelper.GreenPlayer,1);
+        }
+        gameHelper.setCountry(Country.China, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.India, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Mongolia, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Siberia, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Siam, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.Indonesia, gameHelper.BluePlayer, 1);
+        gameHelper.setCountry(Country.New_Guinea, gameHelper.BluePlayer, 1);
+
+        Set<Country> bloc = AiUtils.findContiguousOwnedCountries(gameHelper.Game, Country.China);
+
+        assertEquals(7, bloc.size());
+        assertTrue(bloc.contains(Country.China));
+        assertTrue(bloc.contains(Country.India));
+        assertTrue(bloc.contains(Country.Mongolia));
+        assertTrue(bloc.contains(Country.Siberia));
+        assertTrue(bloc.contains(Country.Siam));
+        assertTrue(bloc.contains(Country.Indonesia));
+        assertTrue(bloc.contains(Country.New_Guinea));
+    }
+
 }

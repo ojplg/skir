@@ -9,6 +9,7 @@ import ojplg.skir.utils.ListUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -202,6 +203,27 @@ public class AiUtils {
             }
         }
         return playerCountryCount / (enemyCountryCount + playerCountryCount);
+    }
+
+    public static Set<Country> findContiguousOwnedCountries(Game game,Country base){
+        Set<Country> checked = new HashSet<>();
+        Set<Country> bloc = new HashSet<>();
+
+        List<Country> toCheck = new ArrayList<>();
+        toCheck.add(base);
+
+        while (toCheck.size() > 0){
+            Country country = toCheck.get(0);
+            checked.add(country);
+            bloc.add(country);
+            for(Country neighbor : game.findAlliedNeighbors(country)){
+                if( ! checked.contains(neighbor)){
+                    toCheck.add(neighbor);
+                }
+            }
+            toCheck.remove(country);
+        }
+        return bloc;
     }
 
 }

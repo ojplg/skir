@@ -174,7 +174,7 @@ public class Tuney implements AutomatedPlayer {
         for(Country interior : interiors){
             int excessForces = game.getOccupationForce(interior);
             if (excessForces> numberToMove){
-                numberToMove = excessForces -1;
+                numberToMove = excessForces - 1;
                 sourceCountry = interior;
             }
         }
