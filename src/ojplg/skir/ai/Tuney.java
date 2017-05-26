@@ -206,9 +206,7 @@ public class Tuney implements AutomatedPlayer {
     private Map<Country,Integer> computePlacements(Game game){
         Map<Country, Double> ratios = new HashMap<>();
         game.findOccupiedCountries(_me).forEach( c ->
-        {
-            ratios.put(c, computePlacementScore(c, game));
-        });
+                ratios.put(c, computePlacementScore(c, game)));
         return RatioDistributor.distribute(ratios,_me.reserveCount(), _placementMinimums);
     }
 
@@ -320,31 +318,14 @@ public class Tuney implements AutomatedPlayer {
 
         List<Continent> enemyOwnedContinents = AiUtils.enemyOwnedContinents(_me, game);
         List<Country> enemyContinentBorders = enemyOwnedContinents.stream()
-                .map(c -> game.findContinentalBorders(c))
-                .reduce(new ArrayList<>(), (l1,l2) -> ListUtils.concat(l1, l2));
+                .map(game::findContinentalBorders)
+                .reduce(new ArrayList<>(), ListUtils::concat);
         List<Country> enemyBorders = AiUtils.findEnemyBorders(_me, game);
         Collection<Country> borderingEnemyContinentsCountries =
                 CollectionUtils.intersection(enemyContinentBorders, enemyBorders);
 
         goals.addAll(borderingEnemyContinentsCountries);
         return new ArrayList<>(goals);
-    }
-
-    /**
-     * Adjusts by scaling by amount if ratio is better than scale key or 1-amount otherwise.
-     */
-    private double ratioAdjust(double current, double ratio, String testKey, String scaleKey){
-        double scale = _tunings.get(scaleKey);
-        double test = _tunings.get(testKey);
-        return test < ratio ? scale * current : (1-scale) * current;
-    }
-
-    private double ratioAdjust(double current, int numerator, int denominator, String testKey, String scaleKey){
-        if( numerator == 0 && denominator == 0){
-            return current;
-        }
-        double ratio = numerator/(denominator + numerator);
-        return ratioAdjust(current, ratio, testKey, scaleKey);
     }
 
     /**
