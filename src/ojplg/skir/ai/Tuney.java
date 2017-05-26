@@ -4,7 +4,19 @@ import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.MapUtils;
-import ojplg.skir.play.orders.*;
+import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.Attack;
+import ojplg.skir.play.orders.ClaimArmies;
+import ojplg.skir.play.orders.DrawCard;
+import ojplg.skir.play.orders.EndAttacks;
+import ojplg.skir.play.orders.EndTurn;
+import ojplg.skir.play.orders.ExchangeCardSet;
+import ojplg.skir.play.orders.Fortify;
+import ojplg.skir.play.orders.OccupationConstraints;
+import ojplg.skir.play.orders.Occupy;
+import ojplg.skir.play.orders.Order;
+import ojplg.skir.play.orders.OrderType;
+import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.utils.ListUtils;
@@ -13,14 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class Tuney implements AutomatedPlayer {
 
@@ -32,6 +37,9 @@ public class Tuney implements AutomatedPlayer {
     private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
     private static final String InStrongestUnownedContinentPlacementKey = "InStrongestUnownedContinentPlacementKey";
     private static final String BordersGoalCountryPlacementKey = "BordersGoalCountryPlacementKey";
+    private static final String FirstCountryMinimumPlacementKey = "FirstCountryMinimumPlacementKey";
+    private static final String SecondCountryMinimumPlacementKey = "SecondCountryMinimumPlacementKey";
+    private static final String ThirdCountryMinimumPlacementKey = "ThirdCountryMinimumPlacementKey";
 
     private static final String GoalContinentArmyPercentage = "GoalContinentArmyPercentage";
     private static final String GoalContinentCountryPercentage = "GoalContinentCountryPercentage";
@@ -45,6 +53,7 @@ public class Tuney implements AutomatedPlayer {
 
     private final Map<String,Double> _tunings;
     private final Player _me;
+    private final List<Integer> _placementMinimums;
 
     private Map<Country, Integer> _placementsToMake = null;
 
@@ -59,6 +68,10 @@ public class Tuney implements AutomatedPlayer {
         map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
         map.put(InStrongestUnownedContinentPlacementKey, 0.8);
         map.put(BordersGoalCountryPlacementKey, 0.75);
+
+        map.put(FirstCountryMinimumPlacementKey, 0.5);
+        map.put(SecondCountryMinimumPlacementKey, 0.2);
+        map.put(ThirdCountryMinimumPlacementKey, 0.1);
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(TargetInGoalContinentAttackKey, 0.7);
@@ -76,9 +89,11 @@ public class Tuney implements AutomatedPlayer {
     public Tuney(Player player, Map<String,Double> tunings, String name){
         player.setDisplayName(name);
         _me = player;
-        Map<String,Double> tuningsCopy = new HashMap<>();
-        tuningsCopy.putAll(tunings);
         _tunings = Collections.unmodifiableMap(tunings);
+        _placementMinimums = Arrays.asList(
+                scaledTunedValue(FirstCountryMinimumPlacementKey, 10),
+                scaledTunedValue(SecondCountryMinimumPlacementKey, 10),
+                scaledTunedValue(ThirdCountryMinimumPlacementKey, 10));
     }
 
     @Override
@@ -190,17 +205,11 @@ public class Tuney implements AutomatedPlayer {
 
     private Map<Country,Integer> computePlacements(Game game){
         Map<Country, Double> ratios = new HashMap<>();
-        int countryCount = game.findOccupiedCountries(_me).size();
-        if( _me.reserveCount() <= 5 ){
-            countryCount = 1;
-        } else if ( _me.reserveCount() <= 10 ){
-            countryCount = 2;
-        }
         game.findOccupiedCountries(_me).forEach( c ->
         {
             ratios.put(c, computePlacementScore(c, game));
         });
-        return RatioDistributor.distribute(ratios,_me.reserveCount(), countryCount);
+        return RatioDistributor.distribute(ratios,_me.reserveCount(), _placementMinimums);
     }
 
     public double computePlacementScore(Country country, Game game){
@@ -262,8 +271,12 @@ public class Tuney implements AutomatedPlayer {
         return score;
     }
 
+    private int scaledTunedValue(String tuning, int scale){
+        return (int) Math.round(scale * tunedValue(tuning));
+    }
+
     private Order generateAttackOrder(Adjutant adjutant, Game game){
-        int majorAdvantageCutoff = (int) Math.round( 100 * tunedValue(MajorAdvantageAttackKey) );
+        int majorAdvantageCutoff = scaledTunedValue(MajorAdvantageAttackKey, 100);
         List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, majorAdvantageCutoff);
         if( majorAdvantages.size() > 0){
             PossibleAttack possibleAttack = majorAdvantages.get(0);

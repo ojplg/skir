@@ -3,7 +3,9 @@ package ojplg.skir.test.utils;
 import ojplg.skir.utils.RatioDistributor;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -117,7 +119,7 @@ public class RatioDistributorTest
     private void testPreservesAmountDistributedInvariant(int amount, int optionCount, Random random){
         Map<Integer, Double> ratios = new HashMap<>();
         for(int idx=0; idx<optionCount; idx++){
-            ratios.put(new Integer(idx), random.nextDouble());
+            ratios.put(idx, random.nextDouble());
         }
         Map<Integer,Integer> distributed = RatioDistributor.distribute(ratios, amount);
         int totalAmountDistributed = distributed.values().stream().reduce(0, (a,b) -> a+b);
@@ -153,5 +155,40 @@ public class RatioDistributorTest
         assertEquals(new Integer(2), distributed.get("A"));
     }
 
+    @Test
+    public void ratioDistributorRespectsWithoutMinimums(){
+        Map<String, Double> ratios = new HashMap<>();
+        ratios.put("A", 12.0);
+        ratios.put("B", 13.0);
+        ratios.put("C", 14.0);
+        ratios.put("D", 11.0);
+
+        Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 8);
+
+        assertEquals(4, distributed.size());
+        assertEquals(new Integer(2), distributed.get("A"));
+        assertEquals(new Integer(2), distributed.get("B"));
+        assertEquals(new Integer(2), distributed.get("C"));
+        assertEquals(new Integer(2), distributed.get("D"));
+    }
+
+
+    @Test
+    public void ratioDistributorRespectsMinimums(){
+        List<Integer> minimums = Arrays.asList(5, 2);
+
+        Map<String, Double> ratios = new HashMap<>();
+        ratios.put("A", 12.0);
+        ratios.put("B", 13.0);
+        ratios.put("C", 14.0);
+        ratios.put("D", 11.0);
+
+        Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 8, minimums);
+
+        //assertEquals(3, distributed.size());
+        assertEquals(new Integer(1), distributed.get("A"));
+        assertEquals(new Integer(2), distributed.get("B"));
+        assertEquals(new Integer(5), distributed.get("C"));
+    }
 
 }
