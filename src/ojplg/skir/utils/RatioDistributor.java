@@ -69,7 +69,7 @@ public class RatioDistributor {
 
     private static <T> List<WeightedItem<T>> itemsInOrder(Map<T, Double> inputs){
         List<WeightedItem<T>> itemList = inputs.entrySet().stream().
-                map(e -> new WeightedItem<T>(e.getKey(), e.getValue())).collect(Collectors.toList());
+                map(e -> new WeightedItem<>(e.getKey(), e.getValue())).collect(Collectors.toList());
         Collections.sort(itemList);
         Collections.reverse(itemList);
         return itemList;

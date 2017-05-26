@@ -8,8 +8,6 @@ import ojplg.skir.state.Player;
 import ojplg.skir.test.helper.GameHelper;
 import org.junit.Test;
 
-import java.util.List;
-
 import static org.junit.Assert.assertTrue;
 
 public class TuneyTest {

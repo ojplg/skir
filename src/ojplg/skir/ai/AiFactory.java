@@ -4,12 +4,11 @@ import ojplg.skir.state.Player;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Function;
 
 public class AiFactory {
-
-    private final Random _random = new Random();
 
     private Function<Player, AutomatedPlayer> _firstPlayerFactory;
 
