@@ -37,6 +37,10 @@ public class PossibleAttack implements Comparable<PossibleAttack> {
         return Math.max(Constants.MAXIMUM_ATTACKER_DICE, _attackerForce - 1);
     }
 
+    public int getAttackerForce(){
+        return _attackerForce;
+    }
+
     @Override
     public int compareTo(PossibleAttack other) {
         return other.getAdvantage() - getAdvantage();

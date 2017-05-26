@@ -50,6 +50,8 @@ public class GameScores {
     public String toString(){
         StringBuilder buf = new StringBuilder();
 
+        buf.append("Name: games, total, average\n");
+
         for(Object key : keySet()){
             int participationCount = getParticipationCount(key);
             int totalScore = getScore(key);
@@ -60,9 +62,8 @@ public class GameScores {
             buf.append(participationCount);
             buf.append(", ");
             buf.append(totalScore);
-            buf.append("  (");
+            buf.append(", ");
             buf.append(averageScore);
-            buf.append(")");
             buf.append("\n");
         }
 

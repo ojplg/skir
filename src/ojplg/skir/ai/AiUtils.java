@@ -8,6 +8,7 @@ import ojplg.skir.state.Player;
 import ojplg.skir.utils.ListUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -224,6 +225,14 @@ public class AiUtils {
             toCheck.remove(country);
         }
         return bloc;
+    }
+
+    public static int findStrengthOfCountries(Game game, Collection<Country> countries){
+        int strength = 0;
+        for(Country country:countries){
+            strength += game.getOccupationForce(country);
+        }
+        return strength;
     }
 
 }

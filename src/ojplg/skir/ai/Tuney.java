@@ -25,7 +25,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Tuney implements AutomatedPlayer {
 
@@ -50,6 +58,7 @@ public class Tuney implements AutomatedPlayer {
     private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
     private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
     private static final String MajorAdvantageAttackKey = "MajorAdvantageAttackKey";
+    private static final String WeakOpponentAttackKey = "WeakOpponentAttackKey";
 
     private final Map<String,Double> _tunings;
     private final Player _me;
@@ -75,10 +84,13 @@ public class Tuney implements AutomatedPlayer {
 
         map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(TargetInGoalContinentAttackKey, 0.7);
-        map.put(MinimumAttackScoreAttackKey, 0.05);
-        map.put(PostCardMinimumAttackScoreAttackKey, 0.19);
         map.put(BustEnemyContinentAttackKey, 0.85);
         map.put(MajorAdvantageAttackKey, 0.10);
+        map.put(WeakOpponentAttackKey, 0.9);
+
+        map.put(MinimumAttackScoreAttackKey, 0.04);
+        map.put(PostCardMinimumAttackScoreAttackKey, 0.15);
+
 
         map.put(GoalContinentArmyPercentage, 0.65);
         map.put(GoalContinentCountryPercentage, 0.65);
@@ -239,14 +251,17 @@ public class Tuney implements AutomatedPlayer {
     }
 
     public double computePossibleAttackScore(PossibleAttack attack, Game game){
-        double score = 1;
 
         Country target = attack.getDefender();
+        Set<Country> bloc = AiUtils.findContiguousOwnedCountries(game, target);
+        int blocStrength = AiUtils.findStrengthOfCountries(game, bloc);
 
+        Continent bestGoalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
         List<Continent> goalContinents = AiUtils.possibleGoalContinents(_me, game,
                 tunedValue(GoalContinentArmyPercentage), tunedValue(GoalContinentCountryPercentage));
 
-        Continent bestGoalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
+        double score = 1;
+        // 1
         if( bestGoalContinent != null ) {
             boolean targetInBestGoalContinent = bestGoalContinent.contains(target);
             score = booleanAdjust(score, targetInBestGoalContinent, TargetInBestGoalContinentAttackKey);
@@ -261,10 +276,16 @@ public class Tuney implements AutomatedPlayer {
             }
         }
 
+        // 2
         score = booleanAdjust(score, targetInEnemyOwnedContinent, BustEnemyContinentAttackKey);
 
+        // 3
         double attackerArmyPercentage = attack.getAttackerArmyPercentage();
         score = score * attackerArmyPercentage;
+
+        // 4
+        boolean weakOpponent = blocStrength < attack.getAttackerForce();
+        score = booleanAdjust(score, weakOpponent, WeakOpponentAttackKey);
 
         return score;
     }
