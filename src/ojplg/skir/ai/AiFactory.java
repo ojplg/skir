@@ -1,9 +1,15 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.state.Player;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,6 +32,7 @@ public class AiFactory {
             case "Wimpy": return new Wimpy(player);
             case "AiTuney": return firstTuned(player);
             case "PsTuney": return presetTuned(player);
+            case "EvTuney": return evolveTuned(player);
             default: return new Wimpy(player);
         }
     }
@@ -37,9 +44,9 @@ public class AiFactory {
     private String randomKey(){
         String[] names;
 
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney" };
+        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney" };
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
-        //names = new String[] { "PsTuney" };
+        //names = new String[] { "EvTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
@@ -50,6 +57,20 @@ public class AiFactory {
             Map<String, Double> jsonObject = (Map<String, Double>) parser.parse(json);
             return new Tuney(player, jsonObject, "AiTuney");
         } catch (ParseException pe) {
+            throw new RuntimeException(pe);
+        }
+    }
+
+    private Tuney evolveTuned(Player player){
+        try {
+
+            JSONParser parser = new JSONParser();
+            Map<String,Double> jsonObject = (Map<String,Double>) parser.parse(
+                    new InputStreamReader(getClass().getResourceAsStream("/tunings/tuned.json")));
+            return new Tuney(player, jsonObject, "EvTuney");
+        } catch (IOException io){
+            throw new RuntimeException(io);
+        } catch (ParseException pe){
             throw new RuntimeException(pe);
         }
     }
