@@ -28,7 +28,7 @@ public class Wimpy implements AutomatedPlayer {
 
     public Wimpy(Player player){
         _me = player;
-        player.setDisplayName("AI: Wimpy");
+        player.setDisplayName("Wimpy");
     }
 
     @Override

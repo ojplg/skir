@@ -35,7 +35,7 @@ public class Grumpy implements AutomatedPlayer {
 
     public Grumpy(Player player){
         _me = player;
-        player.setDisplayName("AI: Grumpy");
+        player.setDisplayName("Grumpy");
     }
 
     @Override

@@ -35,7 +35,7 @@ public class Bully implements AutomatedPlayer {
 
     public Bully(Player player){
         _me = player;
-        player.setDisplayName("AI: Bully");
+        player.setDisplayName("Bully");
     }
 
     @Override

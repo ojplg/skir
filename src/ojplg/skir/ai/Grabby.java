@@ -35,7 +35,7 @@ public class Grabby implements AutomatedPlayer {
 
     public Grabby(Player player){
         this._me = player;
-        player.setDisplayName("AI: Grabby");
+        player.setDisplayName("Grabby");
     }
 
     @Override

@@ -16,7 +16,7 @@ public class Massy implements AutomatedPlayer {
 
     public Massy(Player player){
         _me = player;
-        _me.setDisplayName("Massy!");
+        _me.setDisplayName("Massy");
     }
 
     @Override
