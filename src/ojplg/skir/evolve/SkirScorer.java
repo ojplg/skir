@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class SkirScorer implements Scorer {
 
-    private static final Logger _log = LogManager.getLogger(SkirScorer.class);
+    private static final Logger _log = LogManager.getLogger("ojplg.skir.evolve");
 
     private final AiTestBench _aiTestBench;
 
@@ -27,7 +27,8 @@ public class SkirScorer implements Scorer {
 
     @Override
     public double score(Individual individual) {
-        _aiTestBench.setAiToTest(p -> new Tuney(p, individual.getGenes(), "TunerTesting!"));
+        String name = "Tuner-" + individual.getIdentifier();
+        _aiTestBench.setAiToTest(p -> new Tuney(p, individual.getGenes(), name));
         _aiTestBench.setResultsConsumer(this::acceptScores);
         _latch = new CountDownLatch(1);
         _aiTestBench.startRun();
@@ -36,7 +37,7 @@ public class SkirScorer implements Scorer {
         } catch (InterruptedException ie){
             _log.warn("Why was I interrupted?", ie);
         }
-        return _scores.getScore("TunerTesting!");
+        return _scores.getScore(name);
     }
 
     private void acceptScores(GameScores scores){

@@ -92,6 +92,7 @@ public class AiTestBench {
             if( _resultsConsumer != null) {
                 _resultsConsumer.accept(scores);
             }
+            _gameRecords.clear();
         }
     }
 

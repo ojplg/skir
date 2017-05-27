@@ -5,13 +5,15 @@ import java.util.Map;
 
 public class Individual implements Comparable<Individual> {
 
-    private final String _identifier;
+    private final int _individualNumber;
+    private final int _generationNumber;
     private final Map<String, Double> _genes;
     private Double _score = null;
 
-    public Individual(String identifier, Map<String, Double> genes){
+    public Individual(int generationNumber, int individualNumber, Map<String, Double> genes){
         _genes = Collections.unmodifiableMap(genes);
-        _identifier = identifier;
+        _individualNumber = individualNumber;
+        _generationNumber = generationNumber;
     }
 
     public void setScore(double score){
@@ -19,7 +21,7 @@ public class Individual implements Comparable<Individual> {
     }
 
     public String getIdentifier() {
-        return _identifier;
+        return _generationNumber + "." + _individualNumber;
     }
 
     public Map<String, Double> getGenes() {

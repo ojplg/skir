@@ -17,12 +17,11 @@ import java.util.Random;
 
 public class EvolutionRunner {
 
-    private final static Logger _log = LogManager.getLogger(EvolutionRunner.class);
+    private final static Logger _log = LogManager.getLogger("ojplg.skir.evolve");
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
     private final int _numberOfGenerations = 1000;
-
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
         _channels = channels;
@@ -38,36 +37,38 @@ public class EvolutionRunner {
         Generation currentGeneration = createFirstGeneration();
         for(int cnt=0; cnt < _numberOfGenerations ; cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
-            _log.info("next generation determined");
-            logGeneration(cnt, nextGeneration);
+            _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
         }
     }
 
-    private void logGeneration(int number, Generation generation){
-        for (Individual individual:generation.allMembers()) {
-            Map<String, Double> genes = individual.getGenes();
-            JSONObject jObject = new JSONObject(genes);
-            _log.info("Individual in generation " + number + ": " + jObject);
-        }
-    }
+//    private void logGeneration(int number, Generation generation){
+//        _log.info("Logging generation " + number + " has " + generation.allMembers().size() + " individuals.");
+//        for (Individual individual:generation.allMembers()) {
+//            Map<String, Double> genes = individual.getGenes();
+//            JSONObject jObject = new JSONObject(genes);
+//            _log.info("Generation " + number + " named " + individual.getIdentifier() + " JSON: " + jObject);
+//        }
+//    }
 
     private Generation createFirstGeneration(){
         List<Individual> randoms = new ArrayList<>();
         for(int idx=0; idx<100; idx++){
-            randoms.add(generateRandomTunerGenes());
+            randoms.add(generateRandomTunerGenes(idx));
         }
-        return new Generation(randoms);
+        return new Generation(randoms,0);
     }
 
-    private Individual generateRandomTunerGenes(){
+    private Individual generateRandomTunerGenes(int number){
         Map<String, Double> genes = new HashMap<>();
         Random random = new Random(System.currentTimeMillis());
-        for (String gene : Tuney.presetTunings().keySet() ) {
-            genes.put(gene, random.nextDouble());
+        for (Map.Entry<String, Double> gene : Tuney.presetTunings().entrySet() ) {
+            double fuzz = random.nextDouble() / 2;
+            fuzz += 0.75;
+            double value = Math.min(0.99999, gene.getValue() * fuzz);
+            genes.put(gene.getKey(), value);
         }
-        // TODO: Does this need a name?
-        return new Individual("fred", genes);
+        return new Individual(0, number, genes);
     }
 
 }

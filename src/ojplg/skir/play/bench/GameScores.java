@@ -50,7 +50,7 @@ public class GameScores {
     public String toString(){
         StringBuilder buf = new StringBuilder();
 
-        buf.append("Name: games, total, average\n");
+        buf.append("Name: games played, total, average\n");
 
         for(Object key : keySet()){
             int participationCount = getParticipationCount(key);
