@@ -1,22 +1,20 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.state.Player;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 public class AiFactory {
 
     private Function<Player, AutomatedPlayer> _firstPlayerFactory;
+    private final Random random = new Random(System.currentTimeMillis());
 
     public AutomatedPlayer generateAiPlayer(Player player){
         if( _firstPlayerFactory != null && player.getNumber() == 0){
@@ -32,7 +30,8 @@ public class AiFactory {
             case "Wimpy": return new Wimpy(player);
             case "AiTuney": return firstTuned(player);
             case "PsTuney": return presetTuned(player);
-            case "EvTuney": return evolveTuned(player);
+            //case "EvTuney": return evolveTuned(player, random.nextInt(30));
+            case "EvTuney": return evolveTuned(player, 22);
             default: return new Wimpy(player);
         }
     }
@@ -44,9 +43,9 @@ public class AiFactory {
     private String randomKey(){
         String[] names;
 
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney" };
+        //names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney" };
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
-        //names = new String[] { "EvTuney" };
+        names = new String[] { "EvTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
@@ -61,13 +60,13 @@ public class AiFactory {
         }
     }
 
-    private Tuney evolveTuned(Player player){
+    private Tuney evolveTuned(Player player, int number){
         try {
-
+            String playerName = "ev1_" + String.format("%02d", number);
             JSONParser parser = new JSONParser();
             Map<String,Double> jsonObject = (Map<String,Double>) parser.parse(
-                    new InputStreamReader(getClass().getResourceAsStream("/tunings/tuned.json")));
-            return new Tuney(player, jsonObject, "EvTuney");
+                    new InputStreamReader(getClass().getResourceAsStream("/tunings/" + playerName + ".json")));
+            return new Tuney(player, jsonObject, playerName);
         } catch (IOException io){
             throw new RuntimeException(io);
         } catch (ParseException pe){

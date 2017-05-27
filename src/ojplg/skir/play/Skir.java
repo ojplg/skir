@@ -25,7 +25,7 @@ public class Skir {
         if ( benchTest ){
             AiFactory aiFactory = new AiFactory();
             startGameRunner(aiFactory, channels, false);
-            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),25);
+            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),2500);
             testBench.start();
             testBench.startRun();
         } else if ( evolve ) {

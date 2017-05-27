@@ -1,0 +1,21 @@
+{
+  "MinimumAttackScoreAttackKey": 0.0021831102125910067,
+  "ContinentOwnedPlacementKey": 0.3475127289331673,
+  "BordersEnemyOwnedContinentPlacementKey": 0.8916628086081302,
+  "BordersGoalCountryPlacementKey": 0.8334957950978543,
+  "SecondCountryMinimumPlacementKey": 0.1607209236110482,
+  "WeakBorderFortifyKey": 0.6017434432983398,
+  "BorderCountryPlacementKey": 0.9784232400119093,
+  "BustEnemyContinentAttackKey": 0.5820424914159226,
+  "ContinentalBorderPlacementKey": 0.2810598256527496,
+  "ThirdCountryMinimumPlacementKey": 0.6984021066600585,
+  "InStrongestUnownedContinentPlacementKey": 0.5560951237098778,
+  "GoalContinentCountryPercentage": 0.5600486396366918,
+  "TargetInGoalContinentAttackKey": 0.7114549154291806,
+  "FirstCountryMinimumPlacementKey": 0.33986184392477053,
+  "WeakOpponentAttackKey": 0.7978743861047286,
+  "PostCardMinimumAttackScoreAttackKey": 0.03862233418310332,
+  "GoalContinentArmyPercentage": 0.5832319257075957,
+  "TargetInBestGoalContinentAttackKey": 0.4619112221975182,
+  "MajorAdvantageAttackKey": 0.117327512321398
+}
