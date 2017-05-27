@@ -101,7 +101,7 @@ public class Game {
 
     private void logPlayerStatuses(){
         for(Player player : _players){
-            _log.info(generatePlayerChangedEvent(player));
+            _log.debug(generatePlayerChangedEvent(player));
         }
     }
 
