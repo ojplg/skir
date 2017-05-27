@@ -21,6 +21,7 @@ import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.utils.ListUtils;
 import ojplg.skir.utils.RatioDistributor;
+import ojplg.skir.utils.Tuple;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +61,8 @@ public class Tuney implements AutomatedPlayer {
     private static final String MajorAdvantageAttackKey = "MajorAdvantageAttackKey";
     private static final String WeakOpponentAttackKey = "WeakOpponentAttackKey";
 
+    private static final String WeakBorderFortifyKey = "WeakBorderFortifyKey";
+
     private final Map<String,Double> _tunings;
     private final Player _me;
     private final List<Integer> _placementMinimums;
@@ -94,6 +97,8 @@ public class Tuney implements AutomatedPlayer {
 
         map.put(GoalContinentArmyPercentage, 0.65);
         map.put(GoalContinentCountryPercentage, 0.65);
+
+        map.put(WeakBorderFortifyKey, 0.9);
 
         return map;
     }
@@ -179,40 +184,79 @@ public class Tuney implements AutomatedPlayer {
         }
     }
 
+    private Map<Country, Double> findWeakBorders(Game game){
+        List<Country> borders = game.findBorderCountries(_me);
+        Map<Country,Double> destinations = new HashMap<>();
+        Country weakest = borders.get(0);
+        Double worstRatio = Double.MAX_VALUE;
+        for(Country country : borders){
+            Double ratio = computeOpposingStrengthRatio(game, country);
+            if ( ratio < worstRatio){
+                weakest = country;
+                worstRatio = ratio;
+            }
+            if ( ratio < tunedValue(WeakBorderFortifyKey) ){
+                destinations.put(country, ratio);
+            }
+        }
+        if( destinations.size() == 0){
+            destinations.put(weakest, worstRatio);
+        }
+        return destinations;
+    }
+
+    /**
+     * My strength over opposition strength ... lower is worse for me.
+     */
+    private Double computeOpposingStrengthRatio(Game game, Country country){
+        List<Country> enemyNeighbors = game.findEnemyNeighbors(country);
+        int opposingStrength = AiUtils.findStrengthOfCountries(game, enemyNeighbors);
+        int strength = game.getOccupationForce(country);
+        return (double) strength / (double) opposingStrength;
+    }
+
+    private Tuple<Country, Double> computeFortificationScore(Game game, Country source,
+                                                             Country destination, double enemyRatio){
+        List<Country> path = MapUtils.findShortestPath(game.getMap(), source, destination);
+        // we must only allow legal fortifications!
+        for(Country country : path){
+            if( ! game.getOccupier(country).equals(_me)){
+                return null;
+            }
+        }
+        int movesAway = path.size() - 1;
+        Country moveTo = path.get(1);
+        // we want more desirable fortications to be LARGER
+        // so, the inverse of the enemy ratio divided by the number
+        // of moves away
+        double score = (1.0/enemyRatio)/movesAway;
+        return new Tuple<>(moveTo, score);
+    }
+
     private Fortify maybeFortify(Adjutant adjutant, Game game){
-        List<Country> interiors = game.findInteriorCountries(_me);
-        int numberToMove = 0;
-        Country sourceCountry = null;
-        for(Country interior : interiors){
-            int excessForces = game.getOccupationForce(interior);
-            if (excessForces> numberToMove){
-                numberToMove = excessForces - 1;
-                sourceCountry = interior;
-            }
+        List<Country> possibleSources = AiUtils.findInteriorCountriesWithExcessArmies(game, _me);
+        if( possibleSources.size() == 0){
+            return null;
         }
-        Country destinationCountry = null;
-        int numberInDestination = 1;
-        if( numberToMove > 0 && sourceCountry != null){
-            List<Country> allies = game.findAlliedNeighbors(sourceCountry);
-            for(Country ally : allies){
-                if( game.findEnemyNeighbors(ally).size() > 0){
-                    destinationCountry = ally;
+        Map<Country,Double> possibleDestinations = findWeakBorders(game);
+        double bestFortifyScore = 0.0;
+        Fortify fortify = null;
+        for(Country source : possibleSources){
+            for(Map.Entry<Country, Double> entry : possibleDestinations.entrySet()) {
+                Country destination = entry.getKey();
+                Double enemyRatio = entry.getValue();
+                Tuple<Country, Double> scoreTuple = computeFortificationScore(game, source, destination, enemyRatio);
+                if( scoreTuple == null){
+                    continue;
                 }
-            }
-            if (destinationCountry == null ){
-                for(Country ally : allies ){
-                    int allyArmyCount = game.getOccupationForce(ally);
-                    if ( allyArmyCount > numberInDestination){
-                        numberInDestination = allyArmyCount;
-                        destinationCountry = ally;
-                    }
+                if(scoreTuple.getSecond() > bestFortifyScore){
+                    bestFortifyScore = scoreTuple.getSecond();
+                    int armyCount = game.getOccupationForce(source) - 1;
+                    fortify = new Fortify(adjutant, source, scoreTuple.getFirst(), armyCount);
                 }
             }
         }
-        if ( destinationCountry != null){
-            return new Fortify(adjutant, sourceCountry, destinationCountry, numberToMove);
-        }
-        return null;
+        return fortify;
     }
 
     private Map<Country,Integer> computePlacements(Game game){

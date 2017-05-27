@@ -91,11 +91,18 @@ public class Game {
         if( nextPlayerIndex == 0 ){
             _turnNumber++;
             _log.info("Turn number " + _turnNumber);
+            logPlayerStatuses();
         }
         _currentAttacker = _players.get(nextPlayerIndex);
         _log.debug("nextPlayer from " + oldAttacker + " to " + _currentAttacker + " index " + nextPlayerIndex +
                 " in turn " + _turnNumber);
         return _currentAttacker;
+    }
+
+    private void logPlayerStatuses(){
+        for(Player player : _players){
+            _log.info(generatePlayerChangedEvent(player));
+        }
     }
 
     private int computeMapSupply(Player player){
@@ -193,6 +200,9 @@ public class Game {
         Player destinationPlayer = getOccupier(destination);
         if ( ! sourcePlayer.equals(destinationPlayer)){
             throw new RuntimeException("Cannot fortify from " + source + " to " + destination + ". Different owners.");
+        }
+        if( ! getMap().areNeighbors(source, destination)){
+            throw new RuntimeException("Cannot fortify from " + source + " to " + destination + ". Not neighbors.");
         }
         int currentArmies = getOccupationForce(source);
         if (armies >= currentArmies){
@@ -339,13 +349,15 @@ public class Game {
     }
 
     public void publishPlayerState(Player player){
+        _channels.PlayerChangedEventChannel.publish(generatePlayerChangedEvent(player));
+    }
+
+    private PlayerChangedEvent generatePlayerChangedEvent(Player player){
         int countryCount = numberCountriesOccupied(player);
         int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
         int continentCount = numberContinentsOccupied(player);
         int expectedGrant = computeExpectedGrant(player);
-        _channels.PlayerChangedEventChannel.publish(
-                new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant)
-        );
+        return new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant);
     }
 
     private void publishCountryState(Country country){

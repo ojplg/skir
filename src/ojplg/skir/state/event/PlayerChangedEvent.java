@@ -53,6 +53,11 @@ public class PlayerChangedEvent {
         return String.format("%.2f",value);
     }
 
+    @Override
+    public String toString() {
+        return toJson().toString();
+    }
+
     public JSONObject fullDetailsJson(){
         JSONObject jObject = toJson();
         jObject.put("cards", cardsToJson());

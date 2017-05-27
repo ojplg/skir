@@ -235,4 +235,9 @@ public class AiUtils {
         return strength;
     }
 
+    public static List<Country> findInteriorCountriesWithExcessArmies(Game game, Player player){
+        return ListUtils.filter(game.findInteriorCountries(player), (c -> game.getOccupationForce(c)>1));
+    }
+
+
 }
