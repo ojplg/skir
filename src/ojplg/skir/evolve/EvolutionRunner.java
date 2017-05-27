@@ -30,7 +30,7 @@ public class EvolutionRunner {
 
     public void evolve(AiFactory aiFactory){
         _log.info("Evolving");
-        AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 10);
+        AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 25);
         SkirScorer scorer = new SkirScorer(bench);
         scorer.start();
         Generations generations = new Generations(scorer);

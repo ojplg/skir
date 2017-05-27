@@ -32,7 +32,7 @@ public class Game {
     private final Roller _roller;
     private final Channels _channels;
     private final int _gameId;
-    private volatile int _gameCount = 0;
+    private static volatile int _gameCount = 0;
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
@@ -95,7 +95,7 @@ public class Game {
         int nextPlayerIndex = (currentPlayerIndex + 1) % playerCount;
         if( nextPlayerIndex == 0 ){
             _turnNumber++;
-            _log.info("Turn number " + _turnNumber);
+            _log.info(_gameId + " turn number "  + _turnNumber);
             logPlayerStatuses();
         }
         _currentAttacker = _players.get(nextPlayerIndex);
