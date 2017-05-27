@@ -40,8 +40,8 @@ public class SimpleGameRecord {
         Map<Object, Integer> scores = new HashMap();
         _playerTypes.forEach( o -> {
             scores.putIfAbsent(o, 0);
-            participants.putIfAbsent(o, 1);
             participants.computeIfPresent(o, (x,y) -> { return y + 1; });
+            participants.putIfAbsent(o, 1);
         });
         int lateEliminationBonus = 0;
         for(PlayerTurn pt : _playerEliminations){

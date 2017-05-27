@@ -31,10 +31,13 @@ public class Game {
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
+    private final int _gameId;
+    private volatile int _gameCount = 0;
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
     private int _lastAttackTurn = 0;
+
 
     public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
         this(players, cards, roller, channels, new Occupations(map));
@@ -46,9 +49,11 @@ public class Game {
         _roller = roller;
         _channels = channels;
         _occupations = occupations;
+        _gameId = _gameCount++;
     }
 
     public void start(){
+        _log.info("Starting game " + _gameId);
         _currentAttacker = _players.get(0);
     }
 
@@ -239,16 +244,21 @@ public class Game {
     }
 
     public boolean gameOver() {
+        boolean isOver = false;
         if( _players.size() <= 1 ){
-            return true;
+            isOver = true;
         }
         if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
                 || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
             _channels.GameEventChannel.publish(GameEvent.draw(getTurnNumber(),
                     _players.stream().map(p -> p.getDisplayName()).collect(Collectors.toList())));
-            return true;
+            isOver = true;
         }
-        return false;
+        if( isOver ){
+            _log.info("Game " + _gameId + " over on turn " + _turnNumber +
+                    " with " + _players.size() + "remaining players.");
+        }
+        return isOver;
     }
 
     public List<Country> findOccupiedCountries(Player player){
