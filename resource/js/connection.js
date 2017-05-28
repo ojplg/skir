@@ -6,7 +6,8 @@ function openWebSocketConnection(name, address, uniqueKey){
         console.log("message from server: " + event.data);
         var datum = JSON.parse(event.data);
         if (datum.message_type == 'map_update'){
-          update_country(datum.country, datum.color, datum.count);
+          queueMapUpdate(datum);
+          //update_country(datum.country, datum.color, datum.count);
         } else if (datum.message_type == 'player_update'){
           updatePlayerStats(datum);
         } else if (datum.message_type == 'possible_order_types'){

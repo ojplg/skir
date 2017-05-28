@@ -28,6 +28,7 @@ function initializeClient(name, address){
     if( name == "demo"){
         addButton("start");
     }
+    setInterval(processMapUpdates,75);
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){
