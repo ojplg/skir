@@ -31,6 +31,8 @@ Or, you can do
 
 Either way works at the moment. There does not seem to be a maven way to actual run the application. Apparently, that's not a thing that maven concerns itself with.
 
+But if you build with maven, you will need to change the start script to search in the maven home for the jars I guess. It kind of blows. I would just not bother.
+
 Some Comments
 =============
 
