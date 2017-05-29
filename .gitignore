@@ -7,3 +7,4 @@ out/
 .tmp_download_dir/
 lib/
 logs/
+target/
