@@ -15,13 +15,37 @@ function openWebSocketConnection(name, address, uniqueKey){
         } else if (datum.message_type == 'game_joined'){
           updatePlayerInfoAfterGameJoined(datum);
         } else if (datum.message_type == 'game_event') {
-          displayGameEvent(datum);
+          queueGameEvent(datum);
         } else {
           console.log("BAD MESSAGE ON WEB SOCKET: " + event.data);
         }
     };
+    queuedUpdates.mapUpdates = {};
+    queuedUpdates.gameEvents = [];
     // need this to happen after connection created
     connection.onopen = function(event) { sendJoinMessage(name, address, uniqueKey); };
+}
+
+var queuedUpdates = {}
+
+function processUpdates(){
+  for (var property in queuedUpdates.mapUpdates) {
+    if (queuedUpdates.mapUpdates.hasOwnProperty(property)) {
+        var countryUpdate = queuedUpdates.mapUpdates[property];
+        update_country(countryUpdate.country, countryUpdate.color, countryUpdate.count);
+        delete queuedUpdates.mapUpdates.property;
+    }
+  }
+  displayGameEvents(queuedUpdates.gameEvents);
+  queuedUpdates.gameEvents = [];
+}
+
+function queueMapUpdate(updateObject){
+    queuedUpdates.mapUpdates[updateObject.country] = updateObject;
+}
+
+function queueGameEvent(gameEvent){
+  queuedUpdates.gameEvents.push(gameEvent);
 }
 
 function sendJoinMessage(name, address, uniqueKey){

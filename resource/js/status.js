@@ -4,10 +4,13 @@ var myIdentity = {};
 var countryClickResponder = null;
 var playerStatuses;
 
-function displayGameEvent(gameEvent){
+function displayGameEvents(gameEvents){
     var orderEventDiv = document.getElementById('order-event-div');
-    var oldHtml = orderEventDiv.innerHTML;
-    var newHtml = oldHtml + gameEvent.simple_text + "<br/>";
+    var newHtml = orderEventDiv.innerHTML;
+    while(gameEvents.length > 0){
+        var gameEvent = gameEvents.shift();
+        newHtml = newHtml + gameEvent.simple_text + "<br/>";
+    }
     orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }
@@ -28,7 +31,7 @@ function initializeClient(name, address){
     if( name == "demo"){
         addButton("start");
     }
-    setInterval(processMapUpdates,75);
+    setInterval(processUpdates,25);
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){

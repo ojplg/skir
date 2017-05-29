@@ -204,22 +204,6 @@ function map_clicked(e){
   }
 }
 
-var mapUpdates = {}
-
-function processMapUpdates(){
-  for (var property in mapUpdates) {
-    if (mapUpdates.hasOwnProperty(property)) {
-        var countryUpdate = mapUpdates[property];
-        update_country(countryUpdate.country, countryUpdate.color, countryUpdate.count);
-        delete mapUpdates.property;
-    }
-  }
-}
-
-function queueMapUpdate(updateObject){
-    mapUpdates[updateObject.country] = updateObject;
-}
-
 function update_country(country_name, player_color, army_count){
   console.log("Going to color country " + country_name + " with color " + player_color);
   var canvas = document.getElementById ('canvas_map');
