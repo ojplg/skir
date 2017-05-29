@@ -4,7 +4,7 @@ source jars.sh
 
 echo "Starting ... "
 
-CLASS_PATH=$PROJECT_HOME_DIR/out/production/skir$PATH_SEPARATOR$LIB_PATH
+CLASS_PATH=$PROJECT_HOME_DIR/target/classes$PATH_SEPARATOR$LIB_PATH
 
 echo $CLASS_PATH
 

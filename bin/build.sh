@@ -4,7 +4,7 @@ source jars.sh
 
 #echo $LIB_PATH
 
-OUT_DIR=$PROJECT_HOME_DIR/out/production/skir
+OUT_DIR=$PROJECT_HOME_DIR/target/classes
 SRC_DIR=$PROJECT_HOME_DIR/src/main/java
 RESOURCE_DIR=$PROJECT_HOME_DIR/resource
 
