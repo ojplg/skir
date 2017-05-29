@@ -41,7 +41,7 @@ public class UseJetty  {
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
         resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
-        resourceHandler.setResourceBase("../out/production/skir/");
+        resourceHandler.setResourceBase("../target/classes/");
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
