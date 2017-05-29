@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d{DEFAULT} %p %c{10} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </Console>
+        <File name="MainLogFile" fileName="../logs/main.log">
+            <PatternLayout>
+                <Pattern>%d{DEFAULT} %p %c{10} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+        <File name="EvolveLogFile" fileName="../logs/evolve.log">
+            <PatternLayout>
+                <Pattern>%d{DEFAULT} %p %c{10} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="MainLogFile"/>
+        </Root>
+        <Logger name="ojplg.skir.evolve" level="Info">
+            <AppenderRef ref="EvolveLogFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>
