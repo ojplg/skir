@@ -21,25 +21,19 @@ public class AiFactory {
             return _firstPlayerFactory.apply(player);
         }
 
-        if( player.getNumber() == 0 ){
-            return evolveTuned(player, 29);
+        String name = randomKey();
+        switch(name){
+            case "Grabby": return new Grabby(player);
+            case "Bully": return new Bully(player);
+            case "Massy": return new Massy(player);
+            case "Grumpy": return new Grumpy(player);
+            case "Wimpy": return new Wimpy(player);
+            case "AiTuney": return firstTuned(player);
+            case "PsTuney": return presetTuned(player);
+            //case "EvTuney": return evolveTuned(player, random.nextInt(30));
+            case "EvTuney": return evolveTuned(player, 29);
+            default: return new Wimpy(player);
         }
-
-        return new Bully(player);
-
-//        String name = randomKey();
-//        switch(name){
-//            case "Grabby": return new Grabby(player);
-//            case "Bully": return new Bully(player);
-//            case "Massy": return new Massy(player);
-//            case "Grumpy": return new Grumpy(player);
-//            case "Wimpy": return new Wimpy(player);
-//            case "AiTuney": return firstTuned(player);
-//            case "PsTuney": return presetTuned(player);
-//            //case "EvTuney": return evolveTuned(player, random.nextInt(30));
-//            case "EvTuney": return evolveTuned(player, 29);
-//            default: return new Wimpy(player);
-//        }
     }
 
     public void setFirstPlayerFactory(Function<Player, AutomatedPlayer> firstPlayerFactory){
@@ -51,7 +45,7 @@ public class AiFactory {
 
         names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "EvTuney"};
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
-        //names = new String[] { "EvTuney" };
+        names = new String[] { "EvTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
