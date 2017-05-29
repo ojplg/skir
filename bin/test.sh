@@ -4,7 +4,7 @@ source jars.sh
 
 OUT_DIR=$PROJECT_HOME_DIR/out/production/skir
 CLASS_PATH=$LIB_PATH$PATH_SEPARATOR$LIBS_DIR/$JUNIT_JAR$PATH_SEPARATOR$LIBS_DIR/$HAMCREST_JAR$PATH_SEPARATOR$OUT_DIR
-TEST_SRC_DIR=$PROJECT_HOME_DIR/test
+TEST_SRC_DIR=$PROJECT_HOME_DIR/src/test/java
 TEST_OUT_DIR=$PROJECT_HOME_DIR/out/test/skir
 
 TEST_SRC_FILES=`find $TEST_SRC_DIR -name "*Test.java"`
@@ -19,7 +19,7 @@ TEST_NAMES=""
 
 for t in $TEST_SRC_FILES;
 do 
-	t=${t#../test/}
+	t=${t#../src/test/java/}
 	t=${t%.java}
  	t=${t//\//.}
 	TEST_NAMES="$TEST_NAMES $t"
