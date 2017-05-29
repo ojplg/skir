@@ -33,7 +33,7 @@ function processUpdates(){
     if (queuedUpdates.mapUpdates.hasOwnProperty(property)) {
         var countryUpdate = queuedUpdates.mapUpdates[property];
         update_country(countryUpdate.country, countryUpdate.color, countryUpdate.count);
-        delete queuedUpdates.mapUpdates.property;
+        delete queuedUpdates.mapUpdates[property];
     }
   }
   displayGameEvents(queuedUpdates.gameEvents);
