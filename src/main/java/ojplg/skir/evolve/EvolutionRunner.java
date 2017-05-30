@@ -7,7 +7,6 @@ import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
-    private final int _numberOfGenerations = 1000;
+    private final int _numberOfGenerations = 10;
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
         _channels = channels;
@@ -53,7 +52,7 @@ public class EvolutionRunner {
 
     private Generation createFirstGeneration(){
         List<Individual> randoms = new ArrayList<>();
-        for(int idx=0; idx<100; idx++){
+        for(int idx=0; idx<64; idx++){
             randoms.add(generateRandomTunerGenes(idx));
         }
         return new Generation(randoms,0);

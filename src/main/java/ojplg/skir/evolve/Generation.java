@@ -42,12 +42,12 @@ public class Generation {
         return _members;
     }
 
-    public List<Individual> findTopTenPercent(){
+    public List<Individual> findTopIndividuals(){
         List<Individual> members = new ArrayList<>(_members);
         Collections.sort(members);
         Collections.reverse(members);
         _log.info("Average score of individuals in generation " + _number + " was " + averageScore(members));
-        int cnt = Math.max(1,members.size() / 10);
+        int cnt = (int) Math.sqrt(members.size());
         List<Individual> survivors = members.subList(0, cnt);
         _log.info("Average score of survivors in generation " + _number + " was " + averageScore(survivors));
         Individual best = survivors.get(0);

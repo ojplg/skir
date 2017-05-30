@@ -23,7 +23,7 @@ public class Generations {
             _log.info("Individual " + individual.getIdentifier() + " had score " + score);
             individual.setScore(score);
         }
-        List<Individual> survivors = generation.findTopTenPercent();
+        List<Individual> survivors = generation.findTopIndividuals();
         _log.info("Reduced " + generation.allMembers().size() + " to " + survivors.size() + " survivors");
         List<Individual> successors = new ArrayList<>();
         int number=0;
