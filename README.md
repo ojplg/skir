@@ -23,20 +23,15 @@ To build and run the program follow these steps
 
 If you are using Windows (Cygwin) you need to set an environment variable JAVA\_PATH\_SEPARATOR=";"
 
-Or, you can do
+Notes About Maven
+-----------------
 
-1. mvn compile
-2. cd bin
-3. ./start.sh
-
-Either way works at the moment. There does not seem to be a maven way to actual run the application. Apparently, that's not a thing that maven concerns itself with.
-
-But if you build with maven, you will need to change the start script to search in the maven home for the jars I guess. It kind of blows. I would just not bother.
+The pom file works and you can build the code and run the tests with it, but that's it for now. It does not know how to deploy the resources or run the application. It should work for bootstrapping the project in Intellij. But for actually building and running the application, stick with the scripts for now.
 
 Some Comments
 =============
 
-- The BASH scripts for building and running the program are pretty ridiculous, but I wrote them before I wrote the pom file, and maven does not know how to run the application.
+- The BASH scripts for building and running the program are pretty ridiculous, but I wrote them before I wrote the pom file, and maven does not know how to deploy or runi the applicationi yet.
 - The Javascript is pretty lame. I don't get Javascript.
 It does not require any libraries however, so at least there's that.
 - There are plenty of things to work on. See the TODO file for the most pressing.
