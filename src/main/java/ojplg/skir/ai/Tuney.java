@@ -178,7 +178,16 @@ public class Tuney implements AutomatedPlayer {
         int existingForce = game.getOccupationForce(constraints.attacker());
         List<Country> enemies = game.findEnemyNeighbors(constraints.attacker());
         if( enemies.size() > 1 ){
-            return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce / 2);
+            double attackerPlacementScore = computePlacementScore(constraints.attacker(), game);
+            double conqueredPlacementScore = computePlacementScore(constraints.conquered(), game);
+            int armiesToDivide = constraints.maximumOccupationForce();
+            double toConqueredCountry = armiesToDivide *
+                    (conqueredPlacementScore/(attackerPlacementScore+conqueredPlacementScore));
+            int occupationForce = Math.min((int) Math.floor(toConqueredCountry), constraints.maximumOccupationForce());
+            occupationForce = Math.max(occupationForce, constraints.minimumOccupationForce());
+
+            //return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce / 2);
+            return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), occupationForce);
         } else {
             return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce - 1);
         }

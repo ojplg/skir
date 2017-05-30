@@ -34,7 +34,7 @@ public class PossibleAttack implements Comparable<PossibleAttack> {
     }
 
     public int maximumAttackingDice(){
-        return Math.max(Constants.MAXIMUM_ATTACKER_DICE, _attackerForce - 1);
+        return Math.min(Constants.MAXIMUM_ATTACKER_DICE, _attackerForce - 1);
     }
 
     public int getAttackerForce(){
