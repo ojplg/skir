@@ -1,3 +1,3 @@
 #!/bin/bash
 
-rm -rf ../target/classes
+rm -rf ../target/*

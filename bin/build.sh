@@ -6,7 +6,7 @@ source jars.sh
 
 OUT_DIR=$PROJECT_HOME_DIR/target/classes
 SRC_DIR=$PROJECT_HOME_DIR/src/main/java
-RESOURCE_DIR=$PROJECT_HOME_DIR/resource
+RESOURCE_DIR=$PROJECT_HOME_DIR/src/main/resources
 
 mkdir -p $OUT_DIR
 

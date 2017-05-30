@@ -26,7 +26,7 @@ If you are using Windows (Cygwin) you need to set an environment variable JAVA\_
 Notes About Maven
 -----------------
 
-The pom file works and you can build the code and run the tests with it, but that's it for now. It does not know how to deploy the resources or run the application. It should work for bootstrapping the project in Intellij. But for actually building and running the application, stick with the scripts for now.
+The pom file works and you can build the code and run the tests with it, but that's it for now. It does not know how to run the application. It should work for bootstrapping the project in Intellij. But for actually running the application, stick with the scripts for now. Which includes building, unless you construct the classpath yourself.
 
 Some Comments
 =============
