@@ -256,7 +256,7 @@ public class Game {
         }
         if( isOver ){
             _log.info("Game " + _gameId + " over on turn " + _turnNumber +
-                    " with " + _players.size() + "remaining players.");
+                    " with " + _players.size() + " remaining players.");
         }
         return isOver;
     }

@@ -35,22 +35,37 @@ public class SimpleGameRecord {
         _winner = playerIdentifier;
     }
 
-    public GameScores scoreGame(){
+    /**
+     * Players get ten points for a win.
+     *
+     * Players get a bonus for late elimination:
+     *  0 points for first eliminated
+     *  1 point for second
+     *  2 points for third
+     *  3 points for fourth
+     *  4 points for fifth
+     *
+     * In the event of a tie, players are each awarded 8 points
+     * minus the number of surviving players.
+     */
+    public GameScores scoreGame(boolean includeLateEliminationBonus){
         Map<Object, Integer> participants = new HashMap<>();
         Map<Object, Integer> scores = new HashMap();
         _playerTypes.forEach( o -> {
-            scores.putIfAbsent(o, 0);
+            scores.put(o, 0);
             participants.computeIfPresent(o, (x,y) -> { return y + 1; });
             participants.putIfAbsent(o, 1);
         });
-        int lateEliminationBonus = 0;
-        for(PlayerTurn pt : _playerEliminations){
-            int score = scores.get(pt._playerIdentifier);
-            scores.put(pt._playerIdentifier, score + lateEliminationBonus);
-            lateEliminationBonus++;
+        if( includeLateEliminationBonus) {
+            int lateEliminationBonus = 0;
+            for (PlayerTurn pt : _playerEliminations) {
+                int score = scores.get(pt._playerIdentifier);
+                scores.put(pt._playerIdentifier, score + lateEliminationBonus);
+                lateEliminationBonus++;
+            }
         }
         if( _gameDrawn ){
-            int drawBonus = 6 - _drawers.size();
+            int drawBonus = 8 - _drawers.size();
             for(String drawer : _drawers){
                 int score = scores.get(drawer);
                 scores.put(drawer, score + drawBonus);
@@ -64,19 +79,19 @@ public class SimpleGameRecord {
 
     public String produceLogRecord(){
         StringBuilder buf = new StringBuilder();
+        buf.append("Participants: ");
         _playerTypes.forEach( p ->
                 {
-                    buf.append("J:");
                     buf.append(p);
                     buf.append(",");
                 });
+        buf.append(". Eliminations: ");
         _playerEliminations.forEach( pt ->
                 {
-                    buf.append("E:");
                     buf.append(pt.getPlayerType());
                     buf.append(",");
                     buf.append(pt.getTurnNumber());
-                    buf.append(",");
+                    buf.append(";");
                 });
         if(_gameDrawn){
             buf.append("draw,");

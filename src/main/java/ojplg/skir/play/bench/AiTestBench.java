@@ -19,6 +19,8 @@ public class AiTestBench {
 
     private static final Logger _log = LogManager.getLogger(AiTestBench.class);
 
+    private final boolean _useLateEliminationBonuses = false;
+
     private final Channels _channels;
     private final Fiber _fiber;
     private final int _gamesToRun;
@@ -98,7 +100,7 @@ public class AiTestBench {
 
     private GameScores computeScores(){
         return _gameRecords.stream()
-                .map(r -> r.scoreGame() )
+                .map(r -> r.scoreGame(_useLateEliminationBonuses) )
                 .reduce(new GameScores(), (s1, s2) -> s1.accumulate(s2));
     }
 }
