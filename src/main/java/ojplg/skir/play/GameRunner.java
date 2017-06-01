@@ -15,14 +15,10 @@ import org.jetlang.fibers.Fiber;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
-import ojplg.skir.state.event.GameJoinedEvent;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class GameRunner {
@@ -30,22 +26,24 @@ public class GameRunner {
     private final static Logger _log = LogManager.getLogger(GameRunner.class);
     private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
 
-    private final Map<ClientConnectedEvent, Player> _remotePlayerInfo = new HashMap<>();
     private final Set<Player> _remotePlayers = new HashSet<>();
     private final Channels _channels;
     private final Fiber _fiber;
     private final int _orderDelay;
+    private final PreGame _preGame;
     private final AiFactory _aiFactory;
 
     private Adjutant _currentAdjutant;
     private boolean _gameStarted = false;
     private Game _game;
 
+
     public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
         _orderDelay = orderDelay;
         _aiFactory = aiFactory;
+        _preGame = new PreGame(channels);
 
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
@@ -58,58 +56,70 @@ public class GameRunner {
         _fiber.start();
     }
 
-    private void addAutomatedPlayers(){
-        for (int idx = 0; idx < _colors.length; idx++) {
-            Player player = _game.getAllPlayers().get(idx);
-            if(! _remotePlayers.contains(player)) {
-                AutomatedPlayer ai = _aiFactory.generateAiPlayer(player);
-                _log.info("Adding ai for " + player + ", " + ai.getClass());
-                _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
-                player.setAutomatedPlayer(ai);
-                ai.initialize(_game);
-            }
-        }
+    public static String colorForIndex(int index){
+        return _colors[index];
     }
+
+//    private void addAutomatedPlayers(){
+//        for (int idx = 0; idx < _colors.length; idx++) {
+//            Player player = _game.getAllPlayers().get(idx);
+//            if(! _remotePlayers.contains(player)) {
+//                AutomatedPlayer ai = _aiFactory.generateAiPlayer(player);
+//                _log.info("Adding ai for " + player + ", " + ai.getClass());
+//                _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
+//                player.setAutomatedPlayer(ai);
+//                ai.initialize(_game);
+//            }
+//        }
+//    }
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
-
-        _log.info("Client connected " + clientConnectedEvent);
-
-        int availablePlayerNumber = _remotePlayerInfo.size();
-        if( availablePlayerNumber == 0 ){
-            initializeGame("Crap");
-        }
-
-        if (_remotePlayerInfo.containsKey(clientConnectedEvent)){
-            Player player = _remotePlayerInfo.get(clientConnectedEvent);
-            _log.info("Player rejoined " + clientConnectedEvent + ", " + player);
+        boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
+        if( rePublishState){
             _game.publishAllState();
-            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
-                    clientConnectedEvent, player, false);
-            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             _channels.AdjutantChannel.publish(_currentAdjutant);
-        } else if ( "demo".equalsIgnoreCase(clientConnectedEvent.getDisplayName()) ) {
-            _log.info("Demo");
-        } else if ( playerSlotAvailable() ) {
-            _log.info("Trying to add a new player " + clientConnectedEvent);
-            Player player = _game.getAllPlayers().get(availablePlayerNumber);
-
-            _remotePlayerInfo.put(clientConnectedEvent, player);
-            _remotePlayers.add(player);
-            player.setClientKey(clientConnectedEvent.getClientKey());
-            player.setDisplayName(clientConnectedEvent.getDisplayName());
-
-            _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
-
-            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
-                    clientConnectedEvent, player, availablePlayerNumber == 0);
-            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
-            _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
-            _log.info("Published game joined event " + gameJoinedEvent);
-        } else {
-            _log.info("Could not join the game " + clientConnectedEvent);
         }
     }
+
+
+//    private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
+//        _log.info("Client connected " + clientConnectedEvent);
+//
+//        int availablePlayerNumber = _remotePlayerInfo.size();
+//        if( availablePlayerNumber == 0 ){
+//            initializeGame("Crap");
+//        }
+//
+//        if (_remotePlayerInfo.containsKey(clientConnectedEvent)){
+//            Player player = _remotePlayerInfo.get(clientConnectedEvent);
+//            _log.info("Player rejoined " + clientConnectedEvent + ", " + player);
+//            _game.publishAllState();
+//            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
+//                    clientConnectedEvent, player, false);
+//            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+//            _channels.AdjutantChannel.publish(_currentAdjutant);
+//        } else if ( "demo".equalsIgnoreCase(clientConnectedEvent.getDisplayName()) ) {
+//            _log.info("Demo");
+//        } else if ( playerSlotAvailable() ) {
+//            _log.info("Trying to add a new player " + clientConnectedEvent);
+//            Player player = _game.getAllPlayers().get(availablePlayerNumber);
+//
+//            _remotePlayerInfo.put(clientConnectedEvent, player);
+//            _remotePlayers.add(player);
+//            player.setClientKey(clientConnectedEvent.getClientKey());
+//            player.setDisplayName(clientConnectedEvent.getDisplayName());
+//
+//            _log.info("Player " + availablePlayerNumber + " who is " + player.getColor());
+//
+//            GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
+//                    clientConnectedEvent, player, availablePlayerNumber == 0);
+//            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+//            _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
+//            _log.info("Published game joined event " + gameJoinedEvent);
+//        } else {
+//            _log.info("Could not join the game " + clientConnectedEvent);
+//        }
+//    }
 
     private boolean playerSlotAvailable(){
         return ! _gameStarted;
@@ -171,8 +181,10 @@ public class GameRunner {
 
     private void startGame(String s){
         _log.info("Starting game " + s);
+        initializeGame("Yes " + s);
         assignCountries();
-        addAutomatedPlayers();
+        //addAutomatedPlayers();
+        initializedAIs(_game);
         _game.start();
         _gameStarted = true;
         _game.publishAllState();
@@ -180,10 +192,18 @@ public class GameRunner {
         _channels.AdjutantChannel.publish(_currentAdjutant);
     }
 
+    private void initializedAIs(Game game){
+        for(Player player: game.getAllPlayers()){
+            AutomatedPlayer ai = player.getAutomatedPlayer();
+            if( ai != null ){
+                ai.initialize(game);
+            }
+        }
+    }
+
     private Game initializeGame(Channels channels) {
         int initialArmies = initialArmyCount(_colors.length);
-        PreGame preGame = new PreGame();
-        List<Player> players = preGame.newPlayers(_colors, initialArmies);
+        List<Player> players = _preGame.newPlayers(_colors, initialArmies, _aiFactory);
 
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
