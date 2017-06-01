@@ -10,6 +10,10 @@ function displayGameEvents(gameEvents){
     while(gameEvents.length > 0){
         var gameEvent = gameEvents.shift();
         newHtml = newHtml + gameEvent.simple_text + "<br/>";
+        if( gameEvent['game_over'] === true){
+            console.log("Game is over!");
+            addButton("start");
+        }
     }
     orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;

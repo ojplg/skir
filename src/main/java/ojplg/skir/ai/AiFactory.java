@@ -32,6 +32,7 @@ public class AiFactory {
             case "PsTuney": return presetTuned(player);
             //case "EvTuney": return evolveTuned(player, random.nextInt(30));
             case "EvTuney": return evolveTuned(player, 29);
+            case "Ev2Tuney": return evolveTuned(player, "evolve200");
             default: return new Wimpy(player);
         }
     }
@@ -43,9 +44,10 @@ public class AiFactory {
     private String randomKey(){
         String[] names;
 
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "EvTuney"};
+        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney"};
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
         //names = new String[] {  "EvTuney", "Wimpy" };
+        //names = new String[] {  "EvTuney" };
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
@@ -61,8 +63,12 @@ public class AiFactory {
     }
 
     private Tuney evolveTuned(Player player, int number){
+        String playerName = "ev1_" + String.format("%02d", number);
+        return evolveTuned(player, playerName);
+    }
+
+    private Tuney evolveTuned(Player player, String playerName){
         try {
-            String playerName = "ev1_" + String.format("%02d", number);
             JSONParser parser = new JSONParser();
             Map<String,Double> jsonObject = (Map<String,Double>) parser.parse(
                     new InputStreamReader(getClass().getResourceAsStream("/tunings/" + playerName + ".json")));
@@ -73,6 +79,7 @@ public class AiFactory {
             throw new RuntimeException(pe);
         }
     }
+
 
     private Tuney presetTuned(Player player){
         return new Tuney(player, Tuney.presetTunings(), "PsTuney");

@@ -88,6 +88,7 @@ public class GameEvent {
         jObject.put("message_type", "game_event");
         jObject.put("simple_text", _simpleText);
         jObject.put("turn_number", _turnNumber);
+        jObject.put("game_over", _gameEventType == GameEventType.Draw || _gameEventType == GameEventType.Win);
         return jObject;
     }
 
