@@ -181,13 +181,9 @@ public class GameRunner {
     }
 
     private Game initializeGame(Channels channels) {
-        List<Player> players = new ArrayList<>();
         int initialArmies = initialArmyCount(_colors.length);
-        for (int idx = 0; idx < _colors.length; idx++) {
-            Player player = new Player(_colors[idx], idx);
-            player.grantReserves(initialArmies);
-            players.add(player);
-        }
+        PreGame preGame = new PreGame();
+        List<Player> players = preGame.newPlayers(_colors, initialArmies);
 
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
