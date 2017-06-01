@@ -1,6 +1,5 @@
 * Main code
 ** Respect attackers dice choice
-** Should be able to start new game without restarting server (initialize crapola)
 ** Test bench code and player tracking (Object v String) is so hideous, it makes my eyes bleed
 
 * Web page UI
