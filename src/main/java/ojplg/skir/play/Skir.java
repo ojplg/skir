@@ -50,7 +50,11 @@ public class Skir {
     }
 
     private static void startWebServer(Channels channels){
-        UseJetty jettyServer = new UseJetty(5000, channels);
+        String environmentPort = System.getProperty("PORT");
+        _log.info("Environment port is " + environmentPort);
+        int port = environmentPort != null ? Integer.parseInt(environmentPort) : 5000;
+        _log.info("Using port " + port);
+        UseJetty jettyServer = new UseJetty(port, channels);
         Thread webThread = new Thread(() -> {
             try {
                 jettyServer.startJettyServer();
