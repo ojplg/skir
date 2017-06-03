@@ -13,7 +13,7 @@ and server is primarily achieved through web sockets.
 Getting Started
 ===============
 
-To build and run the program follow these steps
+To build and run the program follow these steps:
 
 1. cd bin
 2. ./deps.sh
@@ -23,15 +23,17 @@ To build and run the program follow these steps
 
 If you are using Windows (Cygwin) you need to set an environment variable JAVA\_PATH\_SEPARATOR=";"
 
-Notes About Maven
------------------
+Maven
+-----
 
-The pom file works and you can build the code and run the tests with it, but that's it for now. It does not know how to run the application. It should work for bootstrapping the project in Intellij. But for actually running the application, stick with the scripts for now. Which includes building, unless you construct the classpath yourself.
+If you prefer to use Maven rather than the home-brewed scripts do:
+
+1. mvn install
+2. java -cp target/classes:target/dependency/\* ojplg.skir.play.Skir
 
 Some Comments
 =============
 
-- The BASH scripts for building and running the program are pretty ridiculous, but I wrote them before I wrote the pom file, and maven does not know how to deploy or runi the applicationi yet.
 - The Javascript is pretty lame. I don't get Javascript.
 It does not require any libraries however, so at least there's that.
 - There are plenty of things to work on. See the TODO file for the most pressing.
