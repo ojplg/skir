@@ -19,7 +19,7 @@ To build and run the program follow these steps
 2. ./deps.sh
 3. ./build.sh
 4. ./start.sh
-5. Navigate your browswer to http://localhost:8080/
+5. Navigate your browswer to http://localhost:5000/
 
 If you are using Windows (Cygwin) you need to set an environment variable JAVA\_PATH\_SEPARATOR=";"
 

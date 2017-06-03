@@ -50,7 +50,7 @@ public class Skir {
     }
 
     private static void startWebServer(Channels channels){
-        UseJetty jettyServer = new UseJetty(8080, channels);
+        UseJetty jettyServer = new UseJetty(5000, channels);
         Thread webThread = new Thread(() -> {
             try {
                 jettyServer.startJettyServer();
