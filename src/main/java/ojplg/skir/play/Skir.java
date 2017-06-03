@@ -50,7 +50,7 @@ public class Skir {
     }
 
     private static void startWebServer(Channels channels){
-        String environmentPort = System.getProperty("PORT");
+        String environmentPort = System.getenv("PORT");
         _log.info("Environment port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : 5000;
         _log.info("Using port " + port);
