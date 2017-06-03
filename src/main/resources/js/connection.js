@@ -1,7 +1,7 @@
 var connection;
 
 function openWebSocketConnection(name, address, uniqueKey){
-    connection = new WebSocket("wss://" + window.location.host + "/sockets/");
+    connection = new WebSocket(web_socket_protocol + "://" + window.location.host + "/sockets/");
     connection.onmessage = function(event){
         console.log("message from server: " + event.data);
         var datum = JSON.parse(event.data);
