@@ -19,7 +19,7 @@ TEST_NAMES=""
 
 for t in $TEST_SRC_FILES;
 do 
-	t=${t#../src/test/java/}
+	t=${t#$PROJECT_HOME_DIR/src/test/java/}
 	t=${t%.java}
  	t=${t//\//.}
 	TEST_NAMES="$TEST_NAMES $t"

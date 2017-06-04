@@ -169,7 +169,7 @@ public class AiUtils {
                                                          double minArmyPercentage, double minCountryPercentage){
         List<Continent> goals = new ArrayList<>();
         for(Continent continent : game.getAllContinents()){
-            double  armyPercentage = continentalArmyPercentage(player, game, continent);
+            double armyPercentage = continentalArmyPercentage(player, game, continent);
             double countryPercentage = continentalCountryPercentage(player, game, continent);
             if( ! (countryPercentage > 0.9999) &&
                     (armyPercentage > minArmyPercentage || countryPercentage > minCountryPercentage )){
@@ -206,6 +206,16 @@ public class AiUtils {
         return playerCountryCount / (enemyCountryCount + playerCountryCount);
     }
 
+    static int unownedCountryCount(Player player, Game game, Continent continent){
+        int count = 0;
+        for(Country country : continent.getCountries()){
+            if( ! player.equals(game.getOccupier(country))){
+                count++;
+            }
+        }
+        return count;
+    }
+
     public static Set<Country> findContiguousOwnedCountries(Game game,Country base){
         Set<Country> checked = new HashSet<>();
         Set<Country> bloc = new HashSet<>();
@@ -239,5 +249,11 @@ public class AiUtils {
         return ListUtils.filter(game.findInteriorCountries(player), (c -> game.getOccupationForce(c)>1));
     }
 
-
+    static int findAllPlayerArmies(Game game, Player player){
+        int armies = 0;
+        for(Country country : game.findOccupiedCountries(player)){
+            armies += game.getOccupationForce(country);
+        }
+        return armies;
+    }
 }

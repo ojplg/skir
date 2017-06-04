@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class Continent implements Comparable {
 
+    public static final int MAXIMUM_CONTINENT_VALUE = 7;
+
     public static final Continent Africa = new Continent("Africa", new Country[]{ Country.Egypt, Country.Congo,
             Country.East_Africa, Country.North_Africa, Country.South_Africa, Country.Madagascar }, 3 );
 

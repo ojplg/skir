@@ -33,6 +33,7 @@ public class AiFactory {
             //case "EvTuney": return evolveTuned(player, random.nextInt(30));
             case "EvTuney": return evolveTuned(player, 29);
             case "Ev2Tuney": return evolveTuned(player, "evolve200");
+            case "TuneyAdditive" : return new Tuney(player, Tuney.presetTunings(), name, true);
             default: return new Wimpy(player);
         }
     }
@@ -44,10 +45,11 @@ public class AiFactory {
     private String randomKey(){
         String[] names;
 
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney"};
+        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney" , "TuneyAdditive"};
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
         //names = new String[] {  "EvTuney", "Wimpy" };
         //names = new String[] {  "EvTuney" };
+        // names = new String[] { "Grabby", "Bully", "Massy", "TuneyAdditive"};
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 

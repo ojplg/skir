@@ -60,12 +60,16 @@ public class Tuney implements AutomatedPlayer {
     private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
     private static final String MajorAdvantageAttackKey = "MajorAdvantageAttackKey";
     private static final String WeakOpponentAttackKey = "WeakOpponentAttackKey";
+    private static final String ContinentOwnershipCloseAttackKey = "ContinentOwnershipCloseAttackKey";
+    private static final String ContinentCloseCountryPercentAttackKey = "ContinentCloseCountryPercentAttackKey";
+    private static final String ContinentCloseArmyPercentAttackKey = "ContinentCloseArmyPercentAttackKey";
 
     private static final String WeakBorderFortifyKey = "WeakBorderFortifyKey";
 
     private final Map<String,Double> _tunings;
     private final Player _me;
     private final List<Integer> _placementMinimums;
+    private final boolean _useAdditiveAttackScoring;
 
     private Map<Country, Integer> _placementsToMake = null;
 
@@ -90,10 +94,12 @@ public class Tuney implements AutomatedPlayer {
         map.put(BustEnemyContinentAttackKey, 0.85);
         map.put(MajorAdvantageAttackKey, 0.10);
         map.put(WeakOpponentAttackKey, 0.9);
+        map.put(ContinentOwnershipCloseAttackKey, 0.8);
+        map.put(ContinentCloseArmyPercentAttackKey, 0.9);
+        map.put(ContinentCloseCountryPercentAttackKey, 0.9);
 
         map.put(MinimumAttackScoreAttackKey, 0.04);
         map.put(PostCardMinimumAttackScoreAttackKey, 0.15);
-
 
         map.put(GoalContinentArmyPercentage, 0.65);
         map.put(GoalContinentCountryPercentage, 0.65);
@@ -101,6 +107,17 @@ public class Tuney implements AutomatedPlayer {
         map.put(WeakBorderFortifyKey, 0.9);
 
         return map;
+    }
+
+    public Tuney(Player player, Map<String,Double> tunings, String name, boolean useAdditiveAttackScoring){
+        player.setDisplayName(name);
+        _me = player;
+        _tunings = Collections.unmodifiableMap(tunings);
+        _placementMinimums = Arrays.asList(
+                scaledTunedValue(FirstCountryMinimumPlacementKey, 10),
+                scaledTunedValue(SecondCountryMinimumPlacementKey, 10),
+                scaledTunedValue(ThirdCountryMinimumPlacementKey, 10));
+        _useAdditiveAttackScoring = useAdditiveAttackScoring;
     }
 
     public Tuney(Player player, Map<String,Double> tunings, String name){
@@ -111,6 +128,7 @@ public class Tuney implements AutomatedPlayer {
                 scaledTunedValue(FirstCountryMinimumPlacementKey, 10),
                 scaledTunedValue(SecondCountryMinimumPlacementKey, 10),
                 scaledTunedValue(ThirdCountryMinimumPlacementKey, 10));
+        _useAdditiveAttackScoring = false;
     }
 
     @Override
@@ -303,6 +321,89 @@ public class Tuney implements AutomatedPlayer {
         return score;
     }
 
+    public double computeAdditiveAttackScore(PossibleAttack attack, Game game){
+
+        Country attacker = attack.getAttacker();
+        int attackerStrength = game.getOccupationForce(attacker);
+
+        Country target = attack.getDefender();
+        Continent targetContinent = Continent.find(target);
+        int targetStrength = game.getOccupationForce(target);
+
+        Player opponent = game.getOccupier(target);
+        int totalOpponentStrength = AiUtils.findAllPlayerArmies(game, opponent);
+        int opponentCardCount = opponent.getCards().size();
+
+        Set<Country> bloc = AiUtils.findContiguousOwnedCountries(game, target);
+        int blocStrength = AiUtils.findStrengthOfCountries(game, bloc);
+
+        List<Continent> enemyOwnedContinents = AiUtils.enemyOwnedContinents(_me, game);
+        Continent bestGoalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
+        List<Continent> goalContinents = AiUtils.possibleGoalContinents(_me, game,
+                tunedValue(GoalContinentArmyPercentage), tunedValue(GoalContinentCountryPercentage));
+        boolean targetInBestGoalContinent = bestGoalContinent != null && bestGoalContinent.contains(target);
+        List<Country> myOtherCountriesBorderingTarget = new ArrayList<>();
+        int myOtherBorderingForces = 0;
+        for(Country country : game.findEnemyNeighbors(target)){
+            if( _me.equals(game.getOccupier(country))){
+                myOtherBorderingForces += game.getOccupationForce(country);
+                myOtherCountriesBorderingTarget.add(country);
+            }
+        }
+
+        // In best continent - check
+        // In goal continent - check
+        // In opponent owned continent (modified by continent size) - check
+        // Close to owning continent - check
+        // Close to eliminating player (modified by number of cards) - check
+        // Good ratio surrounding country - check
+        // Good ratio attacker to defender - check
+
+        double score = 0;
+        if ( targetInBestGoalContinent ){
+            score += tunedValue(TargetInGoalContinentAttackKey);
+        }
+        if ( goalContinents.contains(targetContinent)){
+            score += tunedValue(TargetInGoalContinentAttackKey);
+        }
+        if( enemyOwnedContinents.contains(targetContinent)){
+            double continentWorth = targetContinent.getBonus() / Continent.MAXIMUM_CONTINENT_VALUE;
+            score += tunedValue(BustEnemyContinentAttackKey) * continentWorth;
+        }
+        if( closeToOwning(targetContinent, game)){
+            score += tunedValue(ContinentOwnershipCloseAttackKey);
+        }
+        if( blocStrength == totalOpponentStrength &&
+               blocStrength <= attackerStrength){
+            double cardModifier = opponentCardCount / 5;
+            score += tunedValue(WeakOpponentAttackKey) * cardModifier;
+        }
+        if( myOtherBorderingForces > 0 ){
+            score += targetStrength / (targetStrength + myOtherBorderingForces);
+        }
+
+        boolean weakOpponent = blocStrength < attack.getAttackerForce();
+        score = booleanAdjust(score, weakOpponent, WeakOpponentAttackKey);
+
+        return score;
+    }
+
+    public boolean closeToOwning(Continent continent, Game game){
+        int unownedCountryCount = AiUtils.unownedCountryCount(_me, game, continent);
+        if ( unownedCountryCount < 2){
+            return true;
+        }
+        double ownedCountriesPercentage = AiUtils.continentalCountryPercentage(_me, game, continent);
+        if (ownedCountriesPercentage > tunedValue(ContinentCloseCountryPercentAttackKey)){
+            return true;
+        }
+        double ownedArmyPercentage = AiUtils.continentalArmyPercentage(_me, game, continent);
+        if (ownedArmyPercentage > tunedValue(ContinentCloseArmyPercentAttackKey)){
+            return true;
+        }
+        return false;
+    }
+
     public double computePossibleAttackScore(PossibleAttack attack, Game game){
 
         Country target = attack.getDefender();
@@ -362,12 +463,21 @@ public class Tuney implements AutomatedPlayer {
         PossibleAttack bestPossibleAttack = null;
 
         for(PossibleAttack possibleAttack : possibleAttacks){
-            double score = computePossibleAttackScore(possibleAttack, game);
             String minimumAttackKey = adjutant.hasConqueredCountry() ?
                     PostCardMinimumAttackScoreAttackKey : MinimumAttackScoreAttackKey;
-            if( score > bestAttackScore && aboveTuningValue(score, minimumAttackKey)){
-                bestAttackScore = score;
-                bestPossibleAttack = possibleAttack;
+            if( _useAdditiveAttackScoring ){
+                double score = computeAdditiveAttackScore(possibleAttack, game);
+                double minimumScore = scaledTunedValue(minimumAttackKey, 10);
+                if ( score > bestAttackScore && score > minimumScore){
+                    bestAttackScore = score;
+                    bestPossibleAttack = possibleAttack;
+                }
+            } else {
+                double score = computePossibleAttackScore(possibleAttack, game);
+                if( score > bestAttackScore && aboveTuningValue(score, minimumAttackKey)){
+                    bestAttackScore = score;
+                    bestPossibleAttack = possibleAttack;
+                }
             }
         }
         if( bestPossibleAttack != null ){
