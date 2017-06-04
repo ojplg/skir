@@ -52,16 +52,11 @@
 		    <artifactId>javax.websocket-api</artifactId>
 		    <version>1.0</version>
 		</dependency>
-
-
-<!-- https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/javax-websocket-server-impl -->
 		<dependency>
 		    <groupId>org.eclipse.jetty.websocket</groupId>
 		    <artifactId>javax-websocket-server-impl</artifactId>
 		    <version>9.3.14.v20161028</version>
 		</dependency>
-
-		
     </dependencies>
 
     <build>
