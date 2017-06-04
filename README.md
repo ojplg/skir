@@ -6,9 +6,11 @@ Skir is a play-alike version of a popular board game of global genocide.
 Technical Introduction
 ======================
 
-The bulk of the code is in Java. Play is through a web UI that is based
-on a canvas object and some Javascript. Communication between the client
-and server is primarily achieved through web sockets.
+The bulk of the code is in Java 8. 
+Skir has a message passing architecture using Mike Rettig's [Jetlang](https://github.com/jetlang) library.
+Play is through a web UI that is based on a canvas object and some Javascript. 
+Communication between the client and server is primarily achieved through web sockets. 
+Skir's web components are provided by an embedded [Jetty](http://www.eclipse.org/jetty/) server.
 
 Getting Started
 ===============
@@ -30,13 +32,19 @@ If you prefer to use Maven rather than the home-brewed scripts do:
 
 1. mvn install
 2. java -cp target/classes:target/dependency/\* ojplg.skir.play.Skir
+3. Navigate your browswer to http://localhost:5000/
 
-Some Comments
-=============
+Heroku
+------
 
-- The Javascript is pretty lame. I don't get Javascript.
+There is a Procfile for Heroku.
+
+Javascript
+==========
+
+The Javascript is pretty lame. I don't get Javascript.
 It does not require any libraries however, so at least there's that.
-- There are plenty of things to work on. See the TODO file for the most pressing.
+Plenty of opportunity to make the GUI more beautiful and pleasant.
 
 Rules
 =====
@@ -54,6 +62,37 @@ per turn.
 Computer Players
 ================
 
-The game is always between six players. The computer neither cheats nor
-implements a particularly good strategy. It should be relatively easy
-to create new AIs.
+The game is always between six players. If fewer than 6 web clients are
+connected, the remaining player slots will be taken by AI players.
+
+Skir was designed to make writing AIs fairly easy. 
+There are a number of different personalities.
+
+Wimpy
+-----
+Never attempts to attack, just adds armies to owned countries evenly.
+
+Bully
+-----
+Attacks if and only if an owned country has more armies than its neighbor.
+
+Massy
+-----
+Puts all armies onto one country and attempts at most one attack per turn.
+
+Grumpy
+------
+Always attempts to retake previously owned countries. Never attacks otherwise.
+
+Grabby
+------
+Attempts to control continents.
+
+Tuney
+-----
+A generic algorithm that allows its heuristic to be configured.
+
+Modes
+=====
+In addition to the default web mode, Skir supports some testing and tuning
+modes using the -bench and -evolve flags.
