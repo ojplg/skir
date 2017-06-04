@@ -47,7 +47,7 @@ public class JoinGameHandler extends AbstractHandler {
         vc.put("name", name);
         vc.put("address", address);
         vc.put("colors", GuiColor.ALL_COLORS);
-        
+
         String webSocketProtocol = System.getenv("WEB_SOCKET_PROTOCOL");
         if ( webSocketProtocol == null){
             webSocketProtocol = "ws";
