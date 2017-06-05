@@ -52,7 +52,7 @@ public class Skir {
     private static void startWebServer(Channels channels){
         String environmentPort = System.getenv("PORT");
         _log.info("Environment port is " + environmentPort);
-        int port = environmentPort != null ? Integer.parseInt(environmentPort) : 5000;
+        int port = environmentPort != null ? Integer.parseInt(environmentPort) : 8080;
         _log.info("Using port " + port);
         UseJetty jettyServer = new UseJetty(port, channels);
         Thread webThread = new Thread(() -> {
