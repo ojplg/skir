@@ -5,6 +5,7 @@ import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.play.bench.AiTestBench;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.UseJetty;
@@ -16,6 +17,8 @@ public class Skir {
     private static final Logger _log = LogManager.getLogger(Skir.class);
 
     public static void main(String[] args) {
+        //Configurator.initialize(null, "log4j2.xml");
+
         _log.info("Starting");
 
         final Channels channels = new Channels();
