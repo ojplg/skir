@@ -25,4 +25,5 @@ do
 	TEST_NAMES="$TEST_NAMES $t"
 done
 
+cd ..
 java -cp $CLASS_PATH org.junit.runner.JUnitCore $TEST_NAMES

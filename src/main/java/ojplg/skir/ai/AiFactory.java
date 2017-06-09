@@ -33,7 +33,10 @@ public class AiFactory {
             //case "EvTuney": return evolveTuned(player, random.nextInt(30));
             case "EvTuney": return evolveTuned(player, 29);
             case "Ev2Tuney": return evolveTuned(player, "evolve200");
-            case "TuneyAdditive" : return new Tuney(player, Tuney.presetTunings(), name, true);
+            case "TuneyAdditive1" : return evolvedAdditiveTuney(player, 1);
+            case "TuneyAdditive47" : return evolvedAdditiveTuney(player, 47);
+            case "TuneyAdditive64" : return evolvedAdditiveTuney(player, 64);
+            case "TuneyAdditive81" : return evolvedAdditiveTuney(player, 81);
             default: return new Wimpy(player);
         }
     }
@@ -45,11 +48,12 @@ public class AiFactory {
     private String randomKey(){
         String[] names;
 
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney" , "TuneyAdditive"};
+        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney" ,
+                "TuneyAdditive1","TuneyAdditive47","TuneyAdditive64","TuneyAdditive81"};
         //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
         //names = new String[] {  "EvTuney", "Wimpy" };
-        //names = new String[] {  "EvTuney" };
-        // names = new String[] { "Grabby", "Bully", "Massy", "TuneyAdditive"};
+        //  names = new String[] {  "TuneyAdditive" };
+        //names = new String[] { "Grabby", "Bully", "Massy", "TuneyAdditive"};
         return RandomUtils.pickRandomElement(Arrays.asList(names));
     }
 
@@ -69,6 +73,12 @@ public class AiFactory {
         return evolveTuned(player, playerName);
     }
 
+    private Tuney evolvedAdditiveTuney(Player player, int number){
+        Map<String,Double> tunings = tunings("add_" + number);
+        return new Tuney(player, tunings, "TuneyAdditive" + number, false);
+
+    }
+
     private Tuney evolveTuned(Player player, String playerName){
         try {
             JSONParser parser = new JSONParser();
@@ -82,6 +92,18 @@ public class AiFactory {
         }
     }
 
+    private Map<String,Double> tunings(String fileName){
+        try {
+            JSONParser parser = new JSONParser();
+            Map<String,Double> jsonObject = (Map<String,Double>) parser.parse(
+                    new InputStreamReader(getClass().getResourceAsStream("/tunings/" + fileName + ".json")));
+            return jsonObject;
+        } catch (IOException io){
+            throw new RuntimeException(io);
+        } catch (ParseException pe){
+            throw new RuntimeException(pe);
+        }
+    }
 
     private Tuney presetTuned(Player player){
         return new Tuney(player, Tuney.presetTunings(), "PsTuney");

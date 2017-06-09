@@ -1,6 +1,7 @@
 * Main code
 ** Respect attackers dice choice
 ** Test bench code and player tracking (Object v String) is so hideous, it makes my eyes bleed
+** Fix issue where Player carries over cards and other things when new game is started
 
 * Web UI
 ** Allow game start to be configured dynamically without restarting the server
