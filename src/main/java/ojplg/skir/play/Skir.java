@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
-import ojplg.skir.web.UseJetty;
+import ojplg.skir.web.JettyInitializer;
 
 import java.util.Arrays;
 
@@ -52,7 +52,7 @@ public class Skir {
         _log.info("Environment port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : 8080;
         _log.info("Using port " + port);
-        UseJetty jettyServer = new UseJetty(port, channels);
+        JettyInitializer jettyServer = new JettyInitializer(port, channels);
         Thread webThread = new Thread(() -> {
             try {
                 jettyServer.startJettyServer();

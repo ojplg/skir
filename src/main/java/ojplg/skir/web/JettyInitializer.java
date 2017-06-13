@@ -14,15 +14,15 @@ import ojplg.skir.play.Channels;
 
 import javax.websocket.server.ServerContainer;
 
-public class UseJetty  {
+public class JettyInitializer {
 
-    private static final Logger _log = LogManager.getLogger(UseJetty.class);
+    private static final Logger _log = LogManager.getLogger(JettyInitializer.class);
 
     private final int _httpPort;
     private final Channels _channels;
     private Server _server;
 
-    public UseJetty(int httpPort, Channels channels){
+    public JettyInitializer(int httpPort, Channels channels){
         _httpPort = httpPort;
         _channels = channels;
         WebSocketInitializer.Channels = _channels;
@@ -40,7 +40,6 @@ public class UseJetty  {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        //resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
         resourceHandler.setWelcomeFiles(new String[]{});
         resourceHandler.setResourceBase("target/classes");
 
