@@ -1,5 +1,7 @@
 package ojplg.skir.web;
 
+import ojplg.skir.play.Channels;
+import ojplg.skir.play.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
@@ -14,33 +16,58 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.Map;
 
 public class JoinGameHandler extends AbstractHandler {
 
     private static final Logger _log = LogManager.getLogger(JoinGameHandler.class);
 
+    private final Channels _channels;
+
+    public JoinGameHandler(Channels channels){
+        _channels = channels;
+    }
+
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse) throws IOException, ServletException {
-        _log.info("Handling a request " + request.getContextPath() + ", " + httpServletRequest.getRequestURL());
+        _log.info("Handling a request with context path: '" + request.getContextPath() +
+                "', request URL: '" + httpServletRequest.getRequestURL() +
+                "', path info '" + httpServletRequest.getPathInfo() + "'");
 
-        String query = request.getQueryString();
+
+
         String remoteAddress = request.getRemoteAddr();
-        String name = request.getParameter("name-input");
+        String switchKey = request.getParameter("switch-key");
 
-        if( name != null ) {
-            _log.info("Got the queries " + query + " from " + remoteAddress + " has name " + name);
+        if( "start-game".equals(switchKey)) {
+            String name = request.getParameter("name-input");
+            String[] ais = request.getParameterValues("ai");
+
+            _log.info("Start game for " + name);
+
+//            Map<String, String[]> parameterMap = request.getParameterMap();
+//            _log.info("Parameter map is " + parameterMap);
+
+            _channels.AiNamesChannel.publish(ais);
 
             httpServletResponse.setContentType("text/html");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
-            DoVelocityTemplating(name, remoteAddress, httpServletResponse.getWriter());
+            doVelocityTemplating(name, remoteAddress, httpServletResponse.getWriter());
 
+            request.setHandled(true);
+        } else if ( request.getPathInfo().equals("/") ) {
+            _log.info("Generic index page request");
+            httpServletResponse.setContentType("text/html");
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+            doVelocityTemplating(httpServletResponse.getWriter());
             request.setHandled(true);
         }
     }
 
-    private void DoVelocityTemplating(String name, String address, Writer writer){
+    private void doVelocityTemplating(String name, String address, Writer writer){
         Velocity.init();
 
         VelocityContext vc = new VelocityContext();
@@ -57,6 +84,18 @@ public class JoinGameHandler extends AbstractHandler {
         InputStream in = this.getClass().getResourceAsStream("/template/game.vtl");
 
         Velocity.evaluate(vc, writer , "", new InputStreamReader(in));
+    }
+
+    private void doVelocityTemplating(Writer writer){
+        Velocity.init();
+
+        VelocityContext vc = new VelocityContext();
+        vc.put("ai_names", Constants.AI_NAMES);
+
+        InputStream in = this.getClass().getResourceAsStream("/template/index.vtl");
+
+        Velocity.evaluate(vc, writer , "", new InputStreamReader(in));
+
     }
 
 }

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skir</title>
+    <link rel="icon"
+          type="image/x-icon"
+          href="html/favicon.ico" />
+
+    <script>
+        function selectAllAis(){
+              console.log("selecting all");
+              var aiBoxes = document.getElementsByName('ai');
+              console.log("ai boxes " + aiBoxes);
+              for(var idx=0; idx< aiBoxes.length ; idx++){
+                  console.log("Working on " + idx);
+                  aiBoxes[idx].checked=true;
+              }
+        }
+        function unselectAllAis(){
+              var aiBoxes = document.getElementsByName('ai');
+              for(var idx=0; idx< aiBoxes.length ; idx++){
+                  aiBoxes[idx].checked=false;
+              }
+        }
+    </script>
+</head>
+<body>
+    <p>Join a game of skir.</p>
+    <form action="/" method="get">
+
+        <input type="hidden" name="switch-key" value="start-game"/>
+
+        <p>Name: <input name="name-input" type="text"/></p>
+
+        <p><input type="submit"/></p>
+
+        #foreach( $ai in $ai_names )
+            <input type="checkbox" name="ai" value="$ai" checked="true"/>
+            <label>$ai</label>
+            <br/>
+        #end
+
+        <a href="javascript:selectAllAis();">Select All</a>
+        <a href="javascript:unselectAllAis();">Select None</a>
+
+
+    </form>
+    <p>Skir is a play-alike version of a popular table-top board game of world conquest.</p>
+</body>
+</html>

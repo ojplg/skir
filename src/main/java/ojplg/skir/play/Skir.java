@@ -21,20 +21,18 @@ public class Skir {
         final Channels channels = new Channels();
         final boolean benchTest = Arrays.asList(args).contains("-bench");
         final boolean evolve = Arrays.asList(args).contains("-evolve");
+        final AiFactory aiFactory = new AiFactory(channels);
 
         if ( benchTest ){
-            AiFactory aiFactory = new AiFactory();
             startGameRunner(aiFactory, channels, false);
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),1000);
             testBench.start();
             testBench.startRun();
         } else if ( evolve ) {
-            AiFactory aiFactory = new AiFactory();
             EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
             startGameRunner(aiFactory, channels, false);
             evolutionRunner.evolve(aiFactory);
         } else {
-            AiFactory aiFactory = new AiFactory();
             startGameRunner(aiFactory, channels, true);
             startWebServer(channels);
         }

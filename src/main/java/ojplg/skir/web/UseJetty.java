@@ -40,7 +40,8 @@ public class UseJetty  {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
+        //resourceHandler.setWelcomeFiles(new String[]{"html/index.html"});
+        resourceHandler.setWelcomeFiles(new String[]{});
         resourceHandler.setResourceBase("target/classes");
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -48,10 +49,10 @@ public class UseJetty  {
 
         ContextHandler contextHandler = new ContextHandler();
         contextHandler.setContextPath("/");
-        contextHandler.setHandler( new JoinGameHandler());
+        contextHandler.setHandler( new JoinGameHandler(_channels));
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { contextHandler, resourceHandler, context });
+        handlers.setHandlers(new Handler[] {  contextHandler, resourceHandler, context });
         _server.setHandler(handlers);
 
         ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);

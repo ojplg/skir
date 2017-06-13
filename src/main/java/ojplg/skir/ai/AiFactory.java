@@ -1,6 +1,10 @@
 package ojplg.skir.ai;
 
+import ojplg.skir.play.Channels;
+import ojplg.skir.play.Constants;
+import ojplg.skir.play.Skir;
 import ojplg.skir.state.Player;
+import org.jetlang.fibers.Fiber;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -15,6 +19,17 @@ public class AiFactory {
 
     private Function<Player, AutomatedPlayer> _firstPlayerFactory;
     private final Random random = new Random(System.currentTimeMillis());
+    private final Fiber _fiber = Skir.createThreadFiber("AiFactoryFiber");
+    private final Channels _channels;
+    private String[] _eligibleAiNames;
+
+    public AiFactory(Channels channels){
+        _channels = channels;
+        _eligibleAiNames = Constants.AI_NAMES;
+        _fiber.start();
+        _channels.AiNamesChannel.subscribe(_fiber,
+                names ->{ _eligibleAiNames = names; } );
+    }
 
     public AutomatedPlayer generateAiPlayer(Player player){
         if( _firstPlayerFactory != null && player.getNumber() == 0){
@@ -46,15 +61,7 @@ public class AiFactory {
     }
 
     private String randomKey(){
-        String[] names;
-
-        names = new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney" ,
-                "TuneyAdditive1","TuneyAdditive47","TuneyAdditive64","TuneyAdditive81"};
-        //names = new String[] {"Bully", "Massy", "Grumpy", "PsTuney", "PsTuney" };
-        //names = new String[] {  "EvTuney", "Wimpy" };
-        //  names = new String[] {  "TuneyAdditive" };
-        //names = new String[] { "Grabby", "Bully", "Massy", "TuneyAdditive"};
-        return RandomUtils.pickRandomElement(Arrays.asList(names));
+        return RandomUtils.pickRandomElement(Arrays.asList(_eligibleAiNames));
     }
 
     private Tuney firstTuned(Player player) {
