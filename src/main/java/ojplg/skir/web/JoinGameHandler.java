@@ -31,8 +31,7 @@ public class JoinGameHandler extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse) throws IOException, ServletException {
         _log.info("'Handling a request to URL: '" + httpServletRequest.getRequestURL() +
-                "', from '" + request.getRemoteAddr() + "'");
-
+                "' from '" + request.getRemoteAddr() + "'");
 
         if( request.getPathInfo().equals("/")) {
             String switchKey = request.getParameter("switch-key");
