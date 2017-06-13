@@ -17,13 +17,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 
-public class JoinGameHandler extends AbstractHandler {
+public class SkirWebHandler extends AbstractHandler {
 
-    private static final Logger _log = LogManager.getLogger(JoinGameHandler.class);
+    private static final Logger _log = LogManager.getLogger(SkirWebHandler.class);
 
     private final Channels _channels;
 
-    public JoinGameHandler(Channels channels){
+    public SkirWebHandler(Channels channels){
         _channels = channels;
     }
 
