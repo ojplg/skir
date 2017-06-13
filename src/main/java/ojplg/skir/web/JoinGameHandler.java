@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.Map;
 
 public class JoinGameHandler extends AbstractHandler {
 
@@ -31,45 +30,32 @@ public class JoinGameHandler extends AbstractHandler {
     @Override
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse) throws IOException, ServletException {
-        _log.info("Handling a request with context path: '" + request.getContextPath() +
-                "', request URL: '" + httpServletRequest.getRequestURL() +
-                "', path info '" + httpServletRequest.getPathInfo() + "'");
+        _log.info("'Handling a request to URL: '" + httpServletRequest.getRequestURL() +
+                "', from '" + request.getRemoteAddr() + "'");
 
 
+        if( request.getPathInfo().equals("/")) {
+            String switchKey = request.getParameter("switch-key");
+            if ("start-game".equals(switchKey)) {
+                String remoteAddress = request.getRemoteAddr();
+                String name = request.getParameter("name-input");
+                _log.info("Starting game for " + name);
+                String[] ais = request.getParameterValues("ai");
+                _channels.AiNamesChannel.publish(ais);
 
-        String remoteAddress = request.getRemoteAddr();
-        String switchKey = request.getParameter("switch-key");
+                renderGamePage(name, remoteAddress, httpServletResponse.getWriter());
 
-        if( "start-game".equals(switchKey)) {
-            String name = request.getParameter("name-input");
-            String[] ais = request.getParameterValues("ai");
-
-            _log.info("Start game for " + name);
-
-//            Map<String, String[]> parameterMap = request.getParameterMap();
-//            _log.info("Parameter map is " + parameterMap);
-
-            _channels.AiNamesChannel.publish(ais);
-
+            } else {
+                renderIndexPage(httpServletResponse.getWriter());
+            }
             httpServletResponse.setContentType("text/html");
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
-            doVelocityTemplating(name, remoteAddress, httpServletResponse.getWriter());
-
-            request.setHandled(true);
-        } else if ( request.getPathInfo().equals("/") ) {
-            _log.info("Generic index page request");
-            httpServletResponse.setContentType("text/html");
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-            doVelocityTemplating(httpServletResponse.getWriter());
             request.setHandled(true);
         }
     }
 
-    private void doVelocityTemplating(String name, String address, Writer writer){
-        Velocity.init();
-
+    private void renderGamePage(String name, String address, Writer writer){
         VelocityContext vc = new VelocityContext();
         vc.put("name", name);
         vc.put("address", address);
@@ -81,21 +67,22 @@ public class JoinGameHandler extends AbstractHandler {
         }
         vc.put("web_socket_protocol", webSocketProtocol);
 
-        InputStream in = this.getClass().getResourceAsStream("/template/game.vtl");
-
-        Velocity.evaluate(vc, writer , "", new InputStreamReader(in));
+        renderVelocityTemplate("/template/game.vtl", vc, writer);
     }
 
-    private void doVelocityTemplating(Writer writer){
-        Velocity.init();
-
+    private void renderIndexPage(Writer writer){
         VelocityContext vc = new VelocityContext();
         vc.put("ai_names", Constants.AI_NAMES);
 
-        InputStream in = this.getClass().getResourceAsStream("/template/index.vtl");
+        renderVelocityTemplate("/template/index.vtl", vc, writer);
+    }
+
+    private void renderVelocityTemplate(String templatePath, VelocityContext vc, Writer writer){
+        Velocity.init();
+
+        InputStream in = this.getClass().getResourceAsStream(templatePath);
 
         Velocity.evaluate(vc, writer , "", new InputStreamReader(in));
-
     }
 
 }
