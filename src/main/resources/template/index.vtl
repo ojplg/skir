@@ -9,11 +9,8 @@
 
     <script>
         function selectAllAis(){
-              console.log("selecting all");
               var aiBoxes = document.getElementsByName('ai');
-              console.log("ai boxes " + aiBoxes);
               for(var idx=0; idx< aiBoxes.length ; idx++){
-                  console.log("Working on " + idx);
                   aiBoxes[idx].checked=true;
               }
         }
