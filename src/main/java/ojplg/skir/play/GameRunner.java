@@ -46,7 +46,6 @@ public class GameRunner {
         _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
         _channels.StartGameChannel.subscribe(_fiber, this::startGame);
-        _channels.InitializeGameChannel.subscribe(_fiber, this::initializeGame);
         _channels.AdjutantChannel.subscribe(_fiber, this::aiOrderGenerator);
     }
 
@@ -115,20 +114,15 @@ public class GameRunner {
         }
     }
 
-    private void initializeGame(String s){
-        _log.info("Intializing game " + s);
-        _game = initializeGame(_channels);
-    }
-
     private void startGame(String s){
-        _log.info("Starting game " + s);
-        initializeGame("Yes " + s);
+        _game = initializeGame(_channels);
         assignCountries();
         initializedAIs(_game);
         _game.start();
         _game.publishAllState();
         _currentAdjutant = Adjutant.newGameAdjutant(_game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
+        _log.info("Starting game " + s);
     }
 
     private void initializedAIs(Game game){
@@ -141,6 +135,7 @@ public class GameRunner {
     }
 
     private Game initializeGame(Channels channels) {
+        _log.info("Initializing game");
         int initialArmies = initialArmyCount(_colors.length);
         Tuple<List<Player>, Map<Player, AutomatedPlayer>> newPlayers = _preGame.newPlayers(_colors, _aiFactory);
 
