@@ -3,6 +3,7 @@ package ojplg.skir.play;
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.play.bench.AiTestBench;
+import ojplg.skir.state.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
@@ -25,7 +26,8 @@ public class Skir {
 
         if ( benchTest ){
             startGameRunner(aiFactory, channels, false);
-            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),1000);
+            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
+                    Constants.NUMBER_BENCH_GAMES_TO_RUN);
             testBench.start();
             testBench.startRun();
         } else if ( evolve ) {

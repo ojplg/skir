@@ -53,7 +53,9 @@ public class Game {
         _roller = roller;
         _channels = channels;
         _occupations = occupations;
-        _gameId = _gameCount++;
+        _gameCount++;
+        _gameId = _gameCount;
+        _log.info("Constructed game " + _gameCount);
     }
 
     public void start(){

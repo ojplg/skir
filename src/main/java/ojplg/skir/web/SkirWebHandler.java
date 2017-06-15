@@ -1,7 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
-import ojplg.skir.play.Constants;
+import ojplg.skir.state.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;

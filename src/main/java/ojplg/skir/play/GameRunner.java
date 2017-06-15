@@ -8,6 +8,7 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.Fiber;
@@ -17,6 +18,7 @@ import ojplg.skir.state.event.ClientConnectedEvent;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class GameRunner {
 
@@ -28,6 +30,8 @@ public class GameRunner {
     private final int _orderDelay;
     private final PreGame _preGame;
     private final AiFactory _aiFactory;
+
+    private Map<Player,AutomatedPlayer> _automatedPlayers;
 
     private Adjutant _currentAdjutant;
     private Game _game;
@@ -79,7 +83,7 @@ public class GameRunner {
         String result = draw ? "Draw" : "Victory";
         _log.info("Game over on turn " + _game.getTurnNumber() + ". Result: " + result);
         remainingPlayers.forEach( p-> {
-            AutomatedPlayer ai = p.getAutomatedPlayer();
+            AutomatedPlayer ai = _automatedPlayers.get(p);
             String aiMessage = "";
             if( ai != null){
                 aiMessage = " AI of type " + ai.getClass();
@@ -93,7 +97,7 @@ public class GameRunner {
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
-        AutomatedPlayer ai = adjutant.getActivePlayer().getAutomatedPlayer();
+        AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
         if( ai != null ){
             Order order = ai.generateOrder(_currentAdjutant, _game);
             littleDelay();
@@ -120,7 +124,6 @@ public class GameRunner {
         _log.info("Starting game " + s);
         initializeGame("Yes " + s);
         assignCountries();
-        //addAutomatedPlayers();
         initializedAIs(_game);
         _game.start();
         _game.publishAllState();
@@ -130,7 +133,7 @@ public class GameRunner {
 
     private void initializedAIs(Game game){
         for(Player player: game.getAllPlayers()){
-            AutomatedPlayer ai = player.getAutomatedPlayer();
+            AutomatedPlayer ai = _automatedPlayers.get(player);
             if( ai != null ){
                 ai.initialize(game);
             }
@@ -139,12 +142,13 @@ public class GameRunner {
 
     private Game initializeGame(Channels channels) {
         int initialArmies = initialArmyCount(_colors.length);
-        List<Player> players = _preGame.newPlayers(_colors, _aiFactory);
+        Tuple<List<Player>, Map<Player, AutomatedPlayer>> newPlayers = _preGame.newPlayers(_colors, _aiFactory);
 
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
+        _automatedPlayers = newPlayers.getSecond();
 
-        return new Game(map, players, StandardCardSet.deck, roller, channels, initialArmies);
+        return new Game(map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
     }
 
     private void assignCountries(){

@@ -1,7 +1,7 @@
 package ojplg.skir.ai;
 
 import ojplg.skir.play.Channels;
-import ojplg.skir.play.Constants;
+import ojplg.skir.state.Constants;
 import ojplg.skir.play.Skir;
 import ojplg.skir.state.Player;
 import org.jetlang.fibers.Fiber;

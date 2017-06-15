@@ -6,6 +6,7 @@ import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
+import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,19 +63,19 @@ public class PreGame {
         return false;
     }
 
-    public List<Player> newPlayers(String[] colors, AiFactory aiFactory){
+    public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
         List<Player> players = new ArrayList<>();
+        Map<Player, AutomatedPlayer> aiPlayers = new HashMap<>();
         for(Player player : _connectedPlayers.values()){
             players.add(player);
         }
         for (int idx = _connectedPlayers.size(); idx < colors.length; idx++) {
             Player player = new Player(colors[idx], idx);
             players.add(player);
-
             AutomatedPlayer ai = aiFactory.generateAiPlayer(player);
-            player.setAutomatedPlayer(ai);
+            aiPlayers.put(player, ai);
             _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
         }
-        return players;
+        return new Tuple(players, aiPlayers);
     }
 }
