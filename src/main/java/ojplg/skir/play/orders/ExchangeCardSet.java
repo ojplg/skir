@@ -3,6 +3,7 @@ package ojplg.skir.play.orders;
 import ojplg.skir.card.Card;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.PlayerHoldings;
 
 public class ExchangeCardSet extends Order {
 
@@ -24,8 +25,21 @@ public class ExchangeCardSet extends Order {
         _three = three;
     }
 
+    public ExchangeCardSet(Adjutant adjutant){
+        super(adjutant);
+        _one = null;
+        _two = null;
+        _three = null;
+    }
+
     public Adjutant execute(Game game){
-        CardSet set = new CardSet(_one, _two, _three);
+        CardSet set;
+
+        if( _one == null){
+            set = CardSet.findTradeableSet(game.getPlayerHoldings(getAdjutant().getActivePlayer()).getCards());
+        } else {
+            set = new CardSet(_one, _two, _three);
+        }
 
         if( ! set.isExchangeableSet() ) {
             throw new RuntimeException("Not a good set: " + _one + "," + _two + "," + _three);
@@ -33,11 +47,13 @@ public class ExchangeCardSet extends Order {
 
         game.processExchangeCardSetOrder(set);
 
-        if( activePlayer().hasTooManyCards()){
+        PlayerHoldings activeHoldings = game.getPlayerHoldings(activePlayer());
+
+        if( activeHoldings.hasTooManyCards()){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
         }
 
-        if( CardSet.hasTradeableSet(activePlayer().getCards())){
+        if( CardSet.hasTradeableSet(activeHoldings.getCards())){
             getAdjutant().forConstrainedOrderTypes(
                     ConstrainedOrderType.placeArmy(activePlayer(), game),
                     ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));

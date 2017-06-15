@@ -98,7 +98,7 @@ public class Bully implements AutomatedPlayer {
             case EndAttacks:
                 return new EndAttacks(adjutant);
             case ExchangeCardSet:
-                CardSet set = CardSet.findTradeableSet(getPlayer().getCards());
+                CardSet set = CardSet.findTradeableSet(game.getPlayerHoldings(getPlayer()).getCards());
                 return new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
             case Occupy:
                 return generateOccupationOrder(adjutant, game);

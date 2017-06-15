@@ -19,12 +19,12 @@ public class PlayerChangedEvent {
     private final double _attackLuckFactor;
     private final double _defenseLuckFactor;
 
-    public PlayerChangedEvent(Player player, int countryCount, int armyCount, int continentCount, int expectedGrant) {
+    public PlayerChangedEvent(Player player, List<Card> cards, int countryCount, int armyCount, int continentCount, int expectedGrant) {
         this._player = player;
         this._countryCount = countryCount;
         this._armyCount = armyCount;
         this._continentCount = continentCount;
-        this._cards = Collections.unmodifiableList(new ArrayList<Card>(player.getCards()));
+        this._cards = Collections.unmodifiableList(new ArrayList<Card>(cards));
         this._expectedGrant = expectedGrant;
         this._attackLuckFactor = player.attackLuckFactor();
         this._defenseLuckFactor = player.defenseLuckFactor();

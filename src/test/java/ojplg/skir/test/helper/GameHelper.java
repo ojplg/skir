@@ -9,6 +9,7 @@ import ojplg.skir.play.RandomRoller;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Occupations;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.PlayerHoldings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +61,14 @@ public class GameHelper {
                 StandardCardSet.deck,
                 new RandomRoller(0),
                 channels,
-                _occupations);
+                _occupations,
+                0);
 
         int cnt = 0;
         for(Country country : game.getAllCountries()){
             Player player = players.get(cnt % players.size());
-            player.grantReserves(1);
+            PlayerHoldings holdings = game.getPlayerHoldings(player);
+            holdings.grantReserves(1);
             game.processPlaceArmyOrder(player, country, 1);
             cnt++;
         }
@@ -77,7 +80,7 @@ public class GameHelper {
 
     public void setUpPlayerForAttack(Player attacker){
         for(Country country: Game.findOccupiedCountries(attacker)){
-            attacker.grantReserves(4);
+            Game.getPlayerHoldings(attacker).grantReserves(4);
             Game.processPlaceArmyOrder(attacker, country, 4);
         }
     }
@@ -87,9 +90,9 @@ public class GameHelper {
             _occupations.killArmies(country, 1);
             _occupations.placeArmies(victor,country, 1);
         }
-        victor.grantReserves(5);
+        Game.getPlayerHoldings(victor).grantReserves(5);
         Game.processPlaceArmyOrder(victor, attackingCountry, 5);
-        deathbedPlayer.grantReserves(1);
+        Game.getPlayerHoldings(deathbedPlayer).grantReserves(1);
         _occupations.killArmies(conqueredCountry, 1);
         Game.processPlaceArmyOrder(deathbedPlayer, conqueredCountry, 1);
         setCountryTroopLevel(conqueredCountry, 0);

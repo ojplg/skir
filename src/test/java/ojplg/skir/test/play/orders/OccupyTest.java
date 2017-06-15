@@ -6,6 +6,7 @@ import ojplg.skir.play.orders.Occupy;
 import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.PlayerHoldings;
 import ojplg.skir.test.helper.GameHelper;
 import org.junit.Test;
 
@@ -22,17 +23,20 @@ public class OccupyTest {
         Player loser = gameHelper.WhitePlayer;
         gameHelper.setUpPreEliminationCondition(victor, loser, Country.Afghanistan, Country.Middle_East);
         Game game = gameHelper.Game;
+        PlayerHoldings victorHoldings = game.getPlayerHoldings(victor);
 
-        victor.grantReserves(5);
-        victor.addCard(game.processDrawCardOrder());
-        victor.addCard(game.processDrawCardOrder());
-        victor.addCard(game.processDrawCardOrder());
-        victor.addCard(game.processDrawCardOrder());
+        victorHoldings.grantReserves(5);
+        victorHoldings.addCard(game.processDrawCardOrder());
+        victorHoldings.addCard(game.processDrawCardOrder());
+        victorHoldings.addCard(game.processDrawCardOrder());
+        victorHoldings.addCard(game.processDrawCardOrder());
 
-        loser.addCard(game.processDrawCardOrder());
-        loser.addCard(game.processDrawCardOrder());
-        loser.addCard(game.processDrawCardOrder());
-        loser.addCard(game.processDrawCardOrder());
+        PlayerHoldings loserHoldings = game.getPlayerHoldings(victor);
+
+        loserHoldings.addCard(game.processDrawCardOrder());
+        loserHoldings.addCard(game.processDrawCardOrder());
+        loserHoldings.addCard(game.processDrawCardOrder());
+        loserHoldings.addCard(game.processDrawCardOrder());
 
         Adjutant adjutant = new Adjutant(victor, true, OrderType.Attack, 1);
 

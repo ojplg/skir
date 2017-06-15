@@ -15,8 +15,7 @@ public class EndAttacks extends Order {
         ConstrainedOrderType drawCard = ConstrainedOrderType.unconstrainedOrder(OrderType.DrawCard);
         ConstrainedOrderType endTurn = ConstrainedOrderType.unconstrainedOrder(OrderType.EndTurn);
 
-
-        if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ) {
+        if( getAdjutant().hasConqueredCountry() && ! game.getPlayerHoldings(activePlayer()).hasMaximumCards() ) {
 
             if( game.hasLegalFortification(activePlayer())) {
                 return getAdjutant().forConstrainedOrderTypes(drawCard, fortification);

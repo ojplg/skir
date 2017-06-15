@@ -31,7 +31,7 @@ public class GameRunner {
 
     private Adjutant _currentAdjutant;
     private Game _game;
-    
+
     public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
@@ -139,12 +139,12 @@ public class GameRunner {
 
     private Game initializeGame(Channels channels) {
         int initialArmies = initialArmyCount(_colors.length);
-        List<Player> players = _preGame.newPlayers(_colors, initialArmies, _aiFactory);
+        List<Player> players = _preGame.newPlayers(_colors, _aiFactory);
 
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
 
-        return new Game(map, players, StandardCardSet.deck, roller, channels);
+        return new Game(map, players, StandardCardSet.deck, roller, channels, initialArmies);
     }
 
     private void assignCountries(){

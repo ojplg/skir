@@ -2,6 +2,7 @@ package ojplg.skir.play.orders;
 
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.PlayerHoldings;
 
 public class DrawCard extends Order {
 
@@ -11,8 +12,10 @@ public class DrawCard extends Order {
 
     @Override
     public Adjutant execute(Game game) {
-        if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards() ){
-            activePlayer().addCard(game.processDrawCardOrder());
+        PlayerHoldings activeHoldings = game.getPlayerHoldings(activePlayer());
+
+        if( getAdjutant().hasConqueredCountry() && ! activeHoldings.hasMaximumCards() ){
+            activeHoldings.addCard(game.processDrawCardOrder());
             game.publishPlayerState(activePlayer());
         }
         Player nextPlayer = game.nextPlayer();

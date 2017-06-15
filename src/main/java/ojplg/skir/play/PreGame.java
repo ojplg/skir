@@ -62,15 +62,13 @@ public class PreGame {
         return false;
     }
 
-    public List<Player> newPlayers(String[] colors, int initialArmies, AiFactory aiFactory){
+    public List<Player> newPlayers(String[] colors, AiFactory aiFactory){
         List<Player> players = new ArrayList<>();
         for(Player player : _connectedPlayers.values()){
-            player.grantReserves(initialArmies);
             players.add(player);
         }
         for (int idx = _connectedPlayers.size(); idx < colors.length; idx++) {
             Player player = new Player(colors[idx], idx);
-            player.grantReserves(initialArmies);
             players.add(player);
 
             AutomatedPlayer ai = aiFactory.generateAiPlayer(player);

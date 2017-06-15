@@ -4,6 +4,7 @@ import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.PlayerHoldings;
 
 public class Occupy extends Order {
 
@@ -23,15 +24,16 @@ public class Occupy extends Order {
         Player loser = game.getOccupier(_conquered);
         boolean playerEliminated = game.processOccupyOrder(_victor, _conquered, _armies);
 
-
         if ( playerEliminated ){
-            boolean cardsAcquired = loser.getCards().size() > 0;
+            PlayerHoldings loserHoldings = game.getPlayerHoldings(loser);
+            PlayerHoldings activeHoldings = game.getPlayerHoldings(activePlayer());
+            boolean cardsAcquired = loserHoldings.getCards().size() > 0;
             game.resolveElimination(activePlayer(), loser);
-            if (activePlayer().hasTooManyCards()){
+            if (activeHoldings.hasTooManyCards()){
                 return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet));
             } else {
                 boolean allowCardExchange = cardsAcquired &&
-                        CardSet.hasTradeableSet(activePlayer().getCards());
+                        CardSet.hasTradeableSet(activeHoldings.getCards());
                 return AttackOrderHelper.possibleAttackingOrders(getAdjutant(), game, allowCardExchange);
             }
         } else {

@@ -27,7 +27,7 @@ public class PlaceArmy extends Order {
             throw new RuntimeException("Player " + activePlayer() + " cannot place armies in " + _country);
         }
         game.processPlaceArmyOrder(activePlayer(), _country, _count);
-        if ( activePlayer().hasReserves() ){
+        if ( game.getPlayerHoldings(activePlayer()).hasReserves() ){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.placeArmy(activePlayer(), game));
         } else {
             return AttackOrderHelper.possibleAttackingOrders(getAdjutant(), game);

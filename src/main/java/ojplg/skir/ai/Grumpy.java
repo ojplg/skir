@@ -52,7 +52,7 @@ public class Grumpy implements AutomatedPlayer {
     public Order generateOrder(Adjutant adjutant, Game game) {
         List<OrderType> allowableOrders = adjutant.allowableOrders();
         if( allowableOrders.contains(OrderType.ExchangeCardSet)){
-            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
         }
         if( allowableOrders.contains(OrderType.ClaimArmies)){
             return new ClaimArmies(adjutant);
@@ -103,7 +103,7 @@ public class Grumpy implements AutomatedPlayer {
             paths.add(findShortestPathTo(missing, game));
         }
         List<Country> shortestPath = shortestPath(paths);
-        return new PlaceArmy(adjutant, shortestPath.get(0), _me.reserveCount());
+        return new PlaceArmy(adjutant, shortestPath.get(0), game.getPlayerHoldings(_me).reserveCount());
     }
 
     private List<Country> shortestPath(List<List<Country>> paths){

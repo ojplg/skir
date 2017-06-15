@@ -8,6 +8,7 @@ import ojplg.skir.play.orders.ExchangeCardSet;
 import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.PlayerHoldings;
 import ojplg.skir.test.helper.GameHelper;
 import org.junit.Test;
 
@@ -22,21 +23,22 @@ public class ExchangeCardSetTest {
         GameHelper gameHelper = new GameHelper();
         Game game = gameHelper.Game;
         Player player = game.getOccupier(Country.Afghanistan);
+        PlayerHoldings playerHoldings = game.getPlayerHoldings(player);
 
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
-        player.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
+        playerHoldings.addCard(game.processDrawCardOrder());
 
-        List<Card> cards = player.getCards();
+        List<Card> cards = playerHoldings.getCards();
         assertEquals(9, cards.size());
 
-        CardSet set = CardSet.findTradeableSet(player.getCards());
+        CardSet set = CardSet.findTradeableSet(playerHoldings.getCards());
 
         assertNotNull(set);
 

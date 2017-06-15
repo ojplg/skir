@@ -19,7 +19,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Game {
@@ -28,6 +30,7 @@ public class Game {
 
     private final Occupations _occupations;
     private final List<Player> _players = new ArrayList<>();
+    private final Map<String, PlayerHoldings> _playerHoldings = new HashMap<>();
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
@@ -39,12 +42,13 @@ public class Game {
     private int _lastAttackTurn = 0;
 
 
-    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels){
-        this(players, cards, roller, channels, new Occupations(map));
+    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, int initialArmies){
+        this(players, cards, roller, channels, new Occupations(map), initialArmies);
     }
 
-    public Game(List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations){
+    public Game(List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations, int initialArmies){
         _players.addAll(players);
+        _players.forEach(p -> _playerHoldings.put(p.getColor(), new PlayerHoldings(initialArmies)));
         _cardPile = new CardStack(cards);
         _roller = roller;
         _channels = channels;
@@ -61,7 +65,7 @@ public class Game {
         for(Player player : _players) {
             int index = 0;
             List<Country> countries = _occupations.countriesOccupied(player);
-            while (player.hasReserves()){
+            while (getPlayerHoldings(player).hasReserves()){
                 processPlaceArmyOrder(player, countries.get(index), 1);
                 index++;
                 index = index % countries.size();
@@ -181,9 +185,9 @@ public class Game {
 
     /** returns true if the game is over */
     public boolean resolveElimination(Player conqueror, Player vanquished){
-        List<Card> cards = vanquished.getCards();
-        vanquished.removeCards(cards);
-        conqueror.addCards(cards);
+        List<Card> cards = getPlayerHoldings(vanquished).getCards();
+        getPlayerHoldings(vanquished).removeCards(cards);
+        getPlayerHoldings(conqueror).addCards(cards);
         _players.remove(vanquished);
         _log.info("Removed player " + vanquished + " new player count is " +_players.size() + " in turn " + _turnNumber);
         publishState(new Player[] { conqueror, vanquished}, new Country[0]);
@@ -195,7 +199,7 @@ public class Game {
     }
     
     public void processPlaceArmyOrder(Player player, Country country, int count){
-        player.drawReserves(count);
+        getPlayerHoldings(player).drawReserves(count);
         _occupations.placeArmies(player, country, count);
         publishCountryState(country);
     }
@@ -227,11 +231,11 @@ public class Game {
     }
 
     public void processExchangeCardSetOrder(CardSet set){
-        _currentAttacker.removeCards(set.asList());
+        getPlayerHoldings(_currentAttacker).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
         _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
-        _currentAttacker.grantReserves(bonusArmies);
+        getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
         publishPlayerState(_currentAttacker);
     }
 
@@ -329,6 +333,10 @@ public class Game {
         return _players;
     }
 
+    public PlayerHoldings getPlayerHoldings(Player player){
+        return _playerHoldings.get(player.getColor());
+    }
+
     public Player getOccupier(Country country){
         return _occupations.getOccupier(country);
     }
@@ -364,10 +372,11 @@ public class Game {
 
     private PlayerChangedEvent generatePlayerChangedEvent(Player player){
         int countryCount = numberCountriesOccupied(player);
-        int armyCount = _occupations.totalOccupationForces(player) + player.reserveCount();
+        int armyCount = _occupations.totalOccupationForces(player) + getPlayerHoldings(player).reserveCount();
         int continentCount = numberContinentsOccupied(player);
         int expectedGrant = computeExpectedGrant(player);
-        return new PlayerChangedEvent(player, countryCount, armyCount, continentCount, expectedGrant);
+        PlayerHoldings playerHoldings = getPlayerHoldings(player);
+        return new PlayerChangedEvent(player, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);
     }
 
     private void publishCountryState(Country country){

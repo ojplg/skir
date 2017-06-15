@@ -31,10 +31,10 @@ public class Massy implements AutomatedPlayer {
         }
         if( orderTypeList.contains(OrderType.PlaceArmy)){
             Country country = AiUtils.findStrongestPossession(_me,game);
-            return new PlaceArmy(adjutant, country, _me.reserveCount());
+            return new PlaceArmy(adjutant, country, game.getPlayerHoldings(_me).reserveCount());
         }
         if( orderTypeList.contains(OrderType.ExchangeCardSet)){
-            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
         }
         if( orderTypeList.contains(OrderType.Attack)){
             if( _conqueredOne ){

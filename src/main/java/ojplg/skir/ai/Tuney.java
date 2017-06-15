@@ -139,7 +139,7 @@ public class Tuney implements AutomatedPlayer {
     public Order generateOrder(Adjutant adjutant, Game game) {
         List<OrderType> allowableOrders = adjutant.allowableOrders();
         if( allowableOrders.contains(OrderType.ExchangeCardSet)){
-            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
         }
         if( allowableOrders.contains(OrderType.ClaimArmies)){
             return new ClaimArmies(adjutant);
@@ -290,7 +290,7 @@ public class Tuney implements AutomatedPlayer {
         Map<Country, Double> ratios = new HashMap<>();
         game.findOccupiedCountries(_me).forEach( c ->
                 ratios.put(c, computePlacementScore(c, game)));
-        return RatioDistributor.distribute(ratios,_me.reserveCount(), _placementMinimums);
+        return RatioDistributor.distribute(ratios,game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
     }
 
     public double computePlacementScore(Country country, Game game){
@@ -332,7 +332,7 @@ public class Tuney implements AutomatedPlayer {
 
         Player opponent = game.getOccupier(target);
         int totalOpponentStrength = AiUtils.findAllPlayerArmies(game, opponent);
-        int opponentCardCount = opponent.getCards().size();
+        int opponentCardCount = game.getPlayerHoldings(opponent).getCards().size();
 
         Set<Country> bloc = AiUtils.findContiguousOwnedCountries(game, target);
         int blocStrength = AiUtils.findStrengthOfCountries(game, bloc);

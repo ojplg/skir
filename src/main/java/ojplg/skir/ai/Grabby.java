@@ -61,10 +61,13 @@ public class Grabby implements AutomatedPlayer {
             if (orderType == OrderType.Occupy){
                 return occupy(adjutant, game);
             }
+            if (orderType == OrderType.ExchangeCardSet){
+                return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
+            }
             return dealWithNoChoiceOrderTypes(adjutant,orderType);
         }
         if( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
-            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
         }
         if( possibleOrderTypes.contains(OrderType.Attack)){
             return possiblyAttack(adjutant, game);
@@ -178,8 +181,6 @@ public class Grabby implements AutomatedPlayer {
 
     private Order dealWithNoChoiceOrderTypes(Adjutant adjutant,OrderType orderType){
         switch(orderType){
-            case ExchangeCardSet:
-                return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(_me.getCards()));
             case ClaimArmies:
                 return new ClaimArmies(adjutant);
             case DrawCard:

@@ -19,7 +19,7 @@ public class Fortify extends Order {
     @Override
     public Adjutant execute(Game game) {
         game.processFortifyOrder(_source, _destination, _armies);
-        if( getAdjutant().hasConqueredCountry() && ! activePlayer().hasMaximumCards()){
+        if( getAdjutant().hasConqueredCountry() && ! game.getPlayerHoldings(activePlayer()).hasMaximumCards()){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.DrawCard));
         } else {
             return Adjutant.nextPlayer(game.nextPlayer(), game.getTurnNumber());
