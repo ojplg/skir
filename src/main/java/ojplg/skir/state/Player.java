@@ -1,7 +1,5 @@
 package ojplg.skir.state;
 
-import ojplg.skir.ai.AutomatedPlayer;
-
 public class Player {
 
     private final String _color;
@@ -13,7 +11,6 @@ public class Player {
     //TODO: This should be a ClientKey object, not a String
     private String _clientKey;
     private String _displayName;
-//    private AutomatedPlayer _automatedPlayer;
 
     public Player(String color, int number){
         _color = color;
@@ -52,14 +49,6 @@ public class Player {
     public double defenseLuckFactor(){
         return _defenseStats.getExpectationsDifference();
     }
-
-//    public AutomatedPlayer getAutomatedPlayer() {
-//        return _automatedPlayer;
-//    }
-//
-//    public void setAutomatedPlayer(AutomatedPlayer _automatedPlayer) {
-//        this._automatedPlayer = _automatedPlayer;
-//    }
 
     public int getNumber(){
         return _number;

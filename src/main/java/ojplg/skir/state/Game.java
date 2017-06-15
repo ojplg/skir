@@ -55,7 +55,6 @@ public class Game {
         _occupations = occupations;
         _gameCount++;
         _gameId = _gameCount;
-        _log.info("Constructed game " + _gameCount);
     }
 
     public void start(){
