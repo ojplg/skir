@@ -20,22 +20,25 @@ function PlayerStatus(playerColor){
     this.updateTable = function(playerStatus){
         // TODO: this utility function should have a home
         clearElementChildren(this.table);
-        if( playerStatus['countries'] > 0 ){
-            var items = ['name', 'armies','countries','continents','card_count',
+        var items;
+        if ( playerStatus['countries'] > 0){
+            items = ['name', 'armies','countries','continents','card_count',
                          'expected_armies', 'attack_luck_factor', 'defense_luck_factor'];
-            for(var idx=0; idx<items.length; idx++){
-                var item = items[idx];
-                console.log("adding item " + item + " at index " + idx);
-                var row = this.table.insertRow(idx);
-                var nameCell = row.insertCell(0);
-                nameCell.innerHTML = item;
-                var valueCell = row.insertCell(1);
-                valueCell.innerHTML = playerStatus[item];
-            }
-            if( isMyColor(playerStatus.color) ){
-                var cards = playerStatus.cards;
-                this.updateCards(playerStatus.color, cards);
-            }
+        } else {
+            items = ['name','attack_luck_factor', 'defense_luck_factor'];
+        }
+        for(var idx=0; idx<items.length; idx++){
+            var item = items[idx];
+            console.log("adding item " + item + " at index " + idx);
+            var row = this.table.insertRow(idx);
+            var nameCell = row.insertCell(0);
+            nameCell.innerHTML = item;
+            var valueCell = row.insertCell(1);
+            valueCell.innerHTML = playerStatus[item];
+        }
+        if( isMyColor(playerStatus.color) ){
+            var cards = playerStatus.cards;
+            this.updateCards(playerStatus.color, cards);
         }
     }
 

@@ -31,8 +31,7 @@ public class GameRunner {
 
     private Adjutant _currentAdjutant;
     private Game _game;
-
-
+    
     public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
         _channels = channels;
         _fiber = fiber;
