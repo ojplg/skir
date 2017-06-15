@@ -8,16 +8,10 @@
           href="html/favicon.ico" />
 
     <script>
-        function selectAllAis(){
+        function toggleAiCheckboxes(flag){
               var aiBoxes = document.getElementsByName('ai');
               for(var idx=0; idx< aiBoxes.length ; idx++){
-                  aiBoxes[idx].checked=true;
-              }
-        }
-        function unselectAllAis(){
-              var aiBoxes = document.getElementsByName('ai');
-              for(var idx=0; idx< aiBoxes.length ; idx++){
-                  aiBoxes[idx].checked=false;
+                  aiBoxes[idx].checked=flag;
               }
         }
     </script>
@@ -38,9 +32,8 @@
             <br/>
         #end
 
-        <a href="javascript:selectAllAis();">Select All</a>
-        <a href="javascript:unselectAllAis();">Select None</a>
-
+        <a href="javascript:toggleAiCheckboxes(true);">Select All</a>
+        <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
 
     </form>
     <p>Skir is a play-alike version of a popular table-top board game of world conquest.</p>
