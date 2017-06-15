@@ -33,7 +33,6 @@ public class Player {
         this._displayName = displayName;
     }
 
-
     public void updateAttackStatistics(double expectationsDifference, int numberArmyBattles){
         _attackStats.updateStats(expectationsDifference, numberArmyBattles);
     }
