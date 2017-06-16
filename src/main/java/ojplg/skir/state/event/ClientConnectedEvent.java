@@ -2,21 +2,16 @@ package ojplg.skir.state.event;
 
 public class ClientConnectedEvent {
 
-    private final int _clientId;
     private final String _clientKey;
     private final String _displayName;
     private final String _address;
 
-    public ClientConnectedEvent(int clientId, String clientKey, String displayName, String address) {
-        this._clientId = clientId;
+    public ClientConnectedEvent(String clientKey, String displayName, String address) {
         this._clientKey = clientKey;
         this._displayName = displayName;
         this._address = address;
     }
 
-    public int getClientId() {
-        return _clientId;
-    }
     public String getClientKey() {
         return _clientKey;
     }
@@ -32,7 +27,6 @@ public class ClientConnectedEvent {
     @Override
     public String toString() {
         return "ClientConnectedEvent{" +
-                "_clientId='" + _clientId + '\'' +
                 ", _clientKey='" + _clientKey + '\'' +
                 ", _displayName='" + _displayName + '\'' +
                 ", _address='" + _address + '\'' +

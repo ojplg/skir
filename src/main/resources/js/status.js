@@ -26,7 +26,7 @@ function isMyColor(color){
 function initializeClient(name, address){
     console.log("initializing client with name " + name)
     draw_map();
-    myIdentity.uniqueKey = name + "@" + address;
+    myIdentity.uniqueKey = name;
     openWebSocketConnection(name, address, myIdentity.uniqueKey);
     myIdentity.name = name;
     myIdentity.address = address;

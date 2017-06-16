@@ -30,9 +30,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
-    private static volatile int _counter = 0;
+    private volatile int _counter=0;
 
-    private final int _id;
     private final Channels _channels;
     private String _clientKey;
     private Fiber _fiber;
@@ -43,10 +42,9 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     public LocalWebSocket(){
         _log.info("instantiated with no argument constructor");
         _channels = WebSocketInitializer.Channels;
-        _counter++;
-        _id = _counter;
 
-        _fiber = Skir.createThreadFiber("WebSocketFiber-" + _id);
+        _fiber = Skir.createThreadFiber("WebSocketFiber-" + _counter );
+        _counter++;
 
         _channels.MapChangedEventChannel.subscribe(_fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
@@ -94,7 +92,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                 String displayName = (String) jObject.get("displayName");
                 String address = (String) jObject.get("address");
                 _channels.ClientConnectedEventChannel.publish(
-                        new ClientConnectedEvent(_id, _clientKey, displayName, address));
+                        new ClientConnectedEvent(_clientKey, displayName, address));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }
