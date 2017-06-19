@@ -1,6 +1,7 @@
 package ojplg.skir.state.event;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayerChangedEvent {
+public class PlayerChangedEvent implements GameSpecifiable {
     private final Player _player;
     private final int _countryCount;
     private final int _armyCount;
@@ -18,8 +19,9 @@ public class PlayerChangedEvent {
     private final int _expectedGrant;
     private final double _attackLuckFactor;
     private final double _defenseLuckFactor;
+    private final GameId _gameId;
 
-    public PlayerChangedEvent(Player player, List<Card> cards, int countryCount, int armyCount, int continentCount, int expectedGrant) {
+    public PlayerChangedEvent(GameId gameId, Player player, List<Card> cards, int countryCount, int armyCount, int continentCount, int expectedGrant) {
         this._player = player;
         this._countryCount = countryCount;
         this._armyCount = armyCount;
@@ -28,10 +30,15 @@ public class PlayerChangedEvent {
         this._expectedGrant = expectedGrant;
         this._attackLuckFactor = player.attackLuckFactor();
         this._defenseLuckFactor = player.defenseLuckFactor();
+        this._gameId = gameId;
     }
 
     public String getClientKey(){
         return _player.getClientKey();
+    }
+
+    public GameId getGameId() {
+        return _gameId;
     }
 
     public JSONObject toJson(){
@@ -46,6 +53,8 @@ public class PlayerChangedEvent {
         jObject.put("name", _player.getDisplayName());
         jObject.put("attack_luck_factor", lowPrecisionDouble(_attackLuckFactor));
         jObject.put("defense_luck_factor", lowPrecisionDouble(_defenseLuckFactor));
+        jObject.put("game_id" , _gameId.getId());
+
         return jObject;
     }
 

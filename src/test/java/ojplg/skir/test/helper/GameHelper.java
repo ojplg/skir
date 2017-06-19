@@ -7,6 +7,7 @@ import ojplg.skir.map.WorldMap;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.RandomRoller;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Occupations;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.PlayerHoldings;
@@ -57,6 +58,7 @@ public class GameHelper {
         _occupations = new Occupations(worldMap);
 
         Game game = new Game(
+                GameId.next(),
                 players,
                 StandardCardSet.deck,
                 new RandomRoller(0),

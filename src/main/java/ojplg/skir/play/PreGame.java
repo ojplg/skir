@@ -2,6 +2,7 @@ package ojplg.skir.play;
 
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameEvent;
@@ -20,10 +21,12 @@ public class PreGame {
     private static final Logger _log = LogManager.getLogger(PreGame.class);
 
     private final Channels _channels;
+    private final GameId _gameId;
 
     private final Map<ClientConnectedEvent, Player> _connectedPlayers = new HashMap<>();
 
     public PreGame(Channels channels){
+        _gameId = GameId.next();
         _channels = channels;
     }
 
@@ -55,12 +58,16 @@ public class PreGame {
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
                     clientConnectedEvent, player, playerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
-            _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
+            _channels.GameEventChannel.publish(GameEvent.joinsGame(_gameId, player));
             _log.info("Published game joined event " + gameJoinedEvent);
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
         }
         return false;
+    }
+
+    public GameId getGameId(){
+        return _gameId;
     }
 
     public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
@@ -74,7 +81,7 @@ public class PreGame {
             players.add(player);
             AutomatedPlayer ai = aiFactory.generateAiPlayer(player);
             aiPlayers.put(player, ai);
-            _channels.GameEventChannel.publish(GameEvent.joinsGame(player));
+            _channels.GameEventChannel.publish(GameEvent.joinsGame(_gameId, player));
         }
         return new Tuple(players, aiPlayers);
     }

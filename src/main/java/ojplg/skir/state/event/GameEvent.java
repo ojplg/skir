@@ -1,70 +1,75 @@
 package ojplg.skir.state.event;
 
 import ojplg.skir.map.Country;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
 import org.json.simple.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
 
-public class GameEvent {
+public class GameEvent implements GameSpecifiable {
 
     private final String _simpleText;
     private final Integer _turnNumber;
     private final GameEventType _gameEventType;
     private final List<String> _playerIdentifiers;
+    private final GameId _gameId;
 
-    private GameEvent(String text, GameEventType gameEventType, String playerIdentifier){
+    private GameEvent(GameId gameId, String text, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = null;
         _gameEventType = gameEventType;
         _playerIdentifiers = Collections.singletonList(playerIdentifier);
+        _gameId = gameId;
     }
 
-    private GameEvent(int turnNumber, List<String> playerIdentifiers){
+    private GameEvent(GameId gameId, int turnNumber, List<String> playerIdentifiers){
         _simpleText = "Game was drawn";
         _playerIdentifiers = playerIdentifiers;
         _gameEventType = GameEventType.Draw;
         _turnNumber = turnNumber;
+        _gameId = gameId;
     }
 
-    private GameEvent(String text, int turnNumber, GameEventType gameEventType, String playerIdentifier){
+    private GameEvent(GameId gameId, String text, int turnNumber, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = turnNumber;
         _gameEventType = gameEventType;
         _playerIdentifiers = Collections.singletonList(playerIdentifier);
+        _gameId = gameId;
     }
 
-    public static GameEvent joinsGame(Player player){
-        return new GameEvent(player.getColor() + " joins game", 0, GameEventType.PlayerJoins, player.getDisplayName());
+    public static GameEvent joinsGame(GameId gameId, Player player){
+        return new GameEvent(gameId, player.getColor() + " joins game", 0, GameEventType.PlayerJoins, player.getDisplayName());
     }
 
-    public static GameEvent eliminated(Player player, int turnNumber){
-        return new GameEvent(player.getColor() + " was eliminated", turnNumber, GameEventType.PlayerEliminated, player.getDisplayName());
+    public static GameEvent eliminated(GameId gameId,Player player, int turnNumber){
+        return new GameEvent(gameId,player.getColor() + " was eliminated", turnNumber, GameEventType.PlayerEliminated, player.getDisplayName());
     }
 
-    public static GameEvent wins(Player player, int turnNumber){
-        return new GameEvent(player.getColor() + " wins the game", turnNumber, GameEventType.Win, player.getDisplayName());
+    public static GameEvent wins(GameId gameId,Player player, int turnNumber){
+        return new GameEvent(gameId,player.getColor() + " wins the game", turnNumber, GameEventType.Win, player.getDisplayName());
     }
 
-    public static GameEvent draw(int turnNumber, List<String>  playerIdentifiers){
-        return new GameEvent(turnNumber, playerIdentifiers);
+    public static GameEvent draw(GameId gameId,int turnNumber, List<String>  playerIdentifiers){
+        return new GameEvent(gameId,turnNumber, playerIdentifiers);
     }
 
-    public static GameEvent forAttack(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(attackText(player, fromCountry, toCountry), GameEventType.Attack, player.getDisplayName());
+    public static GameEvent forAttack(GameId gameId,Player player, Country fromCountry, Country toCountry){
+        return new GameEvent(gameId,attackText(player, fromCountry, toCountry), GameEventType.Attack, player.getDisplayName());
     }
 
-    public static GameEvent forOccupy(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(occupyText(player, fromCountry, toCountry),GameEventType.Occupy, player.getDisplayName());
+    public static GameEvent forOccupy(GameId gameId,Player player, Country fromCountry, Country toCountry){
+        return new GameEvent(gameId,occupyText(player, fromCountry, toCountry),GameEventType.Occupy, player.getDisplayName());
     }
 
-    public static GameEvent forFortify(Player player, Country fromCountry, Country toCountry){
-        return new GameEvent(fortifyText(player, fromCountry, toCountry),GameEventType.Fortify, player.getDisplayName());
+    public static GameEvent forFortify(GameId gameId,Player player, Country fromCountry, Country toCountry){
+        return new GameEvent(gameId,fortifyText(player, fromCountry, toCountry),GameEventType.Fortify, player.getDisplayName());
     }
 
-    public static GameEvent forCardExchange(Player player){
-        return new GameEvent(player.getColor() + " exchanges cards", GameEventType.ExchangeCards, player.getDisplayName());
+    public static GameEvent forCardExchange(GameId gameId,Player player){
+        return new GameEvent(gameId,player.getColor() + " exchanges cards", GameEventType.ExchangeCards, player.getDisplayName());
     }
 
     public int getTurnNumber(){
@@ -83,9 +88,15 @@ public class GameEvent {
         return _playerIdentifiers;
     }
 
+    @Override
+    public GameId getGameId() {
+        return _gameId;
+    }
+
     public JSONObject toJson(){
         JSONObject jObject = new JSONObject();
         jObject.put("message_type", "game_event");
+        jObject.put("game_id", _gameId.getId());
         jObject.put("simple_text", _simpleText);
         jObject.put("turn_number", _turnNumber);
         jObject.put("game_over", _gameEventType == GameEventType.Draw || _gameEventType == GameEventType.Win);

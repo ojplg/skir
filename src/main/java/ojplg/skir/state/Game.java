@@ -34,27 +34,25 @@ public class Game {
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
-    private final int _gameId;
-    private static volatile int _gameCount = 0;
+    private final GameId _gameId;
 
     private Player _currentAttacker;
     private int _turnNumber = 1;
     private int _lastAttackTurn = 0;
 
 
-    public Game(WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, int initialArmies){
-        this(players, cards, roller, channels, new Occupations(map), initialArmies);
+    public Game(GameId gameId, WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, int initialArmies){
+        this(gameId, players, cards, roller, channels, new Occupations(map), initialArmies);
     }
 
-    public Game(List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations, int initialArmies){
+    public Game(GameId gameId, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations, int initialArmies){
         _players.addAll(players);
         _players.forEach(p -> _playerHoldings.put(p.getColor(), new PlayerHoldings(initialArmies)));
         _cardPile = new CardStack(cards);
         _roller = roller;
         _channels = channels;
         _occupations = occupations;
-        _gameCount++;
-        _gameId = _gameCount;
+        _gameId = gameId;
     }
 
     public void start(){
@@ -158,7 +156,7 @@ public class Game {
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
         publishState(new Player[] { attackingPlayer, defendingPlayer}, new Country[]{attacker, defender});
-        _channels.GameEventChannel.publish(GameEvent.forAttack(currentAttacker(), attacker, defender));
+        _channels.GameEventChannel.publish(GameEvent.forAttack(_gameId, currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -176,10 +174,10 @@ public class Game {
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
         publishState(new Player[] {attacker, defender}, new Country[]{conqueror, vanquished});
-        _channels.GameEventChannel.publish(GameEvent.forOccupy(currentAttacker(), conqueror, vanquished));
+        _channels.GameEventChannel.publish(GameEvent.forOccupy(_gameId, currentAttacker(), conqueror, vanquished));
         boolean defenderEliminated =  findOccupiedCountries(defender).size() == 0;
         if (defenderEliminated){
-            _channels.GameEventChannel.publish(GameEvent.eliminated(defender, _turnNumber));
+            _channels.GameEventChannel.publish(GameEvent.eliminated(_gameId, defender, _turnNumber));
         }
         return defenderEliminated;
     }
@@ -194,7 +192,7 @@ public class Game {
         publishState(new Player[] { conqueror, vanquished}, new Country[0]);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
-            _channels.GameEventChannel.publish(GameEvent.wins(conqueror, _turnNumber));
+            _channels.GameEventChannel.publish(GameEvent.wins(_gameId, conqueror, _turnNumber));
         }
         return gameOver;
     }
@@ -220,7 +218,7 @@ public class Game {
         }
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(sourcePlayer, destination, armies);
-        _channels.GameEventChannel.publish(GameEvent.forFortify(currentAttacker(), source, destination));
+        _channels.GameEventChannel.publish(GameEvent.forFortify(_gameId, currentAttacker(), source, destination));
         publishCountryState(source);
         publishCountryState(destination);
     }
@@ -235,7 +233,7 @@ public class Game {
         getPlayerHoldings(_currentAttacker).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
-        _channels.GameEventChannel.publish(GameEvent.forCardExchange(currentAttacker()));
+        _channels.GameEventChannel.publish(GameEvent.forCardExchange(_gameId, currentAttacker()));
         getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
         publishPlayerState(_currentAttacker);
     }
@@ -255,7 +253,7 @@ public class Game {
         }
         if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
                 || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
-            _channels.GameEventChannel.publish(GameEvent.draw(getTurnNumber(),
+            _channels.GameEventChannel.publish(GameEvent.draw(_gameId, getTurnNumber(),
                     _players.stream().map(p -> p.getDisplayName()).collect(Collectors.toList())));
             isOver = true;
         }
@@ -377,14 +375,14 @@ public class Game {
         int continentCount = numberContinentsOccupied(player);
         int expectedGrant = computeExpectedGrant(player);
         PlayerHoldings playerHoldings = getPlayerHoldings(player);
-        return new PlayerChangedEvent(player, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);
+        return new PlayerChangedEvent(_gameId, player, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);
     }
 
     private void publishCountryState(Country country){
         int newCount = _occupations.getOccupationForce(country);
         Player player = _occupations.getOccupier(country);
 
-        MapChangedEvent event = new MapChangedEvent(country, player, newCount);
+        MapChangedEvent event = new MapChangedEvent(_gameId, country, player, newCount);
         _channels.MapChangedEventChannel.publish(event);
     }
 

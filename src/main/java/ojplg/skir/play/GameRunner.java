@@ -143,7 +143,7 @@ public class GameRunner {
         Roller roller = new RandomRoller(System.currentTimeMillis());
         _automatedPlayers = newPlayers.getSecond();
 
-        return new Game(map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
+        return new Game(_preGame.getGameId(), map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
     }
 
     private void assignCountries(){
