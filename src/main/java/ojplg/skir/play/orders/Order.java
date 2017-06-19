@@ -1,9 +1,11 @@
 package ojplg.skir.play.orders;
 
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
+import ojplg.skir.state.event.GameSpecifiable;
 
-public abstract class Order {
+public abstract class Order implements GameSpecifiable {
 
     private final Adjutant _adjutant;
 
@@ -20,6 +22,10 @@ public abstract class Order {
 
     public Adjutant getAdjutant(){
         return _adjutant;
+    }
+
+    public GameId getGameId(){
+        return _adjutant.getGameId();
     }
 
 }

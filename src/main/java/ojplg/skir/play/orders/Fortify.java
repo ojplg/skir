@@ -22,7 +22,7 @@ public class Fortify extends Order {
         if( getAdjutant().hasConqueredCountry() && ! game.getPlayerHoldings(activePlayer()).hasMaximumCards()){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.DrawCard));
         } else {
-            return Adjutant.nextPlayer(game.nextPlayer(), game.getTurnNumber());
+            return getAdjutant().nextPlayer(game.nextPlayer(), game.getTurnNumber());
         }
     }
 

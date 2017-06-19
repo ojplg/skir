@@ -1,5 +1,7 @@
 package ojplg.skir.play.orders;
 
+import ojplg.skir.state.GameId;
+import ojplg.skir.state.event.GameSpecifiable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -10,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Adjutant {
+public class Adjutant implements GameSpecifiable {
 
     private static final Logger _log = LogManager.getLogger(Adjutant.class);
 
@@ -18,47 +20,51 @@ public class Adjutant {
     private final List<ConstrainedOrderType> _allowableOrders;
     private final boolean _hasConqueredCountry;
     private final int _turnNumber;
+    private final GameId _gameId;
 
-    public static Adjutant newGameAdjutant(Player player){
-        return new Adjutant(player, false, OrderType.ClaimArmies, 1);
+    public static Adjutant newGameAdjutant(GameId gameId, Player player){
+        return new Adjutant(gameId, player, false, OrderType.ClaimArmies, 1);
     }
 
-    public static Adjutant nextPlayer(Player player, int turnNumber){
-        return new Adjutant(player, false, OrderType.ClaimArmies, turnNumber);
+    public Adjutant nextPlayer(Player player, int turnNumber){
+        return new Adjutant(this._gameId, player, false, OrderType.ClaimArmies, turnNumber);
     }
 
     public Adjutant forConstrainedOrderTypes(ConstrainedOrderType... constrained){
-        return new Adjutant(this._activePlayer, this.hasConqueredCountry(), this._turnNumber,constrained);
+        return new Adjutant(this._gameId, this._activePlayer, this.hasConqueredCountry(), this._turnNumber,constrained);
     }
 
     public Adjutant afterConquest(Attack attack, int maximumAvailableToMove){
-        return new Adjutant(this._activePlayer, true, this._turnNumber,
+        return new Adjutant(this._gameId, this._activePlayer, true, this._turnNumber,
                 ConstrainedOrderType.occupation(attack, maximumAvailableToMove));
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, int turnNumber,
+    private Adjutant(GameId gameId, Player activePlayer, boolean conqueredCountry, int turnNumber,
                      ConstrainedOrderType constrainedOrderType){
         this._activePlayer = activePlayer;
         this._hasConqueredCountry = conqueredCountry;
         this._allowableOrders = Collections.singletonList(constrainedOrderType);
         this._turnNumber = turnNumber;
+        this._gameId = gameId;
     }
 
-    private Adjutant(Player activePlayer, boolean conqueredCountry, int turnNumber,
+    private Adjutant(GameId gameId, Player activePlayer, boolean conqueredCountry, int turnNumber,
                      ConstrainedOrderType... constrainedOrderTypes){
         this._activePlayer = activePlayer;
         this._hasConqueredCountry = conqueredCountry;
         this._allowableOrders = Collections.unmodifiableList(
                 Arrays.asList(constrainedOrderTypes));
         this._turnNumber = turnNumber;
+        this._gameId = gameId;
     }
 
     // This constructor is public only for testing ... do not use
-    public Adjutant(Player activePlayer, boolean conqueredCountry, OrderType allowableType, int turnNumber){
+    public Adjutant(GameId gameId, Player activePlayer, boolean conqueredCountry, OrderType allowableType, int turnNumber){
         this._activePlayer = activePlayer;
         this._allowableOrders = Collections.singletonList(ConstrainedOrderType.unconstrainedOrder(allowableType));
         this._hasConqueredCountry = conqueredCountry;
         this._turnNumber = turnNumber;
+        this._gameId = gameId;
     }
 
     public List<OrderType> allowableOrders() {
@@ -92,6 +98,11 @@ public class Adjutant {
 
     public int getTurnNumber() {
         return _turnNumber;
+    }
+
+    @Override
+    public GameId getGameId() {
+        return _gameId;
     }
 
     public JSONObject toPossibleOrdersJson(){

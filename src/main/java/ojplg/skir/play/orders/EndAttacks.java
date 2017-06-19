@@ -27,7 +27,7 @@ public class EndAttacks extends Order {
                 return getAdjutant().forConstrainedOrderTypes(fortification, endTurn);
             } else {
                 Player nextPlayer = game.nextPlayer();
-                return Adjutant.nextPlayer(nextPlayer, game.getTurnNumber());
+                return getAdjutant().nextPlayer(nextPlayer, game.getTurnNumber());
             }
         }
     }

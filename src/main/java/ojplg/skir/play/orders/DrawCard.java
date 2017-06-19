@@ -19,7 +19,7 @@ public class DrawCard extends Order {
             game.publishPlayerState(activePlayer());
         }
         Player nextPlayer = game.nextPlayer();
-        return Adjutant.nextPlayer(nextPlayer, game.getTurnNumber());
+        return getAdjutant().nextPlayer(nextPlayer, game.getTurnNumber());
     }
 
     @Override

@@ -10,6 +10,7 @@ import ojplg.skir.play.Channels;
 import ojplg.skir.play.Roller;
 import ojplg.skir.play.Rolls;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.MapChangedEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import ojplg.skir.utils.ListUtils;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Game {
+public class Game implements GameSpecifiable {
 
     private static final Logger _log = LogManager.getLogger(Game.class);
 
@@ -40,7 +41,6 @@ public class Game {
     private int _turnNumber = 1;
     private int _lastAttackTurn = 0;
 
-
     public Game(GameId gameId, WorldMap map, List<Player> players, List<Card> cards, Roller roller, Channels channels, int initialArmies){
         this(gameId, players, cards, roller, channels, new Occupations(map), initialArmies);
     }
@@ -53,6 +53,10 @@ public class Game {
         _channels = channels;
         _occupations = occupations;
         _gameId = gameId;
+    }
+
+    public GameId getGameId(){
+        return _gameId;
     }
 
     public void start(){

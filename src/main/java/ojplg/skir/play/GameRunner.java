@@ -120,7 +120,7 @@ public class GameRunner {
         initializedAIs(_game);
         _game.start();
         _game.publishAllState();
-        _currentAdjutant = Adjutant.newGameAdjutant(_game.currentAttacker());
+        _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
         _channels.AdjutantChannel.publish(_currentAdjutant);
         _log.info("Starting game " + s);
     }
