@@ -23,7 +23,11 @@ function openWebSocketConnection(name, address, uniqueKey){
     queuedUpdates.mapUpdates = {};
     queuedUpdates.gameEvents = [];
     // need this to happen after connection created
-    connection.onopen = function(event) { sendJoinMessage(name, address, uniqueKey); };
+    connection.onopen = function(event) {
+        sendJoinMessage(name, address, uniqueKey);
+        var heartbeater = new Heartbeater();
+        heartbeater.startHeartbeats();
+    };
 }
 
 var queuedUpdates = {}

@@ -15,6 +15,6 @@ public class Constants {
             new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "PsTuney", "EvTuney", "Ev2Tuney" ,
                     "TuneyAdditive1","TuneyAdditive47","TuneyAdditive64","TuneyAdditive81"};
 
-    public static final int NUMBER_BENCH_GAMES_TO_RUN = 7;
+    public static final int NUMBER_BENCH_GAMES_TO_RUN = 100;
 
 }
