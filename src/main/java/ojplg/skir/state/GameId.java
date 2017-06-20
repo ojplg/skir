@@ -2,7 +2,7 @@ package ojplg.skir.state;
 
 public class GameId {
 
-    private static volatile int _counter = 0;
+    private static volatile int _counter;
     private final int _id;
 
     public static GameId next(){

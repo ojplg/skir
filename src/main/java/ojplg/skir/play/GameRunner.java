@@ -8,6 +8,7 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.state.GameId;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -142,8 +143,10 @@ public class GameRunner {
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
         _automatedPlayers = newPlayers.getSecond();
+        GameId gameId = _preGame.getGameId();
+        _preGame.next();
 
-        return new Game(_preGame.getGameId(), map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
+        return new Game(gameId, map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
     }
 
     private void assignCountries(){

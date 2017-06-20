@@ -21,13 +21,13 @@ public class PreGame {
     private static final Logger _log = LogManager.getLogger(PreGame.class);
 
     private final Channels _channels;
-    private final GameId _gameId;
+    private GameId _gameId;
 
     private final Map<ClientConnectedEvent, Player> _connectedPlayers = new HashMap<>();
 
     public PreGame(Channels channels){
-        _gameId = GameId.next();
         _channels = channels;
+        _gameId = GameId.next();
     }
 
     public boolean handleClientConnection(ClientConnectedEvent clientConnectedEvent){
@@ -67,7 +67,11 @@ public class PreGame {
     }
 
     public GameId getGameId(){
-        return _gameId;
+        return GameId.next();
+    }
+
+    public void next(){
+        _gameId = GameId.next();
     }
 
     public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
