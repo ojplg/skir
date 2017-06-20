@@ -41,8 +41,6 @@ public class SkirWebHandler extends AbstractHandler {
                 String remoteAddress = request.getRemoteAddr();
                 String name = request.getParameter("name-input");
                 _log.info("Starting game for " + name);
-                String[] ais = request.getParameterValues("ai");
-                _channels.AiNamesChannel.publish(ais);
 
                 renderGamePage(name, remoteAddress, httpServletResponse.getWriter());
 
@@ -87,8 +85,6 @@ public class SkirWebHandler extends AbstractHandler {
 
     private void renderIndexPage(Writer writer){
         VelocityContext vc = new VelocityContext();
-        vc.put("ai_names", Constants.AI_NAMES);
-
         renderVelocityTemplate("/template/index.vtl", vc, writer);
     }
 

@@ -35,7 +35,4 @@ public class Channels {
 
     public final Channel<GameEvent> GameEventChannel
             = new MemoryChannel<>();
-
-    public final Channel<String[]> AiNamesChannel
-            = new MemoryChannel<>();
 }

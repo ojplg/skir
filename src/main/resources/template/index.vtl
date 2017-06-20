@@ -6,15 +6,6 @@
     <link rel="icon"
           type="image/x-icon"
           href="html/favicon.ico" />
-
-    <script>
-        function toggleAiCheckboxes(flag){
-              var aiBoxes = document.getElementsByName('ai');
-              for(var idx=0; idx< aiBoxes.length ; idx++){
-                  aiBoxes[idx].checked=flag;
-              }
-        }
-    </script>
 </head>
 <body>
     <p>Join a game of skir.</p>
@@ -25,12 +16,6 @@
         <p>Name: <input name="name-input" type="text"/></p>
 
         <p><input type="submit"/></p>
-
-        #foreach( $ai in $ai_names )
-            <input type="checkbox" name="ai" value="$ai" checked="true"/>
-            <label>$ai</label>
-            <br/>
-        #end
 
         <a href="javascript:toggleAiCheckboxes(true);">Select All</a>
         <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
