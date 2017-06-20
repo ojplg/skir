@@ -22,9 +22,11 @@ public class SkirWebHandler extends AbstractHandler {
     private static final Logger _log = LogManager.getLogger(SkirWebHandler.class);
 
     private final Channels _channels;
+    private final WebRunner _webRunner;
 
-    public SkirWebHandler(Channels channels){
+    public SkirWebHandler(Channels channels, WebRunner webRunner){
         _channels = channels;
+        _webRunner = webRunner;
     }
 
     @Override
@@ -49,6 +51,7 @@ public class SkirWebHandler extends AbstractHandler {
             } else if( "new-game".equals(request.getParameter("switch-key"))){
                 String remoteAddress = request.getRemoteAddr();
                 renderGamePage("?", remoteAddress, httpServletResponse.getWriter());
+                _webRunner.newGame();
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }

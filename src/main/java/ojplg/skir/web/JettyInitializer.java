@@ -21,11 +21,13 @@ public class JettyInitializer {
     private final int _httpPort;
     private final Channels _channels;
     private Server _server;
+    private final WebRunner _webRunner;
 
-    public JettyInitializer(int httpPort, Channels channels){
+    public JettyInitializer(int httpPort, Channels channels, WebRunner webRunner){
         _httpPort = httpPort;
         _channels = channels;
         WebSocketInitializer.Channels = _channels;
+        _webRunner = webRunner;
         _log.info("Web Socket Channels initialized");
     }
 
@@ -48,7 +50,7 @@ public class JettyInitializer {
 
         ContextHandler contextHandler = new ContextHandler();
         contextHandler.setContextPath("/");
-        contextHandler.setHandler( new SkirWebHandler(_channels));
+        contextHandler.setHandler( new SkirWebHandler(_channels, _webRunner));
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] {  contextHandler, resourceHandler, context });

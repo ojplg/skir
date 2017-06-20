@@ -166,4 +166,8 @@ public class GameRunner {
         return 20 + (5 * (6 - numberPlayers));
     }
 
+    public GameId getGameId(){
+        return _preGame.getGameId();
+    }
+
 }

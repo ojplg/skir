@@ -4,6 +4,7 @@ import ojplg.skir.ai.AiFactory;
 import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Constants;
+import ojplg.skir.web.WebRunner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
@@ -35,7 +36,6 @@ public class Skir {
             startGameRunner(aiFactory, channels, false);
             evolutionRunner.evolve(aiFactory);
         } else {
-            startGameRunner(aiFactory, channels, true);
             startWebServer(channels);
         }
 
@@ -54,7 +54,8 @@ public class Skir {
         _log.info("Environment port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : 8080;
         _log.info("Using port " + port);
-        JettyInitializer jettyServer = new JettyInitializer(port, channels);
+        WebRunner webRunner = new WebRunner(channels);
+        JettyInitializer jettyServer = new JettyInitializer(port, channels, webRunner);
         Thread webThread = new Thread(() -> {
             try {
                 jettyServer.startJettyServer();

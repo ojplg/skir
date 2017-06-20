@@ -17,4 +17,6 @@ public class Constants {
 
     public static final int NUMBER_BENCH_GAMES_TO_RUN = 100;
 
+    public static final int WEB_PLAY_DELAY = 40;
+
 }
