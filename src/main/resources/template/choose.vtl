@@ -21,10 +21,14 @@
     <form action="/" method="get">
         <p>New Game Form</p>
         <input type="hidden" name="switch-key" value="new-game"/>
-        <input type="hidden" name="user-name" value="$user-name"/>
+        <input type="hidden" name="user-name" value="${user_name}"/>
+
+        <input type="checkbox" name="demo" value="true"/>
+        <label>Demo</label>
+        <br/><br/>
 
         #foreach( $ai in $ai_names )
-            <input type="checkbox" name="ai" value="$ai" checked="true"/>
+            <input type="checkbox" name="ai" value="$ai" checked/>
             <label>$ai</label>
             <br/>
         #end
@@ -38,11 +42,13 @@
     </form>
 
     <br/>
+    <hr/>
+    <br/>
 
     <form action="/" method="get">
         <p>Join Game Form</p>
         <input type="hidden" name="switch-key" value="join-game"/>
-        <input type="hidden" name="user-name" value="$user-name"/>
+        <input type="hidden" name="user-name" value="${user_name}"/>
 
         #foreach( $game in $game_ids )
             <input type="checkbox" name="game" value="$game" checked="false"/>

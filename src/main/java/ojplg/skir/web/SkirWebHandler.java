@@ -45,14 +45,15 @@ public class SkirWebHandler extends AbstractHandler {
                 String userName = request.getParameter("user-name");
                 String remoteAddress = request.getRemoteAddr();
                 String[] ais = request.getParameterValues("ai");
+                boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
                 GameId gameId = _webRunner.newGame(ais);
-                renderGamePage(gameId,  userName, remoteAddress, httpServletResponse.getWriter());
+                renderGamePage(gameId, userName, remoteAddress, demoFlag, httpServletResponse.getWriter());
             } else if( "join-game".equals(switchKey)){
                 String remoteAddress = request.getRemoteAddr();
                 String gameIdString = request.getParameter("game");
                 GameId gameId = GameId.fromString(gameIdString);
                 String userName = request.getParameter("user-name");
-                renderGamePage(gameId, userName, remoteAddress, httpServletResponse.getWriter());
+                renderGamePage(gameId, userName, remoteAddress, false, httpServletResponse.getWriter());
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }
@@ -72,12 +73,13 @@ public class SkirWebHandler extends AbstractHandler {
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 
-    private void renderGamePage(GameId gameId, String name, String address, Writer writer){
+    private void renderGamePage(GameId gameId, String name, String address, boolean demoFlag, Writer writer){
         VelocityContext vc = new VelocityContext();
         vc.put("name", name);
         vc.put("address", address);
         vc.put("colors", GuiColor.ALL_COLORS);
         vc.put("game_id", gameId.getId());
+        vc.put("demo", demoFlag);
 
         String webSocketProtocol = System.getenv("WEB_SOCKET_PROTOCOL");
         if ( webSocketProtocol == null){

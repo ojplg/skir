@@ -23,16 +23,16 @@ function isMyColor(color){
     return color.toUpperCase() == myIdentity.color.toUpperCase();
 }
 
-function initializeClient(name, address){
+function initializeClient(name, address, demoFlag){
     console.log("initializing client with name " + name)
     draw_map();
     myIdentity.uniqueKey = name;
-    openWebSocketConnection(name, address, myIdentity.uniqueKey);
+    openWebSocketConnection(name, address, myIdentity.uniqueKey, demoFlag);
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";
     playerStatuses = new PlayerStatuses();
-    if( name == "demo"){
+    if( demoFlag == "true"){
         addButton("start");
     }
     setInterval(processUpdates,25);

@@ -41,7 +41,7 @@ public class PreGame {
                     clientConnectedEvent, player, false);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
             return true;
-        } else if ( "demo".equalsIgnoreCase(clientConnectedEvent.getDisplayName()) ) {
+        } else if ( clientConnectedEvent.isDemo() ) {
             _log.info("Demo");
         } else if ( _connectedPlayers.size() < 6 ) {
             _log.info("Trying to add a new player " + clientConnectedEvent);

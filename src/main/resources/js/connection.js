@@ -1,6 +1,6 @@
 var connection;
 
-function openWebSocketConnection(name, address, uniqueKey){
+function openWebSocketConnection(name, address, uniqueKey, demoFlag){
     connection = new WebSocket(web_socket_protocol + "://" + window.location.host + "/sockets/");
     connection.onmessage = function(event){
         console.log("message from server: " + event.data);
@@ -24,7 +24,7 @@ function openWebSocketConnection(name, address, uniqueKey){
     queuedUpdates.gameEvents = [];
     // need this to happen after connection created
     connection.onopen = function(event) {
-        sendJoinMessage(name, address, uniqueKey);
+        sendJoinMessage(name, address, uniqueKey, demoFlag);
         var heartbeater = new Heartbeater();
         heartbeater.startHeartbeats();
     };
@@ -52,12 +52,13 @@ function queueGameEvent(gameEvent){
   queuedUpdates.gameEvents.push(gameEvent);
 }
 
-function sendJoinMessage(name, address, uniqueKey){
+function sendJoinMessage(name, address, uniqueKey, demoFlag){
     var obj = {};
     obj.messageType = "ClientJoined";
     obj.uniqueKey = "" + uniqueKey;
     obj.displayName = name;
     obj.address = address;
+    obj.demo = demoFlag;
     var msg = JSON.stringify(obj);
     sendMessage(msg);
 }

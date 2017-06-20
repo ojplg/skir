@@ -91,8 +91,11 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                 _clientKey = (String) jObject.get("uniqueKey");
                 String displayName = (String) jObject.get("displayName");
                 String address = (String) jObject.get("address");
+                String demoString = (String) jObject.get("demo");
+                _log.info("Demo string was set to " + demoString);
+                boolean demo = Boolean.parseBoolean(demoString);
                 _channels.ClientConnectedEventChannel.publish(
-                        new ClientConnectedEvent(_clientKey, displayName, address));
+                        new ClientConnectedEvent(_clientKey, displayName, address, demo));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }

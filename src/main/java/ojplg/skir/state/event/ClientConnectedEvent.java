@@ -5,11 +5,13 @@ public class ClientConnectedEvent {
     private final String _clientKey;
     private final String _displayName;
     private final String _address;
+    private final boolean _demo;
 
-    public ClientConnectedEvent(String clientKey, String displayName, String address) {
+    public ClientConnectedEvent(String clientKey, String displayName, String address, boolean demo) {
         this._clientKey = clientKey;
         this._displayName = displayName;
         this._address = address;
+        this._demo = demo;
     }
 
     public String getClientKey() {
@@ -23,6 +25,8 @@ public class ClientConnectedEvent {
     public String getAddress() {
         return _address;
     }
+
+    public boolean isDemo() { return _demo; }
 
     @Override
     public String toString() {
@@ -41,15 +45,11 @@ public class ClientConnectedEvent {
         ClientConnectedEvent that = (ClientConnectedEvent) o;
 
         return _clientKey.equals(that._clientKey);
-//        &&      _displayName.equals(that._displayName) &&
-//                _address.equals(that._address);
     }
 
     @Override
     public int hashCode() {
         int result = _clientKey.hashCode();
-//        result = 31 * result + _displayName.hashCode();
-//        result = 31 * result + _address.hashCode();
         return result;
     }
 }
