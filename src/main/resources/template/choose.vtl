@@ -7,11 +7,30 @@
           type="image/x-icon"
           href="html/favicon.ico" />
 
+    <script>
+        function toggleAiCheckboxes(flag){
+              var aiBoxes = document.getElementsByName('ai');
+              for(var idx=0; idx< aiBoxes.length ; idx++){
+                  aiBoxes[idx].checked=flag;
+              }
+        }
+    </script>
+
 </head>
 <body>
     <form action="/" method="get">
         <p>New Game Form</p>
         <input type="hidden" name="switch-key" value="new-game"/>
+
+        #foreach( $ai in $ai_names )
+            <input type="checkbox" name="ai" value="$ai" checked="true"/>
+            <label>$ai</label>
+            <br/>
+        #end
+
+        <a href="javascript:toggleAiCheckboxes(true);">Select All</a>
+        <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
+
         <input type="submit"/>
     </form>
 </body>

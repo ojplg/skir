@@ -62,6 +62,7 @@ public class SkirWebHandler extends AbstractHandler {
     private void renderChooserPage(Writer writer){
         _log.info("Rendering chooser page");
         VelocityContext vc = new VelocityContext();
+        vc.put("ai_names", Constants.AI_NAMES);
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 
