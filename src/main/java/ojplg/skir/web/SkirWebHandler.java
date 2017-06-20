@@ -2,6 +2,7 @@ package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
 import ojplg.skir.state.Constants;
+import ojplg.skir.state.GameId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.velocity.VelocityContext;
@@ -37,20 +38,21 @@ public class SkirWebHandler extends AbstractHandler {
 
         if( request.getPathInfo().equals("/")) {
             String switchKey = request.getParameter("switch-key");
-            if ("start-game".equals(switchKey)) {
+            if( "chooser".equals(switchKey)){
+                String userName = request.getParameter("user-name");
+                renderChooserPage(userName, httpServletResponse.getWriter());
+            } else if( "new-game".equals(switchKey)){
+                String userName = request.getParameter("user-name");
                 String remoteAddress = request.getRemoteAddr();
-                String name = request.getParameter("name-input");
-                _log.info("Starting game for " + name);
-
-                renderGamePage(name, remoteAddress, httpServletResponse.getWriter());
-
-            } else if( "chooser".equals(request.getParameter("switch-key"))){
-                renderChooserPage(httpServletResponse.getWriter());
-            } else if( "new-game".equals(request.getParameter("switch-key"))){
-                String remoteAddress = request.getRemoteAddr();
-                renderGamePage("?", remoteAddress, httpServletResponse.getWriter());
                 String[] ais = request.getParameterValues("ai");
-                _webRunner.newGame(ais);
+                GameId gameId = _webRunner.newGame(ais);
+                renderGamePage(gameId,  userName, remoteAddress, httpServletResponse.getWriter());
+            } else if( "join-game".equals(switchKey)){
+                String remoteAddress = request.getRemoteAddr();
+                String gameIdString = request.getParameter("game");
+                GameId gameId = GameId.fromString(gameIdString);
+                String userName = request.getParameter("user-name");
+                renderGamePage(gameId, userName, remoteAddress, httpServletResponse.getWriter());
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }
@@ -61,18 +63,21 @@ public class SkirWebHandler extends AbstractHandler {
         }
     }
 
-    private void renderChooserPage(Writer writer){
+    private void renderChooserPage(String userName, Writer writer){
         _log.info("Rendering chooser page");
         VelocityContext vc = new VelocityContext();
+        vc.put("user_name", userName);
         vc.put("ai_names", Constants.AI_NAMES);
+        vc.put("game_ids", _webRunner.getGameIds());
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 
-    private void renderGamePage(String name, String address, Writer writer){
+    private void renderGamePage(GameId gameId, String name, String address, Writer writer){
         VelocityContext vc = new VelocityContext();
         vc.put("name", name);
         vc.put("address", address);
         vc.put("colors", GuiColor.ALL_COLORS);
+        vc.put("game_id", gameId.getId());
 
         String webSocketProtocol = System.getenv("WEB_SOCKET_PROTOCOL");
         if ( webSocketProtocol == null){

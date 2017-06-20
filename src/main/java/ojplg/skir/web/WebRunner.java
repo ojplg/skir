@@ -9,6 +9,7 @@ import ojplg.skir.state.GameId;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class WebRunner {
 
@@ -19,7 +20,7 @@ public class WebRunner {
         _channels = channels;
     }
 
-    public void newGame(String[] aiNames){
+    public GameId newGame(String[] aiNames){
         AiFactory aiFactory = new AiFactory(aiNames);
         GameRunner gameRunner = new GameRunner(aiFactory,
                 _channels,
@@ -28,5 +29,10 @@ public class WebRunner {
                 );
         _gameRunners.put(gameRunner.getGameId(), gameRunner);
         gameRunner.start();
+        return gameRunner.getGameId();
+    }
+
+    public Set<GameId> getGameIds(){
+        return _gameRunners.keySet();
     }
 }

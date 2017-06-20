@@ -12,6 +12,11 @@ public class GameId {
         }
     }
 
+    public static GameId fromString(String s){
+        int value = Integer.valueOf(s);
+        return new GameId(value);
+    }
+
     private GameId(int number){
         _id = number;
     }

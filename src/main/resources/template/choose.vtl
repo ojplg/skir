@@ -21,6 +21,7 @@
     <form action="/" method="get">
         <p>New Game Form</p>
         <input type="hidden" name="switch-key" value="new-game"/>
+        <input type="hidden" name="user-name" value="$user-name"/>
 
         #foreach( $ai in $ai_names )
             <input type="checkbox" name="ai" value="$ai" checked="true"/>
@@ -31,7 +32,28 @@
         <a href="javascript:toggleAiCheckboxes(true);">Select All</a>
         <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
 
+        <br/>
+
         <input type="submit"/>
     </form>
+
+    <br/>
+
+    <form action="/" method="get">
+        <p>Join Game Form</p>
+        <input type="hidden" name="switch-key" value="join-game"/>
+        <input type="hidden" name="user-name" value="$user-name"/>
+
+        #foreach( $game in $game_ids )
+            <input type="checkbox" name="game" value="$game" checked="false"/>
+            <label>$game</label>
+            <br/>
+        #end
+
+        <br/>
+
+        <input type="submit"/>
+    </form>
+
 </body>
 </html>
