@@ -23,7 +23,7 @@ public class Skir {
         final Channels channels = new Channels();
         final boolean benchTest = Arrays.asList(args).contains("-bench");
         final boolean evolve = Arrays.asList(args).contains("-evolve");
-        final AiFactory aiFactory = new AiFactory(channels);
+        final AiFactory aiFactory = new AiFactory(Constants.AI_NAMES);
 
         if ( benchTest ){
             startGameRunner(aiFactory, channels, false);

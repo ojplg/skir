@@ -51,7 +51,8 @@ public class SkirWebHandler extends AbstractHandler {
             } else if( "new-game".equals(request.getParameter("switch-key"))){
                 String remoteAddress = request.getRemoteAddr();
                 renderGamePage("?", remoteAddress, httpServletResponse.getWriter());
-                _webRunner.newGame();
+                String[] ais = request.getParameterValues("ai");
+                _webRunner.newGame(ais);
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }

@@ -19,8 +19,8 @@ public class WebRunner {
         _channels = channels;
     }
 
-    public void newGame(){
-        AiFactory aiFactory = new AiFactory(_channels);
+    public void newGame(String[] aiNames){
+        AiFactory aiFactory = new AiFactory(aiNames);
         GameRunner gameRunner = new GameRunner(aiFactory,
                 _channels,
                 Skir.createThreadFiber("WebGameRunner"),

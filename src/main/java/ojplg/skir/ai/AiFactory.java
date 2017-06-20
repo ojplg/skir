@@ -1,6 +1,5 @@
 package ojplg.skir.ai;
 
-import ojplg.skir.play.Channels;
 import ojplg.skir.state.Constants;
 import ojplg.skir.play.Skir;
 import ojplg.skir.state.Player;
@@ -20,15 +19,11 @@ public class AiFactory {
     private Function<Player, AutomatedPlayer> _firstPlayerFactory;
     private final Random random = new Random(System.currentTimeMillis());
     private final Fiber _fiber = Skir.createThreadFiber("AiFactoryFiber");
-    private final Channels _channels;
     private String[] _eligibleAiNames;
 
-    public AiFactory(Channels channels){
-        _channels = channels;
-        _eligibleAiNames = Constants.AI_NAMES;
+    public AiFactory(String[] aiNames){
+        _eligibleAiNames = aiNames;
         _fiber.start();
-        _channels.AiNamesChannel.subscribe(_fiber,
-                names ->{ _eligibleAiNames = names; } );
     }
 
     public AutomatedPlayer generateAiPlayer(Player player){
