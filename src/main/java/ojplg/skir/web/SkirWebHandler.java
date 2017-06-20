@@ -44,6 +44,11 @@ public class SkirWebHandler extends AbstractHandler {
 
                 renderGamePage(name, remoteAddress, httpServletResponse.getWriter());
 
+            } else if( "chooser".equals(request.getParameter("switch-key"))){
+                renderChooserPage(httpServletResponse.getWriter());
+            } else if( "new-game".equals(request.getParameter("switch-key"))){
+                String remoteAddress = request.getRemoteAddr();
+                renderGamePage("?", remoteAddress, httpServletResponse.getWriter());
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }
@@ -52,6 +57,12 @@ public class SkirWebHandler extends AbstractHandler {
 
             request.setHandled(true);
         }
+    }
+
+    private void renderChooserPage(Writer writer){
+        _log.info("Rendering chooser page");
+        VelocityContext vc = new VelocityContext();
+        renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 
     private void renderGamePage(String name, String address, Writer writer){
