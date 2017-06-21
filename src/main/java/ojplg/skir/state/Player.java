@@ -1,6 +1,6 @@
 package ojplg.skir.state;
 
-public class Player {
+public class Player implements Comparable<Player> {
 
     private final String _color;
     private final int _number;
@@ -77,5 +77,10 @@ public class Player {
 
     public int hashCode(){
         return _color.hashCode();
+    }
+
+    @Override
+    public int compareTo(Player o) {
+        return this.getNumber() - o.getNumber();
     }
 }

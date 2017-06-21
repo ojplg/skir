@@ -88,6 +88,11 @@ public class GameEvent implements GameSpecifiable {
         return _playerIdentifiers;
     }
 
+    public boolean isGameOver(){
+        return _gameEventType.equals(GameEventType.Draw)
+                || _gameEventType.equals(GameEventType.Win);
+    }
+
     @Override
     public GameId getGameId() {
         return _gameId;

@@ -6,6 +6,9 @@ import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.Skir;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
+import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameEventType;
+import org.jetlang.fibers.Fiber;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,9 +18,16 @@ public class WebRunner {
 
     private final Map<GameId, GameRunner> _gameRunners = new HashMap<>();
     private final Channels _channels;
+    private final Fiber _fiber;
 
     public WebRunner(Channels channels){
         _channels = channels;
+        _fiber = Skir.createThreadFiber("WebRunner");
+        channels.subscribeToAllGameEvents(_fiber, this::handleGameEvent);
+    }
+
+    public void start(){
+        _fiber.start();
     }
 
     public GameId newGame(String[] aiNames){
@@ -34,5 +44,11 @@ public class WebRunner {
 
     public Set<GameId> getGameIds(){
         return _gameRunners.keySet();
+    }
+
+    private void handleGameEvent(GameEvent gameEvent){
+        if(gameEvent.isGameOver()){
+            _gameRunners.remove(gameEvent.getGameId());
+        }
     }
 }

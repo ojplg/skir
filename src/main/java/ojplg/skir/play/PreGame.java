@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class PreGame {
         for(Player player : _connectedPlayers.values()){
             players.add(player);
         }
+        Collections.sort(players);
         for (int idx = _connectedPlayers.size(); idx < colors.length; idx++) {
             Player player = new Player(colors[idx], idx);
             players.add(player);
