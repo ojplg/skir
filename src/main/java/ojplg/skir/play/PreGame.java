@@ -21,7 +21,7 @@ public class PreGame {
     private static final Logger _log = LogManager.getLogger(PreGame.class);
 
     private final Channels _channels;
-    private GameId _gameId;
+    private final GameId _gameId;
 
     private final Map<ClientConnectedEvent, Player> _connectedPlayers = new HashMap<>();
 
@@ -70,10 +70,9 @@ public class PreGame {
         return _gameId;
     }
 
-    public GameId next(){
-        _gameId = GameId.next();
-        return _gameId;
-    }
+//    public void next(){
+//        GameId.next();
+//    }
 
     public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
         List<Player> players = new ArrayList<>();

@@ -30,12 +30,12 @@ public class GameRunner implements GameSpecifiable {
     private final Channels _channels;
     private final Fiber _fiber;
     private final int _orderDelay;
-    private final PreGame _preGame;
     private final AiFactory _aiFactory;
 
     private Map<Player,AutomatedPlayer> _automatedPlayers;
 
     private Adjutant _currentAdjutant;
+    private PreGame _preGame;
     private Game _game;
 
     public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
@@ -70,6 +70,7 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void processOrder(Order order){
+        if( matches(order)) {
             Player player = _currentAdjutant.getActivePlayer();
             _log.debug("Processing order for " + player + " of type " + order.getType());
             _currentAdjutant = order.execute(_game);
@@ -78,6 +79,9 @@ public class GameRunner implements GameSpecifiable {
             } else {
                 _channels.AdjutantChannel.publish(_currentAdjutant);
             }
+        } else {
+            _log.warn("Game Runner for " + getGameId() + " order for " + order.getGameId());
+        }
     }
 
     private void handleGameOver(){
@@ -97,6 +101,7 @@ public class GameRunner implements GameSpecifiable {
                 _log.info("Victor: " + p + aiMessage);
             }
         });
+        _preGame = new PreGame(_channels);
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
@@ -147,7 +152,7 @@ public class GameRunner implements GameSpecifiable {
         Roller roller = new RandomRoller(System.currentTimeMillis());
         _automatedPlayers = newPlayers.getSecond();
         GameId gameId = _preGame.getGameId();
-        _preGame.next();
+        //_preGame.next();
 
         return new Game(gameId, map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
     }
