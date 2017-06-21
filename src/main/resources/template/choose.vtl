@@ -51,7 +51,7 @@
         <input type="hidden" name="user-name" value="${user_name}"/>
 
         #foreach( $game in $game_ids )
-            <input type="checkbox" name="game" value="$game" checked="false"/>
+            <input type="radio" name="game" value="$game"/>
             <label>$game</label>
             <br/>
         #end
