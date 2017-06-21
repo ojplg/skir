@@ -52,17 +52,10 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _channels.subscribeToMapChangedEvent(this, _fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
         );
-        _channels.subscribeToPlayerChangedEvent(this, _fiber,
-                playerChangedEvent -> handlePlayerChangedEvent(playerChangedEvent)
-        );
-        _channels.subscribeToAdjutant(this, _fiber,
-                adjutant -> handleNewAdjutant(adjutant)
-        );
-        _channels.subscribeToGameJoinedEvent(this, _fiber,
-                gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
-        );
-        _channels.subscribeToGameEvent(this, _fiber,
-                gameEvent -> handleOrderEvent(gameEvent));
+        _channels.subscribeToPlayerChangedEvent(this, _fiber, this::handlePlayerChangedEvent);
+        _channels.subscribeToAdjutant(this, _fiber, this::handleNewAdjutant);
+        _channels.subscribeToGameJoinedEvent(this, _fiber, this::handleGameJoinedEvent);
+        _channels.subscribeToGameEvent(this, _fiber, this::handleOrderEvent);
         _log.info("Channel subscriptions made");
 
         _fiber.start();
