@@ -48,7 +48,8 @@ public class WebRunner {
 
     private void handleGameEvent(GameEvent gameEvent){
         if(gameEvent.isGameOver()){
-            _gameRunners.remove(gameEvent.getGameId());
+            GameRunner runner = _gameRunners.remove(gameEvent.getGameId());
+            runner.stop();
         }
     }
 }

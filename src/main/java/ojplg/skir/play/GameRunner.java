@@ -132,6 +132,11 @@ public class GameRunner implements GameSpecifiable {
         _log.info("Starting game " + s);
     }
 
+    public void stop(){
+        _fiber.dispose();
+
+    }
+
     private void initializedAIs(Game game){
         for(Player player: game.getAllPlayers()){
             AutomatedPlayer ai = _automatedPlayers.get(player);
