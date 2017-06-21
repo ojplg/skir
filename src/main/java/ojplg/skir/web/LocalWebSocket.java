@@ -150,7 +150,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _log.debug("Order " + orderJson);
         OrderJsonParser orderJsonParser = new OrderJsonParser(_currentAdjutant);
         Order order = orderJsonParser.parseOrder(orderJson);
-        _channels.OrderEnteredChannel.publish(order);
+        _channels.publishOrder(order);
     }
 
     private void handleNewAdjutant(Adjutant adjutant){

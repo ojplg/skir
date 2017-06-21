@@ -45,7 +45,7 @@ public class GameRunner implements GameSpecifiable {
         _aiFactory = aiFactory;
         _preGame = new PreGame(channels);
 
-        _channels.OrderEnteredChannel.subscribe(_fiber, this::processOrder);
+        _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
         _channels.StartGameChannel.subscribe(_fiber, this::startGame);
         _channels.AdjutantChannel.subscribe(_fiber, this::aiOrderGenerator);
@@ -70,17 +70,13 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void processOrder(Order order){
-        if( matches(order)) {
-            Player player = _currentAdjutant.getActivePlayer();
-            _log.debug("Processing order for " + player + " of type " + order.getType());
-            _currentAdjutant = order.execute(_game);
-            if (_game.gameOver()) {
-                handleGameOver();
-            } else {
-                _channels.AdjutantChannel.publish(_currentAdjutant);
-            }
+        Player player = _currentAdjutant.getActivePlayer();
+        _log.debug("Processing order for " + player + " of type " + order.getType());
+        _currentAdjutant = order.execute(_game);
+        if (_game.gameOver()) {
+            handleGameOver();
         } else {
-            _log.warn("Game Runner for " + getGameId() + " order for " + order.getGameId());
+            _channels.AdjutantChannel.publish(_currentAdjutant);
         }
     }
 
@@ -110,7 +106,7 @@ public class GameRunner implements GameSpecifiable {
             if( ai != null ) {
                 Order order = ai.generateOrder(_currentAdjutant, _game);
                 littleDelay();
-                _channels.OrderEnteredChannel.publish(order);
+                _channels.publishOrder(order);
             }
         }
     }

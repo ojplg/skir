@@ -1,6 +1,8 @@
 package ojplg.skir.state;
 
-public class GameId {
+import ojplg.skir.state.event.GameSpecifiable;
+
+public class GameId implements GameSpecifiable {
 
     private static volatile int _counter = 0;
     private final int _id;
@@ -46,5 +48,10 @@ public class GameId {
     @Override
     public String toString() {
         return Integer.toString(_id);
+    }
+
+    @Override
+    public GameId getGameId() {
+        return this;
     }
 }
