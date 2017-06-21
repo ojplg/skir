@@ -38,12 +38,12 @@ public class GameRunner implements GameSpecifiable {
     private PreGame _preGame;
     private Game _game;
 
-    public GameRunner(AiFactory aiFactory, Channels channels, Fiber fiber, int orderDelay){
+    public GameRunner(AiFactory aiFactory, Channels channels, int orderDelay){
         _channels = channels;
-        _fiber = fiber;
         _orderDelay = orderDelay;
         _aiFactory = aiFactory;
         _preGame = new PreGame(channels);
+        _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
 
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);

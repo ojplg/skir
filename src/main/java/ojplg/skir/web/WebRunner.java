@@ -34,7 +34,6 @@ public class WebRunner {
         AiFactory aiFactory = new AiFactory(aiNames);
         GameRunner gameRunner = new GameRunner(aiFactory,
                 _channels,
-                Skir.createThreadFiber("WebGameRunner"),
                 Constants.WEB_PLAY_DELAY
                 );
         _gameRunners.put(gameRunner.getGameId(), gameRunner);
