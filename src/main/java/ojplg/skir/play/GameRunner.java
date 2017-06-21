@@ -105,11 +105,13 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
-        AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
-        if( ai != null ){
-            Order order = ai.generateOrder(_currentAdjutant, _game);
-            littleDelay();
-            _channels.OrderEnteredChannel.publish(order);
+        if( matches(adjutant)){
+            AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
+            if( ai != null ) {
+                Order order = ai.generateOrder(_currentAdjutant, _game);
+                littleDelay();
+                _channels.OrderEnteredChannel.publish(order);
+            }
         }
     }
 
