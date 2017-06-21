@@ -17,6 +17,10 @@ public class GameId {
         return new GameId(value);
     }
 
+    public static GameId fromLong(long i){
+        return new GameId((int) i);
+    }
+
     private GameId(int number){
         _id = number;
     }

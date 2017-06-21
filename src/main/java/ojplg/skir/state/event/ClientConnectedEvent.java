@@ -1,17 +1,21 @@
 package ojplg.skir.state.event;
 
+import ojplg.skir.state.GameId;
+
 public class ClientConnectedEvent {
 
     private final String _clientKey;
     private final String _displayName;
     private final String _address;
     private final boolean _demo;
+    private final GameId _gameId;
 
-    public ClientConnectedEvent(String clientKey, String displayName, String address, boolean demo) {
+    public ClientConnectedEvent(String clientKey, String displayName, String address, boolean demo, GameId gameId) {
         this._clientKey = clientKey;
         this._displayName = displayName;
         this._address = address;
         this._demo = demo;
+        this._gameId = gameId;
     }
 
     public String getClientKey() {
@@ -27,6 +31,8 @@ public class ClientConnectedEvent {
     }
 
     public boolean isDemo() { return _demo; }
+
+    public GameId getGameId() { return _gameId; }
 
     @Override
     public String toString() {

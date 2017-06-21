@@ -23,11 +23,11 @@ function isMyColor(color){
     return color.toUpperCase() == myIdentity.color.toUpperCase();
 }
 
-function initializeClient(name, address, demoFlag){
+function initializeClient(name, address, demoFlag, gameId){
     console.log("initializing client with name " + name)
     draw_map();
     myIdentity.uniqueKey = name;
-    openWebSocketConnection(name, address, myIdentity.uniqueKey, demoFlag);
+    openWebSocketConnection(name, address, myIdentity.uniqueKey, demoFlag, gameId);
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";

@@ -4,6 +4,7 @@ import ojplg.skir.play.Channels;
 import ojplg.skir.play.Skir;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
 import ojplg.skir.state.event.GameEvent;
@@ -92,10 +93,12 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                 String displayName = (String) jObject.get("displayName");
                 String address = (String) jObject.get("address");
                 String demoString = (String) jObject.get("demo");
+                long gameIdInt = (long) jObject.get("gameId");
+                GameId gameId = GameId.fromLong(gameIdInt);
                 _log.info("Demo string was set to " + demoString);
                 boolean demo = Boolean.parseBoolean(demoString);
                 _channels.ClientConnectedEventChannel.publish(
-                        new ClientConnectedEvent(_clientKey, displayName, address, demo));
+                        new ClientConnectedEvent(_clientKey, displayName, address, demo, gameId));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }
