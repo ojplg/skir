@@ -9,6 +9,7 @@ import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
 import ojplg.skir.state.GameId;
+import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class GameRunner {
+public class GameRunner implements GameSpecifiable {
 
     private final static Logger _log = LogManager.getLogger(GameRunner.class);
     private final static String[] _colors = new String[]{ "Black", "Blue" , "Red", "Green", "White", "Pink"};
@@ -59,22 +60,24 @@ public class GameRunner {
     }
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
-        boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
-        if( rePublishState){
-            _game.publishAllState();
-            _channels.AdjutantChannel.publish(_currentAdjutant);
+        if( matches(clientConnectedEvent)) {
+            boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
+            if (rePublishState) {
+                _game.publishAllState();
+                _channels.AdjutantChannel.publish(_currentAdjutant);
+            }
         }
     }
 
     private void processOrder(Order order){
-        Player player = _currentAdjutant.getActivePlayer();
-        _log.debug("Processing order for " + player + " of type " + order.getType());
-        _currentAdjutant = order.execute(_game);
-        if( _game.gameOver() ){
-            handleGameOver();
-        } else {
-            _channels.AdjutantChannel.publish(_currentAdjutant);
-        }
+            Player player = _currentAdjutant.getActivePlayer();
+            _log.debug("Processing order for " + player + " of type " + order.getType());
+            _currentAdjutant = order.execute(_game);
+            if (_game.gameOver()) {
+                handleGameOver();
+            } else {
+                _channels.AdjutantChannel.publish(_currentAdjutant);
+            }
     }
 
     private void handleGameOver(){

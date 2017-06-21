@@ -2,7 +2,7 @@ package ojplg.skir.state.event;
 
 import ojplg.skir.state.GameId;
 
-public class ClientConnectedEvent {
+public class ClientConnectedEvent implements GameSpecifiable {
 
     private final String _clientKey;
     private final String _displayName;

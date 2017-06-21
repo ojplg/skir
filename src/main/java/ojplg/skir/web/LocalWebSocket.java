@@ -8,6 +8,7 @@ import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameJoinedEvent;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 
 @ServerEndpoint(value = "/sockets/")
-public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
+public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements GameSpecifiable {
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
@@ -39,6 +40,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
 
     private Session _session;
     private Adjutant _currentAdjutant;
+    private GameId _gameId;
 
     public LocalWebSocket(){
         _log.info("instantiated with no argument constructor");
@@ -94,11 +96,11 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
                 String address = (String) jObject.get("address");
                 String demoString = (String) jObject.get("demo");
                 long gameIdInt = (long) jObject.get("gameId");
-                GameId gameId = GameId.fromLong(gameIdInt);
+                _gameId = GameId.fromLong(gameIdInt);
                 _log.info("Demo string was set to " + demoString);
                 boolean demo = Boolean.parseBoolean(demoString);
                 _channels.ClientConnectedEventChannel.publish(
-                        new ClientConnectedEvent(_clientKey, displayName, address, demo, gameId));
+                        new ClientConnectedEvent(_clientKey, displayName, address, demo, _gameId));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }
@@ -118,6 +120,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ {
     public void onWebSocketError(Throwable throwable){
         _log.error("Web socket error", throwable);
     }
+
+    public GameId getGameId(){ return _gameId; }
 
     private void handlePlayerChangedEvent(PlayerChangedEvent playerChangedEvent){
         _log.debug("player event " + playerChangedEvent);
