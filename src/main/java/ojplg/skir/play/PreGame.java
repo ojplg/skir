@@ -38,8 +38,8 @@ public class PreGame {
             Player player = _connectedPlayers.get(clientConnectedEvent);
             _log.info("Player rejoined " + clientConnectedEvent + ", " + player);
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
-                    clientConnectedEvent, player, false);
-            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+                    clientConnectedEvent, player, false, _gameId);
+            _channels.publishGameJoinedEvent(gameJoinedEvent);
             return true;
         } else if ( clientConnectedEvent.isDemo() ) {
             _log.info("Demo");
@@ -56,8 +56,8 @@ public class PreGame {
             _log.info("Player " + playerNumber + " who is " + player.getColor());
 
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
-                    clientConnectedEvent, player, playerNumber == 0);
-            _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
+                    clientConnectedEvent, player, playerNumber == 0, _gameId);
+            _channels.publishGameJoinedEvent(gameJoinedEvent);
             _channels.publishGameEvent(GameEvent.joinsGame(_gameId, player));
             _log.info("Published game joined event " + gameJoinedEvent);
         } else {

@@ -1,18 +1,21 @@
 package ojplg.skir.state.event;
 
+import ojplg.skir.state.GameId;
 import org.json.simple.JSONObject;
 import ojplg.skir.state.Player;
 
-public class GameJoinedEvent {
+public class GameJoinedEvent implements GameSpecifiable {
 
     private final ClientConnectedEvent _clientConnectedEvent;
     private final Player _player;
     private boolean _firstPlayer;
+    private final GameId _gameId;
 
-    public GameJoinedEvent(ClientConnectedEvent clientConnectedEvent, Player player, boolean firstPlayer){
+    public GameJoinedEvent(ClientConnectedEvent clientConnectedEvent, Player player, boolean firstPlayer, GameId gameId){
         this._clientConnectedEvent = clientConnectedEvent;
         this._player = player;
         this._firstPlayer = firstPlayer;
+        this._gameId = gameId;
     }
 
     public String getClientKey() {
@@ -21,6 +24,10 @@ public class GameJoinedEvent {
 
     public Player getPlayer() {
         return _player;
+    }
+
+    public GameId getGameId(){
+        return _gameId;
     }
 
     public JSONObject toJson(){

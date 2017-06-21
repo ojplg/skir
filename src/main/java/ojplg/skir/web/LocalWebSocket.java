@@ -58,7 +58,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _channels.subscribeToAdjutant(this, _fiber,
                 adjutant -> handleNewAdjutant(adjutant)
         );
-        _channels.GameJoinedEventChannel.subscribe(_fiber,
+        _channels.subscribeToGameJoinedEvent(this, _fiber,
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
         _channels.subscribeToGameEvent(this, _fiber,

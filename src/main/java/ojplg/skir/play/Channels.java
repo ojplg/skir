@@ -20,11 +20,9 @@ public class Channels {
     private final Channel<MapChangedEvent> _mapChangedEventChannel = new MemoryChannel<>();
     private final Channel<PlayerChangedEvent> _playerChangedEventChannel = new MemoryChannel<>();
     private final Channel<GameEvent> _gameEventChannel = new MemoryChannel<>();
+    public final Channel<GameJoinedEvent> _gameJoinedEventChannel = new MemoryChannel<>();
 
     public final Channel<ClientConnectedEvent> ClientConnectedEventChannel
-            = new MemoryChannel<>();
-
-    public final Channel<GameJoinedEvent> GameJoinedEventChannel
             = new MemoryChannel<>();
 
     public final Channel<String> StartGameChannel
@@ -73,6 +71,14 @@ public class Channels {
 
     public void subscribeToAllGameEvents(DisposingExecutor executor, Callback<GameEvent> callback){
         _gameEventChannel.subscribe(executor, callback);
+    }
+
+    public void publishGameJoinedEvent(GameJoinedEvent event){
+        _gameJoinedEventChannel.publish(event);
+    }
+
+    public void subscribeToGameJoinedEvent(GameSpecifiable gameSpecifier, DisposingExecutor executor, Callback<GameJoinedEvent> callback){
+        gameSpecifiedSubscription(gameSpecifier, executor, callback, _gameJoinedEventChannel);
     }
 
     private <T extends GameSpecifiable> void gameSpecifiedSubscription(GameSpecifiable gameSpecifier, DisposingExecutor executor,
