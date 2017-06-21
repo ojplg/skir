@@ -32,7 +32,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
 
     private static final Logger _log = LogManager.getLogger(LocalWebSocket.class);
 
-    private volatile int _counter=0;
+    private static volatile int _counter=0;
 
     private final Channels _channels;
     private String _clientKey;
