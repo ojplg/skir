@@ -67,11 +67,12 @@ public class PreGame {
     }
 
     public GameId getGameId(){
-        return GameId.next();
+        return _gameId;
     }
 
-    public void next(){
+    public GameId next(){
         _gameId = GameId.next();
+        return _gameId;
     }
 
     public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
