@@ -58,7 +58,7 @@ public class PreGame {
             GameJoinedEvent gameJoinedEvent = new GameJoinedEvent(
                     clientConnectedEvent, player, playerNumber == 0);
             _channels.GameJoinedEventChannel.publish(gameJoinedEvent);
-            _channels.GameEventChannel.publish(GameEvent.joinsGame(_gameId, player));
+            _channels.publishGameEvent(GameEvent.joinsGame(_gameId, player));
             _log.info("Published game joined event " + gameJoinedEvent);
         } else {
             _log.info("Could not join the game " + clientConnectedEvent);
@@ -69,10 +69,6 @@ public class PreGame {
     public GameId getGameId(){
         return _gameId;
     }
-
-//    public void next(){
-//        GameId.next();
-//    }
 
     public Tuple<List<Player>, Map<Player,AutomatedPlayer>> newPlayers(String[] colors, AiFactory aiFactory){
         List<Player> players = new ArrayList<>();
@@ -85,7 +81,7 @@ public class PreGame {
             players.add(player);
             AutomatedPlayer ai = aiFactory.generateAiPlayer(player);
             aiPlayers.put(player, ai);
-            _channels.GameEventChannel.publish(GameEvent.joinsGame(_gameId, player));
+            _channels.publishGameEvent(GameEvent.joinsGame(_gameId, player));
         }
         return new Tuple(players, aiPlayers);
     }

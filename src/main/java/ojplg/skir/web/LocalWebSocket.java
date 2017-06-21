@@ -49,19 +49,19 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _fiber = Skir.createThreadFiber("WebSocketFiber-" + _counter );
         _counter++;
 
-        _channels.MapChangedEventChannel.subscribe(_fiber,
+        _channels.subscribeToMapChangedEvent(this, _fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
         );
-        _channels.PlayerChangedEventChannel.subscribe(_fiber,
+        _channels.subscribeToPlayerChangedEvent(this, _fiber,
                 playerChangedEvent -> handlePlayerChangedEvent(playerChangedEvent)
         );
-        _channels.AdjutantChannel.subscribe(_fiber,
+        _channels.subscribeToAdjutant(this, _fiber,
                 adjutant -> handleNewAdjutant(adjutant)
         );
         _channels.GameJoinedEventChannel.subscribe(_fiber,
                 gameJoinedEvent -> handleGameJoinedEvent(gameJoinedEvent)
         );
-        _channels.GameEventChannel.subscribe(_fiber,
+        _channels.subscribeToGameEvent(this, _fiber,
                 gameEvent -> handleOrderEvent(gameEvent));
         _log.info("Channel subscriptions made");
 

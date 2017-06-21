@@ -37,7 +37,7 @@ public class AiTestBench {
         this._gamesToRun = gamesToRun;
         this._aiFactory = aiFactory;
 
-        _channels.GameEventChannel.subscribe(fiber, this::handleGameEvent);
+        _channels.subscribeToAllGameEvents(fiber, this::handleGameEvent);
     }
 
     public void setAiToTest(Function<Player,AutomatedPlayer> playerGenerator){

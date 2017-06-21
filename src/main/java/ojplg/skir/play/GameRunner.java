@@ -48,7 +48,7 @@ public class GameRunner implements GameSpecifiable {
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
         _channels.StartGameChannel.subscribe(_fiber, this::startGame);
-        _channels.AdjutantChannel.subscribe(_fiber, this::aiOrderGenerator);
+        _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
     }
 
     public void start(){
@@ -64,7 +64,7 @@ public class GameRunner implements GameSpecifiable {
             boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
             if (rePublishState) {
                 _game.publishAllState();
-                _channels.AdjutantChannel.publish(_currentAdjutant);
+                _channels.publishAdjutant(_currentAdjutant);
             }
         }
     }
@@ -76,7 +76,7 @@ public class GameRunner implements GameSpecifiable {
         if (_game.gameOver()) {
             handleGameOver();
         } else {
-            _channels.AdjutantChannel.publish(_currentAdjutant);
+            _channels.publishAdjutant(_currentAdjutant);
         }
     }
 
@@ -128,7 +128,7 @@ public class GameRunner implements GameSpecifiable {
         _game.start();
         _game.publishAllState();
         _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
-        _channels.AdjutantChannel.publish(_currentAdjutant);
+        _channels.publishAdjutant(_currentAdjutant);
         _log.info("Starting game " + s);
     }
 

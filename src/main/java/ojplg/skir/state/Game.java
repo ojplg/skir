@@ -160,7 +160,7 @@ public class Game implements GameSpecifiable {
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
         publishState(new Player[] { attackingPlayer, defendingPlayer}, new Country[]{attacker, defender});
-        _channels.GameEventChannel.publish(GameEvent.forAttack(_gameId, currentAttacker(), attacker, defender));
+        _channels.publishGameEvent(GameEvent.forAttack(_gameId, currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
     }
 
@@ -178,10 +178,10 @@ public class Game implements GameSpecifiable {
         Player attacker = _occupations.getOccupier(conqueror);
         _occupations.placeArmies(attacker, vanquished, occupyingArmyCount);
         publishState(new Player[] {attacker, defender}, new Country[]{conqueror, vanquished});
-        _channels.GameEventChannel.publish(GameEvent.forOccupy(_gameId, currentAttacker(), conqueror, vanquished));
+        _channels.publishGameEvent(GameEvent.forOccupy(_gameId, currentAttacker(), conqueror, vanquished));
         boolean defenderEliminated =  findOccupiedCountries(defender).size() == 0;
         if (defenderEliminated){
-            _channels.GameEventChannel.publish(GameEvent.eliminated(_gameId, defender, _turnNumber));
+            _channels.publishGameEvent(GameEvent.eliminated(_gameId, defender, _turnNumber));
         }
         return defenderEliminated;
     }
@@ -196,7 +196,7 @@ public class Game implements GameSpecifiable {
         publishState(new Player[] { conqueror, vanquished}, new Country[0]);
         boolean gameOver = _players.size() == 1;
         if ( gameOver ){
-            _channels.GameEventChannel.publish(GameEvent.wins(_gameId, conqueror, _turnNumber));
+            _channels.publishGameEvent(GameEvent.wins(_gameId, conqueror, _turnNumber));
         }
         return gameOver;
     }
@@ -222,7 +222,7 @@ public class Game implements GameSpecifiable {
         }
         _occupations.killArmies(source, armies);
         _occupations.placeArmies(sourcePlayer, destination, armies);
-        _channels.GameEventChannel.publish(GameEvent.forFortify(_gameId, currentAttacker(), source, destination));
+        _channels.publishGameEvent(GameEvent.forFortify(_gameId, currentAttacker(), source, destination));
         publishCountryState(source);
         publishCountryState(destination);
     }
@@ -237,7 +237,7 @@ public class Game implements GameSpecifiable {
         getPlayerHoldings(_currentAttacker).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
-        _channels.GameEventChannel.publish(GameEvent.forCardExchange(_gameId, currentAttacker()));
+        _channels.publishGameEvent(GameEvent.forCardExchange(_gameId, currentAttacker()));
         getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
         publishPlayerState(_currentAttacker);
     }
@@ -257,7 +257,7 @@ public class Game implements GameSpecifiable {
         }
         if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
                 || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
-            _channels.GameEventChannel.publish(GameEvent.draw(_gameId, getTurnNumber(),
+            _channels.publishGameEvent(GameEvent.draw(_gameId, getTurnNumber(),
                     _players.stream().map(p -> p.getDisplayName()).collect(Collectors.toList())));
             isOver = true;
         }
@@ -370,7 +370,7 @@ public class Game implements GameSpecifiable {
     }
 
     public void publishPlayerState(Player player){
-        _channels.PlayerChangedEventChannel.publish(generatePlayerChangedEvent(player));
+        _channels.publishPlayerChangedEvent(generatePlayerChangedEvent(player));
     }
 
     private PlayerChangedEvent generatePlayerChangedEvent(Player player){
@@ -387,7 +387,7 @@ public class Game implements GameSpecifiable {
         Player player = _occupations.getOccupier(country);
 
         MapChangedEvent event = new MapChangedEvent(_gameId, country, player, newCount);
-        _channels.MapChangedEventChannel.publish(event);
+        _channels.publishMapChangedEvent(event);
     }
 
     public String toString(){
