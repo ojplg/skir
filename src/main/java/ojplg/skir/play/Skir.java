@@ -63,6 +63,7 @@ public class Skir {
         });
         webThread.setUncaughtExceptionHandler((t, e) -> _log.error("Web thread exception caught at top level", e));
         webThread.start();
+        webRunner.start();
     }
 
     public static ThreadFiber createThreadFiber(String name){
