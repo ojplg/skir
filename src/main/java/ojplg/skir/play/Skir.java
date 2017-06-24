@@ -43,7 +43,7 @@ public class Skir {
     }
 
     private static void startGameRunner(AiFactory aiFactory, Channels channels){
-        GameRunner gameRunner = new GameRunner(aiFactory, channels, 0);
+        GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.withoutDelay());
         gameRunner.start();
     }
 

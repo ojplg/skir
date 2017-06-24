@@ -1,6 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class SkirWebHandler extends AbstractHandler {
 
@@ -46,7 +51,8 @@ public class SkirWebHandler extends AbstractHandler {
                 String remoteAddress = request.getRemoteAddr();
                 String[] ais = request.getParameterValues("ai");
                 boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
-                GameId gameId = _webRunner.newGame(ais);
+                NewGameRequest gameRequest = NewGameRequest.withDelay(userName, remoteAddress, ais);
+                GameId gameId = _webRunner.newGame(gameRequest);
                 renderGamePage(gameId, userName, remoteAddress, demoFlag, httpServletResponse.getWriter());
             } else if( "join-game".equals(switchKey)){
                 String remoteAddress = request.getRemoteAddr();
@@ -69,7 +75,11 @@ public class SkirWebHandler extends AbstractHandler {
         VelocityContext vc = new VelocityContext();
         vc.put("user_name", userName);
         vc.put("ai_names", Constants.AI_NAMES);
-        vc.put("game_ids", _webRunner.getGameIds());
+        Map<GameId, NewGameRequest> gameRequests = _webRunner.getGameRequests();
+        List<GameId> ids = new ArrayList<>(gameRequests.keySet());
+        Collections.sort(ids);
+        vc.put("game_ids", ids);
+        vc.put("game_requests", gameRequests);
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 

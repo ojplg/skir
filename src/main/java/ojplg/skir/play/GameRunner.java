@@ -29,8 +29,8 @@ public class GameRunner implements GameSpecifiable {
 
     private final Channels _channels;
     private final Fiber _fiber;
-    private final int _orderDelay;
     private final AiFactory _aiFactory;
+    private final NewGameRequest _gameRequest;
 
     private Map<Player,AutomatedPlayer> _automatedPlayers;
 
@@ -38,9 +38,9 @@ public class GameRunner implements GameSpecifiable {
     private PreGame _preGame;
     private Game _game;
 
-    public GameRunner(AiFactory aiFactory, Channels channels, int orderDelay){
+    public GameRunner(AiFactory aiFactory, Channels channels, NewGameRequest gameRequest){
         _channels = channels;
-        _orderDelay = orderDelay;
+        _gameRequest = gameRequest;
         _aiFactory = aiFactory;
         _preGame = new PreGame(channels);
         _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
@@ -112,9 +112,9 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void littleDelay(){
-        if( _orderDelay > 0) {
+        if( _gameRequest.getDelay() > 0) {
             try {
-                Thread.sleep(_orderDelay);
+                Thread.sleep(_gameRequest.getDelay());
             } catch (InterruptedException ie) {
                 _log.warn("Who interrupted me?", ie);
             }
@@ -181,4 +181,7 @@ public class GameRunner implements GameSpecifiable {
         return _preGame.getGameId();
     }
 
+    public NewGameRequest getGameRequest(){
+        return _gameRequest;
+    }
 }

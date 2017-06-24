@@ -3,15 +3,18 @@ package ojplg.skir.web;
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.GameRunner;
+import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.play.Skir;
-import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.Fiber;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +25,8 @@ public class WebRunner {
     private final Map<GameId, GameRunner> _gameRunners = new HashMap<>();
     private final Channels _channels;
     private final Fiber _fiber;
+
+    private final Object _lock = new Object();
 
     public WebRunner(Channels channels){
         _channels = channels;
@@ -34,27 +39,37 @@ public class WebRunner {
         _fiber.start();
     }
 
-    public GameId newGame(String[] aiNames){
-        _log.info("Creating new GameRunner");
-        AiFactory aiFactory = new AiFactory(aiNames);
-        GameRunner gameRunner = new GameRunner(aiFactory,
-                _channels,
-                Constants.WEB_PLAY_DELAY
-                );
-        _gameRunners.put(gameRunner.getGameId(), gameRunner);
-        gameRunner.start();
-        return gameRunner.getGameId();
+    public GameId newGame(NewGameRequest request){
+        synchronized (_lock) {
+            _log.info("Creating new GameRunner");
+            AiFactory aiFactory = new AiFactory(request.getAiNames());
+            GameRunner gameRunner = new GameRunner(aiFactory,
+                    _channels,
+                    request
+            );
+            _gameRunners.put(gameRunner.getGameId(), gameRunner);
+            gameRunner.start();
+            return gameRunner.getGameId();
+        }
     }
 
-    public Set<GameId> getGameIds(){
-        return _gameRunners.keySet();
+    public Map<GameId, NewGameRequest> getGameRequests(){
+        synchronized (_lock) {
+            Map<GameId, NewGameRequest> map = new HashMap<>();
+            for (GameId id: _gameRunners.keySet()) {
+                map.put(id, _gameRunners.get(id).getGameRequest());
+            }
+            return map;
+        }
     }
 
     private void handleGameEvent(GameEvent gameEvent){
-        if(gameEvent.isGameOver()){
-            _log.info("Removing game runner for " + gameEvent.getGameId());
+        if (gameEvent.isGameOver()) {
+            synchronized (_lock) {
+                _log.info("Removing game runner for " + gameEvent.getGameId());
             GameRunner runner = _gameRunners.remove(gameEvent.getGameId());
             runner.stop();
+            }
         }
     }
 }

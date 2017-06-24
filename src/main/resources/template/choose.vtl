@@ -50,11 +50,24 @@
         <input type="hidden" name="switch-key" value="join-game"/>
         <input type="hidden" name="user-name" value="${user_name}"/>
 
-        #foreach( $game in $game_ids )
-            <input type="radio" name="game" value="$game"/>
-            <label>$game</label>
-            <br/>
+        <table >
+            <tr>
+                <th>Select</th>
+                <th>ID</th>
+                <th>Started By</th>
+                <th>Started At</th>
+            </tr>
+
+        #foreach( $game_id in $game_ids )
+            <tr>
+                <td><input type="radio" name="game" value="$game_id"/></td>
+                <td>$game_id</td>
+                <td>$game_requests.get($game_id).RequesterName</td>
+                <td>$game_requests.get($game_id).RequestTime</td>
+            </tr>
         #end
+
+        </table>
 
         <br/>
 
