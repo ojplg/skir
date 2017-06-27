@@ -45,36 +45,30 @@
     <hr/>
     <br/>
 
-    <form action="/" method="get">
-        <p>Join Game Form</p>
-        <input type="hidden" name="switch-key" value="join-game"/>
-        <input type="hidden" name="user-name" value="${user_name}"/>
+    <p>Join Game Form</p>
 
-        <table border="1">
-            <tr>
-                <th>Select</th>
-                <th>ID</th>
-                <th>Started By</th>
-                <th>Started At</th>
-                <th>Type</th>
-            </tr>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Started By</th>
+            <th>Started At</th>
+            <th>Type</th>
+            <th>Action</th>
+        </tr>
 
-        #foreach( $game_id in $game_ids )
-            <tr>
-                <td><input type="radio" name="game" value="$game_id"/></td>
-                <td>$game_id</td>
-                <td>$game_requests.get($game_id).RequesterName</td>
-                <td>$game_requests.get($game_id).RequestTime</td>
-                <td>$game_requests.get($game_id).GamePurpose</td>
-            </tr>
-        #end
+    #foreach( $game_id in $game_ids )
+        <tr>
+            <td>$game_id</td>
+            <td>$game_requests.get($game_id).RequesterName</td>
+            <td>$game_requests.get($game_id).RequestTime</td>
+            <td>$game_requests.get($game_id).GamePurpose</td>
+            <td><a href="/?switch-key=join-game&user-name=${user_name}&game=${game_id}">Join</a></td>
+        </tr>
+    #end
 
-        </table>
+    </table>
 
-        <br/>
-
-        <input type="submit"/>
-    </form>
+    <br/>
 
 </body>
 </html>
