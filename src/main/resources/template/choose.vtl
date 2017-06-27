@@ -57,11 +57,12 @@
         </tr>
 
     #foreach( $game_id in $game_ids )
+        #set($menu_entry=$game_requests.get($game_id))
         <tr>
             <td>$game_id</td>
-            <td>$game_requests.get($game_id).RequesterName</td>
-            <td>$game_requests.get($game_id).RequestTime</td>
-            <td>$game_requests.get($game_id).GamePurpose</td>
+            <td>$menu_entry.RequesterName</td>
+            <td>$menu_entry.RequestTime</td>
+            <td>$menu_entry.GamePurpose</td>
             <td><a href="/?switch-key=join-game&user-name=${user_name}&game=${game_id}">Join</a></td>
         </tr>
     #end
