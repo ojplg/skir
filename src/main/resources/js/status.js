@@ -12,7 +12,7 @@ function displayGameEvents(gameEvents){
         newHtml = newHtml + gameEvent.simple_text + "<br/>";
         if( gameEvent['game_over'] === true){
             console.log("Game is over!");
-            addButton("start");
+            clearOrderConsole();
         }
     }
     orderEventDiv.innerHTML = newHtml;

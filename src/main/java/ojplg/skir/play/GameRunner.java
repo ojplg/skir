@@ -97,7 +97,6 @@ public class GameRunner implements GameSpecifiable {
                 _log.info("Victor: " + p + aiMessage);
             }
         });
-        _preGame = new PreGame(_channels);
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
