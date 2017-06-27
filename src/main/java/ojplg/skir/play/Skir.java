@@ -26,25 +26,22 @@ public class Skir {
         final AiFactory aiFactory = new AiFactory(Constants.AI_NAMES);
 
         if ( benchTest ){
-            startGameRunner(aiFactory, channels);
+            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiTestBench());
+            gameRunner.start();
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
                     Constants.NUMBER_BENCH_GAMES_TO_RUN);
             testBench.start();
             testBench.startRun();
         } else if ( evolve ) {
             EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
-            startGameRunner(aiFactory, channels);
+            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiEvolution());
+            gameRunner.start();
             evolutionRunner.evolve(aiFactory);
         } else {
             startWebServer(channels);
         }
 
         _log.info("Start up complete");
-    }
-
-    private static void startGameRunner(AiFactory aiFactory, Channels channels){
-        GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.withoutDelay());
-        gameRunner.start();
     }
 
     private static void startWebServer(Channels channels){

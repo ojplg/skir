@@ -51,7 +51,8 @@ public class SkirWebHandler extends AbstractHandler {
                 String remoteAddress = request.getRemoteAddr();
                 String[] ais = request.getParameterValues("ai");
                 boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
-                NewGameRequest gameRequest = NewGameRequest.withDelay(userName, remoteAddress, ais);
+                NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
+                        NewGameRequest.webPlay(userName, remoteAddress, ais);
                 GameId gameId = _webRunner.newGame(gameRequest);
                 renderGamePage(gameId, userName, remoteAddress, demoFlag, httpServletResponse.getWriter());
             } else if( "join-game".equals(switchKey)){
