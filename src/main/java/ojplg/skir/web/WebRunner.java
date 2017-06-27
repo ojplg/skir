@@ -9,6 +9,7 @@ import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.http.PathMap;
 import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
@@ -53,11 +54,15 @@ public class WebRunner {
         }
     }
 
-    public Map<GameId, NewGameRequest> getGameRequests(){
+    public Map<GameId, GameMenuEntry> getGameEntries(){
         synchronized (_lock) {
-            Map<GameId, NewGameRequest> map = new HashMap<>();
-            for (GameId id: _gameRunners.keySet()) {
-                map.put(id, _gameRunners.get(id).getGameRequest());
+            Map<GameId, GameMenuEntry> map = new HashMap<>();
+            for (GameRunner runner: _gameRunners.values()) {
+                GameId id = runner.getGameId();
+                NewGameRequest request = runner.getGameRequest();
+                boolean started = runner.isStarted();
+                GameMenuEntry entry = new GameMenuEntry(request, started);
+                map.put(id, entry);
             }
             return map;
         }

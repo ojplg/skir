@@ -76,7 +76,7 @@ public class SkirWebHandler extends AbstractHandler {
         VelocityContext vc = new VelocityContext();
         vc.put("user_name", userName);
         vc.put("ai_names", Constants.AI_NAMES);
-        Map<GameId, NewGameRequest> gameRequests = _webRunner.getGameRequests();
+        Map<GameId, GameMenuEntry> gameRequests = _webRunner.getGameEntries();
         List<GameId> ids = new ArrayList<>(gameRequests.keySet());
         Collections.sort(ids);
         vc.put("game_ids", ids);

@@ -131,6 +131,10 @@ public class GameRunner implements GameSpecifiable {
         _log.info("Starting game " + s);
     }
 
+    public boolean isStarted(){
+        return _game != null;
+    }
+
     public void stop(){
         _fiber.dispose();
 
