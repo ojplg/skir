@@ -50,12 +50,13 @@
         <input type="hidden" name="switch-key" value="join-game"/>
         <input type="hidden" name="user-name" value="${user_name}"/>
 
-        <table >
+        <table border="1">
             <tr>
                 <th>Select</th>
                 <th>ID</th>
                 <th>Started By</th>
                 <th>Started At</th>
+                <th>Type</th>
             </tr>
 
         #foreach( $game_id in $game_ids )
@@ -64,6 +65,7 @@
                 <td>$game_id</td>
                 <td>$game_requests.get($game_id).RequesterName</td>
                 <td>$game_requests.get($game_id).RequestTime</td>
+                <td>$game_requests.get($game_id).GamePurpose</td>
             </tr>
         #end
 
