@@ -66,7 +66,7 @@
             #if($menu_entry.isJoinable())</td>
             <td><a href="/?switch-key=join-game&user-name=${user_name}&game=${game_id}">Join</a></td>
             #else
-            <td> ??? </td>
+            <td><a href="/?switch-key=view-game&user-name=${user_name}&game=${game_id}&is_demo=${menu_entry.isDemo()}">View</a></td>
             #end
         </tr>
     #end

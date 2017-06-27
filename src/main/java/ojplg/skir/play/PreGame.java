@@ -44,7 +44,9 @@ public class PreGame {
             return true;
         } else if ( clientConnectedEvent.isDemo() ) {
             _log.info("Demo");
-        } else if ( _connectedPlayers.size() < 6 ) {
+            return true;
+        } else if ( _connectedPlayers.size() ==0 ||
+                ( _connectedPlayers.size() < 6 && clientConnectedEvent.isJoinAttempt())) {
             _log.info("Trying to add a new player " + clientConnectedEvent);
             int playerNumber = _connectedPlayers.size();
             String color = GameRunner.colorForIndex(playerNumber);
@@ -61,10 +63,14 @@ public class PreGame {
             _channels.publishGameJoinedEvent(gameJoinedEvent);
             _channels.publishGameEvent(GameEvent.joinsGame(_gameId, player));
             _log.info("Published game joined event " + gameJoinedEvent);
+            return false;
+        } else if (!clientConnectedEvent.isJoinAttempt()){
+            // user is viewing only
+            return true;
         } else {
-            _log.info("Could not join the game " + clientConnectedEvent);
+            _log.warn("Not sure what to do with this " + clientConnectedEvent);
+            return false;
         }
-        return false;
     }
 
     public GameId getGameId(){

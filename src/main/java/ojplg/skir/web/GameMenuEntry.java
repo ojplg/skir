@@ -19,6 +19,10 @@ public class GameMenuEntry {
         return (!_started) && getGamePurpose().equals(GamePurpose.WebPlay);
     }
 
+    public boolean isDemo(){
+        return getGamePurpose().equals(GamePurpose.WebDemo);
+    }
+
     public boolean isStarted(){
         return _started;
     }

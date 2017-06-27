@@ -87,13 +87,12 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
                 _clientKey = (String) jObject.get("uniqueKey");
                 String displayName = (String) jObject.get("displayName");
                 String address = (String) jObject.get("address");
-                String demoString = (String) jObject.get("demo");
                 long gameIdInt = (long) jObject.get("gameId");
                 _gameId = GameId.fromLong(gameIdInt);
-                _log.info("Demo string was set to " + demoString);
-                boolean demo = Boolean.parseBoolean(demoString);
-                _channels.ClientConnectedEventChannel.publish(
-                        new ClientConnectedEvent(_clientKey, displayName, address, demo, _gameId));
+                    boolean demo = (boolean) jObject.get("demo");
+                boolean joinAttempt = (boolean) jObject.get("joinAttempt");
+                _channels.publishClientConnectedEvent(
+                        new ClientConnectedEvent(_clientKey, displayName, address, demo, _gameId, joinAttempt));
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }

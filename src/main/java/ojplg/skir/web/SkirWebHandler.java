@@ -54,13 +54,14 @@ public class SkirWebHandler extends AbstractHandler {
                 NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
                         NewGameRequest.webPlay(userName, remoteAddress, ais);
                 GameId gameId = _webRunner.newGame(gameRequest);
-                renderGamePage(gameId, userName, remoteAddress, demoFlag, httpServletResponse.getWriter());
-            } else if( "join-game".equals(switchKey)){
+                renderGamePage(gameId, userName, remoteAddress, demoFlag, false,httpServletResponse.getWriter());
+            } else if( "join-game".equals(switchKey) || "view-game".equals(switchKey)){
                 String remoteAddress = request.getRemoteAddr();
                 String gameIdString = request.getParameter("game");
                 GameId gameId = GameId.fromString(gameIdString);
                 String userName = request.getParameter("user-name");
-                renderGamePage(gameId, userName, remoteAddress, false, httpServletResponse.getWriter());
+                boolean joinAttempt = "join-game".equals(switchKey);
+                renderGamePage(gameId, userName, remoteAddress, false, joinAttempt, httpServletResponse.getWriter());
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }
@@ -84,13 +85,14 @@ public class SkirWebHandler extends AbstractHandler {
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
     }
 
-    private void renderGamePage(GameId gameId, String name, String address, boolean demoFlag, Writer writer){
+    private void renderGamePage(GameId gameId, String name, String address, boolean demoFlag, boolean joinAttempt, Writer writer){
         VelocityContext vc = new VelocityContext();
         vc.put("name", name);
         vc.put("address", address);
         vc.put("colors", GuiColor.ALL_COLORS);
         vc.put("game_id", gameId.getId());
         vc.put("demo", demoFlag);
+        vc.put("join_attempt", joinAttempt);
 
         String webSocketProtocol = System.getenv("WEB_SOCKET_PROTOCOL");
         if ( webSocketProtocol == null){

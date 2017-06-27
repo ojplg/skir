@@ -46,7 +46,7 @@ public class GameRunner implements GameSpecifiable {
         _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
 
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
-        _channels.ClientConnectedEventChannel.subscribe(_fiber, this::handleClientConnection);
+        _channels.subscribeToClientConnectedEvent(this, _fiber, this::handleClientConnection);
         _channels.StartGameChannel.subscribe(_fiber, this::startGame);
         _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
     }
@@ -60,12 +60,10 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
-        if( matches(clientConnectedEvent)) {
-            boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
-            if (rePublishState) {
-                _game.publishAllState();
-                _channels.publishAdjutant(_currentAdjutant);
-            }
+        boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
+        if (rePublishState && _game != null ) {
+            _game.publishAllState();
+            _channels.publishAdjutant(_currentAdjutant);
         }
     }
 

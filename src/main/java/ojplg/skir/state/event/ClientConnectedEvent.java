@@ -9,13 +9,15 @@ public class ClientConnectedEvent implements GameSpecifiable {
     private final String _address;
     private final boolean _demo;
     private final GameId _gameId;
+    private final boolean _joinAttempt;
 
-    public ClientConnectedEvent(String clientKey, String displayName, String address, boolean demo, GameId gameId) {
+    public ClientConnectedEvent(String clientKey, String displayName, String address, boolean demo, GameId gameId, boolean joinAttempt) {
         this._clientKey = clientKey;
         this._displayName = displayName;
         this._address = address;
         this._demo = demo;
         this._gameId = gameId;
+        this._joinAttempt = joinAttempt;
     }
 
     public String getClientKey() {
@@ -31,6 +33,10 @@ public class ClientConnectedEvent implements GameSpecifiable {
     }
 
     public boolean isDemo() { return _demo; }
+
+    public boolean isJoinAttempt() {
+        return _joinAttempt;
+    }
 
     public GameId getGameId() { return _gameId; }
 
