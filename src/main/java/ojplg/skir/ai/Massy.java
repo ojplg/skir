@@ -26,15 +26,15 @@ public class Massy implements AutomatedPlayer {
     @Override
     public Order generateOrder(Adjutant adjutant, Game game) {
         List<OrderType> orderTypeList = adjutant.allowableOrders();
+        if( orderTypeList.contains(OrderType.ExchangeCardSet)){
+            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
+        }
         if( orderTypeList.contains(OrderType.ClaimArmies)){
             return new ClaimArmies(adjutant);
         }
         if( orderTypeList.contains(OrderType.PlaceArmy)){
             Country country = AiUtils.findStrongestPossession(_me,game);
             return new PlaceArmy(adjutant, country, game.getPlayerHoldings(_me).reserveCount());
-        }
-        if( orderTypeList.contains(OrderType.ExchangeCardSet)){
-            return new ExchangeCardSet(adjutant, CardSet.findTradeableSet(game.getPlayerHoldings(_me).getCards()));
         }
         if( orderTypeList.contains(OrderType.Attack)){
             if( _conqueredOne ){
