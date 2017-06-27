@@ -16,7 +16,7 @@ public class GameMenuEntry {
     }
 
     public boolean isJoinable(){
-        return _started && getGamePurpose().equals(GamePurpose.WebPlay);
+        return (!_started) && getGamePurpose().equals(GamePurpose.WebPlay);
     }
 
     public boolean isStarted(){

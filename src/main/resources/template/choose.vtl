@@ -63,7 +63,11 @@
             <td>$menu_entry.RequesterName</td>
             <td>$menu_entry.RequestTime</td>
             <td>$menu_entry.GamePurpose</td>
+            #if($menu_entry.isJoinable())</td>
             <td><a href="/?switch-key=join-game&user-name=${user_name}&game=${game_id}">Join</a></td>
+            #else
+            <td> ??? </td>
+            #end
         </tr>
     #end
 
