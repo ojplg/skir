@@ -170,11 +170,6 @@ public class Tuney implements AutomatedPlayer {
         return _me;
     }
 
-    @Override
-    public Object getIdentification() {
-        return _me.getDisplayName();
-    }
-
     private PlaceArmy generatePlaceArmyOrder(Adjutant adjutant, Game game){
         if( _placementsToMake == null){
             _placementsToMake = computePlacements(game);

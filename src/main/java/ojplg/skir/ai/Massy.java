@@ -85,8 +85,4 @@ public class Massy implements AutomatedPlayer {
         return _me;
     }
 
-    @Override
-    public Object getIdentification() {
-        return "AI Massy";
-    }
 }

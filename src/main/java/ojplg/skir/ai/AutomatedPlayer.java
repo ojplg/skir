@@ -9,5 +9,4 @@ public interface AutomatedPlayer {
     void initialize(Game game);
     Order generateOrder(Adjutant adjutant, Game game);
     Player getPlayer();
-    Object getIdentification();
 }

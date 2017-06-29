@@ -32,12 +32,6 @@ public class Wimpy implements AutomatedPlayer {
     }
 
     @Override
-    public Object getIdentification() {
-        return "AI: Wimpy";
-    }
-
-
-    @Override
     public void initialize(Game game) {
         // do nothing
     }
