@@ -3,6 +3,8 @@ package ojplg.skir.play.bench;
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.GameRunner;
+import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventType;
@@ -30,6 +32,7 @@ public class AiTestBench {
     private Consumer<GameScores> _resultsConsumer;
 
     private SimpleGameRecord _currentGameRecord;
+    private GameRunner _gameRunner;
 
     public AiTestBench(AiFactory aiFactory, Channels channels, Fiber fiber, int gamesToRun){
         this._channels = channels;
@@ -53,8 +56,17 @@ public class AiTestBench {
     }
 
     public void startRun(){
+        setUpNewGameRunner();
         _currentGameRecord = new SimpleGameRecord();
         _channels.StartGameChannel.publish("Test bench starting");
+    }
+
+    private void setUpNewGameRunner(){
+        if( _gameRunner != null){
+            _gameRunner.stop();
+        }
+        _gameRunner = new GameRunner(_aiFactory, _channels, NewGameRequest.aiTestBench());
+        _gameRunner.start();
     }
 
     private void handleGameEvent(GameEvent gameEvent){
@@ -80,6 +92,7 @@ public class AiTestBench {
     }
 
     private void processGame(){
+        setUpNewGameRunner();
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
             _currentGameRecord = new SimpleGameRecord();

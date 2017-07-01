@@ -26,8 +26,6 @@ public class Skir {
         final AiFactory aiFactory = new AiFactory(Constants.AI_NAMES);
 
         if ( benchTest ){
-            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiTestBench());
-            gameRunner.start();
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
                     Constants.NUMBER_BENCH_GAMES_TO_RUN);
             testBench.start();
