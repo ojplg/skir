@@ -20,7 +20,6 @@ public class JettyInitializer {
 
     private final int _httpPort;
     private final Channels _channels;
-    private Server _server;
     private final WebRunner _webRunner;
 
     public JettyInitializer(int httpPort, Channels channels, WebRunner webRunner){
@@ -34,7 +33,7 @@ public class JettyInitializer {
     public void startJettyServer() throws Exception {
 
         _log.info("Initializing web server");
-        _server = new Server();
+        Server _server = new Server();
 
         ServerConnector httpConnector = new ServerConnector(_server);
         httpConnector.setPort(_httpPort);
