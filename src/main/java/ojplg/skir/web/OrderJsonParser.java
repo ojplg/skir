@@ -1,6 +1,5 @@
 package ojplg.skir.web;
 
-import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Country;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,21 +55,17 @@ public class OrderJsonParser {
                     constraints.conquered(), armiesToMove);
             return occupy;
         } else if ("EndAttacks".equals(orderType) ) {
-            EndAttacks endAttacks = new EndAttacks(_adjutant);
-            return endAttacks;
+            return new EndAttacks(_adjutant);
         } else if ("DrawCard".equals(orderType)){
-            DrawCard drawCard = new DrawCard(_adjutant);
-            return drawCard;
+            return new DrawCard(_adjutant);
         } else if ("ClaimArmies".equals(orderType) ){
-            ClaimArmies claimArmies = new ClaimArmies(_adjutant);
-            return claimArmies;
+            return new ClaimArmies(_adjutant);
         } else if ("Fortify".equals(orderType)) {
             String from = (String) orderJson.get("from");
             String to = (String) orderJson.get("to");
             String numberArmiesString = (String) orderJson.get("army_count");
             int numberArmies = Integer.parseInt(numberArmiesString);
-            Fortify fortify = new Fortify(_adjutant, new Country(from), new Country(to), numberArmies);
-            return fortify;
+            return new Fortify(_adjutant, new Country(from), new Country(to), numberArmies);
         } else if("ExchangeCardSet".equals(orderType)) {
             return newExchangeCardSet();
         } else if("EndTurn".equals(orderType)) {
