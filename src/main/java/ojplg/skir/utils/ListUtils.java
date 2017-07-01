@@ -14,7 +14,7 @@ public class ListUtils {
     }
 
     public static <T> List<T> concat(List<T> list1, List<T> list2){
-        List<T> concatenatedList = new ArrayList<T>();
+        List<T> concatenatedList = new ArrayList<>();
         concatenatedList.addAll(list1);
         concatenatedList.addAll(list2);
         return concatenatedList;
