@@ -1,6 +1,5 @@
 package ojplg.skir.web;
 
-import ojplg.skir.play.Channels;
 import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
@@ -27,11 +26,9 @@ public class SkirWebHandler extends AbstractHandler {
 
     private static final Logger _log = LogManager.getLogger(SkirWebHandler.class);
 
-    private final Channels _channels;
     private final WebRunner _webRunner;
 
-    public SkirWebHandler(Channels channels, WebRunner webRunner){
-        _channels = channels;
+    public SkirWebHandler(WebRunner webRunner){
         _webRunner = webRunner;
     }
 

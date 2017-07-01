@@ -1,6 +1,5 @@
 * Main code
 ** Respect attackers dice choice
-** Test bench code and player tracking (Object v String) is so hideous, it makes my eyes bleed
 
 * Web UI
 ** Still need massive improvements to game creation, starting, etc

@@ -49,7 +49,7 @@ public class JettyInitializer {
 
         ContextHandler contextHandler = new ContextHandler();
         contextHandler.setContextPath("/");
-        contextHandler.setHandler( new SkirWebHandler(_channels, _webRunner));
+        contextHandler.setHandler( new SkirWebHandler(_webRunner));
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[] {  contextHandler, resourceHandler, context });
