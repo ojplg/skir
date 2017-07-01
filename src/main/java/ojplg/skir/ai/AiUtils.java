@@ -96,11 +96,11 @@ public class AiUtils {
 
     static PossibleAttack findBestPossibleAttack(Player player, Game game){
         List<PossibleAttack> advantageousAttacks = findAdvantageousAttacks(player, game);
-        if( advantageousAttacks.isEmpty()){
-            return null;
+        Optional<PossibleAttack> best = ListUtils.findMax(advantageousAttacks);
+        if( best.isPresent()){
+            return best.get();
         }
-        return advantageousAttacks.stream().max(
-                (pa, pb) -> { return pa.getAdvantage() -  pb.getAdvantage();} ).get();
+        return null;
     }
 
     static List<PossibleAttack> findAllPossibleAttacks(Player player, Game game){
