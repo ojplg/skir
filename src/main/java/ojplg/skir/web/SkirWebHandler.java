@@ -58,7 +58,8 @@ public class SkirWebHandler extends AbstractHandler {
                 GameId gameId = GameId.fromString(gameIdString);
                 String userName = request.getParameter("user-name");
                 boolean joinAttempt = "join-game".equals(switchKey);
-                renderGamePage(gameId, userName, remoteAddress, false, joinAttempt, httpServletResponse.getWriter());
+                boolean demo = "true".equals(request.getParameter("demo"));
+                renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }

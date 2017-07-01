@@ -43,12 +43,15 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
     private GameId _gameId;
 
     public LocalWebSocket(){
-        _log.info("instantiated with no argument constructor");
+        _log.info("Constructing");
         _channels = WebSocketInitializer.Channels;
-
         _fiber = Skir.createThreadFiber("WebSocketFiber-" + _counter );
         _counter++;
+        _fiber.start();
+        _log.info("Constructed");
+    }
 
+    private void doSubscriptions(){
         _channels.subscribeToMapChangedEvent(this, _fiber,
                 mapChangedEvent -> sendJson(mapChangedEvent.toJson())
         );
@@ -57,8 +60,6 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _channels.subscribeToGameJoinedEvent(this, _fiber, this::handleGameJoinedEvent);
         _channels.subscribeToGameEvent(this, _fiber, this::handleOrderEvent);
         _log.info("Channel subscriptions made");
-
-        _fiber.start();
     }
 
     @OnOpen
@@ -89,10 +90,12 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
                 String address = (String) jObject.get("address");
                 long gameIdInt = (long) jObject.get("gameId");
                 _gameId = GameId.fromLong(gameIdInt);
-                    boolean demo = (boolean) jObject.get("demo");
+                doSubscriptions();
+                boolean demo = (boolean) jObject.get("demo");
                 boolean joinAttempt = (boolean) jObject.get("joinAttempt");
-                _channels.publishClientConnectedEvent(
-                        new ClientConnectedEvent(_clientKey, displayName, address, demo, _gameId, joinAttempt));
+                ClientConnectedEvent cce = new ClientConnectedEvent(_clientKey, displayName, address, demo, _gameId, joinAttempt);
+                _log.info("Publishing client connected event " + cce);
+                _channels.publishClientConnectedEvent(cce);
             } else if ("StartGame".equals(messageType)){
                 _channels.StartGameChannel.publish("Start");
             }

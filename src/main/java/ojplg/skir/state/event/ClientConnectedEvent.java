@@ -43,9 +43,12 @@ public class ClientConnectedEvent implements GameSpecifiable {
     @Override
     public String toString() {
         return "ClientConnectedEvent{" +
-                ", _clientKey='" + _clientKey + '\'' +
+                "_clientKey='" + _clientKey + '\'' +
                 ", _displayName='" + _displayName + '\'' +
                 ", _address='" + _address + '\'' +
+                ", _demo='" + _demo + '\'' +
+                ", _gameId='" + _gameId + '\'' +
+                ", _joinAttempt='" + _joinAttempt + '\'' +
                 '}';
     }
 
