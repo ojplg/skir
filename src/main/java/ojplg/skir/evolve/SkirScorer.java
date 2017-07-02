@@ -28,7 +28,7 @@ public class SkirScorer implements Scorer {
     @Override
     public double score(Individual individual) {
         String name = "Tuner-" + individual.getIdentifier();
-        _aiTestBench.setAiToTest(p -> new Tuney(p, individual.getGenes(), name, true));
+        _aiTestBench.setAiToTest(p -> new Tuney(p, individual.getGenes(), true));
         _aiTestBench.setResultsConsumer(this::acceptScores);
         _latch = new CountDownLatch(1);
         _aiTestBench.startRun();

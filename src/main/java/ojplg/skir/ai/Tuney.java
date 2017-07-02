@@ -109,8 +109,7 @@ public class Tuney implements AutomatedPlayer {
         return map;
     }
 
-    public Tuney(Player player, Map<String,Double> tunings, String name, boolean useAdditiveAttackScoring){
-        player.setDisplayName(name);
+    public Tuney(Player player, Map<String,Double> tunings, boolean useAdditiveAttackScoring){
         _me = player;
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(
@@ -120,8 +119,7 @@ public class Tuney implements AutomatedPlayer {
         _useAdditiveAttackScoring = useAdditiveAttackScoring;
     }
 
-    public Tuney(Player player, Map<String,Double> tunings, String name){
-        player.setDisplayName(name);
+    public Tuney(Player player, Map<String,Double> tunings){
         _me = player;
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(

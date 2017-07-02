@@ -23,7 +23,7 @@ public class TuneyTest {
 
         gameHelper.setCountry(Country.Central_America, gameHelper.BlackPlayer, 1);
 
-        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings(),"TuneyUnitTest");
+        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings());
 
         double continentSplitValue = tuney.computePlacementScore(Country.Central_America, gameHelper.Game);
 
@@ -46,7 +46,7 @@ public class TuneyTest {
         gameHelper.setCountry(Country.Ontario, gameHelper.BlackPlayer, 1);
         gameHelper.setCountry(Country.Western_United_States, gameHelper.BlackPlayer, 1);
 
-        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings(),"TuneyUnitTest");
+        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings());
 
         double albertaNotOnBorderScore = tuney.computePlacementScore(Country.Alberta, gameHelper.Game);
 
@@ -68,7 +68,7 @@ public class TuneyTest {
         PossibleAttack possibleAttack = new PossibleAttack(Country.Alaska, Country.Northwest_Territory,
                 2 , 1);
 
-        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings(), "TuneyUnitTest");
+        Tuney tuney = new Tuney(gameHelper.BlackPlayer, Tuney.presetTunings());
 
         double attackLikelihoodAt2to1 = tuney.computePossibleAttackScore(possibleAttack, gameHelper.Game);
 
@@ -109,7 +109,7 @@ public class TuneyTest {
         helper.setCountry(Country.Siam, helper.BlackPlayer, 1);
         helper.setCountry(Country.India, helper.BlackPlayer, 1);
 
-        Tuney tuney = new Tuney(helper.BlackPlayer, Tuney.presetTunings(), "TuneyUnitTest");
+        Tuney tuney = new Tuney(helper.BlackPlayer, Tuney.presetTunings());
 
         double chinaScore = tuney.computePlacementScore(Country.China, helper.Game);
         double indiaScore = tuney.computePlacementScore(Country.India, helper.Game);
