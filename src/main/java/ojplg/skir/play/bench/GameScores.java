@@ -1,23 +1,26 @@
 package ojplg.skir.play.bench;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class GameScores {
 
-    private final Map<Object, Integer> _participations = new HashMap<>();
-    private final Map<Object, Integer> _score = new HashMap<>();
+    private final Map<String, Integer> _participations = new HashMap<>();
+    private final Map<String, Integer> _score = new HashMap<>();
 
     public GameScores(){}
 
-    public GameScores(Map<Object,Integer> participations, Map<Object,Integer> score){
+    public GameScores(Map<String,Integer> participations, Map<String,Integer> score){
         _participations.putAll(participations);
         _score.putAll(score);
     }
 
     public GameScores accumulate(GameScores gameScores){
-        for(Object key : gameScores.keySet()){
+        for(String key : gameScores.keySet()){
             int participationUpdate = gameScores.getParticipationCount(key);
             updateMapValue(key, participationUpdate, _participations);
             int scoreUpdate = gameScores.getScore(key);
@@ -26,7 +29,7 @@ public class GameScores {
         return this;
     }
 
-    private void updateMapValue(Object key, int adjustment, Map<Object,Integer> table){
+    private void updateMapValue(String key, int adjustment, Map<String,Integer> table){
         if( table.containsKey(key)){
             int old = table.get(key);
             table.put(key, old+adjustment);
@@ -35,15 +38,15 @@ public class GameScores {
         }
     }
 
-    public int getParticipationCount(Object playerId){
+    public int getParticipationCount(String playerId){
         return _participations.get(playerId);
     }
 
-    public int getScore(Object playerId) {
+    public int getScore(String playerId) {
         return _score.get(playerId);
     }
 
-    public Set<Object> keySet(){
+    public Set<String> keySet(){
         return _participations.keySet();
     }
 
@@ -52,7 +55,11 @@ public class GameScores {
 
         buf.append("Name: games played, total, average\n");
 
-        for(Object key : keySet()){
+        List<String> names = new ArrayList<>();
+        names.addAll(keySet());
+        Collections.sort(names);
+
+        for(String key : names){
             int participationCount = getParticipationCount(key);
             int totalScore = getScore(key);
             float averageScore = (float) totalScore/participationCount;

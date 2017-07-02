@@ -7,15 +7,15 @@ import java.util.Map;
 
 public class SimpleGameRecord {
 
-    private List<Object> _playerTypes = new ArrayList<>();
+    private List<String> _playerTypes = new ArrayList<>();
     private List<PlayerTurn> _playerEliminations = new ArrayList<>();
 
     private int _gameLength;
     private boolean _gameDrawn;
-    private Object _winner;
+    private String _winner;
     private List<String> _drawers;
 
-    public void playerJoined(Object playerIdentifier){
+    public void playerJoined(String playerIdentifier){
         _playerTypes.add(playerIdentifier);
     }
 
@@ -29,7 +29,7 @@ public class SimpleGameRecord {
         _drawers = drawers;
     }
 
-    public void win(Object playerIdentifier, int gameLength){
+    public void win(String playerIdentifier, int gameLength){
         _gameLength = gameLength;
         _gameDrawn = false;
         _winner = playerIdentifier;
@@ -49,8 +49,8 @@ public class SimpleGameRecord {
      * minus the number of surviving players.
      */
     public GameScores scoreGame(boolean includeLateEliminationBonus){
-        Map<Object, Integer> participants = new HashMap<>();
-        Map<Object, Integer> scores = new HashMap();
+        Map<String, Integer> participants = new HashMap<>();
+        Map<String, Integer> scores = new HashMap();
         _playerTypes.forEach( o -> {
             scores.put(o, 0);
             participants.computeIfPresent(o, (x,y) -> { return y + 1; });
@@ -103,15 +103,15 @@ public class SimpleGameRecord {
     }
 
     private static class PlayerTurn {
-        private final Object _playerIdentifier;
+        private final String _playerIdentifier;
         private final int _turnNumber;
 
-        public PlayerTurn(Object playerIdentifier, int turnNumber){
+        public PlayerTurn(String playerIdentifier, int turnNumber){
             _playerIdentifier = playerIdentifier;
             _turnNumber = turnNumber;
         }
 
-        public Object getPlayerType() {
+        public String getPlayerType() {
             return _playerIdentifier;
         }
 
