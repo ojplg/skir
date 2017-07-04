@@ -43,6 +43,6 @@ public class PossibleAttack implements Comparable<PossibleAttack> {
 
     @Override
     public int compareTo(PossibleAttack other) {
-        return other.getAdvantage() - getAdvantage();
+        return getAdvantage() - other.getAdvantage();
     }
 }
