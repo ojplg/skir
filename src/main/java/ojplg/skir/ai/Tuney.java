@@ -77,7 +77,6 @@ public class Tuney implements AutomatedPlayer {
 
         Map<String, Double> map = new HashMap<>();
 
-        // placement tunings
         map.put(BorderCountryPlacementKey, 0.9999);
         map.put(ContinentalBorderPlacementKey, 0.55);
         map.put(ContinentOwnedPlacementKey, 0.4);
@@ -182,8 +181,6 @@ public class Tuney implements AutomatedPlayer {
     }
 
     private Occupy doOccupy(Adjutant adjutant, Game game){
-        // TODO: this should have some configuration or better smarts
-
         OccupationConstraints constraints = adjutant.getOccupationConstraints();
 
         int existingForce = game.getOccupationForce(constraints.attacker());
@@ -197,7 +194,6 @@ public class Tuney implements AutomatedPlayer {
             int occupationForce = Math.min((int) Math.floor(toConqueredCountry), constraints.maximumOccupationForce());
             occupationForce = Math.max(occupationForce, constraints.minimumOccupationForce());
 
-            //return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce / 2);
             return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), occupationForce);
         } else {
             return new Occupy(adjutant, constraints.attacker(), constraints.conquered(), existingForce - 1);
@@ -314,7 +310,7 @@ public class Tuney implements AutomatedPlayer {
         return score;
     }
 
-    public double computeAdditiveAttackScore(PossibleAttack attack, Game game){
+    private double computeAdditiveAttackScore(PossibleAttack attack, Game game){
 
         Country attacker = attack.getAttacker();
         int attackerStrength = game.getOccupationForce(attacker);
@@ -381,7 +377,7 @@ public class Tuney implements AutomatedPlayer {
         return score;
     }
 
-    public boolean closeToOwning(Continent continent, Game game){
+    private boolean closeToOwning(Continent continent, Game game){
         int unownedCountryCount = AiUtils.unownedCountryCount(_me, game, continent);
         if ( unownedCountryCount < 2){
             return true;
@@ -391,10 +387,7 @@ public class Tuney implements AutomatedPlayer {
             return true;
         }
         double ownedArmyPercentage = AiUtils.continentalArmyPercentage(_me, game, continent);
-        if (ownedArmyPercentage > tunedValue(ContinentCloseArmyPercentAttackKey)){
-            return true;
-        }
-        return false;
+        return ownedArmyPercentage > tunedValue(ContinentCloseArmyPercentAttackKey);
     }
 
     public double computePossibleAttackScore(PossibleAttack attack, Game game){
