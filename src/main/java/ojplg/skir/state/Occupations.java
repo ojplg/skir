@@ -83,6 +83,17 @@ public class Occupations {
         return occupied;
     }
 
+    public List<Country> countriesEnemyOccupied(Player player){
+        List<Country> occupied = new ArrayList<Country>();
+        for ( Map.Entry<Country, Force> entry : _records.entrySet() ) {
+            if ( ! player.equals(entry.getValue().getPlayer())) {
+                occupied.add(entry.getKey());
+            }
+        }
+        return occupied;
+    }
+
+
     public int totalOccupationForces(Player player){
         int total = 0;
         for(Country country : countriesOccupied(player)){

@@ -46,6 +46,7 @@ public class AiFactory {
             case "Tuney (A47)" : return evolvedAdditiveTuney(player, 47);
             case "Tuney (A64)" : return evolvedAdditiveTuney(player, 64);
             case "Tuney (A81)" : return evolvedAdditiveTuney(player, 81);
+            case "TuneyTwo" : return new TuneyTwo(player, TuneyTwo.presetTunings());
             default: return new Wimpy(player);
         }
     }

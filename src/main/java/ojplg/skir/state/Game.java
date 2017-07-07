@@ -272,6 +272,10 @@ public class Game implements GameSpecifiable {
         return _occupations.countriesOccupied(player);
     }
 
+    public List<Country> findEnemyOccupiedCountries(Player player){
+        return _occupations.countriesEnemyOccupied(player);
+    }
+
     public boolean hasPossibleAttack(Player player){
         return findCountriesToAttackFrom(player).size() > 0;
     }

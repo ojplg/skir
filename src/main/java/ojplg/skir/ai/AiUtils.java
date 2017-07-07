@@ -136,6 +136,10 @@ public class AiUtils {
         return ListUtils.filter(ownedContinents, c -> ! game.isContinentOwner(player, c));
     }
 
+    public static boolean isEnemyOwnedContinent(Player player, Game game, Continent continent){
+        return enemyOwnedContinents(player, game).contains(continent);
+    }
+
     static Country findStrongestPossession(Player player, Game game){
         List<Country> possessions = game.findOccupiedCountries(player);
         return possessions.stream()
@@ -255,5 +259,25 @@ public class AiUtils {
             armies += game.getOccupationForce(country);
         }
         return armies;
+    }
+
+    public static Double averageArmyStrength(Game game){
+        return averageStrength(game, game.getAllCountries());
+    }
+
+    public static Double myAverageStrength(Game game, Player player){
+        return averageStrength(game, game.findOccupiedCountries(player));
+    }
+
+    public static Double enemyAverageStrength(Game game, Player player){
+        return averageStrength(game, game.findEnemyOccupiedCountries(player));
+    }
+
+    private static Double averageStrength(Game game, List<Country> countries){
+        double total = 0;
+        for(Country country : countries){
+            total += game.getOccupationForce(country);
+        }
+        return total / game.getAllCountries().size();
     }
 }

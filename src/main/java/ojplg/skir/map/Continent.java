@@ -104,6 +104,10 @@ public class Continent implements Comparable {
         return _name;
     }
 
+    public String getNameNoSpaces(){
+        return _name.replaceFirst(" ", "");
+    }
+
     @Override
     public String toString() {
         return "Continent{" +
