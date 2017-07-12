@@ -19,7 +19,6 @@ import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
-import ojplg.skir.utils.ListUtils;
 import ojplg.skir.utils.RatioDistributor;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
@@ -83,7 +82,7 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private Map<Country, Integer> _placementsToMake = null;
 
-    public static Map<String, Double> presetTunings(){
+    static Map<String, Double> presetTunings(){
 
         Map<String, Double> map = new HashMap<>();
 
@@ -133,7 +132,7 @@ public class TuneyTwo implements AutomatedPlayer {
         return map;
     }
 
-    public TuneyTwo(Player player, Map<String,Double> tunings){
+    TuneyTwo(Player player, Map<String, Double> tunings){
         _me = player;
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(
@@ -298,7 +297,7 @@ public class TuneyTwo implements AutomatedPlayer {
         return RatioDistributor.distribute(ratios,game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
     }
 
-    public double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
+    private double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
 
         boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
         if( ! isBorderCountry ){
@@ -306,8 +305,6 @@ public class TuneyTwo implements AutomatedPlayer {
         }
 
         double score = 0;
-
-        int myTroopStrength = game.getOccupationForce(country);
 
         for(Country enemy : game.findEnemyNeighbors(country)){
             _log.info("Searching for desirability of " + enemy + " from " + goalCountryScores);
@@ -340,12 +337,10 @@ public class TuneyTwo implements AutomatedPlayer {
         List<Continent> goalContinents = AiUtils.possibleGoalContinents(_me, game,
                 tunedValue(GoalContinentArmyPercentage), tunedValue(GoalContinentCountryPercentage));
         boolean targetInBestGoalContinent = bestGoalContinent != null && bestGoalContinent.contains(target);
-        List<Country> myOtherCountriesBorderingTarget = new ArrayList<>();
         int myOtherBorderingForces = 0;
         for(Country country : game.findEnemyNeighbors(target)){
             if( _me.equals(game.getOccupier(country))){
                 myOtherBorderingForces += game.getOccupationForce(country);
-                myOtherCountriesBorderingTarget.add(country);
             }
         }
 
@@ -468,7 +463,7 @@ public class TuneyTwo implements AutomatedPlayer {
             score += enemyContinentScore(continent);
         }
 
-        return new Double(score);
+        return score;
     }
 
     private double continentScore(Continent continent){
@@ -494,9 +489,5 @@ public class TuneyTwo implements AutomatedPlayer {
             System.out.println("Could not find key " + key);
             throw ex;
         }
-    }
-
-    private boolean aboveTuningValue(double score, String key){
-        return score > _tunings.get(key);
     }
 }
