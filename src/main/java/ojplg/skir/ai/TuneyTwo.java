@@ -299,6 +299,11 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
 
+        // placement should be based on
+        // 1. desirability of neighbor
+        // 2. relative strength versus neighbor (place where attacks are more likely)
+        // 3. relative weakness IF on an important (continental) border
+
         boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
         if( ! isBorderCountry ){
             return 0;
@@ -446,9 +451,10 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private Double computeDesirabilityScore(Country country, Game game) {
-        // strength of continent score
-        // weakness/strength
-        // in enemy owned continent
+        // desirability is based on:
+        // 1. strength within continent
+        // 2. in enemy owned continent
+        // 3. desirability of continent
         Continent continent = Continent.find(country);
         double armyPercentage = AiUtils.continentalArmyPercentage(_me, game, continent);
         double countryPercentage = AiUtils.continentalCountryPercentage(_me, game, continent);
