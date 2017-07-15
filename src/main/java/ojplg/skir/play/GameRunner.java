@@ -61,10 +61,12 @@ public class GameRunner implements GameSpecifiable {
 
     private void handleClientConnection(ClientConnectedEvent clientConnectedEvent){
         _log.info("Handling client connection for " + clientConnectedEvent);
-        boolean rePublishState = _preGame.handleClientConnection(clientConnectedEvent);
-        if (rePublishState && _game != null ) {
+        boolean republishAdjutant = _preGame.handleClientConnection(clientConnectedEvent);
+        if ( _game != null ) {
             _game.publishAllState();
-            //_channels.publishAdjutant(_currentAdjutant);
+            if (republishAdjutant) {
+                _channels.publishAdjutant(_currentAdjutant);
+            }
         }
     }
 
