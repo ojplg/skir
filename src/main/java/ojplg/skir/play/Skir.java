@@ -11,7 +11,9 @@ import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.JettyInitializer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Skir {
 
@@ -21,9 +23,11 @@ public class Skir {
         _log.info("Starting");
 
         final Channels channels = new Channels();
-        final boolean benchTest = Arrays.asList(args).contains("-bench");
-        final boolean evolve = Arrays.asList(args).contains("-evolve");
-        final AiFactory aiFactory = new AiFactory(Constants.AI_NAMES);
+        List<String> argList = Arrays.asList(args);
+        final boolean benchTest = argList.contains("-bench");
+        final boolean evolve = argList.contains("-evolve");
+        final String[] aiNames = extractAiNames(argList);
+        final AiFactory aiFactory = new AiFactory(aiNames);
 
         if ( benchTest ){
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
@@ -40,6 +44,18 @@ public class Skir {
         }
 
         _log.info("Start up complete");
+    }
+
+    private static String[] extractAiNames(List<String> argList){
+        for(String arg : argList){
+            if (arg.startsWith("-ais=")){
+                String allNames = arg.substring(5);
+                String[] names = allNames.split(",");
+                _log.info("Using AIs: " + Arrays.asList(names));
+                return names;
+            }
+        }
+        return Constants.AI_NAMES;
     }
 
     private static void startWebServer(Channels channels){

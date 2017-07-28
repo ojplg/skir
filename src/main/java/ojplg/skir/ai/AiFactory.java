@@ -39,13 +39,13 @@ public class AiFactory {
             case "Massy": return new Massy(player);
             case "Grumpy": return new Grumpy(player);
             case "Wimpy": return new Wimpy(player);
-            case "Tuney (MM)": return presetTuned(player);
-            case "Tuney (M2)": return evolveTuned(player, "evolve2");
-            case "Tuney (M200)": return evolveTuned(player, "evolve200");
-            case "Tuney (A1)" : return evolvedAdditiveTuney(player, 1);
-            case "Tuney (A47)" : return evolvedAdditiveTuney(player, 47);
-            case "Tuney (A64)" : return evolvedAdditiveTuney(player, 64);
-            case "Tuney (A81)" : return evolvedAdditiveTuney(player, 81);
+            case "Tuney(MM)": return presetTuned(player);
+            case "Tuney(M2)": return evolveTuned(player, "evolve2");
+            case "Tuney(M200)": return evolveTuned(player, "evolve200");
+            case "Tuney(A1)" : return evolvedAdditiveTuney(player, 1);
+            case "Tuney(A47)" : return evolvedAdditiveTuney(player, 47);
+            case "Tuney(A64)" : return evolvedAdditiveTuney(player, 64);
+            case "Tuney(A81)" : return evolvedAdditiveTuney(player, 81);
             case "TuneyTwo" : return new TuneyTwo(player, TuneyTwo.presetTunings());
             default: return new Wimpy(player);
         }
