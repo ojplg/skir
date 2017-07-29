@@ -32,6 +32,7 @@ public class AiFactory {
             case "Massy": return new Massy(player);
             case "Grumpy": return new Grumpy(player);
             case "Wimpy": return new Wimpy(player);
+            case "WimpyTwo": return new WimpyTwo(player);
             case "Tuney(MM)": return presetTuned(player);
             case "Tuney(M2)": return evolvedTuney(player, "evolve2");
             case "Tuney(M200)": return evolvedTuney(player, "evolve200");

@@ -253,6 +253,9 @@ public class AiUtils {
         return ListUtils.filter(game.findInteriorCountries(player), (c -> game.getOccupationForce(c)>1));
     }
 
+    /**
+     * Computes the total value of all armies in all countries the player owns.
+     */
     static int findAllPlayerArmies(Game game, Player player){
         int armies = 0;
         for(Country country : game.findOccupiedCountries(player)){
@@ -260,6 +263,19 @@ public class AiUtils {
         }
         return armies;
     }
+
+    /**
+     * Computes the total value of all armies in all countries the player
+     * does not own.
+     */
+    static int findAllOppositionArmies(Game game, Player player){
+        int armies = 0;
+        for(Country country : game.findEnemyOccupiedCountries(player)){
+            armies += game.getOccupationForce(country);
+        }
+        return armies;
+    }
+
 
     public static Double averageArmyStrength(Game game){
         return averageStrength(game, game.getAllCountries());
