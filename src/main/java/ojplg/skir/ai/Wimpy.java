@@ -36,7 +36,7 @@ public class Wimpy implements AutomatedPlayer {
         // do nothing
     }
 
-    private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
+    private OrderType pickOrderType(List<OrderType> possibleOrderTypes) {
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
             return OrderType.PlaceArmy;
         }
@@ -63,7 +63,7 @@ public class Wimpy implements AutomatedPlayer {
 
     @Override
     public Order generateOrder(Adjutant adjutant, Game game){
-        OrderType orderType = pickOrderType(adjutant.allowableOrders(), game);
+        OrderType orderType = pickOrderType(adjutant.allowableOrders());
 
         Order order;
         if( orderType == OrderType.PlaceArmy){
