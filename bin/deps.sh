@@ -28,6 +28,9 @@ APACHE_COLLECTIONS_URL=http://www-us.apache.org/dist//commons/collections/binari
 APACHE_LANG_TARBALL=commons-lang-$APACHE_LANG_VERSION
 APACHE_LANG_URL=http://www-us.apache.org/dist//commons/lang/binaries/$APACHE_LANG_TARBALL-bin
 
+APACHE_CLI_TARBALL=commons-cli-$APACHE_CLI_VERSION
+APACHE_CLI_URL=http://www-us.apache.org/dist//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -107,17 +110,27 @@ function get_apache_lang {
         copy_to_libs $APACHE_LANG_TARBALL $APACHE_LANG_JAR.jar
 }
 
+function get_apache_cli {
+	echo "apache cli ..."
+	download_and_untar $APACHE_CLI_URL $APACHE_CLI_JAR
+        copy_to_libs $APACHE_CLI_TARBALL $APACHE_CLI_JAR.jar
+}
+
 echo "Downloading dependencies ..."
 
 clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
-get_log4j
-get_jetty
-get_json
-get_junit
-get_jetlang
-get_velocity
-get_apache_collections
-get_apache_lang
+function get_all {
+        get_log4
+        get_jetty
+        get_json
+        get_junit
+        get_jetlang
+        get_velocity
+        get_apache_collections
+        get_apache_lang
+        get_apache_cli
+}
 
+get_all
