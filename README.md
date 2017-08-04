@@ -95,4 +95,4 @@ A generic algorithm that allows its heuristic to be configured.
 Modes
 =====
 In addition to the default web mode, Skir supports some testing and tuning
-modes using the -bench and -evolve flags.
+modes using the --bench and --evolve flags.
