@@ -15,7 +15,7 @@ public class Constants {
             new String[] {"Grabby", "Bully", "Massy", "Grumpy" , "Wimpy", "WimpyTwo", "Tuney(MM)", "Tuney(M2)", "Tuney(M200)" ,
                     "Tuney(A1)","Tuney(A47)","Tuney(A64)","Tuney(A81)" ,"TuneyTwo"};
 
-    public static final int NUMBER_BENCH_GAMES_TO_RUN = 10000;
+    public static final int NUMBER_BENCH_GAMES_TO_RUN = 100;
 
     public static final int WEB_PLAY_DELAY = 40;
 

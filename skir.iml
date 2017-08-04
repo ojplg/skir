@@ -278,5 +278,6 @@
     <orderEntry type="library" name="Maven: org.ow2.asm:asm-commons:5.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.ow2.asm:asm-tree:5.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:javax-websocket-client-impl:9.3.14.v20161028" level="project" />
+    <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.4" level="project" />
   </component>
 </module>

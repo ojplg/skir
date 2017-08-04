@@ -5,14 +5,16 @@ import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Constants;
 import ojplg.skir.web.WebRunner;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.JettyInitializer;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Skir {
 
@@ -21,19 +23,24 @@ public class Skir {
     public static void main(String[] args) {
         _log.info("Starting");
 
-        final Channels channels = new Channels();
-        List<String> argList = Arrays.asList(args);
-        final boolean benchTest = argList.contains("-bench");
-        final boolean evolve = argList.contains("-evolve");
-        final String[] aiNames = extractAiNames(argList);
-        final AiFactory aiFactory = new AiFactory(aiNames);
+        CommandLine commandLine = parseOptions(args);
 
-        if ( benchTest ){
+        final String[] aiNames;
+        if( commandLine.hasOption("ais")) {
+            aiNames = commandLine.getOptionValues("ais");
+        } else {
+            aiNames = Constants.AI_NAMES;
+        }
+
+        final AiFactory aiFactory = new AiFactory(aiNames);
+        final Channels channels = new Channels();
+
+        if ( commandLine.hasOption("bench")){
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
                     Constants.NUMBER_BENCH_GAMES_TO_RUN);
             testBench.start();
             testBench.startRun();
-        } else if ( evolve ) {
+        } else if ( commandLine.hasOption("evolve") ) {
             EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
             GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiEvolution());
             gameRunner.start();
@@ -43,18 +50,6 @@ public class Skir {
         }
 
         _log.info("Start up complete");
-    }
-
-    private static String[] extractAiNames(List<String> argList){
-        for(String arg : argList){
-            if (arg.startsWith("-ais=")){
-                String allNames = arg.substring(5);
-                String[] names = allNames.split(",");
-                _log.info("Using AIs: " + Arrays.asList(names));
-                return names;
-            }
-        }
-        return Constants.AI_NAMES;
     }
 
     private static void startWebServer(Channels channels){
@@ -80,5 +75,26 @@ public class Skir {
         ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, false);
         fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
         return fiber;
+    }
+
+    private static CommandLine parseOptions(String[] args){
+        try {
+            Options options = cliOptions();
+            DefaultParser optionsParser = new DefaultParser();
+            return optionsParser.parse(options, args);
+        } catch (ParseException pe){
+            throw new RuntimeException(pe);
+        }
+    }
+
+    private static Options cliOptions(){
+        Options options = new Options();
+        options.addOption(new Option("b","bench", false, "Run in test bench mode."));
+        options.addOption(new Option("e", "evolve", false, "Run in evolve mode."));
+        Option aisOption = new Option("a", "ais", true, "Specify AIs eligible for use during run");
+        aisOption.setValueSeparator(',');
+        aisOption.setArgs(Option.UNLIMITED_VALUES);
+        options.addOption(aisOption);
+        return options;
     }
 }
