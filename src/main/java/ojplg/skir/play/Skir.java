@@ -7,6 +7,7 @@ import ojplg.skir.state.Constants;
 import ojplg.skir.web.WebRunner;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -35,7 +36,10 @@ public class Skir {
         final AiFactory aiFactory = new AiFactory(aiNames);
         final Channels channels = new Channels();
 
-        if ( commandLine.hasOption("bench")){
+        if( commandLine.hasOption("help")) {
+            HelpFormatter helpFormatter = new HelpFormatter();
+            helpFormatter.printHelp("skir", cliOptions());
+        } else if ( commandLine.hasOption("bench")){
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
                     Constants.NUMBER_BENCH_GAMES_TO_RUN);
             testBench.start();
@@ -91,6 +95,7 @@ public class Skir {
         Options options = new Options();
         options.addOption(new Option("b","bench", false, "Run in test bench mode."));
         options.addOption(new Option("e", "evolve", false, "Run in evolve mode."));
+        options.addOption(new Option("h", "help", false, "See options."));
         Option aisOption = new Option("a", "ais", true, "Specify AIs eligible for use during run");
         aisOption.setValueSeparator(',');
         aisOption.setArgs(Option.UNLIMITED_VALUES);
