@@ -52,6 +52,10 @@ public class PlayerChangedEvent implements GameSpecifiable {
         jObject.put("name", _player.getDisplayName());
         jObject.put("attack_luck_factor", lowPrecisionDouble(_battleStats.getAttackLuckFactor()));
         jObject.put("defense_luck_factor", lowPrecisionDouble(_battleStats.getDefenseLuckFactor()));
+        jObject.put("armies_lost_attacking", _battleStats.getTotalArmiesLostAttacking());
+        jObject.put("armies_killed_attacking", _battleStats.getTotalArmiesLostAttacking());
+        jObject.put("armies_lost_defending", _battleStats.getTotalArmiesLostDefending());
+        jObject.put("armies_killed_defending", _battleStats.getTotalArmiesKilledDefending());
         jObject.put("game_id" , _gameId.getId());
 
         return jObject;
