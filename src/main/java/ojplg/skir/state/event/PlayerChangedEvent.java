@@ -1,6 +1,7 @@
 package ojplg.skir.state.event;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.state.BattleStats;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
 import org.json.simple.JSONArray;
@@ -17,19 +18,17 @@ public class PlayerChangedEvent implements GameSpecifiable {
     private final int _continentCount;
     private final List<Card> _cards;
     private final int _expectedGrant;
-    private final double _attackLuckFactor;
-    private final double _defenseLuckFactor;
+    private final BattleStats _battleStats;
     private final GameId _gameId;
 
-    public PlayerChangedEvent(GameId gameId, Player player, List<Card> cards, int countryCount, int armyCount, int continentCount, int expectedGrant) {
+    public PlayerChangedEvent(GameId gameId, Player player, BattleStats battleStats, List<Card> cards, int countryCount, int armyCount, int continentCount, int expectedGrant) {
         this._player = player;
+        this._battleStats = battleStats;
         this._countryCount = countryCount;
         this._armyCount = armyCount;
         this._continentCount = continentCount;
         this._cards = Collections.unmodifiableList(new ArrayList<Card>(cards));
         this._expectedGrant = expectedGrant;
-        this._attackLuckFactor = player.attackLuckFactor();
-        this._defenseLuckFactor = player.defenseLuckFactor();
         this._gameId = gameId;
     }
 
@@ -51,8 +50,8 @@ public class PlayerChangedEvent implements GameSpecifiable {
         jObject.put("continents", _continentCount);
         jObject.put("expected_armies", _expectedGrant);
         jObject.put("name", _player.getDisplayName());
-        jObject.put("attack_luck_factor", lowPrecisionDouble(_attackLuckFactor));
-        jObject.put("defense_luck_factor", lowPrecisionDouble(_defenseLuckFactor));
+        jObject.put("attack_luck_factor", lowPrecisionDouble(_battleStats.getAttackLuckFactor()));
+        jObject.put("defense_luck_factor", lowPrecisionDouble(_battleStats.getDefenseLuckFactor()));
         jObject.put("game_id" , _gameId.getId());
 
         return jObject;

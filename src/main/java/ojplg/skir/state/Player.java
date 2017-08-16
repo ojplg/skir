@@ -7,8 +7,6 @@ public class Player implements Comparable<Player> {
     private final String _color;
     private final int _number;
 
-    private final BattleStats _stats = new BattleStats();
-
     //TODO: This should be a ClientKey object, not a String
     private String _clientKey;
     private String _displayName;
@@ -32,22 +30,6 @@ public class Player implements Comparable<Player> {
 
     public void setDisplayName(String displayName) {
         this._displayName = displayName;
-    }
-
-    public void updateAttackStatistics(Rolls rolls){
-        _stats.updateAttackStats(rolls);
-    }
-
-    public void updateDefenseStatistics(Rolls rolls){
-        _stats.updateDefenseStats(rolls);
-    }
-
-    public double attackLuckFactor(){
-        return _stats.getAttackLuckFactor();
-    }
-
-    public double defenseLuckFactor(){
-        return _stats.getDefenseLuckFactor();
     }
 
     public int getNumber(){

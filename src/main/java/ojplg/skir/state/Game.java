@@ -32,6 +32,7 @@ public class Game implements GameSpecifiable {
     private final Occupations _occupations;
     private final List<Player> _players = new ArrayList<>();
     private final Map<String, PlayerHoldings> _playerHoldings = new HashMap<>();
+    private final Map<String, BattleStats> _playerStats = new HashMap<>();
     private final CardStack _cardPile;
     private final Roller _roller;
     private final Channels _channels;
@@ -48,6 +49,7 @@ public class Game implements GameSpecifiable {
     public Game(GameId gameId, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations, int initialArmies){
         _players.addAll(players);
         _players.forEach(p -> _playerHoldings.put(p.getColor(), new PlayerHoldings(initialArmies)));
+        _players.forEach(p -> _playerStats.put(p.getColor(), new BattleStats()));
         _cardPile = new CardStack(cards);
         _roller = roller;
         _channels = channels;
@@ -155,13 +157,19 @@ public class Game implements GameSpecifiable {
         int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
-        attackingPlayer.updateAttackStatistics(rolls);
-        defendingPlayer.updateDefenseStatistics(rolls);
+        updateBattleStats(attackingPlayer, defendingPlayer, rolls);
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
         publishState(new Player[] { attackingPlayer, defendingPlayer}, new Country[]{attacker, defender});
         _channels.publishGameEvent(GameEvent.forAttack(_gameId, currentAttacker(), attacker, defender));
         return _occupations.allArmiesDestroyed(defender);
+    }
+
+    private void updateBattleStats(Player attacker, Player defender, Rolls rolls){
+        _playerStats.compute(attacker.getColor(),
+                (color, stats) -> stats.updateAttackStats(rolls));
+        _playerStats.compute(defender.getColor(),
+                (color,stats) -> stats.updateDefenseStats(rolls));
     }
 
     /** returns true if a player has been eliminated */
@@ -344,6 +352,10 @@ public class Game implements GameSpecifiable {
         return _playerHoldings.get(player.getColor());
     }
 
+    private BattleStats getBattleStats(Player player){
+        return _playerStats.get(player.getColor());
+    }
+
     public Player getOccupier(Country country){
         return _occupations.getOccupier(country);
     }
@@ -383,7 +395,8 @@ public class Game implements GameSpecifiable {
         int continentCount = numberContinentsOccupied(player);
         int expectedGrant = computeExpectedGrant(player);
         PlayerHoldings playerHoldings = getPlayerHoldings(player);
-        return new PlayerChangedEvent(_gameId, player, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);
+        BattleStats battleStats = getBattleStats(player);
+        return new PlayerChangedEvent(_gameId, player, battleStats, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);
     }
 
     private void publishCountryState(Country country){
