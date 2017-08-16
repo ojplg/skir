@@ -23,7 +23,9 @@ function PlayerStatus(playerColor){
         var items;
         if ( playerStatus['countries'] > 0){
             items = ['name', 'armies','countries','continents','card_count',
-                         'expected_armies', 'attack_luck_factor', 'defense_luck_factor'];
+                         'expected_armies',
+                         'attack_luck_factor','armies_lost_attacking','armies_killed_attacking',
+                          'defense_luck_factor', 'armies_lost_defending', 'armies_killed_defending'];
         } else {
             items = ['name','attack_luck_factor', 'defense_luck_factor'];
         }
