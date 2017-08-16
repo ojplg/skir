@@ -27,7 +27,7 @@ public class PlayerChangedEvent implements GameSpecifiable {
         this._countryCount = countryCount;
         this._armyCount = armyCount;
         this._continentCount = continentCount;
-        this._cards = Collections.unmodifiableList(new ArrayList<Card>(cards));
+        this._cards = Collections.unmodifiableList(new ArrayList<>(cards));
         this._expectedGrant = expectedGrant;
         this._gameId = gameId;
     }
