@@ -1,12 +1,13 @@
 package ojplg.skir.state;
 
+import ojplg.skir.play.Rolls;
+
 public class Player implements Comparable<Player> {
 
     private final String _color;
     private final int _number;
 
-    private final BattleStats _attackStats = new BattleStats();
-    private final BattleStats _defenseStats = new BattleStats();
+    private final BattleStats _stats = new BattleStats();
 
     //TODO: This should be a ClientKey object, not a String
     private String _clientKey;
@@ -33,20 +34,20 @@ public class Player implements Comparable<Player> {
         this._displayName = displayName;
     }
 
-    public void updateAttackStatistics(double expectationsDifference, int numberArmyBattles){
-        _attackStats.updateStats(expectationsDifference, numberArmyBattles);
+    public void updateAttackStatistics(Rolls rolls){
+        _stats.updateAttackStats(rolls);
     }
 
-    public void updateDefenseStatistics(double expectationsDifference, int numberArmyBattles){
-        _defenseStats.updateStats(expectationsDifference, numberArmyBattles);
+    public void updateDefenseStatistics(Rolls rolls){
+        _stats.updateDefenseStats(rolls);
     }
 
     public double attackLuckFactor(){
-        return _attackStats.getExpectationsDifference();
+        return _stats.getAttackLuckFactor();
     }
 
     public double defenseLuckFactor(){
-        return _defenseStats.getExpectationsDifference();
+        return _stats.getDefenseLuckFactor();
     }
 
     public int getNumber(){

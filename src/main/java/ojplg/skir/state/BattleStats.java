@@ -1,17 +1,24 @@
 package ojplg.skir.state;
 
-public class BattleStats {
-    private int _numberBattles = 0;
-    private int _numberArmyBattles = 0;
-    private double _expectationsDifference = 0.0;
+import ojplg.skir.play.Rolls;
 
-    public void updateStats(double expectationDifference, int numberArmyBattles){
-        _numberBattles++;
-        _numberArmyBattles+=numberArmyBattles;
-        _expectationsDifference+=expectationDifference;
+public class BattleStats {
+    private double _attackLuckFactor = 0.0;
+    private double _defenseLuckFactor = 0.0;
+
+    public void updateAttackStats(Rolls rolls){
+        _attackLuckFactor+=rolls.attackersExpectationsDifference();
     }
 
-    public double getExpectationsDifference() {
-        return _expectationsDifference;
+    public void updateDefenseStats(Rolls rolls){
+        _defenseLuckFactor+=rolls.defendersExpectationsDifference();
+    }
+
+
+    public double getAttackLuckFactor() {
+        return _attackLuckFactor;
+    }
+    public double getDefenseLuckFactor() {
+        return _defenseLuckFactor;
     }
 }

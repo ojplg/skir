@@ -155,8 +155,8 @@ public class Game implements GameSpecifiable {
         int attackerDice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, _occupations.getOccupationForce(attacker) - 1);
         int defenderDice = Math.min(Constants.MAXIMUM_DEFENDER_DICE, _occupations.getOccupationForce(defender));
         Rolls rolls = _roller.roll(attackerDice, defenderDice);
-        attackingPlayer.updateAttackStatistics(rolls.attackersExpectationsDifference(), rolls.numberBattles());
-        defendingPlayer.updateDefenseStatistics(rolls.defendersExpectationsDifference(), rolls.numberBattles());
+        attackingPlayer.updateAttackStatistics(rolls);
+        defendingPlayer.updateDefenseStatistics(rolls);
         _occupations.killArmies(attacker, rolls.attackersLosses());
         _occupations.killArmies(defender, rolls.defendersLosses());
         publishState(new Player[] { attackingPlayer, defendingPlayer}, new Country[]{attacker, defender});
