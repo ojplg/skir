@@ -6,12 +6,12 @@ import java.util.List;
 
 public class Rolls {
 
-    public static final double ONE_V_ONE_ATTACKER_EXPECTATIONS = 0.41666666;
-    public static final double TWO_V_ONE_ATTACKER_EXPECTATIONS = 0.5787037;
-    public static final double THREE_V_ONE_ATTACKER_EXPECTATIONS = 0.6597222;
-    public static final double ONE_V_TWO_ATTACKER_EXPECTATIONS = 0.25462964;
-    public static final double TWO_V_TWO_ATTACKER_EXPECTATIONS = 0.3896605;
-    public static final double THREE_V_TWO_ATTACKER_EXPECTATIONS = 0.53954476;
+    private static final double ONE_V_ONE_ATTACKER_EXPECTATIONS = 0.41666666;
+    private static final double TWO_V_ONE_ATTACKER_EXPECTATIONS = 0.5787037;
+    private static final double THREE_V_ONE_ATTACKER_EXPECTATIONS = 0.6597222;
+    private static final double ONE_V_TWO_ATTACKER_EXPECTATIONS = 0.25462964;
+    private static final double TWO_V_TWO_ATTACKER_EXPECTATIONS = 0.3896605;
+    private static final double THREE_V_TWO_ATTACKER_EXPECTATIONS = 0.53954476;
 
     private final List<Integer> _attackRolls;
     private final List<Integer> _defenseRolls;
@@ -43,7 +43,7 @@ public class Rolls {
         }
     }
 
-    public boolean attackerWins(Integer attackRoll, Integer defenseRoll){
+    private boolean attackerWins(Integer attackRoll, Integer defenseRoll){
         return attackRoll > defenseRoll;
     }
 
@@ -83,9 +83,9 @@ public class Rolls {
     }
 
     private List<Integer> reverseSort(int[] nums){
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         for (int n : nums){
-            list.add(new Integer(n));
+            list.add(n);
         }
         Collections.sort(list);
         Collections.reverse(list);
