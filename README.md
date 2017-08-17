@@ -37,7 +37,7 @@ If you prefer to use Maven rather than the home-brewed scripts do:
 Heroku
 ------
 
-There is a Procfile for Heroku.
+There is a Procfile for [Heroku](https://skir.herokuapp.com/).
 
 Javascript
 ==========
