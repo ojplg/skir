@@ -3,6 +3,7 @@ package ojplg.skir.play;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
 import org.jetlang.channels.Channel;
 import org.jetlang.channels.MemoryChannel;
@@ -19,7 +20,7 @@ public class Channels {
     private final Channel<Adjutant> _adjutantChannel = new MemoryChannel<>();
     private final Channel<MapChangedEvent> _mapChangedEventChannel = new MemoryChannel<>();
     private final Channel<PlayerChangedEvent> _playerChangedEventChannel = new MemoryChannel<>();
-    private final Channel<GameEvent> _gameEventChannel = new MemoryChannel<>();
+    private final Channel<GameEventMessage> _gameEventChannel = new MemoryChannel<>();
     private final Channel<GameJoinedEvent> _gameJoinedEventChannel = new MemoryChannel<>();
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel = new MemoryChannel<>();
 
@@ -58,15 +59,15 @@ public class Channels {
         gameSpecifiedSubscription(gameSpecifier, executor, callback, _playerChangedEventChannel);
     }
 
-    public void publishGameEvent(GameEvent event){
+    public void publishGameEvent(GameEventMessage event){
         _gameEventChannel.publish(event);
     }
 
-    public void subscribeToGameEvent(GameSpecifiable gameSpecifier, DisposingExecutor executor, Callback<GameEvent> callback){
+    public void subscribeToGameEvent(GameSpecifiable gameSpecifier, DisposingExecutor executor, Callback<GameEventMessage> callback){
         gameSpecifiedSubscription(gameSpecifier, executor, callback, _gameEventChannel);
     }
 
-    public void subscribeToAllGameEvents(DisposingExecutor executor, Callback<GameEvent> callback){
+    public void subscribeToAllGameEvents(DisposingExecutor executor, Callback<GameEventMessage> callback){
         _gameEventChannel.subscribe(executor, callback);
     }
 

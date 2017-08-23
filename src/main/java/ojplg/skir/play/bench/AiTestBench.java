@@ -7,6 +7,7 @@ import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameEventType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,7 +70,7 @@ public class AiTestBench {
         _gameRunner.start();
     }
 
-    private void handleGameEvent(GameEvent gameEvent){
+    private void handleGameEvent(GameEventMessage gameEvent){
         GameEventType gameEventType = gameEvent.getGameEventType();
         switch(gameEventType){
             case PlayerJoins:

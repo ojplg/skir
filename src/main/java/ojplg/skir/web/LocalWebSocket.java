@@ -6,6 +6,7 @@ import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.ClientConnectedEvent;
+import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameJoinedEvent;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameSpecifiable;
@@ -58,7 +59,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _channels.subscribeToPlayerChangedEvent(this, _fiber, this::handlePlayerChangedEvent);
         _channels.subscribeToAdjutant(this, _fiber, this::handleNewAdjutant);
         _channels.subscribeToGameJoinedEvent(this, _fiber, this::handleGameJoinedEvent);
-        _channels.subscribeToGameEvent(this, _fiber, this::handleOrderEvent);
+        _channels.subscribeToGameEvent(this, _fiber, this::handleGameEvent);
         _log.info("Channel subscriptions made");
     }
 
@@ -129,7 +130,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         sendJson(jObject);
     }
 
-    private void handleOrderEvent(GameEvent gameEvent){
+    private void handleGameEvent(GameEventMessage gameEvent){
         JSONObject jObject = gameEvent.toJson();
         _log.debug("Event: " + jObject.get("simple_text"));
         sendJson(jObject);

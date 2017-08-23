@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 import java.util.Collections;
 import java.util.List;
 
-public class GameEvent implements GameSpecifiable {
+public class GameEvent implements GameEventMessage {
 
     private final String _simpleText;
     private final Integer _turnNumber;
@@ -16,7 +16,7 @@ public class GameEvent implements GameSpecifiable {
     private final List<String> _playerIdentifiers;
     private final GameId _gameId;
 
-    private GameEvent(GameId gameId, String text, GameEventType gameEventType, String playerIdentifier){
+    protected GameEvent(GameId gameId, String text, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = null;
         _gameEventType = gameEventType;
@@ -68,7 +68,7 @@ public class GameEvent implements GameSpecifiable {
         return new GameEvent(gameId,fortifyText(player, fromCountry, toCountry),GameEventType.Fortify, player.getDisplayName());
     }
 
-    public static GameEvent forCardExchange(GameId gameId,Player player){
+    public static GameEvent forCardExchange(GameId gameId,Player player, int nextExchangeValue){
         return new GameEvent(gameId,player.getColor() + " exchanges cards", GameEventType.ExchangeCards, player.getDisplayName());
     }
 

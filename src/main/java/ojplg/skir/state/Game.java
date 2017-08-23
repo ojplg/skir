@@ -245,7 +245,7 @@ public class Game implements GameSpecifiable {
         getPlayerHoldings(_currentAttacker).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
-        _channels.publishGameEvent(GameEvent.forCardExchange(_gameId, currentAttacker()));
+        _channels.publishGameEvent(GameEvent.forCardExchange(_gameId, currentAttacker(), _cardPile.valuationOfExchange()));
         getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
         publishPlayerState(_currentAttacker);
     }

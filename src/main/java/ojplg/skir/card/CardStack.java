@@ -29,7 +29,7 @@ public class CardStack {
         return valuationOfExchange();
     }
 
-    private int valuationOfExchange(){
+    public int valuationOfExchange(){
         return Math.min(Constants.MAXIMUM_CARD_EXCHANGE, 2 * _tradeNumber);
     }
 }

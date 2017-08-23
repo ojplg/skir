@@ -7,6 +7,7 @@ import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.play.Skir;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameEventMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.Fiber;
@@ -63,7 +64,7 @@ public class WebRunner {
         }
     }
 
-    private void handleGameEvent(GameEvent gameEvent){
+    private void handleGameEvent(GameEventMessage gameEvent){
         if (gameEvent.isGameOver()) {
             synchronized (_lock) {
                 _log.info("Removing game runner for " + gameEvent.getGameId());
