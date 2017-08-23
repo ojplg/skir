@@ -266,7 +266,7 @@ public class Game implements GameSpecifiable {
         if( _turnNumber - _lastAttackTurn >= Constants.MAX_TURNS_WITHOUT_ATTACK
                 || _turnNumber > Constants.MAXIMUM_GAME_LENGTH ) {
             _channels.publishGameEvent(GameEvent.draw(_gameId, getTurnNumber(),
-                    _players.stream().map(p -> p.getDisplayName()).collect(Collectors.toList())));
+                    _players.stream().map(Player::getDisplayName).collect(Collectors.toList())));
             isOver = true;
         }
         if( isOver ){
@@ -313,7 +313,7 @@ public class Game implements GameSpecifiable {
                 .allMatch(country -> player.equals(getOccupier(country)));
     }
 
-    public boolean isOwnedContinent(Continent continent){
+    private boolean isOwnedContinent(Continent continent){
         Player owner = getOccupier(continent.getCountries().get(0));
         return isContinentOwner(owner, continent);
     }
@@ -368,11 +368,8 @@ public class Game implements GameSpecifiable {
         return _occupations.getMap();
     }
 
-    private boolean isTarget(Country attacker, Country defender){
-        if( _occupations.getMap().areNeighbors(attacker, defender)){
-            return ! getOccupier(attacker).equals(getOccupier(defender));
-        }
-        return false;
+    private boolean isTarget(Country attacker, Country defender) {
+        return _occupations.getMap().areNeighbors(attacker, defender) && !getOccupier(attacker).equals(getOccupier(defender));
     }
 
     private void publishState(Player[] players, Country[] countries){
