@@ -78,7 +78,7 @@ public class Rolls {
         throw new RuntimeException("Do not know odds for " + attackDice + " v " + defenseDice);
     }
 
-    public int numberBattles(){
+    private int numberBattles(){
         return Math.min(_attackRolls.size(), _defenseRolls.size());
     }
 
