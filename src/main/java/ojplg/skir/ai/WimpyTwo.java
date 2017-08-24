@@ -72,6 +72,7 @@ public class WimpyTwo implements AutomatedPlayer {
         if( hasMajorityArmies(game)){
             _log.info("WimpyTwo is bullying");
             Bully bully = new Bully(_me);
+            _me.setDisplayName("WimpyTwo");
             return bully.generateOrder(adjutant, game);
         }
 
