@@ -9,7 +9,9 @@ import ojplg.skir.map.WorldMap;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.Roller;
 import ojplg.skir.play.Rolls;
+import ojplg.skir.state.event.CardExchangeEvent;
 import ojplg.skir.state.event.GameEvent;
+import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.MapChangedEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
@@ -245,7 +247,8 @@ public class Game implements GameSpecifiable {
         getPlayerHoldings(_currentAttacker).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
-        _channels.publishGameEvent(GameEvent.forCardExchange(_gameId, currentAttacker(), _cardPile.valuationOfExchange()));
+        GameEventMessage gameEvent = new CardExchangeEvent(_gameId, _turnNumber, _currentAttacker.getColor(), _cardPile.valuationOfExchange());
+        _channels.publishGameEvent(gameEvent);
         getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
         publishPlayerState(_currentAttacker);
     }

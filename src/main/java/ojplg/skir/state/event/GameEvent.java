@@ -8,6 +8,10 @@ import org.json.simple.JSONObject;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class is a real horror show. The individual message types should each
+ * have its own class.
+ */
 public class GameEvent implements GameEventMessage {
 
     private final String _simpleText;
@@ -66,10 +70,6 @@ public class GameEvent implements GameEventMessage {
 
     public static GameEvent forFortify(GameId gameId,Player player, Country fromCountry, Country toCountry){
         return new GameEvent(gameId,fortifyText(player, fromCountry, toCountry),GameEventType.Fortify, player.getDisplayName());
-    }
-
-    public static GameEvent forCardExchange(GameId gameId,Player player, int nextExchangeValue){
-        return new GameEvent(gameId,player.getColor() + " exchanges cards", GameEventType.ExchangeCards, player.getDisplayName());
     }
 
     public int getTurnNumber(){
