@@ -14,6 +14,10 @@ function displayGameEvents(gameEvents){
             console.log("Game is over!");
             clearOrderConsole();
         }
+        if( 'next_card_exchange_value' in gameEvent){
+            var cardSetValueSpan = document.getElementById('next-exchange-value-span');
+            cardSetValueSpan.innerHTML = 'Next card exchange worth ' + gameEvent['next_card_exchange_value'];
+        }
     }
     orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;

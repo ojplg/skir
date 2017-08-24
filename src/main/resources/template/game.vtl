@@ -33,8 +33,9 @@ margin-left: 610 px;
     </style>
 </head>
 <body onload="initializeClient('${name}', '${address}', ${demo}, ${game_id}, ${join_attempt})">
-    <p>Game Number: $game_id --- $name @ $address</p>
-
+    <span>Game Number: $game_id --- $name @ $address</span>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <span id="next-exchange-value-span"></span>
   <div style="width: 100%; overflow: hidden;">
     <div id="canvas-div">
         <canvas id="canvas_map" width="1000" height="600" onclick="map_clicked">

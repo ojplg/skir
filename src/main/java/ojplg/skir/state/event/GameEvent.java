@@ -20,7 +20,7 @@ public class GameEvent implements GameEventMessage {
     private final List<String> _playerIdentifiers;
     private final GameId _gameId;
 
-    protected GameEvent(GameId gameId, String text, GameEventType gameEventType, String playerIdentifier){
+    private GameEvent(GameId gameId, String text, GameEventType gameEventType, String playerIdentifier){
         _simpleText = text;
         _turnNumber = null;
         _gameEventType = gameEventType;

@@ -13,6 +13,7 @@ import ojplg.skir.state.event.CardExchangeEvent;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
+import ojplg.skir.state.event.GameStartEvent;
 import ojplg.skir.state.event.MapChangedEvent;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import ojplg.skir.utils.ListUtils;
@@ -66,6 +67,8 @@ public class Game implements GameSpecifiable {
     public void start(){
         _log.info("Starting game " + _gameId);
         _currentAttacker = _players.get(0);
+        GameEventMessage gameEvent = new GameStartEvent(_gameId, _cardPile.valuationOfExchange());
+        _channels.publishGameEvent(gameEvent);
     }
 
     public void doInitialPlacements(){
