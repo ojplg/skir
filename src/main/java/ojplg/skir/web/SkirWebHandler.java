@@ -2,7 +2,6 @@ package ojplg.skir.web;
 
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.play.NewGameRequest;
-import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,7 @@ public class SkirWebHandler extends AbstractHandler {
 
     private final WebRunner _webRunner;
 
-    public SkirWebHandler(WebRunner webRunner){
+    SkirWebHandler(WebRunner webRunner){
         _webRunner = webRunner;
     }
 

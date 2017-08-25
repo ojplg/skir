@@ -7,7 +7,6 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,13 +54,13 @@ public class AiFactory {
     private static Map<String, Function<Player, AutomatedPlayer>> playerGenerators(){
         Map<String, Function<Player, AutomatedPlayer>> generators = new HashMap();
 
-        generators.put("Grabby", p -> new Grabby(p));
-        generators.put("Bully", p -> new Bully(p));
-        generators.put("Massy", p -> new Massy(p));
-        generators.put("MassyTwo", p -> new MassyTwo(p));
-        generators.put("Grumpy", p -> new Grumpy(p));
-        generators.put("Wimpy", p -> new Wimpy(p));
-        generators.put("WimpyTwo", p -> new WimpyTwo(p));
+        generators.put("Grabby", Grabby::new);
+        generators.put("Bully", Bully::new);
+        generators.put("Massy", Massy::new);
+        generators.put("MassyTwo", MassyTwo::new);
+        generators.put("Grumpy", Grumpy::new);
+        generators.put("Wimpy", Wimpy::new);
+        generators.put("WimpyTwo", WimpyTwo::new);
         generators.put("Tuney_MM", p -> new Tuney(p, Tuney.presetTunings()));
         generators.put("Tuney_M2", p -> evolvedTuney(p, "evolve2"));
         generators.put("Tuney_M200", p -> evolvedTuney(p, "evolve200"));
@@ -99,9 +98,4 @@ public class AiFactory {
             throw new RuntimeException(ex);
         }
     }
-
-    private static Tuney presetTuned(Player player){
-        return new Tuney(player, Tuney.presetTunings());
-    }
-    
 }

@@ -35,7 +35,7 @@ public class WebRunner {
         _fiber.start();
     }
 
-    public GameId newGame(NewGameRequest request){
+    GameId newGame(NewGameRequest request){
         synchronized (_lock) {
             _log.info("Creating new GameRunner");
             AiFactory aiFactory = new AiFactory(request.getAiNames());
@@ -49,7 +49,7 @@ public class WebRunner {
         }
     }
 
-    public Map<GameId, GameMenuEntry> getGameEntries(){
+    Map<GameId, GameMenuEntry> getGameEntries(){
         synchronized (_lock) {
             Map<GameId, GameMenuEntry> map = new HashMap<>();
             for (GameRunner runner: _gameRunners.values()) {

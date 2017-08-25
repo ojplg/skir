@@ -331,12 +331,10 @@ public class Tuney implements AutomatedPlayer {
         List<Continent> goalContinents = AiUtils.possibleGoalContinents(_me, game,
                 tunedValue(GoalContinentArmyPercentage), tunedValue(GoalContinentCountryPercentage));
         boolean targetInBestGoalContinent = bestGoalContinent != null && bestGoalContinent.contains(target);
-        List<Country> myOtherCountriesBorderingTarget = new ArrayList<>();
         int myOtherBorderingForces = 0;
         for(Country country : game.findEnemyNeighbors(target)){
             if( _me.equals(game.getOccupier(country))){
                 myOtherBorderingForces += game.getOccupationForce(country);
-                myOtherCountriesBorderingTarget.add(country);
             }
         }
 

@@ -27,7 +27,7 @@ public class NewGameRequest {
         return new NewGameRequest("Local", "", AiFactory.allPlayerNames(), 0, GamePurpose.AiTestBench);
     }
 
-    public static NewGameRequest aiEvolution(){
+    static NewGameRequest aiEvolution(){
         return new NewGameRequest("Local", "", AiFactory.allPlayerNames(), 0, GamePurpose.AiEvolve);
     }
 
@@ -39,7 +39,7 @@ public class NewGameRequest {
         this._gamePurpose = gamePurpose;
     }
 
-    public int getDelay() {
+    int getDelay() {
         return _delay;
     }
 
