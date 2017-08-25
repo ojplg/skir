@@ -2,7 +2,19 @@ package ojplg.skir.ai;
 
 import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Country;
-import ojplg.skir.play.orders.*;
+import ojplg.skir.play.orders.Adjutant;
+import ojplg.skir.play.orders.Attack;
+import ojplg.skir.play.orders.ClaimArmies;
+import ojplg.skir.play.orders.DrawCard;
+import ojplg.skir.play.orders.EndAttacks;
+import ojplg.skir.play.orders.EndTurn;
+import ojplg.skir.play.orders.ExchangeCardSet;
+import ojplg.skir.play.orders.Fortify;
+import ojplg.skir.play.orders.OccupationConstraints;
+import ojplg.skir.play.orders.Occupy;
+import ojplg.skir.play.orders.Order;
+import ojplg.skir.play.orders.OrderType;
+import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 
@@ -17,6 +29,11 @@ public class Massy implements AutomatedPlayer {
     public Massy(Player player){
         _me = player;
         _me.setDisplayName("Massy");
+    }
+
+    public Massy(Player player, String name){
+        _me = player;
+        _me.setDisplayName(name);
     }
 
     @Override

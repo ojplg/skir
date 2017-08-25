@@ -30,6 +30,7 @@ public class AiFactory {
             case "Grabby": return new Grabby(player);
             case "Bully": return new Bully(player);
             case "Massy": return new Massy(player);
+            case "MassyTwo": return new MassyTwo(player);
             case "Grumpy": return new Grumpy(player);
             case "Wimpy": return new Wimpy(player);
             case "WimpyTwo": return new WimpyTwo(player);

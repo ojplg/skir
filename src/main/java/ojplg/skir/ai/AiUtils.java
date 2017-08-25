@@ -307,4 +307,11 @@ public class AiUtils {
         }
         return total / game.getAllCountries().size();
     }
+
+    public static boolean hasMajorityArmies(Player player, Game game){
+        int myArmyCount = AiUtils.findAllPlayerArmies(game, player);
+        int enemyArmyCount = AiUtils.findAllOppositionArmies(game, player);
+        return myArmyCount > enemyArmyCount;
+    }
+
 }

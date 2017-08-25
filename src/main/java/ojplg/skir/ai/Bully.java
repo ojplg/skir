@@ -34,8 +34,12 @@ public class Bully implements AutomatedPlayer {
     private final Player _me;
 
     public Bully(Player player){
+        this(player, "Bully");
+    }
+
+    public Bully(Player player, String name){
         _me = player;
-        player.setDisplayName("Bully");
+        player.setDisplayName(name);
     }
 
     @Override

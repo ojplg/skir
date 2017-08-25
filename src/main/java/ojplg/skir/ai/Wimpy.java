@@ -27,8 +27,12 @@ public class Wimpy implements AutomatedPlayer {
     private final Player _me;
 
     public Wimpy(Player player){
+        this(player, "Wimpy");
+    }
+
+    public Wimpy(Player player, String name){
         _me = player;
-        player.setDisplayName("Wimpy");
+        player.setDisplayName(name);
     }
 
     @Override
