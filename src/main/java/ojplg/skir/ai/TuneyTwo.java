@@ -452,6 +452,10 @@ public class TuneyTwo implements AutomatedPlayer {
             score += enemyContinentScore(continent);
         }
 
+        if( closeToOwning(continent, game)){
+            score += 2 * continentScore(continent);
+        }
+
         return score;
     }
 
