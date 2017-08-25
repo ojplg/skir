@@ -19,6 +19,7 @@ import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.utils.ListUtils;
 import ojplg.skir.utils.RatioDistributor;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
@@ -182,9 +183,7 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private PlaceArmy generatePlaceArmyOrder(Adjutant adjutant, Game game){
-        _log.info(" ----- generate place army order -----");
         if( _placementsToMake == null){
-            _log.info(" computing placements ");
             _placementsToMake = computePlacements(game);
         }
         Map.Entry<Country,Integer> entry = new ArrayList<>(_placementsToMake.entrySet()).get(0);
@@ -290,6 +289,7 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private Map<Country,Integer> computePlacements(Game game){
+        _log.info("Computing placements");
         Map<Country, Double> ratios = new HashMap<>();
         Map<Country, Double> goalCountryScores = computeGoalCountryDesirabilityScores(game);
         game.findOccupiedCountries(_me).forEach( c ->
@@ -309,20 +309,7 @@ public class TuneyTwo implements AutomatedPlayer {
             return 0;
         }
 
-        double score = 0;
-
-        for(Country enemy : game.findEnemyNeighbors(country)){
-            _log.info("Searching for desirability of " + enemy + " from " + goalCountryScores);
-            if( goalCountryScores.containsKey(enemy)) {
-                score += goalCountryScores.get(enemy);
-            } else {
-                throw new RuntimeException("WHAT WHAT WHAT? " + enemy +
-                        " was not present in " + goalCountryScores.keySet() +
-                        " when I owned " + game.findOccupiedCountries(_me));
-            }
-        }
-
-        return score;
+        return ListUtils.sumAll(game.findEnemyNeighbors(country), c -> goalCountryScores.get(c));
     }
 
     private double computeAttackScore(PossibleAttack attack, Game game){
