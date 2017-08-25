@@ -43,6 +43,12 @@ public class GameHelper {
         _occupations.placeArmies(owner, country, level);
     }
 
+    public void setAllCountries(Player owner, int level){
+        for(Country country : _occupations.getMap().getAllCountries()){
+            setCountry(country, owner, level);
+        }
+    }
+
     private Game baseGameState(){
 
         List<Player> players = new ArrayList<>();

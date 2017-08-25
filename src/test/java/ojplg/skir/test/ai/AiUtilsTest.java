@@ -4,6 +4,7 @@ import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.ai.AiUtils;
 import ojplg.skir.test.helper.GameHelper;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -127,6 +128,19 @@ public class AiUtilsTest {
         assertTrue(bloc.contains(Country.Siam));
         assertTrue(bloc.contains(Country.Indonesia));
         assertTrue(bloc.contains(Country.New_Guinea));
+    }
+
+    @Test
+    public void testFindEnemyBorders(){
+        GameHelper gameHelper = new GameHelper();
+        gameHelper.setAllCountries(gameHelper.WhitePlayer, 1);
+        gameHelper.setCountry(Country.Central_America, gameHelper.RedPlayer, 3);
+        gameHelper.setCountry(Country.China, gameHelper.RedPlayer, 1);
+
+        Set<Country> enemyBorders = AiUtils.findEnemyBorders(gameHelper.RedPlayer, gameHelper.Game);
+        Assert.assertEquals(9, enemyBorders.size());
+        Assert.assertTrue(enemyBorders.contains(Country.India));
+        Assert.assertTrue(enemyBorders.contains(Country.Venezuela));
     }
 
 }

@@ -154,10 +154,14 @@ public class AiUtils {
                 .get();
     }
 
-    static List<Country> findEnemyBorders(Player player, Game game){
-        List<PossibleAttack> possibleAttacks = findAllPossibleAttacks(player, game);
-        Set<Country> defendingCountries = possibleAttacks.stream().map(p -> p.getDefender()).collect(Collectors.toSet());
-        return new ArrayList<>(defendingCountries);
+    public static Set<Country> findEnemyBorders(Player player, Game game){
+        Set<Country> enemyNeighbors = new HashSet<>();
+        for(Country country : game.findBorderCountries(player)){
+            for(Country neighbor : game.findEnemyNeighbors(country)) {
+                enemyNeighbors.add(neighbor);
+            }
+        }
+        return enemyNeighbors;
     }
 
     static int attackingDice(Game game, Country country){

@@ -158,6 +158,7 @@ public class TuneyTwo implements AutomatedPlayer {
             return generatePlaceArmyOrder(adjutant, game);
         }
         if( allowableOrders.contains(OrderType.Attack)){
+            _placementsToMake = null;
             return generateAttackOrder(adjutant, game);
         }
         if( allowableOrders.contains(OrderType.Occupy)){
@@ -181,15 +182,14 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private PlaceArmy generatePlaceArmyOrder(Adjutant adjutant, Game game){
+        _log.info(" ----- generate place army order -----");
         if( _placementsToMake == null){
+            _log.info(" computing placements ");
             _placementsToMake = computePlacements(game);
         }
         Map.Entry<Country,Integer> entry = new ArrayList<>(_placementsToMake.entrySet()).get(0);
         PlaceArmy order = new PlaceArmy(adjutant, entry.getKey(), entry.getValue());
         _placementsToMake.remove(entry.getKey());
-        if( _placementsToMake.size() == 0){
-            _placementsToMake = null;
-        }
         return order;
     }
 
@@ -315,6 +315,10 @@ public class TuneyTwo implements AutomatedPlayer {
             _log.info("Searching for desirability of " + enemy + " from " + goalCountryScores);
             if( goalCountryScores.containsKey(enemy)) {
                 score += goalCountryScores.get(enemy);
+            } else {
+                throw new RuntimeException("WHAT WHAT WHAT? " + enemy +
+                        " was not present in " + goalCountryScores.keySet() +
+                        " when I owned " + game.findOccupiedCountries(_me));
             }
         }
 
@@ -439,7 +443,7 @@ public class TuneyTwo implements AutomatedPlayer {
 
 
     private Map<Country, Double> computeGoalCountryDesirabilityScores(Game game){
-        List<Country> enemyBorderCountries = AiUtils.findEnemyBorders(_me, game);
+        Set<Country> enemyBorderCountries = AiUtils.findEnemyBorders(_me, game);
         List<Country> myPossessions = game.findOccupiedCountries(_me);
         _log.info("Finding desirability scores for " + enemyBorderCountries + " because I own " + myPossessions);
         Map<Country, Double> scores = new HashMap<>();

@@ -68,9 +68,7 @@ public class Country implements Comparable {
 
     @Override
     public String toString() {
-        return "Country{" +
-                "_name='" + _name + '\'' +
-                '}';
+        return "C." + _name;
     }
 
     @Override
@@ -80,9 +78,7 @@ public class Country implements Comparable {
 
         Country country = (Country) o;
 
-        if (_name != null ? !_name.equals(country._name) : country._name != null) return false;
-
-        return true;
+        return _name != null ? _name.equals(country._name) : country._name == null;
     }
 
     @Override

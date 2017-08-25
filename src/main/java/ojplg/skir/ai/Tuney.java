@@ -490,7 +490,7 @@ public class Tuney implements AutomatedPlayer {
         List<Country> enemyContinentBorders = enemyOwnedContinents.stream()
                 .map(game::findContinentalBorders)
                 .reduce(new ArrayList<>(), ListUtils::concat);
-        List<Country> enemyBorders = AiUtils.findEnemyBorders(_me, game);
+        Set<Country> enemyBorders = AiUtils.findEnemyBorders(_me, game);
         Collection<Country> borderingEnemyContinentsCountries =
                 CollectionUtils.intersection(enemyContinentBorders, enemyBorders);
 
