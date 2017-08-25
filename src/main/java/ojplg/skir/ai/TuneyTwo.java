@@ -309,7 +309,7 @@ public class TuneyTwo implements AutomatedPlayer {
             return 0;
         }
 
-        return ListUtils.sumAll(game.findEnemyNeighbors(country), c -> goalCountryScores.get(c));
+        return ListUtils.sumAll(game.findEnemyNeighbors(country), goalCountryScores::get);
     }
 
     private double computeAttackScore(PossibleAttack attack, Game game){
