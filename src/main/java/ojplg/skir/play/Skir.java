@@ -17,6 +17,9 @@ import org.jetlang.core.RunnableExecutorImpl;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.JettyInitializer;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Skir {
 
     private static final Logger _log = LogManager.getLogger(Skir.class);
@@ -26,11 +29,11 @@ public class Skir {
 
         CommandLine commandLine = parseOptions(args);
 
-        final String[] aiNames;
+        final List<String> aiNames;
         if( commandLine.hasOption("ais")) {
-            aiNames = commandLine.getOptionValues("ais");
+            aiNames = Arrays.asList(commandLine.getOptionValues("ais"));
         } else {
-            aiNames = Constants.AI_NAMES;
+            aiNames = AiFactory.allPlayerNames();
         }
 
         final AiFactory aiFactory = new AiFactory(aiNames);

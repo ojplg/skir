@@ -11,10 +11,6 @@ public class Constants {
     public static final int MAX_TURNS_WITHOUT_ATTACK = 50;
     public static final int MAXIMUM_GAME_LENGTH = 1000;
 
-    public static final String[] AI_NAMES =
-            new String[] {"Grabby", "Bully", "Massy", "MassyTwo", "Grumpy" , "Wimpy", "WimpyTwo", "Tuney(MM)", "Tuney(M2)", "Tuney(M200)" ,
-                    "Tuney(A1)","Tuney(A47)","Tuney(A64)","Tuney(A81)" ,"TuneyTwo"};
-
     public static final int NUMBER_BENCH_GAMES_TO_RUN = 100;
 
     public static final int WEB_PLAY_DELAY = 40;

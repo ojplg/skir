@@ -6,17 +6,33 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class AiFactory {
 
-    private Function<Player, AutomatedPlayer> _firstPlayerFactory;
-    private String[] _eligibleAiNames;
+    private static Map<String, Function<Player, AutomatedPlayer>> _playerGenerators;
+    private static List<String> _playerNames;
 
-    public AiFactory(String[] aiNames){
+    private Function<Player, AutomatedPlayer> _firstPlayerFactory;
+    private List<String> _eligibleAiNames;
+
+    static {
+        _playerGenerators = playerGenerators();
+        _playerNames = extractPlayerNames();
+    }
+
+    public AiFactory(List<String> aiNames){
         _eligibleAiNames = aiNames;
+    }
+
+    public static List<String> allPlayerNames(){
+        return _playerNames;
     }
 
     public AutomatedPlayer generateAiPlayer(Player player){
@@ -24,59 +40,67 @@ public class AiFactory {
             return _firstPlayerFactory.apply(player);
         }
 
-        String name = randomKey();
+        String name = RandomUtils.pickRandomElement(_eligibleAiNames);
         player.setDisplayName(name);
-        switch(name){
-            case "Grabby": return new Grabby(player);
-            case "Bully": return new Bully(player);
-            case "Massy": return new Massy(player);
-            case "MassyTwo": return new MassyTwo(player);
-            case "Grumpy": return new Grumpy(player);
-            case "Wimpy": return new Wimpy(player);
-            case "WimpyTwo": return new WimpyTwo(player);
-            case "Tuney(MM)": return presetTuned(player);
-            case "Tuney(M2)": return evolvedTuney(player, "evolve2");
-            case "Tuney(M200)": return evolvedTuney(player, "evolve200");
-            case "Tuney(A1)" : return evolvedAdditiveTuney(player, 1);
-            case "Tuney(A47)" : return evolvedAdditiveTuney(player, 47);
-            case "Tuney(A64)" : return evolvedAdditiveTuney(player, 64);
-            case "Tuney(A81)" : return evolvedAdditiveTuney(player, 81);
-            case "TuneyTwo" : return new TuneyTwo(player, TuneyTwo.presetTunings());
-            default: return new Wimpy(player);
-        }
+        return _playerGenerators.get(name).apply(player);
+    }
+
+    private static List<String> extractPlayerNames(){
+        List<String> names  = new ArrayList();
+        names.addAll(_playerGenerators.keySet());
+        Collections.sort(names);
+        return Collections.unmodifiableList(names);
+    }
+
+    private static Map<String, Function<Player, AutomatedPlayer>> playerGenerators(){
+        Map<String, Function<Player, AutomatedPlayer>> generators = new HashMap();
+
+        generators.put("Grabby", p -> new Grabby(p));
+        generators.put("Bully", p -> new Bully(p));
+        generators.put("Massy", p -> new Massy(p));
+        generators.put("MassyTwo", p -> new MassyTwo(p));
+        generators.put("Grumpy", p -> new Grumpy(p));
+        generators.put("Wimpy", p -> new Wimpy(p));
+        generators.put("WimpyTwo", p -> new WimpyTwo(p));
+        generators.put("Tuney_MM", p -> new Tuney(p, Tuney.presetTunings()));
+        generators.put("Tuney_M2", p -> evolvedTuney(p, "evolve2"));
+        generators.put("Tuney_M200", p -> evolvedTuney(p, "evolve200"));
+        generators.put("Tuney_A1", p -> evolvedAdditiveTuney(p, 1));
+        generators.put("Tuney_A47", p -> evolvedAdditiveTuney(p, 47));
+        generators.put("Tuney_A64", p -> evolvedAdditiveTuney(p, 64));
+        generators.put("Tuney_A81", p -> evolvedAdditiveTuney(p, 81));
+        generators.put("TuneyTwo", p -> new TuneyTwo(p, TuneyTwo.presetTunings()));
+
+        return Collections.unmodifiableMap(generators);
     }
 
     public void setFirstPlayerFactory(Function<Player, AutomatedPlayer> firstPlayerFactory){
         this._firstPlayerFactory = firstPlayerFactory;
     }
 
-    private String randomKey(){
-        return RandomUtils.pickRandomElement(Arrays.asList(_eligibleAiNames));
-    }
-
-    private Tuney evolvedAdditiveTuney(Player player, int number){
+    private static Tuney evolvedAdditiveTuney(Player player, int number){
         Map<String,Double> tunings = tunings("add_" + number);
         return new Tuney(player, tunings, false);
 
     }
 
-    private Tuney evolvedTuney(Player player, String fileName){
+    private static Tuney evolvedTuney(Player player, String fileName){
         Map<String,Double> tunings = tunings(fileName);
         return new Tuney(player, tunings);
     }
 
-    private Map<String,Double> tunings(String fileName){
+    private static Map<String,Double> tunings(String fileName){
         try {
             JSONParser parser = new JSONParser();
             InputStreamReader reader = new InputStreamReader(
-                    getClass().getResourceAsStream("/tunings/" + fileName + ".json"));
+                    parser.getClass().getResourceAsStream("/tunings/" + fileName + ".json"));
             return (Map<String,Double>) parser.parse(reader);
         } catch (IOException | ParseException ex){
             throw new RuntimeException(ex);
         }
     }
 
-    private Tuney presetTuned(Player player){
+    private static Tuney presetTuned(Player player){
         return new Tuney(player, Tuney.presetTunings());
     }
     

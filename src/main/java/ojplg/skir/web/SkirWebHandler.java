@@ -1,5 +1,6 @@
 package ojplg.skir.web;
 
+import ojplg.skir.ai.AiFactory;
 import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.GameId;
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class SkirWebHandler extends AbstractHandler {
             } else if( "new-game".equals(switchKey)){
                 String userName = request.getParameter("user-name");
                 String remoteAddress = request.getRemoteAddr();
-                String[] ais = request.getParameterValues("ai");
+                List<String> ais = Arrays.asList(request.getParameterValues("ai"));
                 boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
                 NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
                         NewGameRequest.webPlay(userName, remoteAddress, ais);
@@ -74,7 +76,7 @@ public class SkirWebHandler extends AbstractHandler {
         _log.info("Rendering chooser page");
         VelocityContext vc = new VelocityContext();
         vc.put("user_name", userName);
-        vc.put("ai_names", Constants.AI_NAMES);
+        vc.put("ai_names", AiFactory.allPlayerNames());
         Map<GameId, GameMenuEntry> gameRequests = _webRunner.getGameEntries();
         List<GameId> ids = new ArrayList<>(gameRequests.keySet());
         Collections.sort(ids);
