@@ -428,17 +428,9 @@ public class TuneyTwo implements AutomatedPlayer {
         }
     }
 
-
     private Map<Country, Double> computeGoalCountryDesirabilityScores(Game game){
-        Set<Country> enemyBorderCountries = AiUtils.findEnemyBorders(_me, game);
-        List<Country> myPossessions = game.findOccupiedCountries(_me);
-        _log.info("Finding desirability scores for " + enemyBorderCountries + " because I own " + myPossessions);
-        Map<Country, Double> scores = new HashMap<>();
-        for(Country country : enemyBorderCountries ){
-            Double score = computeDesirabilityScore(country, game);
-            scores.put(country, score);
-        }
-        return scores;
+        List<Country> enemyBorderCountries = AiUtils.findEnemyBordersAsList(_me, game);
+        return ListUtils.mapify(enemyBorderCountries, c -> computeDesirabilityScore(c, game));
     }
 
     private Double computeDesirabilityScore(Country country, Game game) {

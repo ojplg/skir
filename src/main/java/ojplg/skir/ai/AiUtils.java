@@ -164,6 +164,13 @@ public class AiUtils {
         return enemyNeighbors;
     }
 
+    public static List<Country> findEnemyBordersAsList(Player player, Game game){
+        List<Country> list = new ArrayList<>();
+        list.addAll(findEnemyBorders(player, game));
+        return list;
+    }
+
+
     static int attackingDice(Game game, Country country){
         return Math.min(Constants.MAXIMUM_ATTACKER_DICE,
                 game.getOccupationForce(country) - 1);

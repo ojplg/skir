@@ -3,6 +3,8 @@ package ojplg.skir.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.List;
 import java.util.Optional;
@@ -40,5 +42,11 @@ public class ListUtils {
                 new Double(0),
                 (s, c) -> s + valuer.apply(c),
                 (s1, s2) -> s1 + s2);
+    }
+
+    public static <T, V> Map<T,V> mapify(List<T> list, Function<T, V> mapper){
+        Map<T,V> map = new HashMap();
+        list.forEach(t -> map.put(t, mapper.apply(t)));
+        return map;
     }
 }
