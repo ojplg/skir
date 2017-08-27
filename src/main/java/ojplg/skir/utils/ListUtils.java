@@ -39,7 +39,7 @@ public class ListUtils {
 
     public static <T> double sumAll(List<T> list, Function<T, Double> valuer){
         return list.stream().reduce(
-                new Double(0),
+                0d,
                 (s, c) -> s + valuer.apply(c),
                 (s1, s2) -> s1 + s2);
     }
