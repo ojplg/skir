@@ -83,7 +83,7 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private Map<Country, Integer> _placementsToMake = null;
 
-    static Map<String, Double> presetTunings(){
+    public static Map<String, Double> presetTunings(){
 
         Map<String, Double> map = new HashMap<>();
 
@@ -133,7 +133,7 @@ public class TuneyTwo implements AutomatedPlayer {
         return map;
     }
 
-    TuneyTwo(Player player, Map<String, Double> tunings){
+    public TuneyTwo(Player player, Map<String, Double> tunings){
         _me = player;
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(
@@ -289,7 +289,6 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private Map<Country,Integer> computePlacements(Game game){
-        _log.info("Computing placements");
         Map<Country, Double> ratios = new HashMap<>();
         Map<Country, Double> goalCountryScores = computeGoalCountryDesirabilityScores(game);
         game.findOccupiedCountries(_me).forEach( c ->

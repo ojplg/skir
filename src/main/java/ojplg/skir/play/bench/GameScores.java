@@ -38,7 +38,7 @@ public class GameScores {
         }
     }
 
-    public int getParticipationCount(String playerId){
+    private int getParticipationCount(String playerId){
         return _participations.get(playerId);
     }
 

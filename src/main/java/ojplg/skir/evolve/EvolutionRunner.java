@@ -1,9 +1,11 @@
 package ojplg.skir.evolve;
 
 import ojplg.skir.ai.AiFactory;
-import ojplg.skir.ai.Tuney;
+import ojplg.skir.ai.AutomatedPlayer;
+import ojplg.skir.ai.TuneyTwo;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.bench.AiTestBench;
+import ojplg.skir.state.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.ThreadFiber;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
 
 public class EvolutionRunner {
 
@@ -20,16 +23,27 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
+    private final Map<String, Double> _presetTunings;
+    private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
+        this(channels, evolveThread,
+                TuneyTwo.presetTunings(),
+                (p, t) -> new TuneyTwo(p, t));
+    }
+
+    public EvolutionRunner(Channels channels, ThreadFiber evolveThread,
+                           Map<String, Double> presetTunings, BiFunction<Player, Map<String,Double>, AutomatedPlayer> testPlayerGenerator){
         _channels = channels;
         _evolveThread = evolveThread;
+        _presetTunings = presetTunings;
+        _testPlayerGenerator = testPlayerGenerator;
     }
 
     public void evolve(AiFactory aiFactory){
         _log.info("Evolving");
         AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 25);
-        SkirScorer scorer = new SkirScorer(bench);
+        SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
@@ -60,7 +74,7 @@ public class EvolutionRunner {
     private Individual generateRandomTunerGenes(int number){
         Map<String, Double> genes = new HashMap<>();
         Random random = new Random(System.currentTimeMillis());
-        for (Map.Entry<String, Double> gene : Tuney.presetTunings().entrySet() ) {
+        for (Map.Entry<String, Double> gene : _presetTunings.entrySet() ) {
             double fuzz = random.nextDouble() / 2;
             fuzz += 0.75;
             double value = Math.min(0.99999, gene.getValue() * fuzz);

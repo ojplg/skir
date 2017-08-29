@@ -16,6 +16,9 @@ public class SimpleGameRecord {
     private List<String> _drawers;
 
     public void playerJoined(String playerIdentifier){
+        if ( playerIdentifier == null ){
+            throw new RuntimeException("Player identifier cannot be null");
+        }
         _playerTypes.add(playerIdentifier);
     }
 
