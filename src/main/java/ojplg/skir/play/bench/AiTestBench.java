@@ -6,7 +6,6 @@ import ojplg.skir.play.Channels;
 import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.Player;
-import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameEventType;
 import org.apache.logging.log4j.LogManager;

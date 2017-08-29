@@ -4,6 +4,8 @@ import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.ai.TuneyTwo;
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.GameRunner;
+import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Player;
 import org.apache.logging.log4j.LogManager;
@@ -23,26 +25,30 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
+    private final AiFactory _aiFactory;
     private final Map<String, Double> _presetTunings;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
 
-    public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
-        this(channels, evolveThread,
+    private GameRunner _gameRunner;
+
+    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread){
+        this(aiFactory, channels, evolveThread,
                 TuneyTwo.presetTunings(),
                 (p, t) -> new TuneyTwo(p, t));
     }
 
-    public EvolutionRunner(Channels channels, ThreadFiber evolveThread,
+    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread,
                            Map<String, Double> presetTunings, BiFunction<Player, Map<String,Double>, AutomatedPlayer> testPlayerGenerator){
         _channels = channels;
         _evolveThread = evolveThread;
         _presetTunings = presetTunings;
         _testPlayerGenerator = testPlayerGenerator;
+        _aiFactory =aiFactory;
     }
 
-    public void evolve(AiFactory aiFactory){
+    public void start(){
         _log.info("Evolving");
-        AiTestBench bench = new AiTestBench(aiFactory, _channels, _evolveThread, 25);
+        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, 25);
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         scorer.start();
         Generations generations = new Generations(scorer);
@@ -52,7 +58,17 @@ public class EvolutionRunner {
             _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
         }
+        setUpNewGameRunner();
     }
+
+    private void setUpNewGameRunner(){
+        if( _gameRunner != null){
+            _gameRunner.stop();
+        }
+        _gameRunner = new GameRunner(_aiFactory, _channels, NewGameRequest.aiEvolution());
+        _gameRunner.start();
+    }
+
 
 //    private void logGeneration(int number, Generation generation){
 //        _log.info("Logging generation " + number + " has " + generation.allMembers().size() + " individuals.");

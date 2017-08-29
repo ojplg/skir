@@ -48,10 +48,11 @@ public class Skir {
             testBench.start();
             testBench.startRun();
         } else if ( commandLine.hasOption("evolve") ) {
-            EvolutionRunner evolutionRunner = new EvolutionRunner(channels, createThreadFiber("EvolutionFiber"));
-            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiEvolution());
-            gameRunner.start();
-            evolutionRunner.evolve(aiFactory);
+            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createThreadFiber("EvolutionFiber"));
+//            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiEvolution());
+//            gameRunner.start();
+//            evolutionRunner.evolve(aiFactory);
+            evolutionRunner.start();
         } else {
             startWebServer(channels);
         }

@@ -27,7 +27,7 @@ public class NewGameRequest {
         return new NewGameRequest("Local", "", AiFactory.allPlayerNames(), 0, GamePurpose.AiTestBench);
     }
 
-    static NewGameRequest aiEvolution(){
+    public static NewGameRequest aiEvolution(){
         return new NewGameRequest("Local", "", AiFactory.allPlayerNames(), 0, GamePurpose.AiEvolve);
     }
 
