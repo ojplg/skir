@@ -111,7 +111,8 @@ public class GameRunner implements GameSpecifiable {
                 Instant end = Instant.now();
                 Duration timeSpent = Duration.between(start, end);
                 if(timeSpent.getSeconds() > 1.0){
-                    _log.warn("On turn " + _game.getTurnNumber() + " ai " + ai.getPlayer() + " took " + timeSpent);
+                    _log.warn("On turn " + _game.getTurnNumber() + " ai " + ai.getPlayer() + " took " + timeSpent
+                        + " when choosing between " + adjutant.allowableOrders());
                 }
                 littleDelay();
                 _channels.publishOrder(order);
