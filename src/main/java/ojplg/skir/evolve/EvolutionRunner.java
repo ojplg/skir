@@ -20,7 +20,6 @@ public class EvolutionRunner {
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
-    private final int _numberOfGenerations = 100;
 
     public EvolutionRunner(Channels channels, ThreadFiber evolveThread){
         _channels = channels;
@@ -34,7 +33,7 @@ public class EvolutionRunner {
         scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
-        for(int cnt=0; cnt < _numberOfGenerations ; cnt++) {
+        for(int cnt = 0; cnt < 100; cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
             _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
