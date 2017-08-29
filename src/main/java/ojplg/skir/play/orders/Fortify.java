@@ -18,6 +18,16 @@ public class Fortify extends Order {
 
     @Override
     public Adjutant execute(Game game) {
+        if( ! game.getOccupier(_source).equals(game.getOccupier(_destination))){
+            throw new RuntimeException("Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
+                + _source + " to " + _destination + ". " + _source + " is owned by " + game.getOccupier(_source)
+                    + " and " + _destination + " is owned by " + game.getOccupier(_destination));
+        }
+        if( ! game.getMap().areNeighbors(_source, _destination)){
+            throw new RuntimeException("Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
+                    + _source + " to " + _destination + ". They are not neighbors." );
+        }
+
         game.processFortifyOrder(_source, _destination, _armies);
         if( getAdjutant().hasConqueredCountry() && ! game.getPlayerHoldings(activePlayer()).hasMaximumCards()){
             return getAdjutant().forConstrainedOrderTypes(ConstrainedOrderType.unconstrainedOrder(OrderType.DrawCard));

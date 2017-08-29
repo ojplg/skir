@@ -21,6 +21,13 @@ public class Occupy extends Order {
 
     @Override
     public Adjutant execute(Game game) {
+        if( game.getOccupationForce(_conquered) > 0){
+            throw new RuntimeException("Player " + activePlayer() + " issued an occuption order from "
+                    + _victor + " to " + _conquered + " although " + _conquered + " still has "
+                    + game.getOccupationForce(_conquered) + " armies in it and is owned by "
+                    + game.getOccupier(_conquered));
+        }
+
         Player loser = game.getOccupier(_conquered);
         boolean playerEliminated = game.processOccupyOrder(_victor, _conquered, _armies);
 

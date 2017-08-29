@@ -18,6 +18,8 @@ import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.ClientConnectedEvent;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +106,13 @@ public class GameRunner implements GameSpecifiable {
         if( matches(adjutant)){
             AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
             if( ai != null ) {
+                Instant start = Instant.now();
                 Order order = ai.generateOrder(_currentAdjutant, _game);
+                Instant end = Instant.now();
+                Duration timeSpent = Duration.between(start, end);
+                if(timeSpent.getSeconds() > 1.0){
+                    _log.warn("On turn " + _game.getTurnNumber() + " ai " + ai.getPlayer() + " took " + timeSpent);
+                }
                 littleDelay();
                 _channels.publishOrder(order);
             }
