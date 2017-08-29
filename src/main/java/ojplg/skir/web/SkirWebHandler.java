@@ -52,7 +52,12 @@ public class SkirWebHandler extends AbstractHandler {
                 NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
                         NewGameRequest.webPlay(userName, remoteAddress, ais);
                 GameId gameId = _webRunner.newGame(gameRequest);
-                renderGamePage(gameId, userName, remoteAddress, demoFlag, false,httpServletResponse.getWriter());
+
+                httpServletResponse.setStatus(HttpServletResponse.SC_SEE_OTHER);
+                httpServletResponse.setHeader("Location", "/?switch-key=join-game&user-name=" + userName
+                        + "&demo=" + demoFlag + "&game=" + gameId.getId());
+                request.setHandled(true);
+                return;
             } else if( "join-game".equals(switchKey) || "view-game".equals(switchKey)){
                 String remoteAddress = request.getRemoteAddr();
                 String gameIdString = request.getParameter("game");
