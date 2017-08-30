@@ -43,8 +43,12 @@ public class Skir {
             HelpFormatter helpFormatter = new HelpFormatter();
             helpFormatter.printHelp("skir", cliOptions());
         } else if ( commandLine.hasOption("bench")){
+            int numberOfRounds = Constants.NUMBER_BENCH_GAMES_TO_RUN;
+            if(commandLine.hasOption("rounds")){
+                numberOfRounds = Integer.parseInt(commandLine.getOptionValue("rounds"));
+            }
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
-                    Constants.NUMBER_BENCH_GAMES_TO_RUN);
+                    numberOfRounds);
             testBench.start();
             testBench.startRun();
         } else if ( commandLine.hasOption("evolve") ) {
@@ -100,6 +104,7 @@ public class Skir {
         options.addOption(new Option("b","bench", false, "Run in test bench mode."));
         options.addOption(new Option("e", "evolve", false, "Run in evolve mode."));
         options.addOption(new Option("h", "help", false, "See options."));
+        options.addOption(new Option("r", "rounds", true, "Number of rounds to run for test bench"));
         Option aisOption = new Option("a", "ais", true, "Specify AIs eligible for use during run");
         aisOption.setValueSeparator(',');
         aisOption.setArgs(Option.UNLIMITED_VALUES);

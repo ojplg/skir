@@ -74,7 +74,7 @@ public class Occupations {
 
 
     public List<Country> countriesOccupied(Player player){
-        List<Country> occupied = new ArrayList<Country>();
+        List<Country> occupied = new ArrayList<>();
         for ( Map.Entry<Country, Force> entry : _records.entrySet() ) {
             if ( player.equals(entry.getValue().getPlayer())) {
                 occupied.add(entry.getKey());
@@ -84,7 +84,7 @@ public class Occupations {
     }
 
     public List<Country> countriesEnemyOccupied(Player player){
-        List<Country> occupied = new ArrayList<Country>();
+        List<Country> occupied = new ArrayList<>();
         for ( Map.Entry<Country, Force> entry : _records.entrySet() ) {
             if ( ! player.equals(entry.getValue().getPlayer())) {
                 occupied.add(entry.getKey());

@@ -22,10 +22,6 @@ public class Force {
         _armies -= cnt;
     }
 
-    public boolean forceExterminated(){
-        return 0 == _armies;
-    }
-
     public void addArmies(int cnt) {
         _armies += cnt;
     }
