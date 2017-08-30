@@ -69,6 +69,8 @@ public class AiFactory {
         generators.put("Tuney_A64", p -> evolvedAdditiveTuney(p, 64));
         generators.put("Tuney_A81", p -> evolvedAdditiveTuney(p, 81));
         generators.put("TuneyTwo", p -> new TuneyTwo(p, TuneyTwo.presetTunings()));
+        generators.put("TT_46_38", p -> evolvedTuneyTwo(p,"tuney_two_46_38"));
+        generators.put("TT_36_22", p -> evolvedTuneyTwo(p,"tuney_two_36_22"));
 
         return Collections.unmodifiableMap(generators);
     }
@@ -86,6 +88,10 @@ public class AiFactory {
     private static Tuney evolvedTuney(Player player, String fileName){
         Map<String,Double> tunings = tunings(fileName);
         return new Tuney(player, tunings);
+    }
+
+    private static TuneyTwo evolvedTuneyTwo(Player player, String fileName){
+        return new TuneyTwo(player, tunings(fileName));
     }
 
     private static Map<String,Double> tunings(String fileName){
