@@ -1,6 +1,5 @@
 package ojplg.skir.map;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,10 +68,6 @@ public class Continent implements Comparable {
 
     public boolean contains(Country country){
         return getCountries().contains(country);
-    }
-
-    public int numberCountries(){
-        return _countries.size();
     }
 
     public int getBonus(){
