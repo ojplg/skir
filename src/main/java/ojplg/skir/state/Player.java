@@ -1,9 +1,10 @@
 package ojplg.skir.state;
 
-import ojplg.skir.play.Rolls;
+import ojplg.skir.state.event.GameSpecifiable;
 
-public class Player implements Comparable<Player> {
+public class Player implements Comparable<Player>, GameSpecifiable {
 
+    private final GameId _gameId;
     private final String _color;
     private final int _number;
 
@@ -11,9 +12,11 @@ public class Player implements Comparable<Player> {
     private String _clientKey;
     private String _displayName;
 
-    public Player(String color, int number){
+
+    public Player(GameId gameId, String color, int number){
         _color = color;
         _number = number;
+        _gameId = gameId;
     }
 
     public String getClientKey() {
@@ -48,14 +51,13 @@ public class Player implements Comparable<Player> {
         return _color;
     }
 
-    public boolean equals(Object that){
-        if ( that == null ){
+    public boolean equals(Object that) {
+        if (that == null) {
             return false;
         }
-        if ( ! (that instanceof Player) ) {
-            return false;
-        }
-        return this._color.equals(((Player)that)._color);
+        return that instanceof Player
+                && this._color.equals(((Player) that)._color)
+                && this._gameId.equals(((Player) that)._gameId);
     }
 
     public int hashCode(){
@@ -66,4 +68,15 @@ public class Player implements Comparable<Player> {
     public int compareTo(Player o) {
         return this.getNumber() - o.getNumber();
     }
+
+    @Override
+    public GameId getGameId() {
+        return _gameId;
+    }
+
+    @Override
+    public boolean matches(GameSpecifiable other) {
+        return _gameId.equals(other.getGameId());
+    }
+
 }

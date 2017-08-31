@@ -16,19 +16,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameHelper {
-
     public Game Game;
     private Occupations _occupations;
+    private GameId _gameId;
 
-    public Player RedPlayer = new Player("Red",0);
-    public Player WhitePlayer = new Player("White",1);
-    public Player GreenPlayer = new Player("Green",2);
-    public Player BluePlayer = new Player("Blue",3);
-    public Player BlackPlayer = new Player("Black",4);
+    public Player RedPlayer;
+    public Player WhitePlayer;
+    public Player GreenPlayer;
+    public Player BluePlayer;
+    public Player BlackPlayer;
 
     public GameHelper(){
+        _gameId = GameId.next();
+        RedPlayer = new Player(_gameId,"Red",0);
+        WhitePlayer = new Player(_gameId,"White",1);
+        GreenPlayer = new Player(_gameId,"Green",2);
+        BluePlayer = new Player(_gameId,"Blue",3);
+        BlackPlayer = new Player(_gameId,"Black",4);
         Game = baseGameState();
-    }
+        }
 
     public void setCountryTroopLevel(Country country, int level){
         int currentLevel = _occupations.getOccupationForce(country);
@@ -64,7 +70,7 @@ public class GameHelper {
         _occupations = new Occupations(worldMap);
 
         Game game = new Game(
-                GameId.next(),
+                _gameId,
                 players,
                 StandardCardSet.deck,
                 new RandomRoller(0),

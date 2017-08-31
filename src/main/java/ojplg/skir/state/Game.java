@@ -51,7 +51,7 @@ public class Game implements GameSpecifiable {
 
     public Game(GameId gameId, List<Player> players, List<Card> cards, Roller roller, Channels channels, Occupations occupations, int initialArmies){
         _players.addAll(players);
-        _players.forEach(p -> _playerHoldings.put(p.getColor(), new PlayerHoldings(initialArmies)));
+        _players.forEach(p -> _playerHoldings.put(p.getColor(), new PlayerHoldings(gameId, initialArmies)));
         _players.forEach(p -> _playerStats.put(p.getColor(), new BattleStats()));
         _cardPile = new CardStack(cards);
         _roller = roller;

@@ -1,17 +1,20 @@
 package ojplg.skir.state;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.state.event.GameSpecifiable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayerHoldings {
+public class PlayerHoldings implements GameSpecifiable {
 
+    private final GameId _gameId;
     private final List<Card> _cards = new ArrayList<>();
     private int _reserveArmies;
 
-    PlayerHoldings(int initialArmies){
+    PlayerHoldings(GameId gameId, int initialArmies){
+        _gameId = gameId;
         _reserveArmies = initialArmies;
     }
 
@@ -41,7 +44,7 @@ public class PlayerHoldings {
 
     public void drawReserves(int cnt){
         if (cnt > _reserveArmies){
-            throw new RuntimeException("Cannot draw " + cnt + " armies from " + _reserveArmies + " reserves");
+            throw new GameException(_gameId, "Cannot draw " + cnt + " armies from " + _reserveArmies + " reserves");
         }
         _reserveArmies -= cnt;
     }
@@ -64,5 +67,15 @@ public class PlayerHoldings {
                 "_cards=" + _cards +
                 ", _reserveArmies=" + _reserveArmies +
                 '}';
+    }
+
+    @Override
+    public GameId getGameId() {
+        return _gameId;
+    }
+
+    @Override
+    public boolean matches(GameSpecifiable other) {
+        return other.getGameId().equals(_gameId);
     }
 }

@@ -50,7 +50,7 @@ public class PreGame {
             _log.info("Trying to add a new player " + clientConnectedEvent);
             int playerNumber = _connectedPlayers.size();
             String color = GameRunner.colorForIndex(playerNumber);
-            Player player = new Player(color, playerNumber);
+            Player player = new Player(_gameId, color, playerNumber);
 
             _connectedPlayers.put(clientConnectedEvent, player);
             player.setClientKey(clientConnectedEvent.getClientKey());
@@ -85,7 +85,7 @@ public class PreGame {
         }
         Collections.sort(players);
         for (int idx = _connectedPlayers.size(); idx < colors.length; idx++) {
-            Player player = new Player(colors[idx], idx);
+            Player player = new Player(_gameId, colors[idx], idx);
             players.add(player);
             AutomatedPlayer ai = aiFactory.generateAiPlayer(player);
             aiPlayers.put(player, ai);
