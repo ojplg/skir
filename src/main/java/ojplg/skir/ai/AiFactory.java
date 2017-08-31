@@ -34,14 +34,19 @@ public class AiFactory {
         return _playerNames;
     }
 
-    public AutomatedPlayer generateAiPlayer(Player player){
-        if( _firstPlayerFactory != null && player.getNumber() == 0){
-            return _firstPlayerFactory.apply(player);
-        }
+    public List<AutomatedPlayer> generateAiPlayers(List<Player> players){
+        List<AutomatedPlayer> automatedPlayers = new ArrayList<>();
+        for(Player player : players) {
 
-        String name = RandomUtils.pickRandomElement(_eligibleAiNames);
-        player.setDisplayName(name);
-        return _playerGenerators.get(name).apply(player);
+            if (_firstPlayerFactory != null && player.getNumber() == 0) {
+                automatedPlayers.add(_firstPlayerFactory.apply(player));
+            } else {
+                String name = RandomUtils.pickRandomElement(_eligibleAiNames);
+                player.setDisplayName(name);
+                automatedPlayers.add(_playerGenerators.get(name).apply(player));
+            }
+        }
+        return automatedPlayers;
     }
 
     private static List<String> extractPlayerNames(){

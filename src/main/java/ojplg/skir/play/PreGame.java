@@ -84,12 +84,16 @@ public class PreGame {
             players.add(player);
         }
         Collections.sort(players);
+        List<Player> playersToAutomate = new ArrayList<>();
         for (int idx = _connectedPlayers.size(); idx < colors.length; idx++) {
             Player player = new Player(_gameId, colors[idx], idx);
-            players.add(player);
-            AutomatedPlayer ai = aiFactory.generateAiPlayer(player);
-            aiPlayers.put(player, ai);
-            _channels.publishGameEvent(GameEvent.joinsGame(_gameId, player));
+            playersToAutomate.add(player);
+        }
+        List<AutomatedPlayer> automatedPlayers = aiFactory.generateAiPlayers(playersToAutomate);
+        for(AutomatedPlayer ai : automatedPlayers){
+            players.add(ai.getPlayer());
+            aiPlayers.put(ai.getPlayer(), ai);
+            _channels.publishGameEvent(GameEvent.joinsGame(_gameId, ai.getPlayer()));
         }
         return new Tuple(players, aiPlayers);
     }
