@@ -74,6 +74,5 @@ public class TuneyTwoTest {
 
         Assert.assertTrue(withHelpScore > noHelpScore);
     }
-
-
+    
 }

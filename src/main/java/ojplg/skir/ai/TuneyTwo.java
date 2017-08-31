@@ -25,12 +25,14 @@ import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class TuneyTwo implements AutomatedPlayer {
@@ -320,8 +322,9 @@ public class TuneyTwo implements AutomatedPlayer {
         int attackerStrength = game.getOccupationForce(attacker);
 
         Country target = attack.getDefender();
-        Continent targetContinent = Continent.find(target);
         int targetStrength = game.getOccupationForce(target);
+
+        Continent targetContinent = Continent.find(target);
 
         Player opponent = game.getOccupier(target);
         int totalOpponentStrength = AiUtils.findAllPlayerArmies(game, opponent);
@@ -350,7 +353,7 @@ public class TuneyTwo implements AutomatedPlayer {
         // Good ratio surrounding country - check
         // Good ratio attacker to defender - check
 
-        double score = 0;
+        double score = continentScore(targetContinent);
         if ( targetInBestGoalContinent ){
             score += tunedValue(TargetInGoalContinentAttackKey);
         }
@@ -384,7 +387,7 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private boolean closeToOwning(Continent continent, Game game){
         int unownedCountryCount = AiUtils.unownedCountryCount(_me, game, continent);
-        if ( unownedCountryCount < 2){
+        if ( unownedCountryCount == 1 ){
             return true;
         }
         double ownedCountriesPercentage = AiUtils.continentalCountryPercentage(_me, game, continent);
@@ -402,10 +405,9 @@ public class TuneyTwo implements AutomatedPlayer {
     private Order generateAttackOrder(Adjutant adjutant, Game game){
         int majorAdvantageCutoff = scaledTunedValue(MajorAdvantageAttackKey, 100);
         List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, majorAdvantageCutoff);
-        if( majorAdvantages.size() > 0){
-            PossibleAttack possibleAttack = majorAdvantages.get(0);
-            return new Attack(adjutant, possibleAttack.getAttacker(), possibleAttack.getDefender(),
-                    possibleAttack.maximumAttackingDice());
+        Optional<PossibleAttack> possibleMajorAdvantageAttack = ListUtils.findMax(majorAdvantages);
+        if(possibleMajorAdvantageAttack.isPresent()){
+            return new Attack(adjutant, possibleMajorAdvantageAttack.get());
         }
 
         List<PossibleAttack> possibleAttacks = AiUtils.findAllPossibleAttacks(_me, game);

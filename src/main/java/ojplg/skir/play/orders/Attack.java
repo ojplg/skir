@@ -1,5 +1,6 @@
 package ojplg.skir.play.orders;
 
+import ojplg.skir.ai.PossibleAttack;
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.GameException;
@@ -9,6 +10,13 @@ public class Attack extends Order {
     private final int _attackersDiceCount;
     private final Country _invader;
     private final Country _target;
+
+    public Attack(Adjutant adjutant, PossibleAttack possibleAttack){
+        super(adjutant);
+        _attackersDiceCount = possibleAttack.maximumAttackingDice();
+        _invader = possibleAttack.getAttacker();
+        _target = possibleAttack.getDefender();
+    }
 
     public Attack(Adjutant adjutant, Country invader, Country target, int attackersDiceCount) {
         super(adjutant);
