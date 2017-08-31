@@ -372,9 +372,6 @@ public class TuneyTwo implements AutomatedPlayer {
             double cardModifier = 1 + opponentCardCount;
             score += scaledTunedValue(WeakOpponentAttackKey, 10) * cardModifier;
         }
-        if( myOtherBorderingForces > 0 ){
-            score += targetStrength / (targetStrength + myOtherBorderingForces);
-        }
 
         score += myOtherBorderingForces / targetStrength;
         score += attackerStrength / targetStrength;
