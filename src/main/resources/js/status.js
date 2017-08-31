@@ -3,6 +3,7 @@ var currentChoices;
 var myIdentity = {};
 var countryClickResponder = null;
 var playerStatuses;
+var demoFlag;
 
 function displayGameEvents(gameEvents){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -39,6 +40,7 @@ function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
     if( isDemo === true ){
         addButton("start");
     }
+    demoFlag = isDemo;
     setInterval(processUpdates,25);
 }
 
@@ -141,6 +143,7 @@ function buttonClicked(orderType){
 function startGame(){
     var msg = {};
     msg.messageType = "StartGame";
+    msg.demo = demoFlag;
     var s = JSON.stringify(msg);
     sendMessage(s);
 }

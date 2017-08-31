@@ -2,9 +2,9 @@ package ojplg.skir.play;
 
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
-import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
+import ojplg.skir.state.event.GameStartRequest;
 import org.jetlang.channels.Channel;
 import org.jetlang.channels.MemoryChannel;
 import ojplg.skir.state.event.ClientConnectedEvent;
@@ -23,9 +23,7 @@ public class Channels {
     private final Channel<GameEventMessage> _gameEventChannel = new MemoryChannel<>();
     private final Channel<GameJoinedEvent> _gameJoinedEventChannel = new MemoryChannel<>();
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel = new MemoryChannel<>();
-
-    public final Channel<String> StartGameChannel
-            = new MemoryChannel<>();
+    private  final Channel<GameStartRequest> _gameStartRequestChannel = new MemoryChannel<>();
 
     public void publishOrder(Order order){
         _orderMemoryChannel.publish(order);
@@ -84,6 +82,15 @@ public class Channels {
     public void subscribeToClientConnectedEvent(GameSpecifiable gameSpecifiable, DisposingExecutor executor,
                                                 Callback<ClientConnectedEvent> callback){
         gameSpecifiedSubscription(gameSpecifiable, executor, callback, _clientConnectedEventChannel);
+    }
+
+    public void publishGameStartRequest(GameStartRequest gameStartRequest){
+        _gameStartRequestChannel.publish(gameStartRequest);
+    }
+
+    public void subscribeToGameStartRequest(GameSpecifiable gameSpecifiable, DisposingExecutor executor,
+                                            Callback<GameStartRequest> callback){
+        gameSpecifiedSubscription(gameSpecifiable, executor, callback, _gameStartRequestChannel);
     }
 
     private <T extends GameSpecifiable> void gameSpecifiedSubscription(GameSpecifiable gameSpecifier, DisposingExecutor executor,

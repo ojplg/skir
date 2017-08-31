@@ -1,6 +1,7 @@
 package ojplg.skir.web;
 
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.GamePurpose;
 import ojplg.skir.play.Skir;
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
@@ -10,6 +11,7 @@ import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameJoinedEvent;
 import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameSpecifiable;
+import ojplg.skir.state.event.GameStartRequest;
 import ojplg.skir.state.event.PlayerChangedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,7 +100,9 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
                 _log.info("Publishing client connected event " + cce);
                 _channels.publishClientConnectedEvent(cce);
             } else if ("StartGame".equals(messageType)){
-                _channels.StartGameChannel.publish("Start");
+                boolean demo = (boolean) jObject.get("demo");
+                GamePurpose purpose = demo ? GamePurpose.WebDemo : GamePurpose.WebPlay;
+                _channels.publishGameStartRequest(new GameStartRequest(_gameId, purpose));
             }
         } catch (ParseException pe){
             _log.error("Could not parse json from client " + message, pe);

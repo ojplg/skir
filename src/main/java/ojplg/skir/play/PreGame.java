@@ -26,9 +26,9 @@ public class PreGame {
 
     private final Map<ClientConnectedEvent, Player> _connectedPlayers = new HashMap<>();
 
-    public PreGame(Channels channels){
+    public PreGame(Channels channels, GameId gameId){
         _channels = channels;
-        _gameId = GameId.next();
+        _gameId = gameId;
     }
 
     public boolean handleClientConnection(ClientConnectedEvent clientConnectedEvent){

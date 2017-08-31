@@ -3,11 +3,14 @@ package ojplg.skir.play.bench;
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.play.Channels;
+import ojplg.skir.play.GamePurpose;
 import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.NewGameRequest;
+import ojplg.skir.state.GameId;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameEventType;
+import ojplg.skir.state.event.GameStartRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.fibers.Fiber;
@@ -56,17 +59,19 @@ public class AiTestBench {
     }
 
     public void startRun(){
-        setUpNewGameRunner();
+        GameId gameId = setUpNewGameRunner();
         _currentGameRecord = new SimpleGameRecord();
-        _channels.StartGameChannel.publish("Test bench starting");
+        _channels.publishGameStartRequest(new GameStartRequest(gameId, GamePurpose.AiTestBench));
     }
 
-    private void setUpNewGameRunner(){
+    private GameId setUpNewGameRunner(){
         if( _gameRunner != null){
             _gameRunner.stop();
         }
-        _gameRunner = new GameRunner(_aiFactory, _channels, NewGameRequest.aiTestBench());
+        NewGameRequest newGameRequest = NewGameRequest.aiTestBench();
+        _gameRunner = new GameRunner(_aiFactory, _channels, newGameRequest);
         _gameRunner.start();
+        return newGameRequest.getGameId();
     }
 
     private void handleGameEvent(GameEventMessage gameEvent){
@@ -92,12 +97,12 @@ public class AiTestBench {
     }
 
     private void processGame(){
-        setUpNewGameRunner();
+        GameId gameId = setUpNewGameRunner();
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
             _currentGameRecord = new SimpleGameRecord();
             _log.info("Starting game " + _gameRecords.size() + 1);
-            _channels.StartGameChannel.publish("TestBenchGame " + _gameRecords.size() + 1);
+            _channels.publishGameStartRequest(new GameStartRequest(gameId, GamePurpose.AiTestBench));
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
             GameScores scores = computeScores();

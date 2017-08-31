@@ -2,6 +2,7 @@ package ojplg.skir.play;
 
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.state.Constants;
+import ojplg.skir.state.GameId;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ public class NewGameRequest {
     private final List<String> _aiNames;
     private final int _delay;
     private final GamePurpose _gamePurpose;
+    private final GameId _gameId = GameId.next();
 
     public static NewGameRequest webDemo(String requesterName, String requesterAddress, List<String> aiNames) {
         return new NewGameRequest(requesterName, requesterAddress, aiNames, Constants.WEB_PLAY_DELAY, GamePurpose.WebDemo);
@@ -60,4 +62,8 @@ public class NewGameRequest {
     }
 
     public GamePurpose getGamePurpose() { return _gamePurpose; }
+
+    public GameId getGameId(){
+        return _gameId;
+    }
 }

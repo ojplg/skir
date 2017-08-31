@@ -10,6 +10,7 @@ import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameSpecifiable;
+import ojplg.skir.state.event.GameStartRequest;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,12 +45,12 @@ public class GameRunner implements GameSpecifiable {
         _channels = channels;
         _gameRequest = gameRequest;
         _aiFactory = aiFactory;
-        _preGame = new PreGame(channels);
+        _preGame = new PreGame(channels, gameRequest.getGameId());
         _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
 
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.subscribeToClientConnectedEvent(this, _fiber, this::handleClientConnection);
-        _channels.StartGameChannel.subscribe(_fiber, this::startGame);
+        _channels.subscribeToGameStartRequest(this, _fiber, this::startGame);
         _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
     }
 
@@ -130,15 +131,15 @@ public class GameRunner implements GameSpecifiable {
         }
     }
 
-    private void startGame(String s){
-        _game = initializeGame(_channels);
+    private void startGame(GameStartRequest gameStartRequest){
+        _game = initializeGame(gameStartRequest, _channels);
         assignCountries();
         initializedAIs(_game);
         _game.start();
         _game.publishAllState();
         _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
         _channels.publishAdjutant(_currentAdjutant);
-        _log.info("Starting game " + s);
+        _log.info("Starting game " + gameStartRequest);
     }
 
     public boolean isStarted(){
@@ -159,7 +160,7 @@ public class GameRunner implements GameSpecifiable {
         }
     }
 
-    private Game initializeGame(Channels channels) {
+    private Game initializeGame(GameStartRequest startRequest, Channels channels) {
         _log.info("Initializing game");
         int initialArmies = initialArmyCount(_colors.length);
         Tuple<List<Player>, Map<Player, AutomatedPlayer>> newPlayers = _preGame.newPlayers(_colors, _aiFactory);
@@ -167,8 +168,7 @@ public class GameRunner implements GameSpecifiable {
         WorldMap map = new StandardMap();
         Roller roller = new RandomRoller(System.currentTimeMillis());
         _automatedPlayers = newPlayers.getSecond();
-        GameId gameId = _preGame.getGameId();
-        //_preGame.next();
+        GameId gameId = startRequest.getGameId();
 
         return new Game(gameId, map, newPlayers.getFirst(), StandardCardSet.deck, roller, channels, initialArmies);
     }
