@@ -2,6 +2,7 @@ package ojplg.skir.play.orders;
 
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameException;
 
 public class Attack extends Order {
 
@@ -28,10 +29,10 @@ public class Attack extends Order {
     @Override
     public Adjutant execute(Game game) {
         if( activePlayer() != game.getOccupier(_invader)){
-            throw new RuntimeException("Player " + activePlayer() + " cannot attack from " + _invader);
+            throw new GameException(getGameId(), "Player " + activePlayer() + " cannot attack from " + _invader);
         }
         if ( activePlayer() == game.getOccupier(_target) ){
-            throw new RuntimeException("Player " + activePlayer() + " trying to attack himself in " + _target);
+            throw new GameException(getGameId(), "Player " + activePlayer() + " trying to attack himself in " + _target);
         }
         boolean conquered = game.processAttackOrder(_invader, _target);
         if ( conquered ){

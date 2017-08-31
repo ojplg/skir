@@ -2,6 +2,7 @@ package ojplg.skir.play.orders;
 
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameException;
 
 public class PlaceArmy extends Order {
 
@@ -22,9 +23,8 @@ public class PlaceArmy extends Order {
 
     @Override
     public Adjutant execute(Game game) {
-        // TODO: is this the wrong thing to check? What about when a country is newly occupied?
         if( activePlayer() != game.getOccupier(_country)){
-            throw new RuntimeException("Player " + activePlayer() + " cannot place armies in " + _country
+            throw new GameException(getGameId(), "Player " + activePlayer() + " cannot place armies in " + _country
                + " Player owns " + game.getPlayerHoldings(activePlayer()));
         }
         game.processPlaceArmyOrder(activePlayer(), _country, _count);

@@ -2,6 +2,7 @@ package ojplg.skir.play.orders;
 
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameException;
 
 public class Fortify extends Order {
 
@@ -19,12 +20,12 @@ public class Fortify extends Order {
     @Override
     public Adjutant execute(Game game) {
         if( ! game.getOccupier(_source).equals(game.getOccupier(_destination))){
-            throw new RuntimeException("Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
+            throw new GameException(getGameId(), "Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
                 + _source + " to " + _destination + ". " + _source + " is owned by " + game.getOccupier(_source)
                     + " and " + _destination + " is owned by " + game.getOccupier(_destination));
         }
         if( ! game.getMap().areNeighbors(_source, _destination)){
-            throw new RuntimeException("Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
+            throw new GameException(getGameId(), "Player " + getAdjutant().getActivePlayer() + " attempted illegal fortification from "
                     + _source + " to " + _destination + ". They are not neighbors." );
         }
 

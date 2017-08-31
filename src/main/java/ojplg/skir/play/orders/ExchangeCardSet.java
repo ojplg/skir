@@ -3,6 +3,7 @@ package ojplg.skir.play.orders;
 import ojplg.skir.card.Card;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameException;
 import ojplg.skir.state.PlayerHoldings;
 
 public class ExchangeCardSet extends Order {
@@ -42,7 +43,7 @@ public class ExchangeCardSet extends Order {
         }
 
         if( ! set.isExchangeableSet() ) {
-            throw new RuntimeException("Not a good set: " + _one + "," + _two + "," + _three);
+            throw new GameException(getGameId(), "Not a good set: " + _one + "," + _two + "," + _three);
         }
 
         game.processExchangeCardSetOrder(set);

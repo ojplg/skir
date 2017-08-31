@@ -3,6 +3,7 @@ package ojplg.skir.play.orders;
 import ojplg.skir.card.CardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.state.Game;
+import ojplg.skir.state.GameException;
 import ojplg.skir.state.Player;
 import ojplg.skir.state.PlayerHoldings;
 
@@ -22,7 +23,7 @@ public class Occupy extends Order {
     @Override
     public Adjutant execute(Game game) {
         if( game.getOccupationForce(_conquered) > 0){
-            throw new RuntimeException("Player " + activePlayer() + " issued an occuption order from "
+            throw new GameException(getGameId(), "Player " + activePlayer() + " issued an occuption order from "
                     + _victor + " to " + _conquered + " although " + _conquered + " still has "
                     + game.getOccupationForce(_conquered) + " armies in it and is owned by "
                     + game.getOccupier(_conquered));
