@@ -327,8 +327,8 @@ public class TuneyTwo implements AutomatedPlayer {
         int totalOpponentStrength = AiUtils.findAllPlayerArmies(game, opponent);
         int opponentCardCount = game.getPlayerHoldings(opponent).getCards().size();
 
-        Set<Country> bloc = AiUtils.findContiguousOwnedCountries(game, target);
-        int blocStrength = AiUtils.findStrengthOfCountries(game, bloc);
+        Set<Country> targetBloc = AiUtils.findContiguousOwnedCountries(game, target);
+        int targetBlocStrength = AiUtils.findStrengthOfCountries(game, targetBloc);
 
         List<Continent> enemyOwnedContinents = AiUtils.enemyOwnedContinents(_me, game);
         Continent bestGoalContinent = AiUtils.findStrongestUnownedContinent(_me, game);
@@ -364,8 +364,8 @@ public class TuneyTwo implements AutomatedPlayer {
         if( closeToOwning(targetContinent, game)){
             score += tunedValue(ContinentOwnershipCloseAttackKey);
         }
-        if( blocStrength == totalOpponentStrength &&
-               blocStrength <= attackerStrength){
+        if( targetBlocStrength == totalOpponentStrength &&
+               targetBlocStrength <= attackerStrength){
             double cardModifier = opponentCardCount / 5;
             score += tunedValue(WeakOpponentAttackKey) * cardModifier;
         }
@@ -373,9 +373,10 @@ public class TuneyTwo implements AutomatedPlayer {
             score += targetStrength / (targetStrength + myOtherBorderingForces);
         }
 
+        score += myOtherBorderingForces / targetStrength;
         score += attackerStrength / targetStrength;
 
-        boolean weakOpponent = blocStrength < attack.getAttackerForce();
+        boolean weakOpponent = targetBlocStrength < attack.getAttackerForce();
         score = booleanAdjust(score, weakOpponent, WeakOpponentAttackKey);
 
         return score;

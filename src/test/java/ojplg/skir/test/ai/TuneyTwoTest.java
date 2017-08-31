@@ -51,4 +51,29 @@ public class TuneyTwoTest {
         Assert.assertTrue(britainScore < scandinaviaScore);
     }
 
+    @Test
+    public void blocStrengthIncreasesAttackScore(){
+
+        GameHelper gameHelper = new GameHelper();
+        gameHelper.setAllCountries(gameHelper.WhitePlayer, 1);
+
+        gameHelper.setCountry(Country.Iceland, gameHelper.BluePlayer, 4);
+        gameHelper.setCountry(Country.Great_Britain, gameHelper.WhitePlayer, 12);
+
+        TuneyTwo tuneyTwo = new TuneyTwo(gameHelper.WhitePlayer, TuneyTwo.presetTunings());
+
+        PossibleAttack attackNoHelp = new PossibleAttack(Country.Great_Britain, Country.Iceland, 12, 4);
+        double noHelpScore = tuneyTwo.computeAttackScore(attackNoHelp, gameHelper.Game);
+
+        gameHelper.setCountry(Country.Scandinavia, gameHelper.WhitePlayer, 10);
+        PossibleAttack attackWithHelp = new PossibleAttack(Country.Great_Britain, Country.Iceland, 12, 4);
+        double withHelpScore = tuneyTwo.computeAttackScore(attackWithHelp, gameHelper.Game);
+
+        System.out.println("No help score " + noHelpScore);
+        System.out.println("With help score " + withHelpScore);
+
+        Assert.assertTrue(withHelpScore > noHelpScore);
+    }
+
+
 }
