@@ -311,7 +311,10 @@ public class TuneyTwo implements AutomatedPlayer {
         return ListUtils.sumAll(game.findEnemyNeighbors(country), goalCountryScores::get);
     }
 
-    private double computeAttackScore(PossibleAttack attack, Game game){
+    /*
+     * The higher the score the better the attack is considered to be.
+     */
+    public double computeAttackScore(PossibleAttack attack, Game game){
 
         Country attacker = attack.getAttacker();
         int attackerStrength = game.getOccupationForce(attacker);
@@ -369,6 +372,8 @@ public class TuneyTwo implements AutomatedPlayer {
         if( myOtherBorderingForces > 0 ){
             score += targetStrength / (targetStrength + myOtherBorderingForces);
         }
+
+        score += attackerStrength / targetStrength;
 
         boolean weakOpponent = blocStrength < attack.getAttackerForce();
         score = booleanAdjust(score, weakOpponent, WeakOpponentAttackKey);
