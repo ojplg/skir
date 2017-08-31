@@ -25,7 +25,6 @@ import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TuneyTwo implements AutomatedPlayer {
 
@@ -411,28 +411,21 @@ public class TuneyTwo implements AutomatedPlayer {
         }
 
         List<PossibleAttack> possibleAttacks = AiUtils.findAllPossibleAttacks(_me, game);
+        List<ScoredPossibleAttack> scoredPossibleAttacks = possibleAttacks.stream().map(
+                pa -> new ScoredPossibleAttack(pa, computeAttackScore(pa, game))
+        ).collect(Collectors.toList());
 
-        double bestAttackScore = Double.MIN_VALUE;
-        PossibleAttack bestPossibleAttack = null;
-
-        for(PossibleAttack possibleAttack : possibleAttacks){
+        Optional<ScoredPossibleAttack> bestPossibleAttack = ListUtils.findMax(scoredPossibleAttacks);
+        if( bestPossibleAttack.isPresent()){
+            ScoredPossibleAttack scoredAttack = bestPossibleAttack.get();
             String minimumAttackKey = adjutant.hasConqueredCountry() ?
                     PostCardMinimumAttackScoreAttackKey : MinimumAttackScoreAttackKey;
-            double score = computeAttackScore(possibleAttack, game);
             double minimumScore = scaledTunedValue(minimumAttackKey, 10);
-            if ( score > bestAttackScore && score > minimumScore){
-                bestAttackScore = score;
-                bestPossibleAttack = possibleAttack;
+            if(  scoredAttack.getScore() > minimumScore ){
+                return new Attack(adjutant, scoredAttack.getPossibleAttack());
             }
-
         }
-        if( bestPossibleAttack != null ){
-            _log.debug(_me + " Attacking! from " + bestPossibleAttack.getAttacker() + " to " + bestPossibleAttack.getDefender());
-            return new Attack(adjutant, bestPossibleAttack.getAttacker(),
-                    bestPossibleAttack.getDefender(), bestPossibleAttack.maximumAttackingDice());
-        } else {
-            return new EndAttacks(adjutant);
-        }
+        return new EndAttacks(adjutant);
     }
 
     private Map<Country, Double> computeGoalCountryDesirabilityScores(Game game){
