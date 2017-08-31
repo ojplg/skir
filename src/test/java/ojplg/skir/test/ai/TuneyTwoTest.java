@@ -75,4 +75,24 @@ public class TuneyTwoTest {
         Assert.assertTrue(withHelpScore > noHelpScore);
     }
 
+    @Test
+    public void weakOpponentMoreTemptingTarget(){
+
+        GameHelper gameHelper = new GameHelper();
+        gameHelper.setAllCountries(gameHelper.WhitePlayer, 1);
+
+        gameHelper.setCountry(Country.Great_Britain, gameHelper.WhitePlayer, 10);
+        gameHelper.setCountry(Country.Iceland, gameHelper.RedPlayer, 1);
+
+        TuneyTwo tuneyTwo = new TuneyTwo(gameHelper.WhitePlayer, TuneyTwo.presetTunings());
+
+        PossibleAttack possibleAttack = new PossibleAttack(Country.Great_Britain, Country.Iceland, 10, 1);
+        double weakOpponentAttackScore = tuneyTwo.computeAttackScore(possibleAttack, gameHelper.Game);
+
+        gameHelper.setCountry(Country.Afghanistan, gameHelper.RedPlayer, 23);
+
+        double strongOpponentAttackScore = tuneyTwo.computeAttackScore(possibleAttack, gameHelper.Game);
+
+        Assert.assertTrue(strongOpponentAttackScore < weakOpponentAttackScore);
+    }
 }

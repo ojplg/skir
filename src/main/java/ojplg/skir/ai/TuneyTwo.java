@@ -341,7 +341,7 @@ public class TuneyTwo implements AutomatedPlayer {
         int myOtherBorderingForces = 0;
         for(Country country : game.findEnemyNeighbors(target)){
             if( _me.equals(game.getOccupier(country))){
-                myOtherBorderingForces += game.getOccupationForce(country);
+                myOtherBorderingForces += game.getOccupationForce(country) - 1;
             }
         }
 
@@ -368,9 +368,9 @@ public class TuneyTwo implements AutomatedPlayer {
             score += tunedValue(ContinentOwnershipCloseAttackKey);
         }
         if( targetBlocStrength == totalOpponentStrength &&
-               targetBlocStrength <= attackerStrength){
-            double cardModifier = opponentCardCount / 5;
-            score += tunedValue(WeakOpponentAttackKey) * cardModifier;
+               targetBlocStrength <= attackerStrength + myOtherBorderingForces){
+            double cardModifier = 1 + opponentCardCount;
+            score += scaledTunedValue(WeakOpponentAttackKey, 10) * cardModifier;
         }
         if( myOtherBorderingForces > 0 ){
             score += targetStrength / (targetStrength + myOtherBorderingForces);
