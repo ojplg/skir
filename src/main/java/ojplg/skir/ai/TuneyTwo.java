@@ -415,15 +415,13 @@ public class TuneyTwo implements AutomatedPlayer {
                 pa -> new ScoredPossibleAttack(pa, computeAttackScore(pa, game))
         ).collect(Collectors.toList());
 
-        Optional<ScoredPossibleAttack> bestPossibleAttack = ListUtils.findMax(scoredPossibleAttacks);
+        String minimumAttackKey = adjutant.hasConqueredCountry() ?
+                PostCardMinimumAttackScoreAttackKey : MinimumAttackScoreAttackKey;
+        double minimumScore = scaledTunedValue(minimumAttackKey, 10);
+        Optional<ScoredPossibleAttack> bestPossibleAttack = ListUtils.findMax(scoredPossibleAttacks,
+                pa -> pa.getScore()>minimumScore);
         if( bestPossibleAttack.isPresent()){
-            ScoredPossibleAttack scoredAttack = bestPossibleAttack.get();
-            String minimumAttackKey = adjutant.hasConqueredCountry() ?
-                    PostCardMinimumAttackScoreAttackKey : MinimumAttackScoreAttackKey;
-            double minimumScore = scaledTunedValue(minimumAttackKey, 10);
-            if(  scoredAttack.getScore() > minimumScore ){
-                return new Attack(adjutant, scoredAttack.getPossibleAttack());
-            }
+            return new Attack(adjutant, bestPossibleAttack.get().getPossibleAttack());
         }
         return new EndAttacks(adjutant);
     }

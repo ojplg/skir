@@ -37,6 +37,14 @@ public class ListUtils {
         return ts.stream().max(Comparator.naturalOrder());
     }
 
+    public static <T extends Comparable<T>> Optional<T> findMax(List<T> ts, Function<T, Boolean> aboveMinimum){
+        Optional<T> best = findMax(ts);
+        if( best.isPresent() && aboveMinimum.apply(best.get()) ){
+            return best;
+        }
+        return Optional.empty();
+    }
+
     public static <T> double sumAll(List<T> list, Function<T, Double> valuer){
         return list.stream().reduce(
                 0d,
