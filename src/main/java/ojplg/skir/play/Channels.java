@@ -23,7 +23,7 @@ public class Channels {
     private final Channel<GameEventMessage> _gameEventChannel = new MemoryChannel<>();
     private final Channel<GameJoinedEvent> _gameJoinedEventChannel = new MemoryChannel<>();
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel = new MemoryChannel<>();
-    private  final Channel<GameStartRequest> _gameStartRequestChannel = new MemoryChannel<>();
+    private final Channel<GameStartRequest> _gameStartRequestChannel = new MemoryChannel<>();
 
     public void publishOrder(Order order){
         _orderMemoryChannel.publish(order);
