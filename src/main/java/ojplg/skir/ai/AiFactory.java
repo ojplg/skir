@@ -19,7 +19,9 @@ public class AiFactory {
     private static List<String> _playerNames;
 
     private Function<Player, AutomatedPlayer> _firstPlayerFactory;
-    private List<String> _eligibleAiNames;
+    private final List<String> _eligibleAiNames;
+
+    private final boolean _preventDuplicates;
 
     static {
         _playerGenerators = playerGenerators();
@@ -27,7 +29,10 @@ public class AiFactory {
     }
 
     public AiFactory(List<String> aiNames){
-        _eligibleAiNames = aiNames;
+        _preventDuplicates = true;
+        List<String> aiNameList = new ArrayList<>();
+        aiNameList.addAll(aiNames);
+        _eligibleAiNames = Collections.unmodifiableList(aiNameList);
     }
 
     public static List<String> allPlayerNames(){
@@ -35,13 +40,17 @@ public class AiFactory {
     }
 
     public List<AutomatedPlayer> generateAiPlayers(List<Player> players){
+        List<String> eligibleNames = new ArrayList<>();
+        eligibleNames.addAll(_eligibleAiNames);
         List<AutomatedPlayer> automatedPlayers = new ArrayList<>();
         for(Player player : players) {
-
             if (_firstPlayerFactory != null && player.getNumber() == 0) {
                 automatedPlayers.add(_firstPlayerFactory.apply(player));
             } else {
-                String name = RandomUtils.pickRandomElement(_eligibleAiNames);
+                String name = RandomUtils.pickRandomElement(eligibleNames);
+                if( _preventDuplicates && _eligibleAiNames.size() > players.size()){
+                    eligibleNames.remove(name);
+                }
                 player.setDisplayName(name);
                 automatedPlayers.add(_playerGenerators.get(name).apply(player));
             }
