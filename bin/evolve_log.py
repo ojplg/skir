@@ -68,10 +68,14 @@ print "Matched line count is " + str(matched_line_count)
 print "Individual count is " + str(individual_count)
 print ""
 
+scored_individual_count = 0
 print "Counts by score"
 for key in sorted(individuals_by_score):
-    print str(key) + " : " + str(len(individuals_by_score[key])) 
-
+    individuals = individuals_by_score[key]
+    count = len(individuals)
+    scored_individual_count += count
+    print str(key) + " : " + str(count)
+print "Scored individuals: " + str(scored_individual_count)
 
 print "Done"
 print ""
