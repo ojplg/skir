@@ -88,13 +88,11 @@ average_line_re = re.compile(AVERAGE_LINE)
 individuals_by_score = defaultdict(list)
 individuals_by_generation = defaultdict(list)
 
-matched_line_count = 0
-individual_count = 0
-
 class EvolveFileReader:
     def __init__(self, file_name):
         self.file_name = file_name
         self.line_count = 0
+        self.any_match_count = 0
         self.individual_count = 0
         self.individuals_by_score = defaultdict(list)
         self.individuals_by_generation = defaultdict(list)
@@ -103,6 +101,9 @@ class EvolveFileReader:
         log = open(LOG_FILE,"r")
         for line in log:
             self.line_count+=1
+            any_line_match = any_line_re.search(line)
+            if any_line_match:
+                self.any_match_count+=1
             self.parse_individual_line(line)
             self.parse_top_line(line)
             self.parse_average_line(line)
@@ -144,39 +145,20 @@ class EvolveFileReader:
             score = average_survivor_match.group(2)
             print "  Average survivor in " + gen_num + " was: " + score
 
-log = open(LOG_FILE, "r")
-for line in log:
-    any_line_match = any_line_re.search(line)
-    if any_line_match:
-        matched_line_count+=1
-    individual_match = individual_line_re.search(line)
-    if individual_match:
-        individual_count+=1
-        gen_num = int(individual_match.group(1))
-        ind_num = int(individual_match.group(2))
-        score = Decimal(individual_match.group(3))
-        genes_string = individual_match.group(4)
-        genes = json.loads(genes_string)
-        individual = Individual(gen_num, ind_num, score, genes)
-        individuals_by_score[score].append(individual)
-        individuals_by_generation[gen_num].append(individual)
-        
-print ""
-print "Matched line count is " + str(matched_line_count)
-print "Individual count is " + str(individual_count)
-print ""
+reader = EvolveFileReader(LOG_FILE)
+reader.read()
 
 scored_individual_count = 0
 print "Counts by score"
-for key in sorted(individuals_by_score):
-    individuals = individuals_by_score[key]
+for key in sorted(reader.individuals_by_score):
+    individuals = reader.individuals_by_score[key]
     count = len(individuals)
     scored_individual_count += count
     print str(key) + " : " + str(count)
 print "Scored individuals: " + str(scored_individual_count)
 
-for gen_num in sorted(individuals_by_generation):
-    individuals = individuals_by_generation[gen_num]
+for gen_num in sorted(reader.individuals_by_generation):
+    individuals = reader.individuals_by_generation[gen_num]
     generation = Generation(gen_num, individuals)
     print " Count for generation " + str(generation.size())
     print "Averages " + str(generation.averages())
@@ -185,6 +167,4 @@ for gen_num in sorted(individuals_by_generation):
 print "Almost done"
 print ""
 
-reader = EvolveFileReader(LOG_FILE)
-reader.read()
 print "reader had line count " + str(reader.line_count)
