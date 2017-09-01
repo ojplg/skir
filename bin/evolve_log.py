@@ -9,6 +9,7 @@ from collections import defaultdict
 # 1) Best score
 
 print("Starting analysis")
+print ""
 
 LOG_FILE = "../logs/evolve.log"
 
@@ -49,26 +50,29 @@ for line in log:
         gen_num = top_match.group(1)
         ind_num = top_match.group(2)
         score = top_match.group(3)
-        print "Top " + gen_num + " - " + ind_num + ": " + score
+        print "  Best in " + gen_num + " was " + ind_num + " with score " + score
     average_match = average_line_re.search(line)
     if average_match:
         gen_num = average_match.group(1)
         score = average_match.group(2)
-        print "Average individual " + gen_num + ": " + score
+        print "Generation " + gen_num + " average was: " + score
     average_survivor_match = average_survivor_line_re.search(line)
     if average_survivor_match:
         gen_num = average_survivor_match.group(1)
         score = average_survivor_match.group(2)
-        print "Average survivor " + gen_num + ": " + score
+        print "  Average survivor in " + gen_num + " was: " + score
         
 print ""
-print "line count is " + str(line_count)
-print "matched line count is " + str(matched_line_count)
-print "individual count is " + str(individual_count)
+print "Line count is " + str(line_count)
+print "Matched line count is " + str(matched_line_count)
+print "Individual count is " + str(individual_count)
 print ""
 
 print "Counts by score"
 for key in sorted(individuals_by_score):
     print str(key) + " : " + str(len(individuals_by_score[key])) 
 
+
+print "Done"
+print ""
 
