@@ -47,8 +47,21 @@ class Generation:
             avgs[gene_name] = gene_average
         return avgs
 
-    #def standard_deviation(self, gene_name):
-        
+    def standard_deviations(self):
+        sds = dict()
+        names = self.gene_names()
+        for gene_name in names:
+            gene_sd = self.standard_deviation(gene_name)
+            sds[gene_name] = gene_sd
+        return sds
+
+    def standard_deviation(self, gene_name):
+        gene_average = self.average(gene_name)
+        squares_sum = 0.0
+        for ind in individuals:
+            value = ind.gene_value(gene_name)
+            squares_sum += (value - gene_average) ** 2
+        return squares_sum ** 0.5
 
     def gene_names(self):
         return self.individuals[0].gene_names()
@@ -133,6 +146,7 @@ for gen_num in sorted(individuals_by_generation):
     generation = Generation(gen_num, individuals)
     print " Count for generation " + str(generation.size())
     print "Averages " + str(generation.averages())
+    print "Standard deviations " + str(generation.standard_deviations())
 
 print "Done"
 print ""
