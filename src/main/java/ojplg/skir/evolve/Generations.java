@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Generations {
 
-    private static final Logger _log = LogManager.getLogger("ojplg.skir.evolve");
+    private static final Logger _log = LogManager.getLogger(EvolutionRunner.EVOLVE_LOGGER);
     private final Scorer _scorer;
 
     public Generations(Scorer scorer){
@@ -19,7 +19,8 @@ public class Generations {
         while(generation.hasUnscoredIndividual()){
             Individual individual = generation.getUnscoredIndividual();
             double score = _scorer.score(individual);
-            _log.info("Individual " + individual.getIdentifier() + " had score " + score);
+            _log.info("Individual " + individual.getIdentifier() + " had score " + score + " with genes ["
+                    + individual.genesAsJsonObject() + "]");
             individual.setScore(score);
         }
         List<Individual> survivors = generation.findTopIndividuals();

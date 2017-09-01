@@ -1,5 +1,7 @@
 package ojplg.skir.evolve;
 
+import org.json.simple.JSONObject;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,6 +36,10 @@ public class Individual implements Comparable<Individual> {
 
     public boolean isUnscored(){
         return _score == null;
+    }
+
+    public JSONObject genesAsJsonObject(){
+        return new JSONObject(_genes);
     }
 
     @Override

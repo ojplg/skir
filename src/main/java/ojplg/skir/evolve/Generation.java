@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class Generation {
 
-    private final static Logger _log = LogManager.getLogger("ojplg.skir.evolve");
+    private final static Logger _log = LogManager.getLogger(EvolutionRunner.EVOLVE_LOGGER);
 
     private final List<Individual> _members;
     private final int _number;
@@ -51,9 +51,8 @@ public class Generation {
         List<Individual> survivors = members.subList(0, cnt);
         _log.info("Average score of survivors in generation " + _number + " was " + averageScore(survivors));
         Individual best = survivors.get(0);
-        JSONObject jObject = new JSONObject(best.getGenes());
         _log.info("Top survivor in generation " + _number + " was " + best.getIdentifier() + " with score " +
-                best.getScore() + " with JSON" + jObject.toString());
+                best.getScore() + " with JSON" + best.genesAsJsonObject());
         return survivors;
     }
 

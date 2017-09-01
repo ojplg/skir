@@ -21,7 +21,9 @@ import java.util.function.BiFunction;
 
 public class EvolutionRunner {
 
-    private final static Logger _log = LogManager.getLogger("ojplg.skir.evolve");
+    public static final String EVOLVE_LOGGER = "ojplg.skir.evolve";
+
+    private final static Logger _log = LogManager.getLogger(EVOLVE_LOGGER);
 
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
