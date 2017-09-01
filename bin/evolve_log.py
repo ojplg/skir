@@ -9,6 +9,51 @@ from collections import defaultdict
 # Based on a log file from an evolution run determine some stats
 # 1) Best score
 
+class Individual:
+    def __init__(self, generation, number, score, geneMap):
+        self.generation = generation
+        self.number = number
+        self.score = score
+        self.genes = geneMap
+
+    def gene_value(self, gene_name):
+        value = self.genes[gene_name]
+        return value
+
+    def gene_names(self):
+        names = self.genes.keys()
+        return names
+
+class Generation:
+    def __init__(self, number, individuals):
+        self.number = number
+        self.individuals = individuals
+
+    def size(self):
+        return len(self.individuals)
+
+    def average(self, gene_name):
+        sum = 0.0
+        for ind in individuals:
+            sum += ind.gene_value(gene_name)
+            avg = sum / self.size()
+        return avg
+
+    def averages(self):
+        avgs = dict()
+        names = self.gene_names()
+        for gene_name in names:
+            gene_average = self.average(gene_name)
+            avgs[gene_name] = gene_average
+        return avgs
+
+    #def standard_deviation(self, gene_name):
+        
+
+    def gene_names(self):
+        return self.individuals[0].gene_names()
+
+
 print("Starting analysis")
 print ""
 
@@ -28,6 +73,7 @@ average_survivor_line_re = re.compile(AVERAGE_SURVIVOR_LINE)
 average_line_re = re.compile(AVERAGE_LINE)
 
 individuals_by_score = defaultdict(list)
+individuals_by_generation = defaultdict(list)
 
 line_count = 0
 matched_line_count = 0
@@ -42,12 +88,14 @@ for line in log:
     individual_match = individual_line_re.search(line)
     if individual_match:
         individual_count+=1
-        gen_num = individual_match.group(1)
-        ind_num = individual_match.group(2)
+        gen_num = int(individual_match.group(1))
+        ind_num = int(individual_match.group(2))
         score = Decimal(individual_match.group(3))
         genes_string = individual_match.group(4)
         genes = json.loads(genes_string)
-        individuals_by_score[score].append(ind_num)
+        individual = Individual(gen_num, ind_num, score, genes)
+        individuals_by_score[score].append(individual)
+        individuals_by_generation[gen_num].append(individual)
     top_match = top_line_re.search(line)
     if top_match:
         gen_num = top_match.group(1)
@@ -79,6 +127,12 @@ for key in sorted(individuals_by_score):
     scored_individual_count += count
     print str(key) + " : " + str(count)
 print "Scored individuals: " + str(scored_individual_count)
+
+for gen_num in sorted(individuals_by_generation):
+    individuals = individuals_by_generation[gen_num]
+    generation = Generation(gen_num, individuals)
+    print " Count for generation " + str(generation.size())
+    print "Averages " + str(generation.averages())
 
 print "Done"
 print ""
