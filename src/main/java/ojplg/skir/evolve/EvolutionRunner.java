@@ -31,9 +31,9 @@ public class EvolutionRunner {
     private final Map<String, Double> _presetTunings;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
 
-    private final int GAMES_PER_TRIAL = 10;
-    private final int NUMBER_OF_GENERATIONS = 10;
-    private final int GENERATION_SIZE = 16;
+    private final int GAMES_PER_TRIAL = 50;
+    private final int NUMBER_OF_GENERATIONS = 50;
+    private final int GENERATION_SIZE = 64;
 
     private GameRunner _gameRunner;
 
