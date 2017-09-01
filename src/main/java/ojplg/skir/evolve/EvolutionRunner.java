@@ -31,6 +31,10 @@ public class EvolutionRunner {
     private final Map<String, Double> _presetTunings;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
 
+    private final int GAMES_PER_TRIAL = 10;
+    private final int NUMBER_OF_GENERATIONS = 10;
+    private final int GENERATION_SIZE = 16;
+
     private GameRunner _gameRunner;
 
     public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread){
@@ -50,12 +54,12 @@ public class EvolutionRunner {
 
     public void start(){
         _log.info("Evolving");
-        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, 25);
+        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, GAMES_PER_TRIAL);
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
-        for(int cnt = 0; cnt < 100; cnt++) {
+        for(int cnt = 0; cnt < NUMBER_OF_GENERATIONS; cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
             _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
@@ -83,7 +87,7 @@ public class EvolutionRunner {
 
     private Generation createFirstGeneration(){
         List<Individual> randoms = new ArrayList<>();
-        for(int idx=0; idx<64; idx++){
+        for(int idx=0; idx<GENERATION_SIZE; idx++){
             randoms.add(generateRandomTunerGenes(idx));
         }
         return new Generation(randoms,0);
