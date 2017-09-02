@@ -74,8 +74,8 @@ LOG_FILE = "../logs/evolve.log"
 
 # These strings match particular lines in the evolution log file
 BEGIN_LINE = "^201.+ INFO ojplg.skir.evolve \[main\] "
-INDIVIDUAL_LINE = BEGIN_LINE + "Individual (\d)\.(\d+) had score (\d+.\d) with genes \[(.*)\]$"
-TOP_LINE = BEGIN_LINE + "Top survivor in generation (\d) was (\d+\.\d+) with score (\d+.\d+)"
+INDIVIDUAL_LINE = BEGIN_LINE + "Individual (\d+)\.(\d+) had score (\d+.\d) with genes \[(.*)\]$"
+TOP_LINE = BEGIN_LINE + "Top survivor in generation (\d+) was (\d+\.\d+) with score (\d+.\d+)"
 AVERAGE_SURVIVOR_LINE = BEGIN_LINE + "Average score of survivors in generation (\d+) was (\d+\.\d+)"
 AVERAGE_LINE = BEGIN_LINE + "Average score of individuals in generation (\d+) was (\d+\.\d+)"
 
