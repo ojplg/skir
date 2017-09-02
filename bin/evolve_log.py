@@ -62,7 +62,7 @@ class Generation:
         for ind in self.individuals:
             value = ind.gene_value(gene_name)
             squares_sum += (value - gene_average) ** 2
-        return squares_sum ** 0.5
+        return (squares_sum/self.size()) ** 0.5
 
     def gene_names(self):
         return self.individuals[0].gene_names()
@@ -150,15 +150,15 @@ class Summary:
             count = len(individuals)
             total_count += count
             print str(key) + ": " + str(count)
-            print "Total scored " + str(total_count)
+        print "Total scored " + str(total_count)
 
     def by_gen_summary(self):
         for gen_num in sorted(self.individuals_by_generation):
             individuals = self.individuals_by_generation[gen_num]
             generation = Generation(gen_num, individuals)
-            print " Count for generation " + str(generation.size())
-            print "Averages " + str(generation.averages())
-            print "Standard deviations " + str(generation.standard_deviations())
+            print "Count for generation " + str(gen_num) + ": " + str(generation.size())
+            print " Averages " + str(generation.averages())
+            print " Standard deviations " + str(generation.standard_deviations())
 
 def main():
     print("Starting analysis")
