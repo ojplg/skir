@@ -35,7 +35,7 @@ class Generation:
 
     def average(self, gene_name):
         sum = 0.0
-        for ind in individuals:
+        for ind in self.individuals:
             sum += ind.gene_value(gene_name)
             avg = sum / self.size()
         return avg
@@ -59,7 +59,7 @@ class Generation:
     def standard_deviation(self, gene_name):
         gene_average = self.average(gene_name)
         squares_sum = 0.0
-        for ind in individuals:
+        for ind in self.individuals:
             value = ind.gene_value(gene_name)
             squares_sum += (value - gene_average) ** 2
         return squares_sum ** 0.5
@@ -138,28 +138,40 @@ class EvolveFileReader:
             score = average_survivor_match.group(2)
             print "  Average survivor in " + gen_num + " was: " + score
 
-print("Starting analysis")
-print ""
+class Summary:
+    def __init__(self,by_score,by_gen):
+        self.individuals_by_score = by_score
+        self.individuals_by_generation = by_gen
 
-reader = EvolveFileReader(LOG_FILE)
-reader.read()
+    def by_score_summary(self):
+        total_count = 0
+        for key in sorted(self.individuals_by_score):
+            individuals = self.individuals_by_score[key]
+            count = len(individuals)
+            total_count += count
+            print str(key) + ": " + str(count)
+            print "Total scored " + str(total_count)
 
-scored_individual_count = 0
-print "Counts by score"
-for key in sorted(reader.individuals_by_score):
-    individuals = reader.individuals_by_score[key]
-    count = len(individuals)
-    scored_individual_count += count
-    print str(key) + " : " + str(count)
-print "Scored individuals: " + str(scored_individual_count)
+    def by_gen_summary(self):
+        for gen_num in sorted(self.individuals_by_generation):
+            individuals = self.individuals_by_generation[gen_num]
+            generation = Generation(gen_num, individuals)
+            print " Count for generation " + str(generation.size())
+            print "Averages " + str(generation.averages())
+            print "Standard deviations " + str(generation.standard_deviations())
 
-for gen_num in sorted(reader.individuals_by_generation):
-    individuals = reader.individuals_by_generation[gen_num]
-    generation = Generation(gen_num, individuals)
-    print " Count for generation " + str(generation.size())
-    print "Averages " + str(generation.averages())
-    print "Standard deviations " + str(generation.standard_deviations())
+def main():
+    print("Starting analysis")
 
-print "reader had line count " + str(reader.line_count)
-print "reader had any match count " + str(reader.any_match_count)
-print "reader had individual count " + str(reader.individual_count)
+    reader = EvolveFileReader(LOG_FILE)
+    reader.read()
+
+    print "reader had line count " + str(reader.line_count)
+    print "reader had any match count " + str(reader.any_match_count)
+    print "reader had individual count " + str(reader.individual_count)
+
+    summary = Summary(reader.individuals_by_score, reader.individuals_by_generation)
+    summary.by_score_summary()
+    summary.by_gen_summary()
+
+main()
