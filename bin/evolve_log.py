@@ -114,7 +114,6 @@ class EvolveFileReader:
         self.any_match_count = 0
         self.individual_count = 0
         self.individuals_by_score = defaultdict(list)
-        self.individuals_by_generation = defaultdict(list)
         self.generations_by_number = dict() 
 
     def read(self):
@@ -151,7 +150,6 @@ class EvolveFileReader:
             individual = Individual(gen_num, ind_num, score, genes)
             self.add_to_generation(individual)
             self.individuals_by_score[score].append(individual)
-            self.individuals_by_generation[gen_num].append(individual)
 
     def parse_top_line(self, line):
         top_match = EvolveFileReader.top_line_re.search(line)
@@ -178,9 +176,8 @@ class EvolveFileReader:
             generation.reported_survivor_average = score
 
 class Summary:
-    def __init__(self,by_score,by_gen,gens):
+    def __init__(self,by_score,gens):
         self.individuals_by_score = by_score
-        self.individuals_by_generation = by_gen
         self.generations = gens
 
     def by_score_summary(self):
@@ -196,7 +193,11 @@ class Summary:
         for gen_num in sorted(self.generations):
             generation = self.generations[gen_num]
             check_flag = "OK" if generation.check() else "ERROR"
-            print "Generation " + str(gen_num) + ".  Count: " + str(generation.size()) + "  Check: " + check_flag
+            message =  ("Generation " + str(gen_num) + ".  Count: " + str(generation.size()) 
+                        + "  Check: " + check_flag + "  Top: " + str(generation.reported_top)
+                        + "  Survivor Average: " + str(generation.reported_survivor_average)
+                        + "  Average: " + str(generation.reported_average))
+            print message
             #print " Averages " + str(generation.averages())
             #print " Standard deviations " + str(generation.standard_deviations())
 
@@ -211,7 +212,6 @@ def main():
     print "reader had individual count " + str(reader.individual_count)
 
     summary = Summary(reader.individuals_by_score, 
-                        reader.individuals_by_generation, 
                         reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
