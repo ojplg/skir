@@ -26,12 +26,28 @@ class Individual:
         return names
 
 class Generation:
-    def __init__(self, number, individuals):
+    def __init__(self, number):
         self.number = number
-        self.individuals = individuals
+        self.individuals = []
+
+    def add_individual(self, individual):
+        self.individuals.append(individual)
 
     def size(self):
         return len(self.individuals)
+
+    def top_score(self):
+        top = 0.0
+        for ind in self.individuals:
+            if ind.score > top:
+                top = ind.score
+        return top
+
+    def average_score(self):
+        sum = Decimal(0.0)
+        for ind in self.individuals:
+            sum += ind.score
+        return sum/self.size()
 
     def average(self, gene_name):
         sum = 0.0
@@ -67,6 +83,16 @@ class Generation:
     def gene_names(self):
         return self.individuals[0].gene_names()
 
+    def check_top(self):
+        return self.top_score() == self.reported_top
+
+    def check_average(self):
+        diff = self.average_score() - self.reported_average
+        return abs(diff) < 0.000001
+
+    def check(self):
+        return self.check_top() and self.check_average()
+
 class EvolveFileReader:
 
     # These strings match particular lines in the evolution log file
@@ -89,6 +115,7 @@ class EvolveFileReader:
         self.individual_count = 0
         self.individuals_by_score = defaultdict(list)
         self.individuals_by_generation = defaultdict(list)
+        self.generations_by_number = dict() 
 
     def read(self):
         log = open(LOG_FILE,"r")
@@ -103,6 +130,15 @@ class EvolveFileReader:
             self.parse_average_survivor_line(line)
         log.close
 
+    def find_generation(self,number):
+        if number not in self.generations_by_number:
+            self.generations_by_number[number] = Generation(number)
+        return self.generations_by_number[number]
+            
+    def add_to_generation(self,individual):
+        generation = self.find_generation(individual.generation)
+        generation.add_individual(individual)
+
     def parse_individual_line(self,line):
         individual_match = EvolveFileReader.individual_line_re.search(line)
         if(individual_match):
@@ -113,35 +149,39 @@ class EvolveFileReader:
             genes_string = individual_match.group(4)
             genes = json.loads(genes_string)
             individual = Individual(gen_num, ind_num, score, genes)
+            self.add_to_generation(individual)
             self.individuals_by_score[score].append(individual)
             self.individuals_by_generation[gen_num].append(individual)
 
     def parse_top_line(self, line):
         top_match = EvolveFileReader.top_line_re.search(line)
         if top_match:
-            gen_num = top_match.group(1)
-            ind_num = top_match.group(2)
-            score = top_match.group(3)
-            print "  Best in " + gen_num + " was " + ind_num + " with score " + score
+            gen_num = int(top_match.group(1))
+            score = Decimal(top_match.group(3))
+            generation = self.find_generation(gen_num)
+            generation.reported_top = score
     
     def parse_average_line(self, line):
         average_match = EvolveFileReader.average_line_re.search(line)
         if average_match:
-            gen_num = average_match.group(1)
-            score = average_match.group(2)
-            print "Generation " + gen_num + " average was: " + score
+            gen_num = int(average_match.group(1))
+            score = Decimal(average_match.group(2))
+            generation = self.find_generation(gen_num)
+            generation.reported_average = score
 
     def parse_average_survivor_line(self, line):
         average_survivor_match = EvolveFileReader.average_survivor_line_re.search(line)
         if average_survivor_match:
-            gen_num = average_survivor_match.group(1)
-            score = average_survivor_match.group(2)
-            print "  Average survivor in " + gen_num + " was: " + score
+            gen_num = int(average_survivor_match.group(1))
+            score = Decimal(average_survivor_match.group(2))
+            generation = self.find_generation(gen_num)
+            generation.reported_survivor_average = score
 
 class Summary:
-    def __init__(self,by_score,by_gen):
+    def __init__(self,by_score,by_gen,gens):
         self.individuals_by_score = by_score
         self.individuals_by_generation = by_gen
+        self.generations = gens
 
     def by_score_summary(self):
         total_count = 0
@@ -153,12 +193,12 @@ class Summary:
         print "Total scored " + str(total_count)
 
     def by_gen_summary(self):
-        for gen_num in sorted(self.individuals_by_generation):
-            individuals = self.individuals_by_generation[gen_num]
-            generation = Generation(gen_num, individuals)
-            print "Count for generation " + str(gen_num) + ": " + str(generation.size())
-            print " Averages " + str(generation.averages())
-            print " Standard deviations " + str(generation.standard_deviations())
+        for gen_num in sorted(self.generations):
+            generation = self.generations[gen_num]
+            check_flag = "OK" if generation.check() else "ERROR"
+            print "Generation " + str(gen_num) + ".  Count: " + str(generation.size()) + "  Check: " + check_flag
+            #print " Averages " + str(generation.averages())
+            #print " Standard deviations " + str(generation.standard_deviations())
 
 def main():
     print("Starting analysis")
@@ -170,7 +210,9 @@ def main():
     print "reader had any match count " + str(reader.any_match_count)
     print "reader had individual count " + str(reader.individual_count)
 
-    summary = Summary(reader.individuals_by_score, reader.individuals_by_generation)
+    summary = Summary(reader.individuals_by_score, 
+                        reader.individuals_by_generation, 
+                        reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
 
