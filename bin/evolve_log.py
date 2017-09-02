@@ -7,7 +7,8 @@ from collections import defaultdict
 # Note: This script requires a clean log file containing
 #       only one evolution run!
 # Based on a log file from an evolution run determine some stats
-# 1) Best score
+
+LOG_FILE = "../logs/evolve.log"
 
 class Individual:
     def __init__(self, generation, number, score, geneMap):
@@ -66,29 +67,21 @@ class Generation:
     def gene_names(self):
         return self.individuals[0].gene_names()
 
-
-print("Starting analysis")
-print ""
-
-LOG_FILE = "../logs/evolve.log"
-
-# These strings match particular lines in the evolution log file
-BEGIN_LINE = "^201.+ INFO ojplg.skir.evolve \[main\] "
-INDIVIDUAL_LINE = BEGIN_LINE + "Individual (\d+)\.(\d+) had score (\d+.\d) with genes \[(.*)\]$"
-TOP_LINE = BEGIN_LINE + "Top survivor in generation (\d+) was (\d+\.\d+) with score (\d+.\d+)"
-AVERAGE_SURVIVOR_LINE = BEGIN_LINE + "Average score of survivors in generation (\d+) was (\d+\.\d+)"
-AVERAGE_LINE = BEGIN_LINE + "Average score of individuals in generation (\d+) was (\d+\.\d+)"
-
-any_line_re = re.compile(BEGIN_LINE)
-individual_line_re = re.compile(INDIVIDUAL_LINE)
-top_line_re = re.compile(TOP_LINE)
-average_survivor_line_re = re.compile(AVERAGE_SURVIVOR_LINE)
-average_line_re = re.compile(AVERAGE_LINE)
-
-individuals_by_score = defaultdict(list)
-individuals_by_generation = defaultdict(list)
-
 class EvolveFileReader:
+
+    # These strings match particular lines in the evolution log file
+    BEGIN_LINE = "^201.+ INFO ojplg.skir.evolve \[main\] "
+    INDIVIDUAL_LINE = BEGIN_LINE + "Individual (\d+)\.(\d+) had score (\d+.\d) with genes \[(.*)\]"
+    TOP_LINE = BEGIN_LINE + "Top survivor in generation (\d+) was (\d+\.\d+) with score (\d+.\d+)"
+    AVERAGE_SURVIVOR_LINE = BEGIN_LINE + "Average score of survivors in generation (\d+) was (\d+\.\d+)"
+    AVERAGE_LINE = BEGIN_LINE + "Average score of individuals in generation (\d+) was (\d+\.\d+)"
+
+    any_line_re = re.compile(BEGIN_LINE)
+    individual_line_re = re.compile(INDIVIDUAL_LINE)
+    top_line_re = re.compile(TOP_LINE)
+    average_survivor_line_re = re.compile(AVERAGE_SURVIVOR_LINE)
+    average_line_re = re.compile(AVERAGE_LINE)
+
     def __init__(self, file_name):
         self.file_name = file_name
         self.line_count = 0
@@ -101,7 +94,7 @@ class EvolveFileReader:
         log = open(LOG_FILE,"r")
         for line in log:
             self.line_count+=1
-            any_line_match = any_line_re.search(line)
+            any_line_match = EvolveFileReader.any_line_re.search(line)
             if any_line_match:
                 self.any_match_count+=1
             self.parse_individual_line(line)
@@ -111,7 +104,7 @@ class EvolveFileReader:
         log.close
 
     def parse_individual_line(self,line):
-        individual_match = individual_line_re.search(line)
+        individual_match = EvolveFileReader.individual_line_re.search(line)
         if(individual_match):
             self.individual_count+=1
             gen_num = int(individual_match.group(1))
@@ -124,7 +117,7 @@ class EvolveFileReader:
             self.individuals_by_generation[gen_num].append(individual)
 
     def parse_top_line(self, line):
-        top_match = top_line_re.search(line)
+        top_match = EvolveFileReader.top_line_re.search(line)
         if top_match:
             gen_num = top_match.group(1)
             ind_num = top_match.group(2)
@@ -132,18 +125,21 @@ class EvolveFileReader:
             print "  Best in " + gen_num + " was " + ind_num + " with score " + score
     
     def parse_average_line(self, line):
-        average_match = average_line_re.search(line)
+        average_match = EvolveFileReader.average_line_re.search(line)
         if average_match:
             gen_num = average_match.group(1)
             score = average_match.group(2)
             print "Generation " + gen_num + " average was: " + score
 
     def parse_average_survivor_line(self, line):
-        average_survivor_match = average_survivor_line_re.search(line)
+        average_survivor_match = EvolveFileReader.average_survivor_line_re.search(line)
         if average_survivor_match:
             gen_num = average_survivor_match.group(1)
             score = average_survivor_match.group(2)
             print "  Average survivor in " + gen_num + " was: " + score
+
+print("Starting analysis")
+print ""
 
 reader = EvolveFileReader(LOG_FILE)
 reader.read()
@@ -164,7 +160,6 @@ for gen_num in sorted(reader.individuals_by_generation):
     print "Averages " + str(generation.averages())
     print "Standard deviations " + str(generation.standard_deviations())
 
-print "Almost done"
-print ""
-
 print "reader had line count " + str(reader.line_count)
+print "reader had any match count " + str(reader.any_match_count)
+print "reader had individual count " + str(reader.individual_count)
