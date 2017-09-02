@@ -212,6 +212,29 @@ class Summary:
             csv.write(message)
         csv.close
 
+    def export_gene_averages(self):
+        csv = open("gene_averages.csv","w")
+        gen_nums = sorted(self.generations)
+        lines = []
+        for gene_name in self.gene_names():
+            values = []
+            for num in gen_nums:
+                generation = self.generations[num]
+                values.append(generation.average(gene_name))
+            line = gene_name + ","
+            line += ",".join(map(str,values))
+            lines.append(line)
+        gen_nums.insert(0, "")
+        first_line = ",".join(map(str,gen_nums))
+        csv.write(first_line + "\n")
+        for line in lines:
+            csv.write(line + "\n")
+        csv.close
+
+    def gene_names(self):
+        first_gen = self.generations[0]
+        return sorted(first_gen.gene_names())
+
 def main():
     print("Starting analysis")
 
@@ -226,6 +249,7 @@ def main():
                         reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
-    summary.export_csv()
+    #summary.export_csv()
+    summary.export_gene_averages()
 
 main()
