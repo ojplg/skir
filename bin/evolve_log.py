@@ -201,6 +201,17 @@ class Summary:
             #print " Averages " + str(generation.averages())
             #print " Standard deviations " + str(generation.standard_deviations())
 
+    def export_csv(self):
+        csv = open("generation_scores.csv","w")
+        csv.write("Generation,Top Score,Survivor Average,Reported Average\n")
+        for gen_num in sorted(self.generations):
+            generation = self.generations[gen_num]
+            message = (str(gen_num) + "," + str(generation.reported_top) + ","
+                          + str(generation.reported_survivor_average) + ","
+                          + str(generation.reported_average) + "\n")
+            csv.write(message)
+        csv.close
+
 def main():
     print("Starting analysis")
 
@@ -215,5 +226,6 @@ def main():
                         reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
+    summary.export_csv()
 
 main()
