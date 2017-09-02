@@ -51,10 +51,16 @@ class Generation:
         return top
 
     def average_score(self):
+        return self.compute_average(self.individuals, lambda i: i.score)
+
+    def average_survivor_score(self):
+        return self.compute_average(self.survivors(), lambda i: i.score)
+
+    def compute_average(self, items, accessor):
         sum = Decimal(0.0)
-        for ind in self.individuals:
-            sum += ind.score
-        return sum/self.size()
+        for item in items:
+            sum += accessor(item)
+        return sum/len(items)
 
     def average(self, gene_name):
         sum = 0.0
@@ -97,8 +103,23 @@ class Generation:
         diff = self.average_score() - self.reported_average
         return abs(diff) < 0.000001
 
+    def check_survivor_average(self):
+        diff = self.average_survivor_score() - self.reported_survivor_average
+        return abs(diff) < 0.000001
+
     def check(self):
-        return self.check_top() and self.check_average()
+        return self.check_top() and self.check_average() and self.check_survivor_average()
+
+    def survivors(self):
+        sorted_individuals = sorted(self.individuals, key=lambda i: i.score, reverse=True)
+        cnt_goal = int(self.size() ** 0.5)
+        return sorted_individuals[0:cnt_goal]
+
+    def individuals_by_score(self):
+        table = defaultdict(list)
+        for ind in self.individuals:
+            table[ind.score].append(ind)
+        return table
 
 class EvolveFileReader:
 
@@ -250,6 +271,6 @@ def main():
     summary.by_score_summary()
     summary.by_gen_summary()
     #summary.export_csv()
-    summary.export_gene_averages()
+    #summary.export_gene_averages()
 
 main()
