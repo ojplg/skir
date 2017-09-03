@@ -31,8 +31,8 @@ public class EvolutionRunner {
     private final Map<String, Double> _presetTunings;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
 
-    private final int GAMES_PER_TRIAL = 50;
-    private final int NUMBER_OF_GENERATIONS = 100;
+    private final int GAMES_PER_TRIAL = 100;
+    private final int NUMBER_OF_GENERATIONS = 250;
     private final int GENERATION_SIZE = 64;
 
     private GameRunner _gameRunner;
@@ -75,16 +75,6 @@ public class EvolutionRunner {
         _gameRunner.start();
     }
 
-
-//    private void logGeneration(int number, Generation generation){
-//        _log.info("Logging generation " + number + " has " + generation.allMembers().size() + " individuals.");
-//        for (Individual individual:generation.allMembers()) {
-//            Map<String, Double> genes = individual.getGenes();
-//            JSONObject jObject = new JSONObject(genes);
-//            _log.info("Generation " + number + " named " + individual.getIdentifier() + " JSON: " + jObject);
-//        }
-//    }
-
     private Generation createFirstGeneration(){
         List<Individual> randoms = new ArrayList<>();
         for(int idx=0; idx<GENERATION_SIZE; idx++){
@@ -95,12 +85,9 @@ public class EvolutionRunner {
 
     private Individual generateRandomTunerGenes(int number){
         Map<String, Double> genes = new HashMap<>();
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random(number);
         for (Map.Entry<String, Double> gene : _presetTunings.entrySet() ) {
-            double fuzz = random.nextDouble() / 2;
-            fuzz += 0.75;
-            double value = Math.min(0.99999, gene.getValue() * fuzz);
-            genes.put(gene.getKey(), value);
+            genes.put(gene.getKey(), random.nextDouble());
         }
         return new Individual(0, number, genes);
     }
