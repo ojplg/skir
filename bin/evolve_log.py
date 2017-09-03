@@ -26,7 +26,7 @@ class Individual:
 
     def gene_value(self, gene_name):
         value = self.genes[gene_name]
-        return value
+        return Decimal(value)
 
     def gene_names(self):
         names = self.genes.keys()
@@ -62,36 +62,19 @@ class Generation:
             sum += accessor(item)
         return sum/len(items)
 
+    def compute_standard_deviation(self, items, accessor):
+        avg = self.compute_average(items, accessor)
+        squares_sum = Decimal(0.0)
+        for item in items:
+            squares_sum += (accessor(item) - avg) ** 2
+        return (squares_sum / len(items)) ** Decimal(0.5)
+
     def average(self, gene_name):
-        sum = 0.0
-        for ind in self.individuals:
-            sum += ind.gene_value(gene_name)
-            avg = sum / self.size()
-        return avg
-
-    def averages(self):
-        avgs = dict()
-        names = self.gene_names()
-        for gene_name in names:
-            gene_average = self.average(gene_name)
-            avgs[gene_name] = gene_average
-        return avgs
-
-    def standard_deviations(self):
-        sds = dict()
-        names = self.gene_names()
-        for gene_name in names:
-            gene_sd = self.standard_deviation(gene_name)
-            sds[gene_name] = gene_sd
-        return sds
+        return self.compute_average(self.individuals, lambda i: i.gene_value(gene_name))
 
     def standard_deviation(self, gene_name):
-        gene_average = self.average(gene_name)
-        squares_sum = 0.0
-        for ind in self.individuals:
-            value = ind.gene_value(gene_name)
-            squares_sum += (value - gene_average) ** 2
-        return (squares_sum/self.size()) ** 0.5
+        return self.compute_standard_deviation(self.individuals, 
+                                               lambda i: i.gene_value(gene_name))
 
     def gene_names(self):
         return self.individuals[0].gene_names()
@@ -219,10 +202,8 @@ class Summary:
                         + "  Survivor Average: " + str(generation.reported_survivor_average)
                         + "  Average: " + str(generation.reported_average))
             print message
-            #print " Averages " + str(generation.averages())
-            #print " Standard deviations " + str(generation.standard_deviations())
 
-    def export_csv(self):
+    def export_scores(self):
         csv = open("generation_scores.csv","w")
         csv.write("Generation,Top Score,Survivor Average,Reported Average\n")
         for gen_num in sorted(self.generations):
@@ -234,14 +215,22 @@ class Summary:
         csv.close
 
     def export_gene_averages(self):
-        csv = open("gene_averages.csv","w")
+        self.export_stats("gene_averages.csv",
+                          lambda gen, name: gen.average(name))
+
+    def export_gene_sds(self):
+        self.export_stats("gene_sds.csv",
+                          lambda gen, name: gen.standard_deviation(name))
+
+    def export_stats(self, filename, accessor):
+        csv = open(filename,"w")
         gen_nums = sorted(self.generations)
         lines = []
         for gene_name in self.gene_names():
             values = []
             for num in gen_nums:
                 generation = self.generations[num]
-                values.append(generation.average(gene_name))
+                values.append(accessor(generation, gene_name))
             line = gene_name + ","
             line += ",".join(map(str,values))
             lines.append(line)
@@ -270,7 +259,8 @@ def main():
                         reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
-    #summary.export_csv()
-    #summary.export_gene_averages()
+    #summary.export_scores()
+    summary.export_gene_averages()
+    summary.export_gene_sds()
 
 main()
