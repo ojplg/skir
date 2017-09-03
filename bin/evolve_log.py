@@ -275,7 +275,7 @@ def main():
                         reader.generations_by_number)
     summary.by_score_summary()
     summary.by_gen_summary()
-    #summary.export_scores()
+    summary.export_scores()
     summary.export_gene_averages()
     summary.export_gene_sds()
     summary.export_gene_averages_survivors()
