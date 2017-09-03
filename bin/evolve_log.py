@@ -76,6 +76,13 @@ class Generation:
         return self.compute_standard_deviation(self.individuals, 
                                                lambda i: i.gene_value(gene_name))
 
+    def average_survivor(self, gene_name):
+        return self.compute_average(self.survivors(), lambda i: i.gene_value(gene_name))
+
+    def standard_deviation_survivor(self, gene_name):
+        return self.compute_standard_deviation(self.survivors(), 
+                                               lambda i: i.gene_value(gene_name))
+
     def gene_names(self):
         return self.individuals[0].gene_names()
 
@@ -222,6 +229,14 @@ class Summary:
         self.export_stats("gene_sds.csv",
                           lambda gen, name: gen.standard_deviation(name))
 
+    def export_gene_averages_survivors(self):
+        self.export_stats("gene_averages_survivors.csv",
+                          lambda gen, name: gen.average_survivor(name))
+
+    def export_gene_sds_survivors(self):
+        self.export_stats("gene_sds_survivors.csv",
+                          lambda gen, name: gen.standard_deviation_survivor(name))
+
     def export_stats(self, filename, accessor):
         csv = open(filename,"w")
         gen_nums = sorted(self.generations)
@@ -262,5 +277,7 @@ def main():
     #summary.export_scores()
     summary.export_gene_averages()
     summary.export_gene_sds()
+    summary.export_gene_averages_survivors()
+    summary.export_gene_sds_survivors()
 
 main()
