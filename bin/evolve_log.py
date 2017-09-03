@@ -239,6 +239,7 @@ class Summary:
 
     def export_stats(self, filename, accessor):
         csv = open(filename,"w")
+        print "Computing and writing " + filename
         gen_nums = sorted(self.generations)
         lines = []
         for gene_name in self.gene_names():
