@@ -291,11 +291,10 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private Map<Country,Integer> computePlacements(Game game){
-        Map<Country, Double> ratios = new HashMap<>();
         Map<Country, Double> goalCountryScores = computeGoalCountryDesirabilityScores(game);
-        game.findOccupiedCountries(_me).forEach( c ->
-                ratios.put(c, computePlacementScore(c, game, goalCountryScores)));
-        return RatioDistributor.distribute(ratios,game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
+        Map<Country, Double> ratios = ListUtils.mapify(game.findOccupiedCountries(_me),
+                 c -> computePlacementScore(c, game, goalCountryScores));
+        return RatioDistributor.distribute(ratios, game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
     }
 
     private double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
@@ -305,8 +304,7 @@ public class TuneyTwo implements AutomatedPlayer {
         // 2. relative strength versus neighbor (place where attacks are more likely)
         // 3. relative weakness IF on an important (continental) border
 
-        boolean isBorderCountry = AiUtils.isBorderCountry(_me, game, country);
-        if( ! isBorderCountry ){
+        if( ! AiUtils.isBorderCountry(_me, game, country) ){
             return 0;
         }
 
