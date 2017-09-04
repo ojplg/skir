@@ -39,12 +39,6 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private static final Logger _log = LogManager.getLogger(TuneyTwo.class);
 
-    private static final String BorderCountryPlacementKey = "BorderCountryPlacementKey";
-    private static final String ContinentalBorderPlacementKey = "ContinentalBorderPlacementKey";
-    private static final String ContinentOwnedPlacementKey = "ContinentOwnedPlacementKey";
-    private static final String BordersEnemyOwnedContinentPlacementKey = "BordersEnemyOwnedContinentPlacementKey";
-    private static final String InStrongestUnownedContinentPlacementKey = "InStrongestUnownedContinentPlacementKey";
-    private static final String BordersGoalCountryPlacementKey = "BordersGoalCountryPlacementKey";
     private static final String FirstCountryMinimumPlacementKey = "FirstCountryMinimumPlacementKey";
     private static final String SecondCountryMinimumPlacementKey = "SecondCountryMinimumPlacementKey";
     private static final String ThirdCountryMinimumPlacementKey = "ThirdCountryMinimumPlacementKey";
@@ -67,7 +61,6 @@ public class TuneyTwo implements AutomatedPlayer {
     private static final String GoalContinentCountryPercentage = "GoalContinentCountryPercentage";
 
     private static final String TargetInGoalContinentAttackKey = "TargetInBestGoalContinentAttackKey";
-    private static final String TargetInBestGoalContinentAttackKey = "TargetInGoalContinentAttackKey";
     private static final String MinimumAttackScoreAttackKey = "MinimumAttackScoreAttackKey";
     private static final String PostCardMinimumAttackScoreAttackKey = "PostCardMinimumAttackScoreAttackKey";
     private static final String BustEnemyContinentAttackKey = "BustEnemyContinentAttackKey";
@@ -89,18 +82,10 @@ public class TuneyTwo implements AutomatedPlayer {
 
         Map<String, Double> map = new HashMap<>();
 
-        map.put(BorderCountryPlacementKey, 0.9999);
-        map.put(ContinentalBorderPlacementKey, 0.55);
-        map.put(ContinentOwnedPlacementKey, 0.4);
-        map.put(BordersEnemyOwnedContinentPlacementKey, 0.8);
-        map.put(InStrongestUnownedContinentPlacementKey, 0.8);
-        map.put(BordersGoalCountryPlacementKey, 0.75);
-
         map.put(FirstCountryMinimumPlacementKey, 0.5);
         map.put(SecondCountryMinimumPlacementKey, 0.2);
         map.put(ThirdCountryMinimumPlacementKey, 0.1);
 
-        map.put(TargetInBestGoalContinentAttackKey, 0.8);
         map.put(TargetInGoalContinentAttackKey, 0.7);
         map.put(BustEnemyContinentAttackKey, 0.85);
         map.put(MajorAdvantageAttackKey, 0.10);
