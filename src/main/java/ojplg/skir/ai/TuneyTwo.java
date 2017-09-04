@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +280,8 @@ public class TuneyTwo implements AutomatedPlayer {
         Map<Country, Double> goalCountryScores = computeGoalCountryDesirabilityScores(game);
         Map<Country, Double> ratios = ListUtils.mapify(game.findOccupiedCountries(_me),
                  c -> computePlacementScore(c, game, goalCountryScores));
-        return RatioDistributor.distribute(ratios, game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
+        Map<Country, Integer> distributions = RatioDistributor.distribute(ratios, game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
+        return distributions;
     }
 
     private double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
@@ -293,7 +295,19 @@ public class TuneyTwo implements AutomatedPlayer {
             return 0;
         }
 
-        return ListUtils.sumAll(game.findEnemyNeighbors(country), goalCountryScores::get);
+        List<Country> enemies = game.findEnemyNeighbors(country);
+
+        Double bestGoalScore = enemies.stream()
+                .map(goalCountryScores::get)
+                .max(Comparator.naturalOrder())
+                .get();
+
+        Double bestRatio = enemies.stream()
+                .map(c -> computeOpposingStrengthRatio(game,c))
+                .max(Comparator.naturalOrder())
+                .get();
+
+        return bestRatio * bestGoalScore;
     }
 
     /*
@@ -427,11 +441,15 @@ public class TuneyTwo implements AutomatedPlayer {
         score += continentScore(continent);
 
         if (enemyOwnedContinent){
-            score += enemyContinentScore(continent);
+            score += 3 * enemyContinentScore(continent);
         }
 
         if( closeToOwning(continent, game)){
-            score += 2 * continentScore(continent);
+            score *= 2 * continentScore(continent);
+        }
+
+        if( score == 0 ){
+            throw new RuntimeException(country + " has no desirability!");
         }
 
         return score;
@@ -444,7 +462,7 @@ public class TuneyTwo implements AutomatedPlayer {
 
     private double enemyContinentScore(Continent continent){
         String key = "EnemyContinentScore" + continent.getNameNoSpaces();
-        return tunedValue(key);
+        return scaledTunedValue(key, 2);
     }
 
 
@@ -454,11 +472,6 @@ public class TuneyTwo implements AutomatedPlayer {
     }
 
     private double tunedValue(String key){
-        try {
-            return _tunings.get(key);
-        } catch (Exception ex){
-            System.out.println("Could not find key " + key);
-            throw ex;
-        }
+        return _tunings.get(key);
     }
 }
