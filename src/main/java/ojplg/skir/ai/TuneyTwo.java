@@ -444,6 +444,14 @@ public class TuneyTwo implements AutomatedPlayer {
             score *= 2 * continentScore(continent);
         }
 
+        // 5 and 10 here need tunable values!!!
+        Player enemy = game.getOccupier(country);
+        boolean veryWeakOpponent = AiUtils.allCountriesContiguous(enemy, game)
+                                    && AiUtils.findAllPlayerArmies(game, enemy) < 5;
+        if ( veryWeakOpponent ){
+            score += 10;
+        }
+
         if( score == 0 ){
             throw new RuntimeException(country + " has no desirability!");
         }

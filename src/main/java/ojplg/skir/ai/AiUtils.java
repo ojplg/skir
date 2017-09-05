@@ -279,7 +279,7 @@ public class AiUtils {
      * Computes the total value of all armies in all countries the player
      * does not own.
      */
-    static int findAllOppositionArmies(Game game, Player player){
+    public static int findAllOppositionArmies(Game game, Player player){
         int armies = 0;
         for(Country country : game.findEnemyOccupiedCountries(player)){
             armies += game.getOccupationForce(country);
