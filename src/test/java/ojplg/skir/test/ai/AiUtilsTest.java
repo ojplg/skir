@@ -143,4 +143,32 @@ public class AiUtilsTest {
         Assert.assertTrue(enemyBorders.contains(Country.Venezuela));
     }
 
+    @Test
+    public void testAllCountriesContiguousTrue(){
+        GameHelper gameHelper = new GameHelper();
+        gameHelper.setAllCountries(gameHelper.WhitePlayer, 1);
+
+        gameHelper.setCountry(Country.Central_America, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.Venezuela, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.Brazil, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.North_Africa, gameHelper.RedPlayer, 1);
+
+        Assert.assertTrue(AiUtils.allCountriesContiguous(gameHelper.RedPlayer, gameHelper.Game));
+    }
+
+    @Test
+    public void testAllCountriesContiguousFalse(){
+        GameHelper gameHelper = new GameHelper();
+        gameHelper.setAllCountries(gameHelper.WhitePlayer, 1);
+
+        gameHelper.setCountry(Country.Central_America, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.Venezuela, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.Brazil, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.North_Africa, gameHelper.RedPlayer, 1);
+        gameHelper.setCountry(Country.Afghanistan, gameHelper.RedPlayer, 1);
+
+        Assert.assertFalse(AiUtils.allCountriesContiguous(gameHelper.RedPlayer, gameHelper.Game));
+    }
+
+
 }

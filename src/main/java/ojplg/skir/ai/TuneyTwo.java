@@ -392,8 +392,6 @@ public class TuneyTwo implements AutomatedPlayer {
         return ownedArmyPercentage > tunedValue(ContinentCloseArmyPercentAttackKey);
     }
 
-
-
     private Order generateAttackOrder(Adjutant adjutant, Game game){
         int majorAdvantageCutoff = roundedScaledTunedValue(MajorAdvantageAttackKey, 100);
         List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, majorAdvantageCutoff);

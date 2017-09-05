@@ -2,9 +2,14 @@ package ojplg.skir.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class MapUtils {
 
@@ -51,5 +56,44 @@ public class MapUtils {
         List<T> newList = new ArrayList<>(list);
         newList.add(item);
         return newList;
+    }
+
+    public static boolean isContiguousBloc(WorldMap map, List<Country> countries){
+        // an empty collection is contiguous, so is a singleton collection
+        if( countries.size() <= 1 ){
+            return true;
+        }
+
+        SortedSet<Country> countriesToCheck = new TreeSet<>();
+        Set<Country> checkedNotInBloc = new HashSet<>();
+        Set<Country> checkedInBloc = new HashSet<>();
+
+        Country start = countries.get(0);
+        checkedInBloc.add(start);
+        for(Country neighbor : map.getNeighbors(start)){
+            if( countries.contains(neighbor)){
+                countriesToCheck.add(neighbor);
+            } else {
+                checkedNotInBloc.add(neighbor);
+            }
+        }
+
+        while(countriesToCheck.size() > 0){
+            Country country = countriesToCheck.first();
+            countriesToCheck.remove(country);
+            Collection<Country> neighbors = map.getNeighbors(country);
+            for(Country neighbor : neighbors){
+                if( checkedNotInBloc.contains(neighbor) || countriesToCheck.contains(neighbor)){
+                    // do nothing
+                } else if( countries.contains(neighbor) && (! checkedInBloc.contains(neighbor))){
+                    countriesToCheck.add(neighbor);
+                    checkedInBloc.add(neighbor);
+                } else {
+                    checkedNotInBloc.add(neighbor);
+                }
+            }
+        }
+
+        return countries.size() == checkedInBloc.size();
     }
 }

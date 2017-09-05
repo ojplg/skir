@@ -2,6 +2,7 @@ package ojplg.skir.ai;
 
 import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
+import ojplg.skir.map.MapUtils;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class AiUtils {
 
@@ -312,6 +312,11 @@ public class AiUtils {
         int myArmyCount = AiUtils.findAllPlayerArmies(game, player);
         int enemyArmyCount = AiUtils.findAllOppositionArmies(game, player);
         return myArmyCount > enemyArmyCount;
+    }
+
+    public static boolean allCountriesContiguous(Player player, Game game){
+        List<Country> possessions = game.findOccupiedCountries(player);
+        return MapUtils.isContiguousBloc(game.getMap(), possessions);
     }
 
 }
