@@ -125,9 +125,9 @@ public class TuneyTwo implements AutomatedPlayer {
         _me = player;
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(
-                scaledTunedValue(FirstCountryMinimumPlacementKey, 10),
-                scaledTunedValue(SecondCountryMinimumPlacementKey, 10),
-                scaledTunedValue(ThirdCountryMinimumPlacementKey, 10));
+                roundedScaledTunedValue(FirstCountryMinimumPlacementKey, 10),
+                roundedScaledTunedValue(SecondCountryMinimumPlacementKey, 10),
+                roundedScaledTunedValue(ThirdCountryMinimumPlacementKey, 10));
     }
 
     @Override
@@ -392,12 +392,10 @@ public class TuneyTwo implements AutomatedPlayer {
         return ownedArmyPercentage > tunedValue(ContinentCloseArmyPercentAttackKey);
     }
 
-    private int scaledTunedValue(String tuning, int scale){
-        return (int) Math.round(scale * tunedValue(tuning));
-    }
+
 
     private Order generateAttackOrder(Adjutant adjutant, Game game){
-        int majorAdvantageCutoff = scaledTunedValue(MajorAdvantageAttackKey, 100);
+        int majorAdvantageCutoff = roundedScaledTunedValue(MajorAdvantageAttackKey, 100);
         List<PossibleAttack> majorAdvantages = AiUtils.findAdvantageousAttacks(_me, game, majorAdvantageCutoff);
         Optional<PossibleAttack> possibleMajorAdvantageAttack = ListUtils.findMax(majorAdvantages);
         if(possibleMajorAdvantageAttack.isPresent()){
@@ -465,6 +463,13 @@ public class TuneyTwo implements AutomatedPlayer {
         return scaledTunedValue(key, 2);
     }
 
+    private double scaledTunedValue(String tuning, int scale){
+        return scale * tunedValue(tuning);
+    }
+
+    private int roundedScaledTunedValue(String tuning, int scale){
+        return (int) Math.round(scale * tunedValue(tuning));
+    }
 
     private double booleanAdjust(double current, boolean test, String key){
         double amount = _tunings.get(key);
