@@ -210,6 +210,17 @@ class Summary:
                         + "  Average: " + str(generation.reported_average))
             print message
 
+    def top_ten(self):
+        taken = []
+        for key in sorted(self.individuals_by_score, reverse=True):
+            individuals = self.individuals_by_score[key]
+            if len(individuals) + len(taken) <= 10:
+                taken.extend(individuals)
+            else:
+                taken.extend(individuals[0:10 - len(taken)])
+                break
+        return taken
+
     def export_scores(self):
         csv = open("generation_scores.csv","w")
         csv.write("Generation,Top Score,Survivor Average,Reported Average\n")
@@ -232,6 +243,26 @@ class Summary:
     def export_gene_averages_survivors(self):
         self.export_stats("gene_averages_survivors.csv",
                           lambda gen, name: gen.average_survivor(name))
+
+    def export_top_ten_genes(self):
+        csv = open("top_ten_genes.csv", "w")
+        for gene_name in self.gene_names():
+            csv.write(gene_name)
+            for ind in self.top_ten():
+                csv.write(",")
+                csv.write(str(ind.gene_value(gene_name)))
+            csv.write("\n")
+        csv.close                    
+
+    def export_first_generation_genes(self):
+        csv = open("first_generation_genes.csv", "w")
+        for gene_name in self.gene_names():
+            csv.write(gene_name)
+            for ind in self.generations[0].individuals[0:10]:
+                csv.write(",")
+                csv.write(str(ind.gene_value(gene_name)))
+            csv.write("\n")
+        csv.close
 
     def export_gene_sds_survivors(self):
         self.export_stats("gene_sds_survivors.csv",
@@ -274,11 +305,13 @@ def main():
     summary = Summary(reader.individuals_by_score, 
                         reader.generations_by_number)
     summary.by_score_summary()
-    summary.by_gen_summary()
-    summary.export_scores()
-    summary.export_gene_averages()
-    summary.export_gene_sds()
-    summary.export_gene_averages_survivors()
-    summary.export_gene_sds_survivors()
+    summary.export_top_ten_genes()
+    summary.export_first_generation_genes()
+    #summary.by_gen_summary()
+    #summary.export_scores()
+    #summary.export_gene_averages()
+    #summary.export_gene_sds()
+    #summary.export_gene_averages_survivors()
+    #summary.export_gene_sds_survivors()
 
 main()
