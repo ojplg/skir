@@ -72,6 +72,8 @@ public class TuneyTwo implements AutomatedPlayer {
     private static final String ContinentCloseArmyPercentAttackKey = "ContinentCloseArmyPercentAttackKey";
 
     private static final String WeakBorderFortifyKey = "WeakBorderFortifyKey";
+    private static final String WeakOpponentMaximumKey = "WeakOpponentMaximumKey";
+    private static final String WeakOpponentDesirabilityBonus = "WeakOpponentDesirabilityBonus";
 
     private final Map<String,Double> _tunings;
     private final Player _me;
@@ -117,6 +119,8 @@ public class TuneyTwo implements AutomatedPlayer {
         map.put(EnemyContinentScoreSouthAmerica, 0.2);
         map.put(EnemyContinentScoreAustralia, 0.1);
 
+        map.put(WeakOpponentMaximumKey, 0.5);
+        map.put(WeakOpponentDesirabilityBonus, 0.5);
 
         return map;
     }
@@ -280,8 +284,7 @@ public class TuneyTwo implements AutomatedPlayer {
         Map<Country, Double> goalCountryScores = computeGoalCountryDesirabilityScores(game);
         Map<Country, Double> ratios = ListUtils.mapify(game.findOccupiedCountries(_me),
                  c -> computePlacementScore(c, game, goalCountryScores));
-        Map<Country, Integer> distributions = RatioDistributor.distribute(ratios, game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
-        return distributions;
+        return RatioDistributor.distribute(ratios, game.getPlayerHoldings(_me).reserveCount(), _placementMinimums);
     }
 
     private double computePlacementScore(Country country, Game game, Map<Country, Double> goalCountryScores){
@@ -444,12 +447,11 @@ public class TuneyTwo implements AutomatedPlayer {
             score *= 2 * continentScore(continent);
         }
 
-        // 5 and 10 here need tunable values!!!
         Player enemy = game.getOccupier(country);
         boolean veryWeakOpponent = AiUtils.allCountriesContiguous(enemy, game)
-                                    && AiUtils.findAllPlayerArmies(game, enemy) < 5;
+                                    && AiUtils.findAllPlayerArmies(game, enemy) < scaledTunedValue(WeakOpponentMaximumKey, 10);
         if ( veryWeakOpponent ){
-            score += 10;
+            score += scaledTunedValue(WeakOpponentDesirabilityBonus, 20);
         }
 
         if( score == 0 ){
