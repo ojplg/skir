@@ -44,7 +44,7 @@ public class EvolutionRunner {
     }
 
     public void start(){
-        _log.info("Evolving");
+        _log.info("Evolving with settings " + _evolutionSettings);
         AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, _evolutionSettings.getGamesPerIndividual());
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         scorer.start();
