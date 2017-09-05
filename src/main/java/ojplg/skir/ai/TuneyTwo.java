@@ -451,7 +451,8 @@ public class TuneyTwo implements AutomatedPlayer {
         boolean veryWeakOpponent = AiUtils.allCountriesContiguous(enemy, game)
                                     && AiUtils.findAllPlayerArmies(game, enemy) < scaledTunedValue(WeakOpponentMaximumKey, 10);
         if ( veryWeakOpponent ){
-            score += scaledTunedValue(WeakOpponentDesirabilityBonus, 20);
+            int opponentCardCount = game.getPlayerHoldings(enemy).getCards().size();
+            score += scaledTunedValue(WeakOpponentDesirabilityBonus, 10) * (opponentCardCount + 1);
         }
 
         if( score == 0 ){
