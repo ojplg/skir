@@ -2,6 +2,7 @@ package ojplg.skir.play;
 
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.evolve.EvolutionRunner;
+import ojplg.skir.evolve.EvolutionSettings;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Constants;
 import ojplg.skir.web.WebRunner;
@@ -52,10 +53,17 @@ public class Skir {
             testBench.start();
             testBench.startRun();
         } else if ( commandLine.hasOption("evolve") ) {
-            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createThreadFiber("EvolutionFiber"));
-//            GameRunner gameRunner = new GameRunner(aiFactory, channels, NewGameRequest.aiEvolution());
-//            gameRunner.start();
-//            evolutionRunner.evolve(aiFactory);
+            EvolutionSettings evSettings = new EvolutionSettings();
+            if( commandLine.hasOption("rounds")) {
+                evSettings.setGamesPerIndividual(Integer.parseInt(commandLine.getOptionValue("rounds")));
+            }
+            if( commandLine.hasOption("generations")) {
+                evSettings.setNumberGenerations(Integer.parseInt(commandLine.getOptionValue("generations")));
+            }
+            if( commandLine.hasOption("size")) {
+                evSettings.setGenerationSize(Integer.parseInt(commandLine.getOptionValue("size")));
+            }
+            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createThreadFiber("EvolutionFiber"), evSettings);
             evolutionRunner.start();
         } else {
             startWebServer(channels);
@@ -104,7 +112,9 @@ public class Skir {
         options.addOption(new Option("b","bench", false, "Run in test bench mode."));
         options.addOption(new Option("e", "evolve", false, "Run in evolve mode."));
         options.addOption(new Option("h", "help", false, "See options."));
-        options.addOption(new Option("r", "rounds", true, "Number of rounds to run for test bench"));
+        options.addOption(new Option("r", "rounds", true, "Number of rounds to run for test bench or per individual during evolution"));
+        options.addOption(new Option("g", "generations", true, "Number of generations to run during evolution"));
+        options.addOption(new Option("s", "size", true, "Number of individuals per generation run during evolution"));
         Option aisOption = new Option("a", "ais", true, "Specify AIs eligible for use during run");
         aisOption.setValueSeparator(',');
         aisOption.setArgs(Option.UNLIMITED_VALUES);

@@ -2,7 +2,6 @@ package ojplg.skir.evolve;
 
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
-import ojplg.skir.ai.TuneyTwo;
 import ojplg.skir.play.Channels;
 import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.NewGameRequest;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class EvolutionRunner {
@@ -28,38 +28,29 @@ public class EvolutionRunner {
     private final Channels _channels;
     private final ThreadFiber _evolveThread;
     private final AiFactory _aiFactory;
-    private final Map<String, Double> _presetTunings;
+    private final Set<String> _geneNames;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
-
-    private final int GAMES_PER_TRIAL = 100;
-    private final int NUMBER_OF_GENERATIONS = 250;
-    private final int GENERATION_SIZE = 64;
+    private final EvolutionSettings _evolutionSettings;
 
     private GameRunner _gameRunner;
 
-    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread){
-        this(aiFactory, channels, evolveThread,
-                TuneyTwo.presetTunings(),
-                (p, t) -> new TuneyTwo(p, t));
-    }
-
-    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread,
-                           Map<String, Double> presetTunings, BiFunction<Player, Map<String,Double>, AutomatedPlayer> testPlayerGenerator){
+    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread, EvolutionSettings evolutionSettings){
         _channels = channels;
         _evolveThread = evolveThread;
-        _presetTunings = presetTunings;
-        _testPlayerGenerator = testPlayerGenerator;
+        _geneNames = evolutionSettings.getSettingNames();
+        _testPlayerGenerator = evolutionSettings.getPlayerGenerator();
         _aiFactory =aiFactory;
+        _evolutionSettings = evolutionSettings;
     }
 
     public void start(){
         _log.info("Evolving");
-        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, GAMES_PER_TRIAL);
+        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, _evolutionSettings.getGamesPerIndividual());
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         scorer.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
-        for(int cnt = 0; cnt < NUMBER_OF_GENERATIONS; cnt++) {
+        for(int cnt = 0; cnt < _evolutionSettings.getNumberGenerations(); cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
             _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
@@ -77,7 +68,7 @@ public class EvolutionRunner {
 
     private Generation createFirstGeneration(){
         List<Individual> randoms = new ArrayList<>();
-        for(int idx=0; idx<GENERATION_SIZE; idx++){
+        for(int idx=0; idx<_evolutionSettings.getGenerationSize(); idx++){
             randoms.add(generateRandomTunerGenes(idx));
         }
         return new Generation(randoms,0);
@@ -86,8 +77,8 @@ public class EvolutionRunner {
     private Individual generateRandomTunerGenes(int number){
         Map<String, Double> genes = new HashMap<>();
         Random random = new Random(number);
-        for (Map.Entry<String, Double> gene : _presetTunings.entrySet() ) {
-            genes.put(gene.getKey(), random.nextDouble());
+        for (String gene : _geneNames ) {
+            genes.put(gene, random.nextDouble());
         }
         return new Individual(0, number, genes);
     }
