@@ -127,6 +127,9 @@ public class TuneyTwo implements AutomatedPlayer {
 
     public TuneyTwo(Player player, Map<String, Double> tunings){
         _me = player;
+        for(Map.Entry<String, Double> entry : presetTunings().entrySet()) {
+            tunings.putIfAbsent(entry.getKey(), entry.getValue());
+        }
         _tunings = Collections.unmodifiableMap(tunings);
         _placementMinimums = Arrays.asList(
                 roundedScaledTunedValue(FirstCountryMinimumPlacementKey, 10),
