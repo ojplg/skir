@@ -43,7 +43,7 @@ public class SkirWebHandler extends AbstractHandler {
             String switchKey = request.getParameter("switch-key");
             if( "chooser".equals(switchKey)){
                 String userName = request.getParameter("user-name");
-                renderChooserPage(userName, httpServletResponse.getWriter());
+                renderChooserPage(userName, false, httpServletResponse.getWriter());
             } else if( "new-game".equals(switchKey)){
                 String userName = request.getParameter("user-name");
                 String remoteAddress = request.getRemoteAddr();
@@ -59,13 +59,18 @@ public class SkirWebHandler extends AbstractHandler {
                 request.setHandled(true);
                 return;
             } else if( "join-game".equals(switchKey) || "view-game".equals(switchKey)){
-                String remoteAddress = request.getRemoteAddr();
+                String userName = request.getParameter("user-name");
                 String gameIdString = request.getParameter("game");
                 GameId gameId = GameId.fromString(gameIdString);
-                String userName = request.getParameter("user-name");
-                boolean joinAttempt = "join-game".equals(switchKey);
-                boolean demo = "true".equals(request.getParameter("demo"));
-                renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
+                if( isGameActive(gameId)){
+                    // need a page for this circumstance
+                    boolean joinAttempt = "join-game".equals(switchKey);
+                    boolean demo = "true".equals(request.getParameter("demo"));
+                    String remoteAddress = request.getRemoteAddr();
+                    renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
+                } else {
+                    renderChooserPage(userName, true, httpServletResponse.getWriter());
+                }
             } else {
                 renderIndexPage(httpServletResponse.getWriter());
             }
@@ -76,7 +81,7 @@ public class SkirWebHandler extends AbstractHandler {
         }
     }
 
-    private void renderChooserPage(String userName, Writer writer){
+    private void renderChooserPage(String userName, boolean unknownGame, Writer writer){
         _log.info("Rendering chooser page");
         VelocityContext vc = new VelocityContext();
         vc.put("user_name", userName);
@@ -86,7 +91,12 @@ public class SkirWebHandler extends AbstractHandler {
         Collections.sort(ids);
         vc.put("game_ids", ids);
         vc.put("game_requests", gameRequests);
+        vc.put("unknown_game", unknownGame);
         renderVelocityTemplate("/template/choose.vtl", vc, writer);
+    }
+
+    private boolean isGameActive(GameId gameId){
+        return _webRunner.getGameEntries().containsKey(gameId);
     }
 
     private void renderGamePage(GameId gameId, String name, String address, boolean demoFlag, boolean joinAttempt, Writer writer){
