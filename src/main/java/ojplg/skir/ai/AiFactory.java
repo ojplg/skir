@@ -48,7 +48,7 @@ public class AiFactory {
                 automatedPlayers.add(_firstPlayerFactory.apply(player));
             } else {
                 String name = RandomUtils.pickRandomElement(eligibleNames);
-                if( _preventDuplicates && _eligibleAiNames.size() > players.size()){
+                if( _preventDuplicates && _eligibleAiNames.size() >= players.size()){
                     eligibleNames.remove(name);
                 }
                 player.setDisplayName(name);
@@ -83,10 +83,7 @@ public class AiFactory {
         generators.put("Tuney_A64", p -> evolvedAdditiveTuney(p, 64));
         generators.put("Tuney_A81", p -> evolvedAdditiveTuney(p, 81));
         generators.put("TuneyTwo", p -> new TuneyTwo(p, TuneyTwo.presetTunings()));
-        generators.put("TT_46_38", p -> evolvedTuneyTwo(p,"tuney_two_46_38"));
-        generators.put("TT_36_22", p -> evolvedTuneyTwo(p,"tuney_two_36_22"));
-        generators.put("T2_270", p -> evolvedTuneyTwo(p,"t2_270"));
-        generators.put("T2_310", p -> evolvedTuneyTwo(p,"t2_310"));
+        generators.put("TT_500", p -> evolvedTuneyTwo(p,"tt_500"));
 
         return Collections.unmodifiableMap(generators);
     }
