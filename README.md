@@ -23,7 +23,7 @@ To build and run the program follow these steps:
 4. ./start.sh
 5. Navigate your browswer to http://localhost:8080/
 
-If you are using Windows (Cygwin) you need to set an environment variable JAVA\_PATH\_SEPARATOR=";"
+If you are using Windows (Cygwin) you need to set some environment variables JAVA\_PATH\_SEPARATOR=";" and CYGWIN\_PREFIX="C:\\cygwin64" (or wherever cygwin is installed for you).
 
 Maven
 -----
