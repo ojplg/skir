@@ -3,8 +3,6 @@ package ojplg.skir.evolve;
 import ojplg.skir.ai.AiFactory;
 import ojplg.skir.ai.AutomatedPlayer;
 import ojplg.skir.play.Channels;
-import ojplg.skir.play.GameRunner;
-import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Player;
 import org.apache.logging.log4j.LogManager;
@@ -32,8 +30,6 @@ public class EvolutionRunner {
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
     private final EvolutionSettings _evolutionSettings;
 
-    private GameRunner _gameRunner;
-
     public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread, EvolutionSettings evolutionSettings){
         _channels = channels;
         _evolveThread = evolveThread;
@@ -45,16 +41,16 @@ public class EvolutionRunner {
 
     public void start(){
         _log.info("Evolving with settings " + _evolutionSettings);
-        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, _evolutionSettings.getGamesPerIndividual());
+        AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, _evolutionSettings.getGamesPerIndividual(), false);
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
         bench.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
         for(int cnt = 0; cnt < _evolutionSettings.getNumberGenerations(); cnt++) {
             Generation nextGeneration = generations.next(currentGeneration);
-            _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
         }
+        bench.dispose();
     }
 
     private Generation createFirstGeneration(){

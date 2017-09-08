@@ -32,16 +32,18 @@ public class AiTestBench {
 
     private final List<SimpleGameRecord> _gameRecords = new ArrayList<>();
     private final AiFactory _aiFactory;
-    private Consumer<GameScores> _resultsConsumer;
+    private final boolean _disposeOnComplete;
 
+    private Consumer<GameScores> _resultsConsumer;
     private SimpleGameRecord _currentGameRecord;
     private GameRunner _gameRunner;
 
-    public AiTestBench(AiFactory aiFactory, Channels channels, Fiber fiber, int gamesToRun){
+    public AiTestBench(AiFactory aiFactory, Channels channels, Fiber fiber, int gamesToRun, boolean disposeOnComplete){
         this._channels = channels;
         this._fiber = fiber;
         this._gamesToRun = gamesToRun;
         this._aiFactory = aiFactory;
+        this._disposeOnComplete = disposeOnComplete;
 
         _channels.subscribeToAllGameEvents(fiber, this::handleGameEvent);
     }
@@ -97,11 +99,11 @@ public class AiTestBench {
     }
 
     private void processGame(){
-        GameId gameId = setUpNewGameRunner();
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
+            GameId gameId = setUpNewGameRunner();
             _currentGameRecord = new SimpleGameRecord();
-            _log.info("Starting game " + _gameRecords.size() + 1);
+            _log.info("Starting game " + gameId);
             _channels.publishGameStartRequest(new GameStartRequest(gameId, GamePurpose.AiTestBench));
         } else {
             _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
@@ -111,8 +113,14 @@ public class AiTestBench {
                 _resultsConsumer.accept(scores);
             }
             _gameRecords.clear();
-//            _fiber.dispose();
+            if(_disposeOnComplete){
+                dispose();
+            }
         }
+    }
+
+    public void dispose(){
+        _fiber.dispose();
     }
 
     private GameScores computeScores(){

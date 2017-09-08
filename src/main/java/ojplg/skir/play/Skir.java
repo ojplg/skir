@@ -49,7 +49,7 @@ public class Skir {
                 numberOfRounds = Integer.parseInt(commandLine.getOptionValue("rounds"));
             }
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createMasterFiber("AiTestBenchFiber"),
-                    numberOfRounds);
+                    numberOfRounds, true);
             testBench.start();
             testBench.startRun();
         } else if ( commandLine.hasOption("evolve") ) {
