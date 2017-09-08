@@ -47,7 +47,7 @@ public class EvolutionRunner {
         _log.info("Evolving with settings " + _evolutionSettings);
         AiTestBench bench = new AiTestBench(_aiFactory, _channels, _evolveThread, _evolutionSettings.getGamesPerIndividual());
         SkirScorer scorer = new SkirScorer(bench, _testPlayerGenerator);
-        scorer.start();
+        bench.start();
         Generations generations = new Generations(scorer);
         Generation currentGeneration = createFirstGeneration();
         for(int cnt = 0; cnt < _evolutionSettings.getNumberGenerations(); cnt++) {
@@ -55,15 +55,6 @@ public class EvolutionRunner {
             _log.info("next generation determined with " + nextGeneration.allMembers().size() + " individuals");
             currentGeneration = nextGeneration;
         }
-        setUpNewGameRunner();
-    }
-
-    private void setUpNewGameRunner(){
-        if( _gameRunner != null){
-            _gameRunner.stop();
-        }
-        _gameRunner = new GameRunner(_aiFactory, _channels, NewGameRequest.aiEvolution());
-        _gameRunner.start();
     }
 
     private Generation createFirstGeneration(){

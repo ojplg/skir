@@ -48,7 +48,7 @@ public class Skir {
             if(commandLine.hasOption("rounds")){
                 numberOfRounds = Integer.parseInt(commandLine.getOptionValue("rounds"));
             }
-            AiTestBench testBench = new AiTestBench(aiFactory, channels, createThreadFiber("AiTestBenchFiber"),
+            AiTestBench testBench = new AiTestBench(aiFactory, channels, createMasterFiber("AiTestBenchFiber"),
                     numberOfRounds);
             testBench.start();
             testBench.startRun();
@@ -63,21 +63,20 @@ public class Skir {
             if( commandLine.hasOption("size")) {
                 evSettings.setGenerationSize(Integer.parseInt(commandLine.getOptionValue("size")));
             }
-            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createThreadFiber("EvolutionFiber"), evSettings);
+            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createMasterFiber("EvolutionFiber"), evSettings);
             evolutionRunner.start();
         } else {
             startWebServer(channels);
         }
 
-        _log.info("Start up complete");
     }
 
     private static void startWebServer(Channels channels){
         String environmentPort = System.getenv("PORT");
-        _log.info("Environment port is " + environmentPort);
+        _log.info("Environent port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : 8080;
         _log.info("Using port " + port);
-        WebRunner webRunner = new WebRunner(channels);
+        WebRunner webRunner = new WebRunner(channels, createMasterFiber("WebRunner"));
         JettyInitializer jettyServer = new JettyInitializer(port, channels, webRunner);
         Thread webThread = new Thread(() -> {
             try {
@@ -91,8 +90,14 @@ public class Skir {
         webRunner.start();
     }
 
-    public static ThreadFiber createThreadFiber(String name){
+    private static ThreadFiber createMasterFiber(String name){
         ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, false);
+        fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
+        return fiber;
+    }
+
+    public static ThreadFiber createThreadFiber(String name){
+        ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, true);
         fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
         return fiber;
     }

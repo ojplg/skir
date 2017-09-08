@@ -24,9 +24,9 @@ public class WebRunner {
 
     private final Object _lock = new Object();
 
-    public WebRunner(Channels channels){
+    public WebRunner(Channels channels, Fiber fiber){
         _channels = channels;
-        _fiber = Skir.createThreadFiber("WebRunner");
+        _fiber = fiber;
         _channels.subscribeToAllGameEvents(_fiber, this::handleGameEvent);
     }
 

@@ -111,6 +111,7 @@ public class AiTestBench {
                 _resultsConsumer.accept(scores);
             }
             _gameRecords.clear();
+//            _fiber.dispose();
         }
     }
 

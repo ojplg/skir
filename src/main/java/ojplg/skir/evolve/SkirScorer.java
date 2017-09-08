@@ -27,10 +27,6 @@ public class SkirScorer implements Scorer {
         this._testPlayerGenerator = testPlayerGenerator;
     }
 
-    public void start(){
-        _aiTestBench.start();
-    }
-
     @Override
     public double score(Individual individual) {
         String name = "Tuner-" + individual.getIdentifier();
