@@ -72,6 +72,7 @@ public class AiFactory {
         generators.put("Bully", Bully::new);
         generators.put("Massy", Massy::new);
         generators.put("MassyTwo", MassyTwo::new);
+        generators.put("Pokey", Pokey::new);
         generators.put("Grumpy", Grumpy::new);
         generators.put("Wimpy", Wimpy::new);
         generators.put("WimpyTwo", WimpyTwo::new);

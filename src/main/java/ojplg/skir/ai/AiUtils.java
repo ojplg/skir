@@ -10,6 +10,8 @@ import ojplg.skir.utils.ListUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -152,6 +154,13 @@ public class AiUtils {
         return possessions.stream()
                 .min((c1, c2) -> (game.getOccupationForce(c1) - game.getOccupationForce(c2)))
                 .get();
+    }
+
+    static List<Country> orderByOccupationForce(Collection<Country> countryCollection, Game game){
+        List<Country> countries = new ArrayList<>();
+        countries.addAll(countryCollection);
+        Collections.sort(countries, Comparator.comparingInt(game::getOccupationForce));
+        return countries;
     }
 
     public static Set<Country> findEnemyBorders(Player player, Game game){
