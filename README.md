@@ -88,6 +88,10 @@ Grabby
 ------
 Attempts to control continents.
 
+Pokey
+-----
+Attempts a plan of slow growth.
+
 Tuney
 -----
 A generic algorithm that allows its heuristic to be configured.
