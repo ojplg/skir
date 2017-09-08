@@ -17,10 +17,10 @@ import ojplg.skir.play.orders.PlaceArmy;
 import ojplg.skir.state.Constants;
 import ojplg.skir.state.Game;
 import ojplg.skir.state.Player;
+import ojplg.skir.utils.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -98,7 +98,7 @@ public class Pokey implements AutomatedPlayer {
                 return new EndAttacks(adjutant);
             case ExchangeCardSet:
                 CardSet set = CardSet.findTradeableSet(game.getPlayerHoldings(getPlayer()).getCards());
-                return new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
+                return new ExchangeCardSet(adjutant, set);
             case Occupy:
                 return generateOccupationOrder(adjutant, game);
             case PlaceArmy:
@@ -141,29 +141,23 @@ public class Pokey implements AutomatedPlayer {
         return new Occupy(adjutant, constraints.attacker(), constraints.conquered(),occupationForce);
     }
 
-    private Attack findBestAttack(Game game, Adjutant adjutant){
+    private Order findBestAttack(Game game, Adjutant adjutant){
         PossibleAttack chosen = findBestPossibleAttack(game);
-        int dice = Math.min(Constants.MAXIMUM_ATTACKER_DICE, game.getOccupationForce(chosen.getAttacker()) - 1);
-        return new Attack(adjutant, chosen.getAttacker(), chosen.getDefender(),dice);
+        if ( game.getOccupationForce(chosen.getAttacker()) - 1 >= Constants.MAXIMUM_ATTACKER_DICE){
+            return new Attack(adjutant, chosen.getAttacker(), chosen.getDefender(),Constants.MAXIMUM_ATTACKER_DICE);
+
+        }
+        return new EndAttacks(adjutant);
     }
 
     private boolean shouldMakeAttack(Game game){
-        return findAdvantageousAttacks(game).size() > 0
+        return  AiUtils.findAdvantageousAttacks(_me, game).size() > 0
                 && ! _hasConqueredCountry;
     }
 
     private PossibleAttack findBestPossibleAttack(Game game){
-        List<PossibleAttack> advantages = findAdvantageousAttacks(game);
-        if( advantages.size() == 0 ){
-            return null;
-        }
-        Collections.shuffle(advantages);
-        Collections.sort(advantages);
-        return advantages.get(0);
-    }
-
-    private List<PossibleAttack> findAdvantageousAttacks(Game game){
-        return AiUtils.findAdvantageousAttacks(_me, game);
+        List<PossibleAttack> advantages = AiUtils.findAdvantageousAttacks(_me, game);
+        return ListUtils.findMax(advantages).get();
     }
 
 }
