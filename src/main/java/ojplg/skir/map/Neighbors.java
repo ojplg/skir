@@ -10,7 +10,7 @@ public class Neighbors {
     private final Map<Country, Neighborhood> _neighborhoods;
 
     public Neighbors(Neighborhood[] hoods){
-        Map<Country, Neighborhood> tmp = new HashMap<Country, Neighborhood>();
+        Map<Country, Neighborhood> tmp = new HashMap<>();
         for( Neighborhood hood : hoods ){
             tmp.put(hood.getCountry(), hood);
         }
