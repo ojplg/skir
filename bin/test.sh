@@ -8,17 +8,21 @@ TEST_SRC_DIR=$PROJECT_HOME_DIR/src/test/java
 TEST_OUT_DIR=$PROJECT_HOME_DIR/target/test-classes
 
 TEST_SRC_FILES=`find $TEST_SRC_DIR -name "*Test.java"`
+TEST_RESOURCES_DIR=$PROJECT_HOME_DIR/src/test/resources/
 
-mkdir -p $TEST_OUT_DIR
+mkdir -p $TEST_OUT_DIR/src/test/resources
 
 javac -cp $CLASS_PATH -d $TEST_OUT_DIR -sourcepath $TEST_SRC_DIR $TEST_SRC_FILES
 
-CLASS_PATH=$CLASS_PATH:$TEST_OUT_DIR
+cp -r $TEST_RESOURCES_DIR $TEST_OUT_DIR
+TEST_RESOURCES_DIR=$TEST_OUT_DIR/resources
+
+CLASS_PATH=$TEST_RESOURCES_DIR:$TEST_OUT_DIR:$CLASS_PATH
 
 TEST_NAMES=""
 
 for t in $TEST_SRC_FILES;
-do 
+do
 	t=${t#$PROJECT_HOME_DIR/src/test/java/}
 	t=${t%.java}
  	t=${t//\//.}

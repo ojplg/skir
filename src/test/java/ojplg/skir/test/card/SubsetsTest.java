@@ -96,7 +96,6 @@ public class SubsetsTest {
                 buf.append(item);
                 buf.append(", ");
             }
-            //System.out.println(buf.toString());
         }
     }
 }

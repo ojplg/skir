@@ -68,10 +68,7 @@ public class TuneyTwoTest {
         gameHelper.setCountry(Country.Scandinavia, gameHelper.WhitePlayer, 10);
         PossibleAttack attackWithHelp = new PossibleAttack(Country.Great_Britain, Country.Iceland, 12, 4);
         double withHelpScore = tuneyTwo.computeAttackScore(attackWithHelp, gameHelper.Game);
-
-        System.out.println("No help score " + noHelpScore);
-        System.out.println("With help score " + withHelpScore);
-
+        
         Assert.assertTrue(withHelpScore > noHelpScore);
     }
 
