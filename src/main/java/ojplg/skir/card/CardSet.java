@@ -22,7 +22,7 @@ public class CardSet {
         if (cards.size() < 3){
             return null;
         }
-        List<Card> copy = new ArrayList<Card>(cards);
+        List<Card> copy = new ArrayList<>(cards);
         for (List<Card> subset : Subsets.allSubsets(3, copy) ){
             CardSet set = new CardSet(subset.get(0), subset.get(1), subset.get(2));
             if( set.isExchangeableSet()){
