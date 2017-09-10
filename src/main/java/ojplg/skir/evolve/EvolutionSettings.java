@@ -20,7 +20,7 @@ public class EvolutionSettings {
         this._generationSize = GENERATION_SIZE;
 
         this._settingNames = TuneyTwo.presetTunings().keySet();
-        this._playerGenerator = (p, t) -> new TuneyTwo(p, t);
+        this._playerGenerator = TuneyTwo::new;
     }
 
     private int _gamesPerIndividual;

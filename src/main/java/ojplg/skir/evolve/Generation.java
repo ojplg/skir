@@ -2,7 +2,6 @@ package ojplg.skir.evolve;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,11 +26,8 @@ public class Generation {
 
     public Individual getUnscoredIndividual(){
         Optional<Individual> maybeIndividual = _members.stream()
-                .filter(i -> i.isUnscored()).findFirst();
-        if (maybeIndividual.isPresent()){
-            return maybeIndividual.get();
-        }
-        return null;
+                .filter(Individual::isUnscored).findFirst();
+        return maybeIndividual.orElse(null);
     }
 
     public int getCount(){
