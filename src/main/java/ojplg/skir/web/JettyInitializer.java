@@ -39,18 +39,18 @@ public class JettyInitializer {
         resourceHandler.setWelcomeFiles(new String[]{ "html/index.html"});
         resourceHandler.setResourceBase("target/classes");
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
+        ServletContextHandler webSocketContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        webSocketContextHandler.setContextPath("/");
 
-        ContextHandler contextHandler = new ContextHandler();
-        contextHandler.setContextPath("/app");
-        contextHandler.setHandler( new SkirWebHandler(_webRunner));
+        ContextHandler appHandler = new ContextHandler();
+        appHandler.setContextPath("/app");
+        appHandler.setHandler(new SkirWebHandler(_webRunner));
 
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] {  contextHandler, resourceHandler, context });
+        handlers.setHandlers(new Handler[] { appHandler, resourceHandler, webSocketContextHandler });
         _server.setHandler(handlers);
 
-        ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(context);
+        ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(webSocketContextHandler);
         wsContainer.addEndpoint(LocalWebSocket.class);
 
         _log.info("Starting web server");

@@ -9,7 +9,6 @@ import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.ClientConnectedEvent;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameJoinedEvent;
-import ojplg.skir.state.event.GameEvent;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
 import ojplg.skir.state.event.PlayerChangedEvent;
@@ -46,12 +45,11 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
     private GameId _gameId;
 
     public LocalWebSocket(){
-        _log.info("Constructing");
+        _log.info("Constructing: " + _counter);
         _channels = WebSocketInitializer.Channels;
         _fiber = Skir.createThreadFiber("WebSocketFiber-" + _counter );
-        _counter++;
         _fiber.start();
-        _log.info("Constructed");
+        _counter++;
     }
 
     private void doSubscriptions(){
@@ -67,7 +65,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
 
     @OnOpen
     public void onSessionOpened(Session session){
-        _log.info("OPENED A SESSION " + session);
+        _log.info("Opened " + session);
         _session = session;
     }
 
