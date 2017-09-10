@@ -33,11 +33,7 @@ public class JettyInitializer {
     public void startJettyServer() throws Exception {
 
         _log.info("Initializing web server");
-        Server _server = new Server();
-
-        ServerConnector httpConnector = new ServerConnector(_server);
-        httpConnector.setPort(_httpPort);
-        _server.addConnector(httpConnector);
+        Server _server = new Server(_httpPort);
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
