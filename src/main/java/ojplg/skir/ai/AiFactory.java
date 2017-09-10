@@ -32,6 +32,11 @@ public class AiFactory {
         _preventDuplicates = true;
         List<String> aiNameList = new ArrayList<>();
         aiNameList.addAll(aiNames);
+        List<String> knownNames = extractPlayerNames();
+        boolean namesOK = aiNameList.stream().allMatch(knownNames::contains);
+        if ( ! namesOK ){
+            throw new RuntimeException("Could not recognize name in collection " + aiNameList);
+        }
         _eligibleAiNames = Collections.unmodifiableList(aiNameList);
     }
 
