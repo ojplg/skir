@@ -41,7 +41,7 @@ public class SkirWebHandler extends AbstractHandler {
                 + " with path into " + request.getPathInfo()
                 + " with context path " + request.getContextPath());
 
-        switch( request.getPathInfo()){
+        switch(request.getPathInfo()){
             case "/chooser":
                 renderChooserPage(httpServletRequest, httpServletResponse, false);
                 break;
@@ -50,19 +50,8 @@ public class SkirWebHandler extends AbstractHandler {
                 return;
             case "/join-game":
             case "/view-game":
-                _log.info("Join or view game being handled");
-                String userName = request.getParameter("user-name");
-                String gameIdString = request.getParameter("game");
-                GameId gameId = GameId.fromString(gameIdString);
-                if( isGameActive(gameId)){
-                    // need a page for this circumstance
-                    boolean joinAttempt = "/join-game".equals(request.getPathInfo());
-                    boolean demo = "true".equals(request.getParameter("demo"));
-                    String remoteAddress = request.getRemoteAddr();
-                    renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
-                } else {
-                    renderChooserPage(httpServletRequest, httpServletResponse, true);
-                }
+                // TODO: should distinguish between join and view attempts
+                handleJoinViewRequests(httpServletRequest, httpServletResponse);
                 break;
             default:
                 // TODO: this should lead to an error screen
@@ -71,8 +60,23 @@ public class SkirWebHandler extends AbstractHandler {
 
         httpServletResponse.setContentType("text/html");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
         request.setHandled(true);
+    }
+
+    private void handleJoinViewRequests(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+    throws IOException {
+        _log.info("Join or view game being handled");
+        String userName = httpServletRequest.getParameter("user-name");
+        String gameIdString = httpServletRequest.getParameter("game");
+        GameId gameId = GameId.fromString(gameIdString);
+        if( isGameActive(gameId)){
+            boolean joinAttempt = "/join-game".equals(httpServletRequest.getPathInfo());
+            boolean demo = "true".equals(httpServletRequest.getParameter("demo"));
+            String remoteAddress = httpServletRequest.getRemoteAddr();
+            renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
+        } else {
+            renderChooserPage(httpServletRequest, httpServletResponse, true);
+        }
     }
 
     private void handleNewGameRequest(Request request, HttpServletResponse response){
