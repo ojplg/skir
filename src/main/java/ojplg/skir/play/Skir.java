@@ -74,7 +74,7 @@ public class Skir {
     private static void startWebServer(Channels channels){
         String environmentPort = System.getenv("PORT");
         _log.info("Environent port is " + environmentPort);
-        int port = environmentPort != null ? Integer.parseInt(environmentPort) : 8080;
+        int port = environmentPort != null ? Integer.parseInt(environmentPort) : Constants.DEFAULT_PORT;
         _log.info("Using port " + port);
         WebRunner webRunner = new WebRunner(channels, createMasterFiber("WebRunner"));
         JettyInitializer jettyServer = new JettyInitializer(port, channels, webRunner);
