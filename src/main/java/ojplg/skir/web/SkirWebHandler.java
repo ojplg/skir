@@ -37,51 +37,63 @@ public class SkirWebHandler extends AbstractHandler {
     public void handle(String s, Request request, HttpServletRequest httpServletRequest,
                        HttpServletResponse httpServletResponse) throws IOException, ServletException {
         _log.info("'Handling a request to URL: '" + httpServletRequest.getRequestURL() +
-                "' from '" + request.getRemoteAddr() + "'");
+                "' from '" + request.getRemoteAddr() + "'"
+                + " with path into " + request.getPathInfo()
+                + " with context path " + request.getContextPath());
 
-        if( request.getPathInfo().equals("/")) {
-            String switchKey = request.getParameter("switch-key");
-            if( "chooser".equals(switchKey)){
-                String userName = request.getParameter("user-name");
-                renderChooserPage(userName, false, httpServletResponse.getWriter());
-            } else if( "new-game".equals(switchKey)){
-                String userName = request.getParameter("user-name");
-                String remoteAddress = request.getRemoteAddr();
-                List<String> ais = Arrays.asList(request.getParameterValues("ai"));
-                boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
-                NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
-                        NewGameRequest.webPlay(userName, remoteAddress, ais);
-                GameId gameId = _webRunner.newGame(gameRequest);
-
-                httpServletResponse.setStatus(HttpServletResponse.SC_SEE_OTHER);
-                httpServletResponse.setHeader("Location", "/?switch-key=join-game&user-name=" + userName
-                        + "&demo=" + demoFlag + "&game=" + gameId.getId());
-                request.setHandled(true);
+        switch( request.getPathInfo()){
+            case "/chooser":
+                renderChooserPage(httpServletRequest, httpServletResponse, false);
+                break;
+            case "/new-game":
+                handleNewGameRequest(request, httpServletResponse);
                 return;
-            } else if( "join-game".equals(switchKey) || "view-game".equals(switchKey)){
+            case "/join-game":
+            case "/view-game":
+                _log.info("Join or view game being handled");
                 String userName = request.getParameter("user-name");
                 String gameIdString = request.getParameter("game");
                 GameId gameId = GameId.fromString(gameIdString);
                 if( isGameActive(gameId)){
                     // need a page for this circumstance
-                    boolean joinAttempt = "join-game".equals(switchKey);
+                    boolean joinAttempt = "/join-game".equals(request.getPathInfo());
                     boolean demo = "true".equals(request.getParameter("demo"));
                     String remoteAddress = request.getRemoteAddr();
                     renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
                 } else {
-                    renderChooserPage(userName, true, httpServletResponse.getWriter());
+                    renderChooserPage(httpServletRequest, httpServletResponse, true);
                 }
-            } else {
-                renderIndexPage(httpServletResponse.getWriter());
-            }
-            httpServletResponse.setContentType("text/html");
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-
-            request.setHandled(true);
+                break;
+            default:
+                // TODO: this should lead to an error screen
+                _log.warn("Request makes no sense: " + httpServletRequest.getRequestURL());
         }
+
+        httpServletResponse.setContentType("text/html");
+        httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+
+        request.setHandled(true);
     }
 
-    private void renderChooserPage(String userName, boolean unknownGame, Writer writer){
+    private void handleNewGameRequest(Request request, HttpServletResponse response){
+        _log.info("New game being handled");
+        String userName = request.getParameter("user-name");
+        String remoteAddress = request.getRemoteAddr();
+        List<String> ais = Arrays.asList(request.getParameterValues("ai"));
+        boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
+        NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
+                NewGameRequest.webPlay(userName, remoteAddress, ais);
+        GameId gameId = _webRunner.newGame(gameRequest);
+
+        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        response.setHeader("Location", "/app/join-game?user-name=" + userName
+                + "&demo=" + demoFlag + "&game=" + gameId.getId());
+        request.setHandled(true);
+    }
+
+    private void renderChooserPage(HttpServletRequest request, HttpServletResponse response, boolean unknownGame)
+    throws IOException {
+        String userName = request.getParameter("user-name");
         _log.info("Rendering chooser page");
         VelocityContext vc = new VelocityContext();
         vc.put("user_name", userName);
@@ -92,7 +104,7 @@ public class SkirWebHandler extends AbstractHandler {
         vc.put("game_ids", ids);
         vc.put("game_requests", gameRequests);
         vc.put("unknown_game", unknownGame);
-        renderVelocityTemplate("/template/choose.vtl", vc, writer);
+        renderVelocityTemplate("/template/choose.vtl", vc, response.getWriter());
     }
 
     private boolean isGameActive(GameId gameId){
@@ -115,11 +127,6 @@ public class SkirWebHandler extends AbstractHandler {
         vc.put("web_socket_protocol", webSocketProtocol);
 
         renderVelocityTemplate("/template/game.vtl", vc, writer);
-    }
-
-    private void renderIndexPage(Writer writer){
-        VelocityContext vc = new VelocityContext();
-        renderVelocityTemplate("/template/index.vtl", vc, writer);
     }
 
     private void renderVelocityTemplate(String templatePath, VelocityContext vc, Writer writer){

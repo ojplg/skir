@@ -36,14 +36,14 @@ public class JettyInitializer {
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
-        resourceHandler.setWelcomeFiles(new String[]{});
+        resourceHandler.setWelcomeFiles(new String[]{ "html/index.html"});
         resourceHandler.setResourceBase("target/classes");
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 
         ContextHandler contextHandler = new ContextHandler();
-        contextHandler.setContextPath("/");
+        contextHandler.setContextPath("/app");
         contextHandler.setHandler( new SkirWebHandler(_webRunner));
 
         HandlerList handlers = new HandlerList();

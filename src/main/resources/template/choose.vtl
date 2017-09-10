@@ -5,7 +5,7 @@
     <title>Skir</title>
     <link rel="icon"
           type="image/x-icon"
-          href="html/favicon.ico" />
+          href="/html/favicon.ico" />
 
     <script>
         function toggleAiCheckboxes(flag){
@@ -18,7 +18,7 @@
 
 </head>
 <body>
-    <form action="/" method="get">
+    <form action="/app/new-game" method="get">
         <p>New Game Form</p>
         <input type="hidden" name="switch-key" value="new-game"/>
         <input type="hidden" name="user-name" value="${user_name}"/>
@@ -68,9 +68,9 @@
             <td>$menu_entry.RequestTime</td>
             <td>$menu_entry.GamePurpose</td>
             #if($menu_entry.isJoinable())</td>
-            <td><a href="/?switch-key=join-game&user-name=${user_name}&game=${game_id}">Join</a></td>
+            <td><a href="/app/join-game?user-name=${user_name}&game=${game_id}">Join</a></td>
             #else
-            <td><a href="/?switch-key=view-game&user-name=${user_name}&game=${game_id}&demo=${menu_entry.isDemo()}">View</a></td>
+            <td><a href="/app/view-game?user-name=${user_name}&game=${game_id}&demo=${menu_entry.isDemo()}">View</a></td>
             #end
         </tr>
     #end
