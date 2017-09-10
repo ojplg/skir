@@ -77,7 +77,6 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         try {
             JSONObject jObject = (JSONObject) parser.parse(message);
             String messageType = (String) jObject.get("messageType");
-            _log.info("Message type was " + messageType);
             if( "Order".equals(messageType)){
                 try {
                     handleOrder(jObject);
