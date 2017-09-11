@@ -141,7 +141,7 @@ public class Grabby implements AutomatedPlayer {
         List<PossibleAttack> possibleAttacks = AiUtils.findAdvantageousAttacks(_me, game);
         _log.debug("Possible attack count " + possibleAttacks.size());
         List<PossibleAttack> possibleContinentAttacks = possibleAttacks.stream()
-                                .filter( pa -> { return continent.getCountries().contains(pa.getDefender());})
+                                .filter( pa -> continent.getCountries().contains(pa.getDefender()))
                                 .collect(Collectors.toList());
         return RandomUtils.pickRandomElement(possibleContinentAttacks);
     }
@@ -165,8 +165,8 @@ public class Grabby implements AutomatedPlayer {
             return new PlaceArmy(adjutant, country);
         }
         List<Country> myCountries = continent.getCountries().stream()
-                .filter(c -> { return game.getOccupier(c).equals(_me);})
-                .filter(c -> { return game.findEnemyNeighbors(c).size() > 0; })
+                .filter(c -> game.getOccupier(c).equals(_me))
+                .filter(c -> game.findEnemyNeighbors(c).size() > 0)
                 .collect(Collectors.toList());
         Country country = RandomUtils.pickRandomElement(myCountries);
         _log.debug("Going to place in " + country);
