@@ -40,51 +40,32 @@ public class Wimpy implements AutomatedPlayer {
         // do nothing
     }
 
-    private OrderType pickOrderType(List<OrderType> possibleOrderTypes) {
+    @Override
+    public Order generateOrder(Adjutant adjutant, Game game) {
+        List<OrderType> possibleOrderTypes = adjutant.allowableOrders();
+
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
-            return OrderType.PlaceArmy;
+            return placeArmy(adjutant, game);
         }
         if( possibleOrderTypes.contains(OrderType.EndAttacks) ){
-            return OrderType.EndAttacks;
+            return new EndAttacks(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.DrawCard) ){
-            return OrderType.DrawCard;
+            return new DrawCard(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.ClaimArmies)){
-            return OrderType.ClaimArmies;
+            return new ClaimArmies(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.Fortify)){
-            return OrderType.EndTurn;
+            return new EndTurn(adjutant);
         }
         _log.warn("Don't know what to do with these options " + possibleOrderTypes);
-        return null;
+        return new EndTurn(adjutant);
     }
 
 
     public Player getPlayer(){
         return _me;
-    }
-
-    @Override
-    public Order generateOrder(Adjutant adjutant, Game game){
-        OrderType orderType = pickOrderType(adjutant.allowableOrders());
-
-        Order order;
-        if( orderType == OrderType.PlaceArmy){
-            order = placeArmy(adjutant, game);
-        } else if( orderType == OrderType.EndAttacks ){
-            order = new EndAttacks(adjutant);
-        } else if(orderType ==OrderType.DrawCard ){
-            order = new DrawCard(adjutant);
-        } else if( orderType == OrderType.ClaimArmies){
-            order = new ClaimArmies(adjutant);
-        } else if( orderType == OrderType.EndTurn){
-            order = new EndTurn(adjutant);
-        } else {
-            _log.warn("Don't know what to do with this type " + orderType);
-            return null;
-        }
-        return order;
     }
 
     private PlaceArmy placeArmy(Adjutant adjutant, Game game){

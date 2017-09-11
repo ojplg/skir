@@ -47,68 +47,44 @@ public class Bully implements AutomatedPlayer {
         // do nothing
     }
 
-    private OrderType pickOrderType(List<OrderType> possibleOrderTypes, Game game) {
+    @Override
+    public Order generateOrder(Adjutant adjutant, Game game) {
+
+        List<OrderType> possibleOrderTypes = adjutant.allowableOrders();
+
         if ( possibleOrderTypes.contains(OrderType.ExchangeCardSet)){
-            return OrderType.ExchangeCardSet;
+            CardSet set = CardSet.findTradeableSet(game.getPlayerHoldings(getPlayer()).getCards());
+            return new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
         }
         if( possibleOrderTypes.contains(OrderType.PlaceArmy)){
-            return OrderType.PlaceArmy;
+            return placeArmy(adjutant, game);
         }
         if( possibleOrderTypes.contains(OrderType.Attack) && hasAdvantageousAttack(game) ){
-            return OrderType.Attack;
+            return findBestAttack(game, adjutant);
         } else if (possibleOrderTypes.contains(OrderType.Attack)){
-            return OrderType.EndAttacks;
+            return new EndAttacks(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.DrawCard) ){
-            return OrderType.DrawCard;
+            return new DrawCard(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.ClaimArmies)){
-            return OrderType.ClaimArmies;
+            return new ClaimArmies(adjutant);
         }
         if( possibleOrderTypes.contains(OrderType.Fortify)){
-            return OrderType.EndTurn;
+            return new EndTurn(adjutant);
         }
         if ( possibleOrderTypes.contains(OrderType.Occupy)){
-            return OrderType.Occupy;
+            return generateOccupationOrder(adjutant, game);
         }
         if( possibleOrderTypes.contains(OrderType.EndTurn)){
-            return OrderType.EndTurn;
+            return new EndTurn(adjutant);
         }
         throw new RuntimeException("Don't know what to do with these options " + possibleOrderTypes);
     }
 
-
-    public Player getPlayer(){
-        return _me;
-    }
-
     @Override
-    public Order generateOrder(Adjutant adjutant, Game game){
-
-        OrderType orderType = pickOrderType(adjutant.allowableOrders(), game);
-
-        switch (orderType){
-            case Attack:
-                return findBestAttack(game, adjutant);
-            case ClaimArmies:
-                return new ClaimArmies(adjutant);
-            case DrawCard:
-                return new DrawCard(adjutant);
-            case EndAttacks:
-                return new EndAttacks(adjutant);
-            case ExchangeCardSet:
-                CardSet set = CardSet.findTradeableSet(game.getPlayerHoldings(getPlayer()).getCards());
-                return new ExchangeCardSet(adjutant, set.getOne(), set.getTwo(), set.getThree());
-            case Occupy:
-                return generateOccupationOrder(adjutant, game);
-            case PlaceArmy:
-                return placeArmy(adjutant, game);
-            case EndTurn:
-                return new EndTurn(adjutant);
-            default:
-                _log.warn("Cannot handle order type " + orderType);
-                return null;
-        }
+    public Player getPlayer() {
+        return _me;
     }
 
     private Occupy generateOccupationOrder(Adjutant adjutant, Game game){
