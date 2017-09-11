@@ -69,6 +69,7 @@ public class Game implements GameSpecifiable {
         _currentAttacker = _players.get(0);
         GameEventMessage gameEvent = new GameStartEvent(_gameId, _cardPile.valuationOfExchange());
         _channels.publishGameEvent(gameEvent);
+        _log.info(_gameId + " turn number "  + _turnNumber);
     }
 
     public void doInitialPlacements(){
