@@ -20,6 +20,7 @@ import ojplg.skir.state.Player;
 import ojplg.skir.state.Constants;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -102,7 +103,7 @@ public class Grumpy implements AutomatedPlayer {
     }
 
     private List<Country> shortestPath(List<List<Country>> paths){
-        return paths.stream().min((l1,l2) -> l1.size() - l2.size()).get();
+        return paths.stream().min(Comparator.comparingInt(List::size)).get();
     }
 
     private List<Country> findShortestPathTo(Country destination, Game game){

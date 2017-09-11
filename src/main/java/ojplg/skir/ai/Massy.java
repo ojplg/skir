@@ -68,9 +68,8 @@ public class Massy implements AutomatedPlayer {
         if( orderTypeList.contains(OrderType.Occupy)){
             _conqueredOne = true;
             OccupationConstraints oc = adjutant.getOccupationConstraints();
-            Occupy occupy = new Occupy(adjutant, oc.attacker(), oc.conquered(),
+            return new Occupy(adjutant, oc.attacker(), oc.conquered(),
                     game.getOccupationForce(oc.attacker()) - 1);
-            return occupy;
         }
         if( shouldFortify(orderTypeList, game)){
             Country strongestCountry = AiUtils.findStrongestPossession(_me, game);
