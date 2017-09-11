@@ -89,8 +89,7 @@ public class AiFactory {
         generators.put("Tuney_A64", p -> evolvedAdditiveTuney(p, 64));
         generators.put("Tuney_A81", p -> evolvedAdditiveTuney(p, 81));
         generators.put("TuneyTwo", p -> new TuneyTwo(p, TuneyTwo.presetTunings()));
-        generators.put("TT_500", p -> evolvedTuneyTwo(p,"tt_500"));
-
+        generators.put("T2_530", p -> evolvedTuneyTwo(p,"t2_530"));
         return Collections.unmodifiableMap(generators);
     }
 

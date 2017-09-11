@@ -18,11 +18,12 @@ AVERAGE_SURVIVOR_LINE = BEGIN_LINE + "Average score of survivors in generation (
 AVERAGE_LINE = BEGIN_LINE + "Average score of individuals in generation (\d+) was (\d+\.\d+)"
 
 class Individual:
-    def __init__(self, generation, number, score, geneMap):
+    def __init__(self, generation, number, score, geneMap, gene_string):
         self.generation = generation
         self.number = number
         self.score = score
         self.genes = geneMap
+        self.gene_string = gene_string
 
     def gene_value(self, gene_name):
         value = self.genes[gene_name]
@@ -158,7 +159,7 @@ class EvolveFileReader:
             score = Decimal(individual_match.group(3))
             genes_string = individual_match.group(4)
             genes = json.loads(genes_string)
-            individual = Individual(gen_num, ind_num, score, genes)
+            individual = Individual(gen_num, ind_num, score, genes, genes_string)
             self.add_to_generation(individual)
             self.individuals_by_score[score].append(individual)
 
@@ -245,14 +246,22 @@ class Summary:
                           lambda gen, name: gen.average_survivor(name))
 
     def export_top_ten_genes(self):
+        ten_best = self.top_ten()
         csv = open("top_ten_genes.csv", "w")
         for gene_name in self.gene_names():
             csv.write(gene_name)
-            for ind in self.top_ten():
+            for ind in ten_best:
                 csv.write(",")
                 csv.write(str(ind.gene_value(gene_name)))
             csv.write("\n")
         csv.close                    
+        cnt = 1
+        for ind in ten_best:
+            print str(cnt) + " -> " + str(ind.score)
+            json_file = open("top_" + str(cnt), "w")
+            json_file.write(ten_best[cnt-1].gene_string)
+            json_file.close
+            cnt += 1
 
     def export_first_generation_genes(self):
         csv = open("first_generation_genes.csv", "w")
