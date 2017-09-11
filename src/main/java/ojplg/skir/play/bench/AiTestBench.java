@@ -99,6 +99,7 @@ public class AiTestBench {
     }
 
     private void processGame(){
+        _log.info(_currentGameRecord.produceLogRecord());
         _gameRecords.add(_currentGameRecord);
         if( _gameRecords.size() < _gamesToRun){
             GameId gameId = setUpNewGameRunner();
@@ -106,7 +107,6 @@ public class AiTestBench {
             _log.info("Starting game " + gameId);
             _channels.publishGameStartRequest(new GameStartRequest(gameId, GamePurpose.AiTestBench));
         } else {
-            _gameRecords.forEach( gr -> _log.info(gr.produceLogRecord()));
             GameScores scores = computeScores();
             _log.info("Scores \n" + scores);
             if( _resultsConsumer != null) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SimpleGameRecord {
 
@@ -56,7 +57,7 @@ public class SimpleGameRecord {
         Map<String, Integer> scores = new HashMap();
         _playerTypes.forEach( o -> {
             scores.put(o, 0);
-            participants.computeIfPresent(o, (x,y) -> { return y + 1; });
+            participants.computeIfPresent(o, (x,y) -> y + 1);
             participants.putIfAbsent(o, 1);
         });
         if( includeLateEliminationBonus) {
@@ -83,25 +84,23 @@ public class SimpleGameRecord {
     public String produceLogRecord(){
         StringBuilder buf = new StringBuilder();
         buf.append("Participants: ");
-        _playerTypes.forEach( p ->
-                {
-                    buf.append(p);
-                    buf.append(",");
-                });
+
+        buf.append(String.join(",", _playerTypes));
+
         buf.append(". Eliminations: ");
-        _playerEliminations.forEach( pt ->
-                {
-                    buf.append(pt.getPlayerType());
-                    buf.append(",");
-                    buf.append(pt.getTurnNumber());
-                    buf.append(";");
-                });
+
+        buf.append(String.join(";",
+                _playerEliminations.stream().map(PlayerTurn::toString).collect(Collectors.toList())));
+
         if(_gameDrawn){
-            buf.append("draw,");
+            buf.append(". Draw on turn ");
         } else {
-            buf.append("victory for " + _winner + ",");
+            buf.append(". Victory for ");
+            buf.append(_winner);
+            buf.append(" on turn ");
         }
         buf.append(_gameLength);
+        buf.append(".");
         return buf.toString();
     }
 
@@ -121,6 +120,13 @@ public class SimpleGameRecord {
         public int getTurnNumber() {
             return _turnNumber;
         }
-    }
 
+        public String toString(){
+            StringBuilder buf = new StringBuilder();
+            buf.append(getPlayerType());
+            buf.append(",");
+            buf.append(getTurnNumber());
+            return buf.toString();
+        }
+    }
 }

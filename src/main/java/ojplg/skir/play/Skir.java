@@ -52,7 +52,7 @@ public class Skir {
                     numberOfRounds, true);
             testBench.start();
             testBench.startRun();
-        } else if ( commandLine.hasOption("evolve") ) {
+        } else if (commandLine.hasOption("evolve") ) {
             EvolutionSettings evSettings = new EvolutionSettings();
             if( commandLine.hasOption("rounds")) {
                 evSettings.setGamesPerIndividual(Integer.parseInt(commandLine.getOptionValue("rounds")));
