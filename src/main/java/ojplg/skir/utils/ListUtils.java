@@ -53,7 +53,7 @@ public class ListUtils {
     }
 
     public static <T, V> Map<T,V> mapify(List<T> list, Function<T, V> mapper){
-        Map<T,V> map = new HashMap();
+        Map<T,V> map = new HashMap<>();
         list.forEach(t -> map.put(t, mapper.apply(t)));
         return map;
     }
