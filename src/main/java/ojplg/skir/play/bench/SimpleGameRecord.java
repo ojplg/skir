@@ -54,7 +54,7 @@ public class SimpleGameRecord {
      */
     public GameScores scoreGame(boolean includeLateEliminationBonus){
         Map<String, Integer> participants = new HashMap<>();
-        Map<String, Integer> scores = new HashMap();
+        Map<String, Integer> scores = new HashMap<>();
         _playerTypes.forEach( o -> {
             scores.put(o, 0);
             participants.computeIfPresent(o, (x,y) -> y + 1);

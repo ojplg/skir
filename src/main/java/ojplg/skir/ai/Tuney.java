@@ -479,7 +479,7 @@ public class Tuney implements AutomatedPlayer {
 
         Set<Country> goals = new HashSet<>();
         if( goalContinent != null) {
-            List continentalGoals = ListUtils.filter(goalContinent.getCountries(),
+            List<Country> continentalGoals = ListUtils.filter(goalContinent.getCountries(),
                     c -> !game.getOccupier(c).equals(_me));
             goals.addAll(continentalGoals);
         }
