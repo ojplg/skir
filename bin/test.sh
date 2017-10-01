@@ -12,7 +12,7 @@ TEST_RESOURCES_DIR=$PROJECT_HOME_DIR/src/test/resources/
 
 mkdir -p $TEST_OUT_DIR/src/test/resources
 
-javac -cp $CLASS_PATH -d $TEST_OUT_DIR -sourcepath $TEST_SRC_DIR $TEST_SRC_FILES
+javac -proc:none -cp $CLASS_PATH -d $TEST_OUT_DIR -sourcepath $TEST_SRC_DIR $TEST_SRC_FILES
 
 cp -r $TEST_RESOURCES_DIR $TEST_OUT_DIR
 TEST_RESOURCES_DIR=$TEST_OUT_DIR/resources

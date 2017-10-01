@@ -8,10 +8,10 @@ public class Subsets {
 
     public static <T> List<List<T>> allSubsets(int length, List<T> items){
         if (length > items.size()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         if (length == 0 ){
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<List<T>> sublists = new ArrayList<>();
         if( length == 1 ){

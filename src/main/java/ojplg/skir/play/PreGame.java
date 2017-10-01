@@ -95,6 +95,6 @@ public class PreGame {
             aiPlayers.put(ai.getPlayer(), ai);
             _channels.publishGameEvent(GameEvent.joinsGame(_gameId, ai.getPlayer()));
         }
-        return new Tuple(players, aiPlayers);
+        return new Tuple<>(players, aiPlayers);
     }
 }

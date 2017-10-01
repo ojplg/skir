@@ -19,7 +19,7 @@ public class PlayerHoldings implements GameSpecifiable {
     }
 
     public List<Card> getCards(){
-        return Collections.unmodifiableList(new ArrayList(_cards));
+        return Collections.unmodifiableList(new ArrayList<>(_cards));
     }
 
     public void removeCards(List<Card> cards){
