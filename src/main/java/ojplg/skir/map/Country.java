@@ -1,6 +1,6 @@
 package ojplg.skir.map;
 
-public class Country implements Comparable {
+public class Country implements Comparable<Country> {
 
     // Africa
     public static final Country Congo = new Country("Congo");
@@ -87,8 +87,7 @@ public class Country implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Country that = (Country) o;
+    public int compareTo(Country that) {
         return this._name.compareTo(that._name);
     }
 }

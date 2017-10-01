@@ -64,14 +64,14 @@ public class AiFactory {
     }
 
     private static List<String> extractPlayerNames(){
-        List<String> names  = new ArrayList();
+        List<String> names  = new ArrayList<>();
         names.addAll(_playerGenerators.keySet());
         Collections.sort(names);
         return Collections.unmodifiableList(names);
     }
 
     private static Map<String, Function<Player, AutomatedPlayer>> playerGenerators(){
-        Map<String, Function<Player, AutomatedPlayer>> generators = new HashMap();
+        Map<String, Function<Player, AutomatedPlayer>> generators = new HashMap<>();
 
         generators.put("Grabby", Grabby::new);
         generators.put("Bully", Bully::new);

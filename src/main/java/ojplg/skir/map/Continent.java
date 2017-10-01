@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Continent implements Comparable {
+public class Continent implements Comparable<Continent> {
 
     public static final int MAXIMUM_CONTINENT_VALUE = 7;
 
@@ -56,9 +56,8 @@ public class Continent implements Comparable {
 
     public Continent(String name, Country[] countries, int bonus){
         _name = name;
-        List<Country> cs = Arrays.asList(countries);
-        Collections.sort(cs);
-        _countries = Collections.unmodifiableList(cs);
+        Arrays.sort(countries);
+        _countries = Collections.unmodifiableList(Arrays.asList(countries));
         _bonus = bonus;
     }
 
@@ -90,8 +89,7 @@ public class Continent implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        Continent that = (Continent) o;
+    public int compareTo(Continent that) {
         return this._name.compareTo(that._name);
     }
 
