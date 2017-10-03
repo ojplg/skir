@@ -43,7 +43,7 @@ public class SkirWebHandler extends AbstractHandler {
 
         switch(request.getPathInfo()){
             case "/chooser":
-                renderChooserPage(httpServletRequest, httpServletResponse, false);
+                renderChooserPage(request, httpServletResponse, "");
                 break;
             case "/new-game":
                 handleNewGameRequest(request, httpServletResponse);
@@ -51,7 +51,7 @@ public class SkirWebHandler extends AbstractHandler {
             case "/join-game":
             case "/view-game":
                 // TODO: should distinguish between join and view attempts
-                handleJoinViewRequests(httpServletRequest, httpServletResponse);
+                handleJoinViewRequests(request, httpServletResponse);
                 break;
             default:
                 // TODO: this should lead to an error screen
@@ -63,39 +63,47 @@ public class SkirWebHandler extends AbstractHandler {
         request.setHandled(true);
     }
 
-    private void handleJoinViewRequests(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+    private void handleJoinViewRequests(Request request, HttpServletResponse httpServletResponse)
     throws IOException {
         _log.info("Join or view game being handled");
-        String userName = httpServletRequest.getParameter("user-name");
-        String gameIdString = httpServletRequest.getParameter("game");
+        String userName = request.getParameter("user-name");
+        String gameIdString = request.getParameter("game");
         GameId gameId = GameId.fromString(gameIdString);
         if( isGameActive(gameId)){
-            boolean joinAttempt = "/join-game".equals(httpServletRequest.getPathInfo());
-            boolean demo = "true".equals(httpServletRequest.getParameter("demo"));
-            String remoteAddress = httpServletRequest.getRemoteAddr();
+            boolean joinAttempt = "/join-game".equals(request.getPathInfo());
+            boolean demo = "true".equals(request.getParameter("demo"));
+            String remoteAddress = request.getRemoteAddr();
             renderGamePage(gameId, userName, remoteAddress, demo, joinAttempt, httpServletResponse.getWriter());
         } else {
-            renderChooserPage(httpServletRequest, httpServletResponse, true);
+            renderChooserPage(request, httpServletResponse, "Unknown game");
         }
     }
 
-    private void handleNewGameRequest(Request request, HttpServletResponse response){
+    private void handleNewGameRequest(Request request, HttpServletResponse response)
+    throws IOException {
         _log.info("New game being handled");
         String userName = request.getParameter("user-name");
         String remoteAddress = request.getRemoteAddr();
-        List<String> ais = Arrays.asList(request.getParameterValues("ai"));
-        boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
-        NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
-                NewGameRequest.webPlay(userName, remoteAddress, ais);
-        GameId gameId = _webRunner.newGame(gameRequest);
+        List<String> ais;
+        if ( request.getParameterMap().containsKey("ai")) {
+             ais = Arrays.asList(request.getParameterValues("ai"));
+            boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
+            NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
+                    NewGameRequest.webPlay(userName, remoteAddress, ais);
+            GameId gameId = _webRunner.newGame(gameRequest);
 
-        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-        response.setHeader("Location", "/app/join-game?user-name=" + userName
-                + "&demo=" + demoFlag + "&game=" + gameId.getId());
+            response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+            response.setHeader("Location", "/app/join-game?user-name=" + userName
+                    + "&demo=" + demoFlag + "&game=" + gameId.getId());
+        } else {
+            renderChooserPage(request, response, "Need to select at least one AI");
+            response.setContentType("text/html");
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
         request.setHandled(true);
     }
 
-    private void renderChooserPage(HttpServletRequest request, HttpServletResponse response, boolean unknownGame)
+    private void renderChooserPage(Request request, HttpServletResponse response, String error)
     throws IOException {
         String userName = request.getParameter("user-name");
         _log.info("Rendering chooser page");
@@ -107,8 +115,9 @@ public class SkirWebHandler extends AbstractHandler {
         Collections.sort(ids);
         vc.put("game_ids", ids);
         vc.put("game_requests", gameRequests);
-        vc.put("unknown_game", unknownGame);
+        vc.put("error", error);
         renderVelocityTemplate("/template/choose.vtl", vc, response.getWriter());
+        _log.info("rendered chooser page");
     }
 
     private boolean isGameActive(GameId gameId){

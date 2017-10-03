@@ -18,6 +18,10 @@
 
 </head>
 <body>
+        #if (! $error.isEmpty() )
+            <div style="color:red;">Error: $error</div>
+        #end
+
     <form action="/app/new-game" method="post">
         <p>New Game Form</p>
         <input type="hidden" name="user-name" value="${user_name}"/>
@@ -25,6 +29,7 @@
         <input type="checkbox" name="demo" value="true"/>
         <label>Demo</label>
         <br/><br/>
+
 
         #foreach( $ai in $ai_names )
             <input type="checkbox" name="ai" value="$ai" checked/>
@@ -45,10 +50,6 @@
     <br/>
 
     <p>Join Game Form</p>
-
-    #if ($unknown_game)
-        <div>Game requested was unknown.</div>
-    #end
 
     <table border="1">
         <tr>
