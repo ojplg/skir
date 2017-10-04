@@ -35,16 +35,17 @@
 
         <p>You can decide which AIs are eligible to be included in the game by checking/unchecking below.</p>
 
+        <a href="javascript:toggleAiCheckboxes(true);">All</a>
+        <a href="javascript:toggleAiCheckboxes(false);">None</a>
+
+        <br/>
+
         #foreach( $ai in $ai_names )
             <input type="checkbox" name="ai" value="$ai" checked/>
             <label>$ai</label>
             <br/>
         #end
 
-        <a href="javascript:toggleAiCheckboxes(true);">Select All</a>
-        <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
-
-        <br/>
         <br/>
 
         <input type="submit" value="Start Game"/>
