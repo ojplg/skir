@@ -6,7 +6,7 @@
     <link rel="icon"
           type="image/x-icon"
           href="/html/favicon.ico" />
-
+    <link rel="stylesheet" type="text/css" href="/html/skir.css">
     <script>
         function toggleAiCheckboxes(flag){
               var aiBoxes = document.getElementsByName('ai');
@@ -18,18 +18,22 @@
 
 </head>
 <body>
-        #if (! $error.isEmpty() )
-            <div style="color:red;">Error: $error</div>
-        #end
+    #if (! $error.isEmpty() )
+        <div class="error">Error: $error</div>
+    #end
 
     <form action="/app/new-game" method="post">
-        <p>New Game Form</p>
+        <h3>Start New Game</h3>
+
         <input type="hidden" name="user-name" value="${user_name}"/>
+
+        <p>Choose demo to watch AI players battle. Leave unchecked if you want to play yourself.</p>
 
         <input type="checkbox" name="demo" value="true"/>
         <label>Demo</label>
-        <br/><br/>
+        <br/>
 
+        <p>You can decide which AIs are eligible to be included in the game by checking/unchecking below.</p>
 
         #foreach( $ai in $ai_names )
             <input type="checkbox" name="ai" value="$ai" checked/>
@@ -41,15 +45,16 @@
         <a href="javascript:toggleAiCheckboxes(false);">Select None</a>
 
         <br/>
+        <br/>
 
-        <input type="submit"/>
+        <input type="submit" value="Start Game"/>
     </form>
 
     <br/>
     <hr/>
     <br/>
 
-    <p>Join Game Form</p>
+    <h3>Join Existing Game</h3>
 
     <table border="1">
         <tr>
