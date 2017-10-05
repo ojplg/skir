@@ -44,31 +44,31 @@ public class Skir {
             HelpFormatter helpFormatter = new HelpFormatter();
             helpFormatter.printHelp("skir", cliOptions());
         } else if ( commandLine.hasOption("bench")){
-            int numberOfRounds = Constants.NUMBER_BENCH_GAMES_TO_RUN;
-            if(commandLine.hasOption("rounds")){
-                numberOfRounds = Integer.parseInt(commandLine.getOptionValue("rounds"));
-            }
+            int numberOfRounds = intValue(commandLine, "rounds", Constants.NUMBER_BENCH_GAMES_TO_RUN);
             AiTestBench testBench = new AiTestBench(aiFactory, channels, createMasterFiber("AiTestBenchFiber"),
                     numberOfRounds, true);
             testBench.start();
             testBench.startRun();
         } else if (commandLine.hasOption("evolve") ) {
-            EvolutionSettings evSettings = new EvolutionSettings();
-            if( commandLine.hasOption("rounds")) {
-                evSettings.setGamesPerIndividual(Integer.parseInt(commandLine.getOptionValue("rounds")));
-            }
-            if( commandLine.hasOption("generations")) {
-                evSettings.setNumberGenerations(Integer.parseInt(commandLine.getOptionValue("generations")));
-            }
-            if( commandLine.hasOption("size")) {
-                evSettings.setGenerationSize(Integer.parseInt(commandLine.getOptionValue("size")));
-            }
+            int gamesPerIndividual = intValue(commandLine, "rounds", EvolutionSettings.GAMES_PER_INDIVIDUAL);
+            int numberOfGenerations = intValue(commandLine, "generations", EvolutionSettings.NUMBER_OF_GENERATIONS);
+            int generationSize = intValue(commandLine, "size", EvolutionSettings.GENERATION_SIZE);
+            EvolutionSettings evSettings = new EvolutionSettings(gamesPerIndividual, numberOfGenerations, generationSize);
+
             EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createMasterFiber("EvolutionFiber"), evSettings);
             evolutionRunner.start();
         } else {
             startWebServer(channels);
         }
 
+    }
+
+    private static int intValue(CommandLine commandLine, String optionName, int defaultValue){
+        if( commandLine.hasOption(optionName)){
+            String stringValue = commandLine.getOptionValue(optionName);
+            return Integer.parseInt(stringValue);
+        }
+        return defaultValue;
     }
 
     private static void startWebServer(Channels channels){

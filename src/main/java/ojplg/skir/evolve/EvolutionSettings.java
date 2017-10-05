@@ -10,47 +10,35 @@ import java.util.function.BiFunction;
 
 public class EvolutionSettings {
 
-    private static final int GAMES_PER_INDIVIDUAL = 100;
-    private static final int NUMBER_OF_GENERATIONS = 250;
-    private static final int GENERATION_SIZE = 64;
+    public static final int GAMES_PER_INDIVIDUAL = 100;
+    public static final int NUMBER_OF_GENERATIONS = 250;
+    public static final int GENERATION_SIZE = 64;
 
-    public EvolutionSettings(){
-        this._gamesPerIndividual = GAMES_PER_INDIVIDUAL;
-        this._numberGenerations = NUMBER_OF_GENERATIONS;
-        this._generationSize = GENERATION_SIZE;
+    private final int _gamesPerIndividual;
+    private final int _numberGenerations;
+    private final int _generationSize;
+    private Set<String> _settingNames;
+    private BiFunction<Player, Map<String,Double>, AutomatedPlayer> _playerGenerator;
+
+    public EvolutionSettings(int gamesPerIndividual, int numberGenerations, int generationSize){
+        this._gamesPerIndividual = gamesPerIndividual;
+        this._numberGenerations = numberGenerations;
+        this._generationSize = generationSize;
 
         this._settingNames = TuneyTwo.presetTunings().keySet();
         this._playerGenerator = TuneyTwo::new;
     }
 
-    private int _gamesPerIndividual;
-    private int _numberGenerations;
-    private int _generationSize;
-    private Set<String> _settingNames;
-    private BiFunction<Player, Map<String,Double>, AutomatedPlayer> _playerGenerator;
-
     public int getGamesPerIndividual() {
         return _gamesPerIndividual;
-    }
-
-    public void setGamesPerIndividual(int gamesPerIndividual) {
-        this._gamesPerIndividual = gamesPerIndividual;
     }
 
     public int getNumberGenerations() {
         return _numberGenerations;
     }
 
-    public void setNumberGenerations(int numberGenerations) {
-        this._numberGenerations = numberGenerations;
-    }
-
     public int getGenerationSize() {
         return _generationSize;
-    }
-
-    public void setGenerationSize(int generationSize) {
-        this._generationSize = generationSize;
     }
 
     public Set<String> getSettingNames() {
