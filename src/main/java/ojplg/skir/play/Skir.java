@@ -30,37 +30,47 @@ public class Skir {
 
         CommandLine commandLine = parseOptions(args);
 
-        final List<String> aiNames;
-        if( commandLine.hasOption("ais")) {
-            aiNames = Arrays.asList(commandLine.getOptionValues("ais"));
-        } else {
-            aiNames = AiFactory.allPlayerNames();
-        }
-
-        final AiFactory aiFactory = new AiFactory(aiNames);
-        final Channels channels = new Channels();
-
         if( commandLine.hasOption("help")) {
             HelpFormatter helpFormatter = new HelpFormatter();
             helpFormatter.printHelp("skir", cliOptions());
         } else if ( commandLine.hasOption("bench")){
-            int numberOfRounds = intValue(commandLine, "rounds", Constants.NUMBER_BENCH_GAMES_TO_RUN);
-            AiTestBench testBench = new AiTestBench(aiFactory, channels, createMasterFiber("AiTestBenchFiber"),
-                    numberOfRounds, true);
-            testBench.start();
-            testBench.startRun();
+            startInTestBenchMode(commandLine);
         } else if (commandLine.hasOption("evolve") ) {
-            int gamesPerIndividual = intValue(commandLine, "rounds", EvolutionSettings.GAMES_PER_INDIVIDUAL);
-            int numberOfGenerations = intValue(commandLine, "generations", EvolutionSettings.NUMBER_OF_GENERATIONS);
-            int generationSize = intValue(commandLine, "size", EvolutionSettings.GENERATION_SIZE);
-            EvolutionSettings evSettings = new EvolutionSettings(gamesPerIndividual, numberOfGenerations, generationSize);
-
-            EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createMasterFiber("EvolutionFiber"), evSettings);
-            evolutionRunner.start();
+            startInEvolveMode(commandLine);
         } else {
-            startWebServer(channels);
+            startWebServer();
         }
+    }
 
+    private static void startInEvolveMode(CommandLine commandLine){
+        int gamesPerIndividual = intValue(commandLine, "rounds", EvolutionSettings.GAMES_PER_INDIVIDUAL);
+        int numberOfGenerations = intValue(commandLine, "generations", EvolutionSettings.NUMBER_OF_GENERATIONS);
+        int generationSize = intValue(commandLine, "size", EvolutionSettings.GENERATION_SIZE);
+        EvolutionSettings evSettings = new EvolutionSettings(gamesPerIndividual, numberOfGenerations, generationSize);
+
+        Channels channels = new Channels();
+        AiFactory aiFactory = new AiFactory(availableAiNames(commandLine));
+
+        EvolutionRunner evolutionRunner = new EvolutionRunner(aiFactory, channels, createMasterFiber("EvolutionFiber"), evSettings);
+        evolutionRunner.start();
+    }
+
+    private static void startInTestBenchMode(CommandLine commandLine){
+        int numberOfRounds = intValue(commandLine, "rounds", Constants.NUMBER_BENCH_GAMES_TO_RUN);
+        Channels channels = new Channels();
+        AiFactory aiFactory = new AiFactory(availableAiNames(commandLine));
+        AiTestBench testBench = new AiTestBench(aiFactory, channels, createMasterFiber("AiTestBenchFiber"),
+                numberOfRounds, true);
+        testBench.start();
+        testBench.startRun();
+    }
+
+    private static List<String> availableAiNames(CommandLine commandLine){
+        if( commandLine.hasOption("ais")) {
+            return Arrays.asList(commandLine.getOptionValues("ais"));
+        } else {
+            return AiFactory.allPlayerNames();
+        }
     }
 
     private static int intValue(CommandLine commandLine, String optionName, int defaultValue){
@@ -71,11 +81,12 @@ public class Skir {
         return defaultValue;
     }
 
-    private static void startWebServer(Channels channels){
+    private static void startWebServer(){
         String environmentPort = System.getenv("PORT");
         _log.info("Environent port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : Constants.DEFAULT_PORT;
         _log.info("Using port " + port);
+        Channels channels = new Channels();
         WebRunner webRunner = new WebRunner(channels, createMasterFiber("WebRunner"));
         JettyInitializer jettyServer = new JettyInitializer(port, channels, webRunner);
         Thread webThread = new Thread(() -> {
