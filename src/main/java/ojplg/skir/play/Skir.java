@@ -83,7 +83,7 @@ public class Skir {
 
     private static void startWebServer(){
         String environmentPort = System.getenv("PORT");
-        _log.info("Environent port is " + environmentPort);
+        _log.info("Environment port is " + environmentPort);
         int port = environmentPort != null ? Integer.parseInt(environmentPort) : Constants.DEFAULT_PORT;
         _log.info("Using port " + port);
         Channels channels = new Channels();
