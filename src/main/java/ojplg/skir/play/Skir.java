@@ -15,6 +15,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetlang.core.RunnableExecutorImpl;
+import org.jetlang.fibers.Fiber;
 import org.jetlang.fibers.ThreadFiber;
 import ojplg.skir.web.JettyInitializer;
 
@@ -101,13 +102,13 @@ public class Skir {
         webRunner.start();
     }
 
-    private static ThreadFiber createMasterFiber(String name){
+    private static Fiber createMasterFiber(String name){
         ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, false);
         fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
         return fiber;
     }
 
-    public static ThreadFiber createThreadFiber(String name){
+    public static Fiber createThreadFiber(String name){
         ThreadFiber fiber = new ThreadFiber(new RunnableExecutorImpl(), name, true);
         fiber.getThread().setUncaughtExceptionHandler((t, e) -> _log.error("Fiber exception caught at top level", e));
         return fiber;
