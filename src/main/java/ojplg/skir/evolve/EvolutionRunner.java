@@ -7,7 +7,7 @@ import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetlang.fibers.ThreadFiber;
+import org.jetlang.fibers.Fiber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,13 +24,13 @@ public class EvolutionRunner {
     private final static Logger _log = LogManager.getLogger(EVOLVE_LOGGER);
 
     private final Channels _channels;
-    private final ThreadFiber _evolveThread;
+    private final Fiber _evolveThread;
     private final AiFactory _aiFactory;
     private final Set<String> _geneNames;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
     private final EvolutionSettings _evolutionSettings;
 
-    public EvolutionRunner(AiFactory aiFactory, Channels channels, ThreadFiber evolveThread, EvolutionSettings evolutionSettings){
+    public EvolutionRunner(AiFactory aiFactory, Channels channels, Fiber evolveThread, EvolutionSettings evolutionSettings){
         _channels = channels;
         _evolveThread = evolveThread;
         _geneNames = evolutionSettings.getSettingNames();
