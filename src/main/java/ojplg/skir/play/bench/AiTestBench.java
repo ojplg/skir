@@ -92,9 +92,6 @@ public class AiTestBench {
             case Win:
                 _currentGameRecord.win(gameEvent.getPlayerIdentifier(), gameEvent.getTurnNumber());
                 processGame();
-                return;
-            default:
-                return;
         }
     }
 
@@ -126,6 +123,6 @@ public class AiTestBench {
     private GameScores computeScores(){
         return _gameRecords.stream()
                 .map(r -> r.scoreGame(_useLateEliminationBonuses) )
-                .reduce(new GameScores(), (s1, s2) -> s1.accumulate(s2));
+                .reduce(new GameScores(), GameScores::accumulate);
     }
 }
