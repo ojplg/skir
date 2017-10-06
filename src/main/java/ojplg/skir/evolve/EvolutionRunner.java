@@ -29,13 +29,14 @@ public class EvolutionRunner {
     private final Set<String> _geneNames;
     private final BiFunction<Player, Map<String,Double>, AutomatedPlayer> _testPlayerGenerator;
     private final EvolutionSettings _evolutionSettings;
+    private final Random _random = new Random();
 
     public EvolutionRunner(AiFactory aiFactory, Channels channels, Fiber evolveThread, EvolutionSettings evolutionSettings){
         _channels = channels;
         _evolveThread = evolveThread;
         _geneNames = evolutionSettings.getSettingNames();
         _testPlayerGenerator = evolutionSettings.getPlayerGenerator();
-        _aiFactory =aiFactory;
+        _aiFactory = aiFactory;
         _evolutionSettings = evolutionSettings;
     }
 
@@ -63,9 +64,8 @@ public class EvolutionRunner {
 
     private Individual generateRandomTunerGenes(int number){
         Map<String, Double> genes = new HashMap<>();
-        Random random = new Random(number);
         for (String gene : _geneNames ) {
-            genes.put(gene, random.nextDouble());
+            genes.put(gene, _random.nextDouble());
         }
         return new Individual(0, number, genes);
     }
