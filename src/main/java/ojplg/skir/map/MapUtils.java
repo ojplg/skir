@@ -65,7 +65,6 @@ public class MapUtils {
         }
 
         SortedSet<Country> countriesToCheck = new TreeSet<>();
-        Set<Country> checkedNotInBloc = new HashSet<>();
         Set<Country> checkedInBloc = new HashSet<>();
 
         Country start = countries.get(0);
@@ -80,8 +79,6 @@ public class MapUtils {
                 if( countries.contains(neighbor) && (! checkedInBloc.contains(neighbor))){
                     countriesToCheck.add(neighbor);
                     checkedInBloc.add(neighbor);
-                } else {
-                    checkedNotInBloc.add(neighbor);
                 }
             }
         }
