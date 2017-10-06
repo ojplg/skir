@@ -89,7 +89,7 @@ public class MapUtilsTest {
     public void testIsContiguousBloc1(){
         WorldMap map = new StandardMap();
         List<Country> bloc = Arrays.asList(
-                new Country[] {Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Western_United_States } );
+                Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Western_United_States);
         assertTrue(MapUtils.isContiguousBloc(map, bloc));
     }
 
@@ -97,7 +97,7 @@ public class MapUtilsTest {
     public void testIsContiguousBloc2(){
         WorldMap map = new StandardMap();
         List<Country> bloc = Arrays.asList(
-                new Country[] {Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec } );
+                Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec);
         assertFalse(MapUtils.isContiguousBloc(map, bloc));
     }
 
@@ -105,7 +105,7 @@ public class MapUtilsTest {
     public void testIsContiguousBloc3(){
         WorldMap map = new StandardMap();
         List<Country> bloc = Arrays.asList(
-                new Country[] {Country.Argentina, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec } );
+                Country.Argentina, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec);
         assertFalse(MapUtils.isContiguousBloc(map, bloc));
     }
 
@@ -113,7 +113,7 @@ public class MapUtilsTest {
     public void testIsContiguousBloc4(){
         WorldMap map = new StandardMap();
         List<Country> bloc = Arrays.asList(
-                new Country[] {Country.Great_Britain, Country.Iceland, Country.Greenland, Country.Scandinavia } );
+                Country.Great_Britain, Country.Iceland, Country.Greenland, Country.Scandinavia);
         assertTrue(MapUtils.isContiguousBloc(map, bloc));
     }
 

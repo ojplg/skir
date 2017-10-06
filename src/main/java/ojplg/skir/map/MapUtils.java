@@ -84,9 +84,7 @@ public class MapUtils {
             countriesToCheck.remove(country);
             Collection<Country> neighbors = map.getNeighbors(country);
             for(Country neighbor : neighbors){
-                if( checkedNotInBloc.contains(neighbor) || countriesToCheck.contains(neighbor)){
-                    // do nothing
-                } else if( countries.contains(neighbor) && (! checkedInBloc.contains(neighbor))){
+                if( countries.contains(neighbor) && (! checkedInBloc.contains(neighbor))){
                     countriesToCheck.add(neighbor);
                     checkedInBloc.add(neighbor);
                 } else {
