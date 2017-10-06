@@ -117,5 +117,36 @@ public class MapUtilsTest {
         assertTrue(MapUtils.isContiguousBloc(map, bloc));
     }
 
+    @Test
+    public void testIsContiguousBloc5(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                Country.Great_Britain, Country.Iceland);
+        assertTrue(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc6(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                Country.Great_Britain, Country.Ural);
+        assertFalse(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc7(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(Country.Ural);
+        assertTrue(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc8(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                Country.Great_Britain, Country.Iceland, Country.Western_Australia, Country.Eastern_Australia);
+        assertFalse(MapUtils.isContiguousBloc(map, bloc));
+    }
+
 
 }
