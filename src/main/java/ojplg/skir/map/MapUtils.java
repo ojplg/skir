@@ -70,14 +70,7 @@ public class MapUtils {
 
         Country start = countries.get(0);
         checkedInBloc.add(start);
-        for(Country neighbor : map.getNeighbors(start)){
-            if( countries.contains(neighbor)){
-                countriesToCheck.add(neighbor);
-                checkedInBloc.add(neighbor);
-            } else {
-                checkedNotInBloc.add(neighbor);
-            }
-        }
+        countriesToCheck.add(start);
 
         while(countriesToCheck.size() > 0){
             Country country = countriesToCheck.first();
