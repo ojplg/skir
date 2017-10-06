@@ -7,7 +7,7 @@ CLASS_PATH=$LIB_PATH$PATH_SEPARATOR$LIBS_DIR/$JUNIT_JAR$PATH_SEPARATOR$LIBS_DIR/
 TEST_SRC_DIR=$PROJECT_HOME_DIR/src/test/java
 TEST_OUT_DIR=$PROJECT_HOME_DIR/target/test-classes
 
-TEST_SRC_FILES=`find $TEST_SRC_DIR -name "*Test.java"`
+TEST_SRC_FILES=`find $TEST_SRC_DIR -name "*Test*.java"`
 TEST_RESOURCES_DIR=$PROJECT_HOME_DIR/src/test/resources/
 
 mkdir -p $TEST_OUT_DIR/src/test/resources
