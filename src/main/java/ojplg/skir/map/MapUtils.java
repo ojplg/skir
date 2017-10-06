@@ -73,6 +73,7 @@ public class MapUtils {
         for(Country neighbor : map.getNeighbors(start)){
             if( countries.contains(neighbor)){
                 countriesToCheck.add(neighbor);
+                checkedInBloc.add(neighbor);
             } else {
                 checkedNotInBloc.add(neighbor);
             }

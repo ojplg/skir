@@ -6,12 +6,13 @@ import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 
 public class MapUtilsTest {
 
@@ -83,4 +84,38 @@ public class MapUtilsTest {
         List<Country> path = MapUtils.findShortestPath(map, Country.Great_Britain, Country.China);
         assertEquals(5, path.size());
     }
+
+    @Test
+    public void testIsContiguousBloc1(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                new Country[] {Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Western_United_States } );
+        assertTrue(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc2(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                new Country[] {Country.Argentina, Country.Brazil, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec } );
+        assertFalse(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc3(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                new Country[] {Country.Argentina, Country.Venezuela, Country.North_Africa, Country.Central_America, Country.Quebec } );
+        assertFalse(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+    @Test
+    public void testIsContiguousBloc4(){
+        WorldMap map = new StandardMap();
+        List<Country> bloc = Arrays.asList(
+                new Country[] {Country.Great_Britain, Country.Iceland, Country.Greenland, Country.Scandinavia } );
+        assertTrue(MapUtils.isContiguousBloc(map, bloc));
+    }
+
+
 }
