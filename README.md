@@ -2,6 +2,7 @@ Skir
 ====
 
 Skir is a play-alike version of a popular board game of global genocide.
+To play Skir, click [here](https://skir.herokuapp.com/).
 
 Technical Introduction
 ======================
