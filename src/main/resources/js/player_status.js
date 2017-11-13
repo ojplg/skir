@@ -50,12 +50,15 @@ function PlayerStatus(playerColor){
         var txt = "Cards:<br/>";
         for( var idx=1; idx<=cards.length ; idx++ ){
             var card = cards[idx-1];
-            console.log("found card " + card);
             txt = txt.concat(idx);
             txt = txt.concat(": ");
-            txt = txt.concat(card.country);
-            txt = txt.concat("-");
-            txt = txt.concat(card.symbol);
+            if ( card.joker ) {
+                txt = txt.concat("Joker");
+            } else {
+                txt = txt.concat(card.country);
+                txt = txt.concat("-");
+                txt = txt.concat(card.symbol);
+            }
             txt = txt.concat("<br/>");
         }
         var cardsSpan = document.getElementById("player-cards-" + color + "-span");
