@@ -104,7 +104,7 @@ public class Bully implements AutomatedPlayer {
         } else {
             country = RandomUtils.pickRandomElement(game.findBorderCountries(_me));
         }
-        return new PlaceArmy(adjutant, country);
+        return new PlaceArmy(adjutant, country, game.getPlayerHoldings(_me).reserveCount());
     }
 
     private Attack findBestAttack(Game game, Adjutant adjutant){
