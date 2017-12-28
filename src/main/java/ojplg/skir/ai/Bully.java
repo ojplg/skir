@@ -31,8 +31,6 @@ import java.util.Optional;
  */
 public class Bully implements AutomatedPlayer {
 
-    private final static Logger _log = LogManager.getLogger(Bully.class);
-
     private final Player _me;
 
     public Bully(Player player){
