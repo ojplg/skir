@@ -4,6 +4,8 @@ out/
 .idea/libraries
 .idea/workspace.xml
 .idea/codeStyleSettings.xml
+.idea/codeStyles/*
+.idea/dbnavigator.xml
 .tmp_download_dir/
 lib/
 logs/
