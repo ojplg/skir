@@ -251,13 +251,13 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-io:9.3.24.v20180605" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-core:2.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.logging.log4j:log4j-api:2.7" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-server:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.3.14.v20161028" level="project" />
-    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.3.14.v20161028" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-server:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-common:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.3.24.v20180605" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.3.24.v20180605" level="project" />
     <orderEntry type="library" name="Maven: javax.websocket:javax.websocket-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:javax-websocket-server-impl:9.3.24.v20180605" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-annotations:9.3.24.v20180605" level="project" />

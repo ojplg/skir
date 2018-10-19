@@ -42,7 +42,7 @@ There is a Procfile for [Heroku](https://skir.herokuapp.com/).
 
 Note to self: 
 
-```git push heroku master'''
+```git push heroku master```
 
 Javascript
 ==========
