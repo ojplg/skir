@@ -8,15 +8,31 @@
           href="/html/favicon.ico" />
 </head>
 <body>
-    <p>Join a game of skir.</p>
-    <form action="/app/chooser" method="post">
 
-        <p>Name: <input name="user-name" type="text"/></p>
+    <h4>Welcome to Skir!</h4>
 
-        <p><input type="submit"/></p>
+    <div style="border: 2px solid white; width: 500px; margin: 1px;">
+        <div style="border: 3px solid white;">
+            <p>To join or watch a game, give your name and click Enter.</p>
 
-    </form>
-    <p><a href="https://github.com/ojplg/skir">Skir</a> is a play-alike version of a popular table-top board game of global genocide.</p>
+            <form action="/app/chooser" method="post">
+
+                    <span>Name: <input name="user-name" type="text"/></span>
+
+                    <br/>
+
+                    <span style="float: right;"><input type="submit" value="Enter"/></span>
+
+                    <br/><br/><br/>
+            </form>
+        </div>
+    </div>
+
+    <br/><br/>
+
+    <div>
+        <a href="https://github.com/ojplg/skir">Skir</a> is a play-alike version of a popular table-top board game of global genocide.
+    </div>
 
 </body>
 </html>
