@@ -9,4 +9,4 @@ CLASS_PATH=$CYGWIN_PREFIX$PROJECT_HOME_DIR/target/classes$PATH_SEPARATOR$LIB_PAT
 echo $CLASS_PATH
 
 cd .. 
-java -cp $CLASS_PATH ojplg.skir.play.Skir $@
+java -Xverify:none -cp $CLASS_PATH ojplg.skir.play.Skir $@
