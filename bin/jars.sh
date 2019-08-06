@@ -8,7 +8,7 @@ fi
 PROJECT_HOME_DIR=${PWD%/bin}
 LIBS_DIR=$CYGWIN_PREFIX$PROJECT_HOME_DIR/lib
 
-JETTY_VERSION=9.4.12.v20180830
+JETTY_VERSION=9.4.19.v20190610
 JETTY_JARS=(jetty-http jetty-server jetty-util jetty-io jetty-continuation jetty-servlet jetty-security jetty-client)
 JETTY_WEBSOCKET_JARS=(javax-websocket-server-impl javax-websocket-client-impl websocket-server websocket-common websocket-api websocket-servlet websocket-client)
 
