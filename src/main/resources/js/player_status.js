@@ -13,9 +13,7 @@ function PlayerStatuses() {
 function PlayerStatus(playerColor){
     this.color = playerColor;
     var tableName = "player-status-" + this.color + "-table";
-    console.log("Table name is " + tableName);
     this.table = document.getElementById(tableName);
-    console.log("This table is " + this.table);
 
     this.updateTable = function(playerStatus){
         // TODO: this utility function should have a home
@@ -33,7 +31,6 @@ function PlayerStatus(playerColor){
         }
         for(var idx=0; idx<items.length; idx++){
             var item = items[idx];
-            console.log("adding item " + item + " at index " + idx);
             var row = this.table.insertRow(idx);
             var nameCell = row.insertCell(0);
             nameCell.innerHTML = item;

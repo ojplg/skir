@@ -6,8 +6,7 @@ out/
 .idea/codeStyleSettings.xml
 .idea/codeStyles/*
 .idea/dbnavigator.xml
-.idea/markdown-exported-files.xml
-.idea/markdown-navigator.xml
+.idea/markdown*
 .tmp_download_dir/
 lib/
 logs/

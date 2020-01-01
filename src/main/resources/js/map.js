@@ -65,6 +65,8 @@ var countries = [ alaska, northwest_territory, alberta, quebec, ontario,
                     japan, kamchatka, mongolia,
                    indonesia, new_guinea, eastern_australia, western_australia];
 
+var countries_by_wire_name = {};
+
 function draw_map(){
   var canvas = document.getElementById ('canvas_map');
   var context = canvas.getContext ('2d');
@@ -82,6 +84,10 @@ function draw_map(){
   canvas.addEventListener('click', function(e) {
     map_clicked(e);
   });
+
+  countries.forEach(country => {
+    console.log("setting up country " + country.wire_name());
+    countries_by_wire_name[country.wire_name()] = country; });
 }
 
 function drawOverseaConnectors(){
@@ -208,18 +214,15 @@ function update_country(country_name, player_color, army_count){
   console.log("Going to color country " + country_name + " with color " + player_color);
   var canvas = document.getElementById ('canvas_map');
   var context = canvas.getContext ('2d');
-  for(var idx=0; idx<countries.length; idx++){
-    var country = countries[idx];
-    if( country.wire_name() == country_name ){
-      var border = 4;
-      context.fillStyle = player_color;
-      context.fillRect(country.left + border, country.top + border,
+  var country = countries_by_wire_name[country_name];
+  console.log("Found country " + country);
+  var border = 4;
+  context.fillStyle = player_color;
+  context.fillRect(country.left + border, country.top + border,
         country.width - (border*2), country.height- (border*2));
-      var text_color = occupied_text_color(player_color);
-      paint_country_name(context, country, text_color);
-      update_country_occupation_count(context, country, army_count, text_color);
-    }
-  }
+  var text_color = occupied_text_color(player_color);
+  paint_country_name(context, country, text_color);
+  update_country_occupation_count(context, country, army_count, text_color);
 }
 
 function occupied_text_color(player_color){
