@@ -21,8 +21,11 @@ function PlayerStatus(playerColor){
     this.color = playerColor;
     var tableName = "player-status-" + this.color + "-table";
     this.table = document.getElementById(tableName);
+    var nameRow = this.table.insertRow(0);
+    var nameCell = nameRow.insertCell(0);
+    nameCell.id = this.color + ".name";
 
-    for(var idx = 0; idx< PLAYER_STATS.length; idx++ ){
+    for(var idx = 1; idx< PLAYER_STATS.length; idx++ ){
         var row = this.table.insertRow(idx);
         var nameCell = row.insertCell(0);
         var caption = PLAYER_STATS[idx];
