@@ -190,6 +190,7 @@ function new_country(name, left, top, width, height, color, text_color){
   that.width = width;
   that.color = color;
   that.text_color = text_color;
+  that.current_color = null;
   that.wire_name = function(){
     var simplified = that.name.replace("- ","");
     return simplified;
@@ -217,11 +218,13 @@ function update_country(country_name, player_color, army_count){
   var country = countries_by_wire_name[country_name];
   console.log("Found country " + country);
   var border = 4;
-  context.fillStyle = player_color;
-  context.fillRect(country.left + border, country.top + border,
-        country.width - (border*2), country.height- (border*2));
   var text_color = occupied_text_color(player_color);
-  paint_country_name(context, country, text_color);
+  if ( country.current_color == null || country.current_color !== player_color){
+    context.fillStyle = player_color;
+    context.fillRect(country.left + border, country.top + border,
+        country.width - (border*2), country.height- (border*2));
+    paint_country_name(context, country, text_color);
+  }
   update_country_occupation_count(context, country, army_count, text_color);
 }
 

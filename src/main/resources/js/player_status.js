@@ -1,3 +1,10 @@
+
+const PLAYER_STATS = ['name', 'armies','countries','continents','card_count',
+                         'expected_armies',
+                         'attack_luck_factor','armies_lost_attacking','armies_killed_attacking',
+                         'defense_luck_factor', 'armies_lost_defending', 'armies_killed_defending'];
+
+
 function PlayerStatuses() {
     var colors = ["black","white","blue","red","pink","green"];
     for(var idx=0; idx<colors.length; idx++){
@@ -15,27 +22,22 @@ function PlayerStatus(playerColor){
     var tableName = "player-status-" + this.color + "-table";
     this.table = document.getElementById(tableName);
 
+    for(var idx = 0; idx< PLAYER_STATS.length; idx++ ){
+        var row = this.table.insertRow(idx);
+        var nameCell = row.insertCell(0);
+        var caption = PLAYER_STATS[idx];
+        nameCell.innerHTML = caption;
+        var valueCell = row.insertCell(1);
+        valueCell.id = this.color + "." + caption;
+    }
+
     this.updateTable = function(playerStatus){
-        // TODO: this utility function should have a home
-        clearElementChildren(this.table);
         var items;
-        if ( playerStatus['countries'] > 0){
-            items = ['name', 'armies','countries','continents','card_count',
-                         'expected_armies',
-                         'attack_luck_factor','armies_lost_attacking','armies_killed_attacking',
-                         'defense_luck_factor', 'armies_lost_defending', 'armies_killed_defending'];
-        } else {
-            items = ['name',
-                          'attack_luck_factor','armies_lost_attacking','armies_killed_attacking',
-                          'defense_luck_factor', 'armies_lost_defending', 'armies_killed_defending'];
-        }
-        for(var idx=0; idx<items.length; idx++){
-            var item = items[idx];
-            var row = this.table.insertRow(idx);
-            var nameCell = row.insertCell(0);
-            nameCell.innerHTML = item;
-            var valueCell = row.insertCell(1);
-            valueCell.innerHTML = playerStatus[item];
+        for(var idx=0; idx<PLAYER_STATS.length; idx++){
+            var stat = PLAYER_STATS[idx];
+            var cellId = this.color + "." + stat;
+            var valueCell = document.getElementById(cellId);
+            valueCell.innerHTML = playerStatus[stat];
         }
         if( isMyColor(playerStatus.color) ){
             var cards = playerStatus.cards;
