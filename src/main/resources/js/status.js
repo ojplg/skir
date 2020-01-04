@@ -7,10 +7,12 @@ var demoFlag;
 
 function displayGameEvents(gameEvents){
     var orderEventDiv = document.getElementById('order-event-div');
-    var newHtml = orderEventDiv.innerHTML;
+    var orderEventDivHtml = orderEventDiv.innerHTML;
     while(gameEvents.length > 0){
         var gameEvent = gameEvents.shift();
-        newHtml = newHtml + gameEvent.simple_text + "<br/>";
+        var logSpan = document.createElement("div");
+        logSpan.innerHTML = gameEvent.simple_text;
+        orderEventDiv.appendChild(logSpan);
         if( gameEvent['game_over'] === true){
             console.log("Game is over!");
             clearOrderConsole();
@@ -20,7 +22,7 @@ function displayGameEvents(gameEvents){
             cardSetValueSpan.innerHTML = 'Next card exchange worth ' + gameEvent['next_card_exchange_value'];
         }
     }
-    orderEventDiv.innerHTML = newHtml;
+//    orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }
 

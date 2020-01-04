@@ -44,6 +44,8 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
     private Adjutant _currentAdjutant;
     private GameId _gameId;
 
+    private long _messageCount = 0;
+
     public LocalWebSocket(){
         _log.info("Constructing: " + _counter);
         _channels = WebSocketInitializer.Channels;
@@ -159,9 +161,10 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
 
     private void sendJson(JSONObject jObject){
         try {
+            _messageCount++;
             RemoteEndpoint.Basic endpoint = _session.getBasicRemote();
             String msg = jObject.toJSONString();
-            _log.debug("Sending message " + msg);
+            _log.debug("Sending message " + msg + " (" + _messageCount + ")");
             endpoint.sendText(msg);
         } catch (IOException io){
             _log.error("Could not send message ", io);
