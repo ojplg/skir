@@ -22,7 +22,6 @@ function displayGameEvents(gameEvents){
             cardSetValueSpan.innerHTML = 'Next card exchange worth ' + gameEvent['next_card_exchange_value'];
         }
     }
-//    orderEventDiv.innerHTML = newHtml;
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }
 
@@ -38,12 +37,13 @@ function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";
-    playerStatuses = new PlayerStatuses();
+    var armyCountGraph = new ArmyCountGraph();
+    playerStatuses = new PlayerStatuses(armyCountGraph);
     if( isDemo === true ){
         addButton("start");
     }
     demoFlag = isDemo;
-    setInterval(processUpdates,25);
+    setInterval(processUpdates,50);
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){
@@ -67,7 +67,7 @@ function updatePlayerStats(playerStatus){
 
 function updateOrderConsole(color, turnNumber, choicesObject){
     currentChoices = choicesObject;
-    console.log("Choices for " + color + " are " + choicesObject);
+    //console.log("Choices for " + color + " are " + choicesObject);
     document.getElementById("active-player-field").textContent =
                 "Turn: " + turnNumber + "  Active player: "+ color;
     clearOrderConsole();
@@ -77,7 +77,7 @@ function updateOrderConsole(color, turnNumber, choicesObject){
             console.log("Adding key " + key);
             choices.push(key);
         }
-        console.log("Have " + choices.length + " choices");
+        //console.log("Have " + choices.length + " choices");
         if (choices.length == 1) {
             buttonClicked(choices[0]);
         } else {
@@ -89,11 +89,11 @@ function updateOrderConsole(color, turnNumber, choicesObject){
 }
 
 function clearOrderConsole(){
-    console.log("Clearing order console");
+    //console.log("Clearing order console");
     var orderConsoleDiv = document.getElementById("order-console-div");
     var children = orderConsoleDiv.childNodes;
     var limit = children.length;
-    console.log("Order console has " + children.length + " nodes");
+    //console.log("Order console has " + children.length + " nodes");
     var removeList = [];
     for(var idx=0; idx<limit; idx++){
         var element = children[idx];
@@ -151,9 +151,9 @@ function startGame(){
 }
 
 function occupySelected(){
-    console.log("Occupy selected");
+    //console.log("Occupy selected");
     clearOrderConsole();
-    console.log("Current choices " + currentChoices);
+    //console.log("Current choices " + currentChoices);
     var occupation = new Occupation(currentChoices.Occupy);
     occupation.showOccupationControls(document.getElementById("order-console-div"));
 }
@@ -175,13 +175,13 @@ function addToOrderConsole(element){
 }
 
 function placeArmySelected(){
-    console.log("placeArmySelected");
+    //console.log("placeArmySelected");
     clearOrderConsole();
 
     countryClickResponder = new PlaceArmy(currentChoices.PlaceArmy);
     countryClickResponder.initialize();
 
-    console.log("placeArmySelected - done");
+    //console.log("placeArmySelected - done");
 }
 
 function doStatusDependentCountryClickedWork(country){

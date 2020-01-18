@@ -1,9 +1,10 @@
 var connection;
+var queuedUpdates = {}
 
 function openWebSocketConnection(name, address, uniqueKey, demoFlag, gameId, joinAttempt){
     connection = new WebSocket(web_socket_protocol + "://" + window.location.host + "/sockets/");
     connection.onmessage = function(event){
-        console.log("message from server: " + event.data);
+        //console.log("message from server: " + event.data);
         var datum = JSON.parse(event.data);
         if (datum.message_type == 'map_update'){
           queueMapUpdate(datum);
@@ -29,8 +30,6 @@ function openWebSocketConnection(name, address, uniqueKey, demoFlag, gameId, joi
         heartbeater.startHeartbeats();
     };
 }
-
-var queuedUpdates = {}
 
 function processUpdates(){
   for (var property in queuedUpdates.mapUpdates) {
@@ -66,6 +65,6 @@ function sendJoinMessage(name, address, uniqueKey, demoFlag, gameId, joinAttempt
 }
 
 function sendMessage(msg){
-    console.log("Sending to server " + msg);
+    //console.log("Sending to server " + msg);
     connection.send(msg);
 }

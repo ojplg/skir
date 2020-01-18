@@ -53,6 +53,9 @@ public class SkirWebHandler extends AbstractHandler {
                 // TODO: should distinguish between join and view attempts
                 handleJoinViewRequests(request, httpServletResponse);
                 break;
+            case "/test-demo":
+                handleTestDemoRequest(request, httpServletResponse);
+                break;
             default:
                 // TODO: this should lead to an error screen
                 _log.warn("Request makes no sense: " + httpServletRequest.getRequestURL());
@@ -86,7 +89,7 @@ public class SkirWebHandler extends AbstractHandler {
         String remoteAddress = request.getRemoteAddr();
         List<String> ais;
         if ( request.getParameterMap().containsKey("ai")) {
-             ais = Arrays.asList(request.getParameterValues("ai"));
+            ais = Arrays.asList(request.getParameterValues("ai"));
             boolean demoFlag = Boolean.parseBoolean(request.getParameter("demo"));
             NewGameRequest gameRequest = demoFlag ? NewGameRequest.webDemo(userName, remoteAddress, ais) :
                     NewGameRequest.webPlay(userName, remoteAddress, ais);
@@ -101,6 +104,16 @@ public class SkirWebHandler extends AbstractHandler {
             response.setStatus(HttpServletResponse.SC_OK);
         }
         request.setHandled(true);
+    }
+
+    private void handleTestDemoRequest(Request request, HttpServletResponse response)
+    throws IOException {
+        _log.info("Demo test being handled");
+        String remoteAddress = request.getRemoteAddr();
+        NewGameRequest gameRequest = NewGameRequest.webDemo("TestDemo", remoteAddress, AiFactory.allPlayerNames());
+        GameId gameId = _webRunner.newGame(gameRequest);
+        _log.info("game id " + gameId);
+        renderGamePage(gameId, "TestDemo", remoteAddress, true, false, response.getWriter());
     }
 
     private void renderChooserPage(Request request, HttpServletResponse response, String error)

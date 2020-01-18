@@ -36,11 +36,11 @@ function FromToOrder(orderTypeFlag, restrictions){
 
     this.toCountryClicked = function(country){
         var countryWireName = country.wire_name();
-        console.log("toCountryClick on" + countryWireName);
+        //console.log("toCountryClick on" + countryWireName);
         var countryMap = self.orderRestrictions["destinations"];
-        console.log("Country map is " + countryMap);
+        //console.log("Country map is " + countryMap);
         var possibleToList = countryMap[self.fromCountry.wire_name()];
-        console.log("Possible list " + possibleToList);
+        //console.log("Possible list " + possibleToList);
 
         if( possibleToList.indexOf(countryWireName) >= 0){
             var newHtml = "To: " + countryWireName;

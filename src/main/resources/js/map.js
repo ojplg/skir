@@ -212,11 +212,11 @@ function map_clicked(e){
 }
 
 function update_country(country_name, player_color, army_count){
-  console.log("Going to color country " + country_name + " with color " + player_color);
+  //console.log("Going to color country " + country_name + " with color " + player_color);
   var canvas = document.getElementById ('canvas_map');
   var context = canvas.getContext ('2d');
   var country = countries_by_wire_name[country_name];
-  console.log("Found country " + country);
+  //console.log("Found country " + country);
   var border = 4;
   var text_color = occupied_text_color(player_color);
   if ( country.current_color == null || country.current_color !== player_color){
