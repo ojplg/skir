@@ -1,5 +1,6 @@
-function FromToOrder(orderTypeFlag, restrictions){
+function FromToOrder(orderTypeFlag, restrictions, connection){
     this.self = this;
+    self.connection = connection;
     self.orderType = orderTypeFlag;
     self.orderRestrictions = restrictions;
     self.fromCountry = null;
@@ -51,7 +52,7 @@ function FromToOrder(orderTypeFlag, restrictions){
             order.to = countryWireName;
             order.army_count = document.getElementById("army-count-select").value;
             var jsonOrder = JSON.stringify(order);
-            sendMessage(jsonOrder);
+            self.connection.sendMessage(jsonOrder);
             return false;
         } else {
             console.log("Invalid to selection " + countryWireName + " returning true");

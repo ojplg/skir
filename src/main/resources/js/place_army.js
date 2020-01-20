@@ -2,8 +2,9 @@
 // in the order console when a player is in the
 // place army phase.
 // It knows how to respond to country clicks.
-function PlaceArmy(constraint){
+function PlaceArmy(constraint, connection){
     this.placementConstraint = constraint;
+    this.connection = connection;
 
     this.initialize = function(){
         console.log("initializing place army selector")
@@ -30,8 +31,7 @@ function PlaceArmy(constraint){
             order.country = country.wire_name();
             order.number_armies = this.selector.value;
             var jsonOrder = JSON.stringify(order);
-            // TODO: This should be a function on an object.
-            sendMessage(jsonOrder);
+            this.connection.sendMessage(jsonOrder);
             // TODO: This should not be needed
             currentStatus = null;
             return false;

@@ -1,9 +1,16 @@
+const PROCESS_UPDATES_INTERVAL = 100;
+const HEARTBEAT_INTERVAL = 2000;
+const SMOOTHIE_MILLIS_PER_PIXEL = 250;
+const SMOOTHIE_INTERVAL = 500;
+
+
 var orderType;
 var currentChoices;
 var myIdentity = {};
 var countryClickResponder = null;
 var playerStatuses;
 var demoFlag;
+var connection;
 
 function displayGameEvents(gameEvents){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -33,7 +40,8 @@ function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
     console.log("initializing client with name " + name)
     draw_map();
     myIdentity.uniqueKey = name;
-    openWebSocketConnection(name, address, myIdentity.uniqueKey, isDemo, gameId, isJoinAttempt);
+    connection = new Connection();
+    connection.open(name, address, myIdentity.uniqueKey, isDemo, gameId, isJoinAttempt);
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";
@@ -43,7 +51,8 @@ function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
         addButton("start");
     }
     demoFlag = isDemo;
-    setInterval(processUpdates,50);
+    setInterval(connection.processUpdates,PROCESS_UPDATES_INTERVAL);
+    console.log("initialization complete");
 }
 
 function updatePlayerInfoAfterGameJoined(joinedObject){
@@ -147,14 +156,14 @@ function startGame(){
     msg.messageType = "StartGame";
     msg.demo = demoFlag;
     var s = JSON.stringify(msg);
-    sendMessage(s);
+    connection.sendMessage(s);
 }
 
 function occupySelected(){
     //console.log("Occupy selected");
     clearOrderConsole();
     //console.log("Current choices " + currentChoices);
-    var occupation = new Occupation(currentChoices.Occupy);
+    var occupation = new Occupation(currentChoices.Occupy, connection);
     occupation.showOccupationControls(document.getElementById("order-console-div"));
 }
 
@@ -178,7 +187,7 @@ function placeArmySelected(){
     //console.log("placeArmySelected");
     clearOrderConsole();
 
-    countryClickResponder = new PlaceArmy(currentChoices.PlaceArmy);
+    countryClickResponder = new PlaceArmy(currentChoices.PlaceArmy, connection);
     countryClickResponder.initialize();
 
     //console.log("placeArmySelected - done");
@@ -201,7 +210,7 @@ function doStatusDependentCountryClickedWork(country){
 function sendSimpleOrderMessage(orderType){
     var order = newOrder(orderType);
     var jsonOrder = JSON.stringify(order);
-    sendMessage(jsonOrder);
+    connection.sendMessage(jsonOrder);
 }
 
 function newOrder(orderType){
@@ -227,6 +236,6 @@ function addButton(label){
 function fromToOrderSelected(orderTypeFlag){
     clearOrderConsole();
     console.log("From-to order selected: " + orderTypeFlag);
-    countryClickResponder = new FromToOrder(orderTypeFlag, currentChoices[orderTypeFlag]);
+    countryClickResponder = new FromToOrder(orderTypeFlag, currentChoices[orderTypeFlag], connection);
     countryClickResponder.initialize(document.getElementById("order-console-div"));
 }

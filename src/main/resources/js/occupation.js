@@ -1,6 +1,8 @@
-function Occupation(constraint){
+function Occupation(constraint, connection){
+    let self = this;
     this.minimumToMove = constraint.minimum_occupation_force;
     this.maximumToMove = constraint.maximum_occupation_force;
+    self.connection = connection;
 
     this.showOccupationControls = function(parentDiv){
         var selector = document.createElement("SELECT");
@@ -17,7 +19,7 @@ function Occupation(constraint){
             var order = newOrder("Occupy");
             order.occupationForce = selector.value;
             var jsonOrder = JSON.stringify(order);
-            sendMessage(jsonOrder);
+            self.connection.sendMessage(jsonOrder);
         };
         button.appendChild(text);
         parentDiv.appendChild(button);

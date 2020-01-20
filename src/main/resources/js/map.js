@@ -86,7 +86,7 @@ function draw_map(){
   });
 
   countries.forEach(country => {
-    console.log("setting up country " + country.wire_name());
+    //console.log("setting up country " + country.wire_name());
     countries_by_wire_name[country.wire_name()] = country; });
 }
 

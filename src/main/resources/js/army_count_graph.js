@@ -29,12 +29,12 @@ function ArmyCountGraph(){
         whiteLine.append(x, counts['white']);
         pinkLine.append(x, counts['pink']);
 
-    }, 1000);
+    }, SMOOTHIE_INTERVAL);
 
     var smoothie = new SmoothieChart(
         {
             grid: { fillStyle:'rgb(60, 60, 60)' }
-            ,millisPerPixel:250
+            ,millisPerPixel:SMOOTHIE_MILLIS_PER_PIXEL
         });
 
     smoothie.addTimeSeries(blackLine, { strokeStyle:'rgb(0, 0, 0)' });
@@ -44,6 +44,6 @@ function ArmyCountGraph(){
     smoothie.addTimeSeries(whiteLine, { strokeStyle:'rgb(255, 255, 255)' });
     smoothie.addTimeSeries(pinkLine, { strokeStyle:'rgb(250, 175, 190)' });
 
-    smoothie.streamTo(document.getElementById("army-count-graph"), 1000);
+    smoothie.streamTo(document.getElementById("army-count-graph"), SMOOTHIE_INTERVAL);
 
 }
