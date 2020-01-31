@@ -18,13 +18,24 @@ function Country(name, left, top, width, height, color, text_color) {
         self.paintCountryName(context,self.text_color);
     }
 
+    self.occupiedTextColor = function(player_color){
+        var name_color;
+        if(player_color == 'Black' || player_color == 'Blue' || player_color == 'Green'){
+            name_color = 'white';
+        }
+        if(player_color == 'Red' || player_color == 'White' || player_color == 'Pink'){
+            name_color = 'black';
+        }
+        return name_color;
+    }
+
     self.update = function (player_color, army_count){
         //console.log("Going to color country " + country_name + " with color " + player_color);
         var canvas = document.getElementById ('canvas_map');
         var context = canvas.getContext ('2d');
         //console.log("Found country " + country);
         var border = 4;
-        var text_color = occupied_text_color(player_color);
+        var text_color = self.occupiedTextColor(player_color);
         if ( self.current_color == null || self.current_color !== player_color){
             context.fillStyle = player_color;
             context.fillRect(self.left + border, self.top + border,
@@ -228,15 +239,4 @@ function map_clicked(e){
 function update_country(country_name, player_color, army_count){
   var country = countries_by_wire_name[country_name];
   country.update(player_color, army_count);
-}
-
-function occupied_text_color(player_color){
-  var name_color;
-  if(player_color == 'Black' || player_color == 'Blue' || player_color == 'Green'){
-    name_color = 'white';
-  }
-  if(player_color == 'Red' || player_color == 'White' || player_color == 'Pink'){
-    name_color = 'black';
-  }
-  return name_color;
 }
