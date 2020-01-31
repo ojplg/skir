@@ -13,8 +13,6 @@ function Connection(){
     };
 
     this.processUpdates = function(){
-//        console.log("Processing map " + self.queuedUpdates.mapUpdates);
-//        console.log("Processing events" + self.queuedUpdates.gameEvents);
         for (var property in self.queuedUpdates.mapUpdates) {
             if (self.queuedUpdates.mapUpdates.hasOwnProperty(property)) {
                 var countryUpdate = self.queuedUpdates.mapUpdates[property];
