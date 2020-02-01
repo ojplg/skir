@@ -36,11 +36,11 @@ function FromToOrder(orderTypeFlag, restrictions, connection){
     }
 
     this.toCountryClicked = function(country){
-        var countryWireName = country.wire_name();
+        var countryWireName = country.wire_name;
         //console.log("toCountryClick on" + countryWireName);
         var countryMap = self.orderRestrictions["destinations"];
         //console.log("Country map is " + countryMap);
-        var possibleToList = countryMap[self.fromCountry.wire_name()];
+        var possibleToList = countryMap[self.fromCountry.wire_name];
         //console.log("Possible list " + possibleToList);
 
         if( possibleToList.indexOf(countryWireName) >= 0){
@@ -48,7 +48,7 @@ function FromToOrder(orderTypeFlag, restrictions, connection){
             self.toDiv.innerHTML = newHtml;
 
             var order = newOrder(orderType);
-            order.from = fromCountry.wire_name();
+            order.from = fromCountry.wire_name;
             order.to = countryWireName;
             order.army_count = document.getElementById("army-count-select").value;
             var jsonOrder = JSON.stringify(order);
@@ -61,7 +61,7 @@ function FromToOrder(orderTypeFlag, restrictions, connection){
     }
 
     this.fromCountryClicked = function(country){
-        var countryWireName = country.wire_name();
+        var countryWireName = country.wire_name;
         console.log("fromCountryClick " + countryWireName);
         var countryMap = self.orderRestrictions["destinations"];
         if( Object.keys(countryMap).indexOf(countryWireName) >= 0){

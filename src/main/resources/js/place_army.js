@@ -25,10 +25,10 @@ function PlaceArmy(constraint, connection){
     this.countryClicked = function(country){
         console.log("place army div country clicked " + country);
         var countries = this.placementConstraint.possible_countries;
-        if( countries.indexOf(country.wire_name()) >= 0 ){
+        if( countries.indexOf(country.wire_name) >= 0 ){
             // TODO: This should be a function on an object.
             var order = newOrder("PlaceArmy");
-            order.country = country.wire_name();
+            order.country = country.wire_name;
             order.number_armies = this.selector.value;
             var jsonOrder = JSON.stringify(order);
             this.connection.sendMessage(jsonOrder);
@@ -36,7 +36,7 @@ function PlaceArmy(constraint, connection){
             currentStatus = null;
             return false;
         } else {
-            console.log("Cannot place an army in " + country.wire_name());
+            console.log("Cannot place an army in " + country.wire_name);
             return true;
         }
     }

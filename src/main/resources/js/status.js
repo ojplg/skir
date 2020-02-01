@@ -11,6 +11,7 @@ var countryClickResponder = null;
 var playerStatuses;
 var demoFlag;
 var connection;
+var map;
 
 function displayGameEvents(gameEvents){
     var orderEventDiv = document.getElementById('order-event-div');
@@ -32,15 +33,20 @@ function displayGameEvents(gameEvents){
     orderEventDiv.scrollTop = orderEventDiv.scrollHeight;
 }
 
+function map_clicked(e){
+    map.mapClicked(e);
+}
+
 function isMyColor(color){
     return color.toUpperCase() == myIdentity.color.toUpperCase();
 }
 
 function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
-    console.log("initializing client with name " + name)
-    draw_map();
+    console.log("initializing client with name " + name);
+    map = new Map();
+    map.drawMap();
     myIdentity.uniqueKey = name;
-    connection = new Connection();
+    connection = new Connection(map);
     connection.open(name, address, myIdentity.uniqueKey, isDemo, gameId, isJoinAttempt);
     myIdentity.name = name;
     myIdentity.address = address;

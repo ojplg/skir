@@ -1,8 +1,9 @@
-function Connection(){
+function Connection(map){
     let self = this;
 
     this.socket = new WebSocket(web_socket_protocol + "://" + window.location.host + "/sockets/");
     this.queuedUpdates = {};
+    this.map = map;
 
     this.queueGameEvent = function (gameEvent){
         self.queuedUpdates.gameEvents.push(gameEvent);
@@ -16,7 +17,7 @@ function Connection(){
         for (var property in self.queuedUpdates.mapUpdates) {
             if (self.queuedUpdates.mapUpdates.hasOwnProperty(property)) {
                 var countryUpdate = self.queuedUpdates.mapUpdates[property];
-                update_country(countryUpdate.country, countryUpdate.color, countryUpdate.count);
+                map.updateCountry(countryUpdate.country, countryUpdate.color, countryUpdate.count);
                 delete self.queuedUpdates.mapUpdates[property];
             }
         }
