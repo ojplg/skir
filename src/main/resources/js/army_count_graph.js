@@ -16,25 +16,10 @@ function ArmyCountGraph(){
         'pink': 21
     };
 
-    this.updateCount = function(color, cnt){
-        counts[color] = cnt;
-    }
-
-    setInterval(function() {
-        var x = new Date().getTime();
-        blackLine.append(x, counts['black']);
-        blueLine.append(x, counts['blue']);
-        redLine.append(x, counts['red']);
-        greenLine.append(x, counts['green']);
-        whiteLine.append(x, counts['white']);
-        pinkLine.append(x, counts['pink']);
-
-    }, SMOOTHIE_INTERVAL);
-
     var smoothie = new SmoothieChart(
         {
-            grid: { fillStyle:'rgb(60, 60, 60)' }
-            ,millisPerPixel:SMOOTHIE_MILLIS_PER_PIXEL
+            grid: { fillStyle:'rgb(60, 60, 60)',verticalSections:1,millisPerLine:0 }
+            ,minValue:0
         });
 
     smoothie.addTimeSeries(blackLine, { strokeStyle:'rgb(0, 0, 0)' });
@@ -45,5 +30,35 @@ function ArmyCountGraph(){
     smoothie.addTimeSeries(pinkLine, { strokeStyle:'rgb(250, 175, 190)' });
 
     smoothie.streamTo(document.getElementById("army-count-graph"), SMOOTHIE_INTERVAL);
+
+    //var x = new Date().getTime();
+    var x = 0;
+
+    this.updateCount = function(color, cnt){
+        //var x = new Date().getTime();
+        counts[color] = cnt;
+        blackLine.append(x, counts['black']);
+        blueLine.append(x, counts['blue']);
+        redLine.append(x, counts['red']);
+        greenLine.append(x, counts['green']);
+        whiteLine.append(x, counts['white']);
+        pinkLine.append(x, counts['pink']);
+        x = x + 1;
+//        console.log("Repainting! " + x);
+    }
+
+//    setInterval(function() {
+//        var x = new Date().getTime();
+//        blackLine.append(x, counts['black']);
+//        blueLine.append(x, counts['blue']);
+//        redLine.append(x, counts['red']);
+//        greenLine.append(x, counts['green']);
+//        whiteLine.append(x, counts['white']);
+//        pinkLine.append(x, counts['pink']);
+//
+//    }, SMOOTHIE_INTERVAL);
+
+//,millisPerPixel:SMOOTHIE_MILLIS_PER_PIXEL
+
 
 }
