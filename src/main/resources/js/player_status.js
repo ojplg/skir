@@ -5,8 +5,7 @@ const PLAYER_STATS = ['name', 'armies','countries','continents','card_count',
                          'defense_luck_factor', 'armies_lost_defending', 'armies_killed_defending'];
 
 
-function PlayerStatuses(armyCountGraph) {
-    this.armyCountGraph = armyCountGraph;
+function PlayerStatuses() {
     var colors = ["black","white","blue","red","pink","green"];
     for(var idx=0; idx<colors.length; idx++){
         var color = colors[idx];
@@ -14,7 +13,7 @@ function PlayerStatuses(armyCountGraph) {
     }
 
     this.update = function(playerStatus){
-        this[playerStatus.color].updateTable(playerStatus, this.armyCountGraph);
+        this[playerStatus.color].updateTable(playerStatus);
     }
 }
 
@@ -35,7 +34,7 @@ function PlayerStatus(playerColor){
         valueCell.id = this.color + "." + caption;
     }
 
-    this.updateTable = function(playerStatus, armyCountGraph){
+    this.updateTable = function(playerStatus){
         var items;
         for(var idx=0; idx<PLAYER_STATS.length; idx++){
             var stat = PLAYER_STATS[idx];
@@ -49,7 +48,6 @@ function PlayerStatus(playerColor){
         }
 
         var armyCount = playerStatus['armies'];
-        armyCountGraph.updateCount(this.color, armyCount);
     }
 
     this.updateCards = function(color, cards){

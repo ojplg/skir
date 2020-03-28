@@ -51,8 +51,7 @@ function initializeClient(name, address, isDemo, gameId, isJoinAttempt){
     myIdentity.name = name;
     myIdentity.address = address;
     myIdentity.color = "";
-    var armyCountGraph = new ArmyCountGraph();
-    playerStatuses = new PlayerStatuses(armyCountGraph);
+    playerStatuses = new PlayerStatuses();
     if( isDemo === true ){
         addButton("start");
     }
