@@ -45,7 +45,7 @@ public class GameEvent implements GameEventMessage {
     }
 
     public static GameEvent joinsGame(GameId gameId, Player player){
-        return new GameEvent(gameId, player.getColor() + " joins game", 0, GameEventType.PlayerJoins, player.getDisplayName());
+        return new GameEvent(gameId, player.getDisplayName() + " joins game as " + player.getColor(), 0, GameEventType.PlayerJoins, player.getDisplayName());
     }
 
     public static GameEvent eliminated(GameId gameId,Player player, int turnNumber){
