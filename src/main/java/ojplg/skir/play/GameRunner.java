@@ -8,9 +8,11 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.state.GameException;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
+import ojplg.skir.state.event.NoMoveReceivedEvent;
 import ojplg.skir.utils.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +36,7 @@ public class GameRunner implements GameSpecifiable {
     private final Fiber _fiber;
     private final AiFactory _aiFactory;
     private final NewGameRequest _gameRequest;
+    private final PlayerClock _playerClock;
 
     private Map<Player,AutomatedPlayer> _automatedPlayers;
 
@@ -47,15 +50,18 @@ public class GameRunner implements GameSpecifiable {
         _aiFactory = aiFactory;
         _preGame = new PreGame(channels, gameRequest.getGameId());
         _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
+        _playerClock = new PlayerClock(_preGame.getGameId(), _channels);
 
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.subscribeToClientConnectedEvent(this, _fiber, this::handleClientConnection);
         _channels.subscribeToGameStartRequest(this, _fiber, this::startGame);
         _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
+        _channels.subscribeToNoMoveReceviedEvent(this, _fiber, this::handleNoMoveReceivedEvent);
     }
 
     public void start(){
         _fiber.start();
+        _playerClock.start();
     }
 
     public static String colorForIndex(int index){
@@ -74,13 +80,23 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void processOrder(Order order){
+        if( ! _currentAdjutant.isAllowedOrderType(order)) {
+            // TODO: Improve logging.
+            _log.warn("Disallowed order: " + order);
+            return;
+        }
         Player player = _currentAdjutant.getActivePlayer();
-        _log.debug("Processing order for " + player + " of type " + order.getType());
-        _currentAdjutant = order.execute(_game);
-        if (_game.gameOver()) {
-            handleGameOver();
-        } else {
-            _channels.publishAdjutant(_currentAdjutant);
+        try {
+            _log.info("Processing order for " + player + " of type " + order.getType());
+            _currentAdjutant = order.execute(_game);
+            if (_game.gameOver()) {
+                handleGameOver();
+            } else {
+                _channels.publishAdjutant(_currentAdjutant);
+            }
+        } catch (GameException ge) {
+            _log.error("Error processing an order " + ge.getMessage() + " with " +  player + " with ai " + _automatedPlayers.get(player));
+            throw ge;
         }
     }
 
@@ -121,6 +137,18 @@ public class GameRunner implements GameSpecifiable {
         }
     }
 
+    private void handleNoMoveReceivedEvent(NoMoveReceivedEvent event){
+        _log.info("No move received for game: " + getGameId());
+        Player activePlayer = _currentAdjutant.getActivePlayer();
+        List<Player> players = Collections.singletonList(activePlayer);
+        List<AutomatedPlayer> ais = _aiFactory.generateAiPlayers(players);
+        AutomatedPlayer newAiPlayer = ais.get(0);
+        newAiPlayer.initialize(_game);
+        _automatedPlayers.put(activePlayer, newAiPlayer);
+        _log.info("Player " + activePlayer + " became " + newAiPlayer);
+        aiOrderGenerator(_currentAdjutant);
+    }
+
     private void littleDelay(){
         if( _gameRequest.getDelay() > 0) {
             try {
@@ -133,11 +161,15 @@ public class GameRunner implements GameSpecifiable {
 
     private void startGame(GameStartRequest gameStartRequest){
         _game = initializeGame(gameStartRequest, _channels);
+        _log.info("Game initialized");
         assignCountries();
+        _log.info("Countries assigned");
         initializedAIs(_game);
         _game.start();
+        _log.info("Game started");
         _game.publishAllState();
         _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
+        _log.info("New game adjutant created " + _game.getGameId() + ", " + _game.currentAttacker());
         _channels.publishAdjutant(_currentAdjutant);
         _log.info("Starting game " + gameStartRequest);
     }
@@ -181,7 +213,7 @@ public class GameRunner implements GameSpecifiable {
         for(int idx=0; idx<countries.size(); idx++){
             Player player = players.get(idx%_colors.length);
             Country country = countries.get(idx);
-            _game.processPlaceArmyOrder(player, country, 1);
+            _game.processPlaceArmyOrder(player, country, 1, false);
         }
         _game.doInitialPlacements();
     }

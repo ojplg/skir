@@ -23,10 +23,12 @@ public class Adjutant implements GameSpecifiable {
     private final GameId _gameId;
 
     public static Adjutant newGameAdjutant(GameId gameId, Player player){
+        _log.info("New game " + player);
         return new Adjutant(gameId, player, false, OrderType.ClaimArmies, 1);
     }
 
     public Adjutant nextPlayer(Player player, int turnNumber){
+        _log.info("Next player " + player);
         return new Adjutant(this._gameId, player, false, OrderType.ClaimArmies, turnNumber);
     }
 
@@ -68,11 +70,22 @@ public class Adjutant implements GameSpecifiable {
     }
 
     public List<OrderType> allowableOrders() {
-        List<OrderType> orderTypes = new ArrayList<OrderType>();
+        List<OrderType> orderTypes = new ArrayList<>();
         for(ConstrainedOrderType constrainedOrderType : _allowableOrders) {
             orderTypes.add(constrainedOrderType.getOrderType());
         }
         return Collections.unmodifiableList(orderTypes);
+    }
+
+    public boolean isAllowedOrderType(Order order){
+        OrderType orderType = order.getType();
+        for( ConstrainedOrderType constrainedOrderType : _allowableOrders) {
+            OrderType allowedType = constrainedOrderType.getOrderType();
+            if (allowedType.equals(orderType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public OccupationConstraints getOccupationConstraints(){

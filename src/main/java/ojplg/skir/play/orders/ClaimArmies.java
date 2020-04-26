@@ -16,14 +16,15 @@ public class ClaimArmies extends Order {
 
     @Override
     public Adjutant execute(Game game) {
-        _log.debug("Claiming armies for " + getAdjutant().getActivePlayer());
+        _log.info("Claiming armies for " + getAdjutant().getActivePlayer());
         int numberToGrant = game.computeExpectedGrant(activePlayer());
         PlayerHoldings activeHoldings = game.getPlayerHoldings(activePlayer());
 
         activeHoldings.grantReserves(numberToGrant);
         game.publishPlayerState(activePlayer());
 
-        _log.debug("Claimed armies for " + getAdjutant().getActivePlayer());
+        _log.info("Claimed armies for " + getAdjutant().getActivePlayer() +
+                " granted " + numberToGrant + " total " + activeHoldings.reserveCount());
 
         if(CardSet.hasTradeableSet(activeHoldings.getCards()) ){
             ConstrainedOrderType exchange = ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet);

@@ -5,6 +5,7 @@ import ojplg.skir.play.orders.Order;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
+import ojplg.skir.state.event.NoMoveReceivedEvent;
 import org.jetlang.channels.Channel;
 import org.jetlang.channels.MemoryChannel;
 import ojplg.skir.state.event.ClientConnectedEvent;
@@ -24,6 +25,7 @@ public class Channels {
     private final Channel<GameJoinedEvent> _gameJoinedEventChannel = new MemoryChannel<>();
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel = new MemoryChannel<>();
     private final Channel<GameStartRequest> _gameStartRequestChannel = new MemoryChannel<>();
+    private final Channel<NoMoveReceivedEvent> _noMoveReceivedEventChannel = new MemoryChannel<>();
 
     public void publishOrder(Order order){
         _orderMemoryChannel.publish(order);
@@ -98,5 +100,15 @@ public class Channels {
         channel.subscribe(executor,
                     t ->  { if(t.matches(gameSpecifier)){ callback.onMessage(t); }});
 
+    }
+
+    public void publishNoMoveReceivedEvent(NoMoveReceivedEvent event){
+        _noMoveReceivedEventChannel.publish(event);
+    }
+
+    public void subscribeToNoMoveReceviedEvent(GameSpecifiable gameSpecifiable,
+                                               DisposingExecutor executor,
+                                               Callback<NoMoveReceivedEvent> callback){
+        gameSpecifiedSubscription(gameSpecifiable, executor, callback, _noMoveReceivedEventChannel);
     }
 }

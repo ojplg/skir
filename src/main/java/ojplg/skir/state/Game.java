@@ -67,6 +67,7 @@ public class Game implements GameSpecifiable {
     public void start(){
         _log.info("Starting game " + _gameId);
         _currentAttacker = _players.get(0);
+        _log.info("With current player " + _currentAttacker);
         GameEventMessage gameEvent = new GameStartEvent(_gameId, _cardPile.valuationOfExchange());
         _channels.publishGameEvent(gameEvent);
         _log.info(_gameId + " turn number "  + _turnNumber);
@@ -77,7 +78,7 @@ public class Game implements GameSpecifiable {
             int index = 0;
             List<Country> countries = _occupations.countriesOccupied(player);
             while (getPlayerHoldings(player).hasReserves()){
-                processPlaceArmyOrder(player, countries.get(index), 1);
+                processPlaceArmyOrder(player, countries.get(index), 1, false);
                 index++;
                 index = index % countries.size();
             }
@@ -114,7 +115,7 @@ public class Game implements GameSpecifiable {
             logPlayerStatuses();
         }
         _currentAttacker = _players.get(nextPlayerIndex);
-        _log.debug("nextPlayer from " + oldAttacker + " to " + _currentAttacker + " index " + nextPlayerIndex +
+        _log.info("nextPlayer from " + oldAttacker + " to " + _currentAttacker + " index " + nextPlayerIndex +
                 " in turn " + _turnNumber);
         return _currentAttacker;
     }
@@ -129,8 +130,29 @@ public class Game implements GameSpecifiable {
         return computeCountrySupply(player) + computeContinentSupply(player);
     }
 
-    public int computeExpectedGrant(Player player){
+    private void currentPlayerCheck(Player player){
+        if (!player.equals(currentAttacker())){
+            StringBuffer buf = new StringBuffer();
+            buf.append("Error on turn ");
+            buf.append(_turnNumber);
+            buf.append(" current player is ");
+            buf.append(currentAttacker());
+            buf.append(" but called with ");
+            buf.append(player);
+            throw new GameException(getGameId(), buf.toString());
+        }
+    }
+
+    private int computeExpectedGrant(Player player, boolean withCheck){
+        if (withCheck) {
+            currentPlayerCheck(player);
+        }
         return computeMapSupply(player);
+    }
+
+
+    public int computeExpectedGrant(Player player){
+        return computeExpectedGrant(player, true);
     }
 
     private int computeContinentSupply(Player player){
@@ -214,11 +236,19 @@ public class Game implements GameSpecifiable {
         }
         return gameOver;
     }
-    
-    public void processPlaceArmyOrder(Player player, Country country, int count){
+
+    public void processPlaceArmyOrder(Player player, Country country, int count, boolean withCheck){
+        if( withCheck) {
+            currentPlayerCheck(player);
+        }
         getPlayerHoldings(player).drawReserves(count);
         _occupations.placeArmies(player, country, count);
         publishCountryState(country);
+
+    }
+
+    public void processPlaceArmyOrder(Player player, Country country, int count){
+        processPlaceArmyOrder(player, country, count, true);
     }
 
     public void processFortifyOrder(Country source, Country destination, int armies){
@@ -243,23 +273,23 @@ public class Game implements GameSpecifiable {
 
     public Card processDrawCardOrder() {
         Card card =  _cardPile.drawCard();
-        publishPlayerState(_currentAttacker);
+        publishPlayerState(currentAttacker());
         return card;
     }
 
     public void processExchangeCardSetOrder(CardSet set){
-        getPlayerHoldings(_currentAttacker).removeCards(set.asList());
+        getPlayerHoldings(currentAttacker()).removeCards(set.asList());
         int bonusArmies = _cardPile.tradeCards(set);
         set.asList().forEach(this::applyCardCountryBonus);
-        GameEventMessage gameEvent = new CardExchangeEvent(_gameId, _turnNumber, _currentAttacker.getColor(), _cardPile.valuationOfExchange());
+        GameEventMessage gameEvent = new CardExchangeEvent(_gameId, _turnNumber, currentAttacker().getColor(), _cardPile.valuationOfExchange());
         _channels.publishGameEvent(gameEvent);
-        getPlayerHoldings(_currentAttacker).grantReserves(bonusArmies);
-        publishPlayerState(_currentAttacker);
+        getPlayerHoldings(currentAttacker()).grantReserves(bonusArmies);
+        publishPlayerState(currentAttacker());
     }
 
     private void applyCardCountryBonus(Card card){
-        if(_currentAttacker.equals(getOccupier(card.getCountry()))){
-            _occupations.placeArmies(_currentAttacker, card.getCountry(),
+        if(currentAttacker().equals(getOccupier(card.getCountry()))){
+            _occupations.placeArmies(currentAttacker(), card.getCountry(),
                     Constants.CARD_COUNTRY_BONUS);
             publishCountryState(card.getCountry());
         }
@@ -397,7 +427,7 @@ public class Game implements GameSpecifiable {
         int countryCount = numberCountriesOccupied(player);
         int armyCount = _occupations.totalOccupationForces(player) + getPlayerHoldings(player).reserveCount();
         int continentCount = numberContinentsOccupied(player);
-        int expectedGrant = computeExpectedGrant(player);
+        int expectedGrant = computeExpectedGrant(player, false);
         PlayerHoldings playerHoldings = getPlayerHoldings(player);
         BattleStats battleStats = getBattleStats(player);
         return new PlayerChangedEvent(_gameId, player, battleStats, playerHoldings.getCards(), countryCount, armyCount, continentCount, expectedGrant);

@@ -73,7 +73,7 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
 
     @OnMessage
     public void onMessageReceived(String message, Session session){
-        _log.info("Received a message " + message + " from " + session.getId());
+        _log.debug("Received a message " + message + " from " + session.getId());
 
         JSONParser parser = new JSONParser();
         try {
@@ -149,6 +149,11 @@ public class LocalWebSocket /* implements WebSocket.OnTextMessage */ implements 
         _log.debug("Order " + orderJson);
         OrderJsonParser orderJsonParser = new OrderJsonParser(_currentAdjutant);
         Order order = orderJsonParser.parseOrder(orderJson);
+        // TODO: This is no good. Only legitimate orders should
+        // be allowed. There's a particular bug, since the ClaimArmies
+        // is published by the web tier automatically.
+        // See bogus code in the Adjutant.isAllowableOrder and how
+        // that is handled.
         _channels.publishOrder(order);
     }
 

@@ -79,15 +79,17 @@ public class GameHelper {
                 0);
 
         int cnt = 0;
+
+        game.start();
+
         for(Country country : game.getAllCountries()){
             Player player = players.get(cnt % players.size());
             PlayerHoldings holdings = game.getPlayerHoldings(player);
             holdings.grantReserves(1);
-            game.processPlaceArmyOrder(player, country, 1);
+            game.processPlaceArmyOrder(player, country, 1, false);
             cnt++;
         }
 
-        game.start();
 
         return game;
     }
@@ -108,7 +110,7 @@ public class GameHelper {
         Game.processPlaceArmyOrder(victor, attackingCountry, 5);
         Game.getPlayerHoldings(deathbedPlayer).grantReserves(1);
         _occupations.killArmies(conqueredCountry, 1);
-        Game.processPlaceArmyOrder(deathbedPlayer, conqueredCountry, 1);
+        Game.processPlaceArmyOrder(deathbedPlayer, conqueredCountry, 1, false);
         setCountryTroopLevel(conqueredCountry, 0);
     }
 }
