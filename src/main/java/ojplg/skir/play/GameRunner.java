@@ -8,6 +8,8 @@ import ojplg.skir.card.StandardCardSet;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.StandardMap;
 import ojplg.skir.map.WorldMap;
+import ojplg.skir.play.orders.OrderType;
+import ojplg.skir.play.orders.Transitions;
 import ojplg.skir.state.GameException;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.event.GameSpecifiable;
@@ -40,6 +42,7 @@ public class GameRunner implements GameSpecifiable {
 
     private Map<Player,AutomatedPlayer> _automatedPlayers;
 
+    private OrderType _lastOrderType = OrderType.EndTurn;
     private Adjutant _currentAdjutant;
     private PreGame _preGame;
     private Game _game;
@@ -85,6 +88,11 @@ public class GameRunner implements GameSpecifiable {
             _log.warn("Disallowed order: " + order);
             return;
         }
+        if ( !Transitions.isPossibleTransition(_lastOrderType, order.getType())){
+            throw new IllegalArgumentException("Cannot do order " + order.getType() + " following " + _lastOrderType);
+        }
+        _lastOrderType = order.getType();
+
         Player player = _currentAdjutant.getActivePlayer();
         try {
             _log.info("Processing order for " + player + " of type " + order.getType());
