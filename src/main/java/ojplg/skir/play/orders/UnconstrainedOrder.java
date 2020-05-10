@@ -7,4 +7,9 @@ public class UnconstrainedOrder implements OrderConstraints {
     public JSONObject toJsonObject() {
         return new JSONObject();
     }
+
+    @Override
+    public boolean allowableOrder(Order order) {
+        return true;
+    }
 }

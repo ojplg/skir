@@ -30,6 +30,11 @@ public class AttackConstraints implements OrderConstraints {
     }
 
     @Override
+    public boolean allowableOrder(Order order) {
+        return false;
+    }
+
+    @Override
     public JSONObject toJsonObject() {
         JSONObject jObject = new JSONObject();
         JSONObject counts = new JSONObject();

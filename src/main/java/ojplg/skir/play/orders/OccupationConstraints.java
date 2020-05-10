@@ -28,6 +28,21 @@ public class OccupationConstraints implements OrderConstraints {
     }
 
     @Override
+    public boolean allowableOrder(Order order) {
+        if( ! OrderType.Occupy.equals(order.getType())) {
+            return false;
+        }
+        Occupy occupy = (Occupy) order;
+        Country occupied = occupy.getConquered();
+        int force = occupy.getArmies();
+
+        if ( force >_maximumOccupationForce ){
+            return false;
+        }
+        return occupied.equals(conquered());
+    }
+
+    @Override
     public JSONObject toJsonObject(){
         JSONObject jObject = new JSONObject();
         jObject.put("minimum_occupation_force", minimumOccupationForce());

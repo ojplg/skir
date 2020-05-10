@@ -39,4 +39,12 @@ public class PlaceArmy extends Order {
     public OrderType getType() {
         return OrderType.PlaceArmy;
     }
+
+    public Country getCountry() {
+        return _country;
+    }
+
+    public int getCount() {
+        return _count;
+    }
 }

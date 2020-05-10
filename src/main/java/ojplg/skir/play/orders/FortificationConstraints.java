@@ -17,7 +17,7 @@ public class FortificationConstraints implements OrderConstraints {
     private final Map<Country, List<Country>> _availableDestinations;
 
     public FortificationConstraints(Player player, Game game){
-        Map<Country, Integer> armies = new HashMap<Country, Integer>();
+        Map<Country, Integer> armies = new HashMap<>();
         Map<Country, List<Country>> destinations = new HashMap<Country, List<Country>>();
         List<Country> availableCountries = game.possibleFortificationCountries(player);
         for(Country country : availableCountries){
@@ -28,6 +28,21 @@ public class FortificationConstraints implements OrderConstraints {
         }
         _availableArmies = Collections.unmodifiableMap(armies);
         _availableDestinations = Collections.unmodifiableMap(destinations);
+    }
+
+    @Override
+    public boolean allowableOrder(Order order) {
+        if (! OrderType.Fortify.equals(order.getType())){
+            return false;
+        }
+
+        Fortify fortify = (Fortify) order;
+        Country source = fortify.getSource();
+        if ( fortify.getArmies() > _availableArmies.get(source) ){
+            return false;
+        }
+        Country destination = fortify.getDestination();
+        return _availableDestinations.get(source).contains(destination);
     }
 
     @Override

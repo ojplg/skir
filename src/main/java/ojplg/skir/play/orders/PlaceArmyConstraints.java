@@ -21,6 +21,21 @@ public class PlaceArmyConstraints implements OrderConstraints {
         return _maximumArmies;
     }
 
+    @Override
+    public boolean allowableOrder(Order order) {
+        if (!order.getType().equals(OrderType.PlaceArmy)) {
+            return false;
+        }
+        PlaceArmy placeArmy = (PlaceArmy) order;
+        int numberArmies = placeArmy.getCount();
+        Country country = placeArmy.getCountry();
+
+        if (numberArmies > _maximumArmies){
+            return false;
+        }
+        return _possibleCountries.contains(country);
+    }
+
     public List<Country> getPossibleCountries() {
         return _possibleCountries;
     }

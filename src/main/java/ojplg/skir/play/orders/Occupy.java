@@ -53,4 +53,16 @@ public class Occupy extends Order {
     public OrderType getType() {
         return OrderType.Occupy;
     }
+
+    public Country getVictor() {
+        return _victor;
+    }
+
+    public Country getConquered() {
+        return _conquered;
+    }
+
+    public int getArmies() {
+        return _armies;
+    }
 }
