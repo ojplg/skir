@@ -60,6 +60,21 @@ public class Game implements GameSpecifiable {
         _gameId = gameId;
     }
 
+    public Game(GameState gameState, Roller roller, Channels channels){
+        _occupations = gameState.getOccupations();
+        _players.addAll(gameState.getPlayers());
+        _playerHoldings.putAll(gameState.getPlayerHoldings());
+        _playerStats.putAll(gameState.getPlayerStats());
+        _cardPile = gameState.getCardPile();
+        _roller = roller;
+        _channels = channels;
+        _gameId = gameState.getGameId();
+
+        _currentAttacker = gameState.getCurrentAttacker();
+        _turnNumber = gameState.getTurnNumber();
+        _lastAttackTurn = gameState.getLastAttackTurn();
+    }
+
     public GameId getGameId(){
         return _gameId;
     }
@@ -71,6 +86,22 @@ public class Game implements GameSpecifiable {
         GameEventMessage gameEvent = new GameStartEvent(_gameId, _cardPile.valuationOfExchange());
         _channels.publishGameEvent(gameEvent);
         _log.info(_gameId + " turn number "  + _turnNumber);
+    }
+
+    public GameState getGameState(){
+        GameState gameState = new GameState();
+
+        gameState.setOccupations(_occupations);
+        gameState.setPlayers(_players);
+        gameState.setPlayerHoldings(_playerHoldings);
+        gameState.setCardPile(_cardPile);
+        gameState.setCurrentAttacker(_currentAttacker);
+        gameState.setTurnNumber(_turnNumber);
+        gameState.setGameId(_gameId);
+        gameState.setPlayerStats(_playerStats);
+        gameState.setLastAttackTurn(_lastAttackTurn);
+
+        return gameState;
     }
 
     public void doInitialPlacements(){

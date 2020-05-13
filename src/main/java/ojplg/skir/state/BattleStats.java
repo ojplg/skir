@@ -2,7 +2,9 @@ package ojplg.skir.state;
 
 import ojplg.skir.play.Rolls;
 
-public class BattleStats {
+import java.io.Serializable;
+
+public class BattleStats implements Serializable {
     private final double _attackLuckFactor;
     private final int _totalArmiesLostAttacking;
     private final int _totalArmiesKilledAttacking;

@@ -3,11 +3,12 @@ package ojplg.skir.state;
 import ojplg.skir.card.Card;
 import ojplg.skir.state.event.GameSpecifiable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PlayerHoldings implements GameSpecifiable {
+public class PlayerHoldings implements GameSpecifiable, Serializable {
 
     private final GameId _gameId;
     private final List<Card> _cards = new ArrayList<>();

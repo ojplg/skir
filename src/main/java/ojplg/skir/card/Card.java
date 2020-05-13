@@ -2,7 +2,9 @@ package ojplg.skir.card;
 
 import ojplg.skir.map.Country;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
 
     private final CardType _type;
     private final Country _country;

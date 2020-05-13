@@ -1,6 +1,8 @@
 package ojplg.skir.map;
 
-public class Country implements Comparable<Country> {
+import java.io.Serializable;
+
+public class Country implements Comparable<Country>, Serializable {
 
     // Africa
     public static final Country Congo = new Country("Congo");

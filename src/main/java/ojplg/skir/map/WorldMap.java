@@ -1,11 +1,12 @@
 package ojplg.skir.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class WorldMap {
+public class WorldMap implements Serializable {
 
     private final List<Continent> _continents;
     private final Neighbors _neighbors;

@@ -5,6 +5,7 @@ import ojplg.skir.evolve.EvolutionRunner;
 import ojplg.skir.evolve.EvolutionSettings;
 import ojplg.skir.play.bench.AiTestBench;
 import ojplg.skir.state.Constants;
+import ojplg.skir.state.GameId;
 import ojplg.skir.web.WebRunner;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -97,6 +98,8 @@ public class Skir {
                 _log.error("Could not start web server", ex);
             }
         });
+        List<GameId> games = GameSaver.availableGames();
+        _log.info("Loaded games " + games);
         webThread.setUncaughtExceptionHandler((t, e) -> _log.error("Web thread exception caught at top level", e));
         webThread.start();
         webRunner.start();

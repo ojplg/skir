@@ -1,10 +1,11 @@
 package ojplg.skir.map;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Neighborhood {
+public class Neighborhood implements Serializable {
 
     private final Country _country;
     private final List<Country> _neighbors;

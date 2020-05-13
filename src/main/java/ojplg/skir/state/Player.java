@@ -2,7 +2,9 @@ package ojplg.skir.state;
 
 import ojplg.skir.state.event.GameSpecifiable;
 
-public class Player implements Comparable<Player>, GameSpecifiable {
+import java.io.Serializable;
+
+public class Player implements Comparable<Player>, GameSpecifiable, Serializable {
 
     private final GameId _gameId;
     private final String _color;

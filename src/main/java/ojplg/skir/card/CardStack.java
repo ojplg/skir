@@ -2,11 +2,12 @@ package ojplg.skir.card;
 
 import ojplg.skir.state.Constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CardStack {
+public class CardStack implements Serializable {
 
     private final List<Card> _cards = new ArrayList<>();
     private int _tradeNumber = 1;

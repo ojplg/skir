@@ -1,5 +1,7 @@
 package ojplg.skir.card;
 
-public enum CardType {
+import java.io.Serializable;
+
+public enum CardType implements Serializable {
     Cannon,Horse,Soldier,Joker
 }

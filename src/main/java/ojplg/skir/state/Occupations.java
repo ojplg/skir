@@ -4,13 +4,14 @@ import ojplg.skir.map.Continent;
 import ojplg.skir.map.Country;
 import ojplg.skir.map.WorldMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Occupations {
+public class Occupations implements Serializable {
 
     private final WorldMap _map;
     private final Map<Country, Force> _records = new HashMap<>();

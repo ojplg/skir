@@ -106,6 +106,7 @@ public class GameRunner implements GameSpecifiable {
             _log.error("Error processing an order " + ge.getMessage() + " with " +  player + " with ai " + _automatedPlayers.get(player));
             throw ge;
         }
+        GameSaver.saveGameState(_game.getGameState());
     }
 
     private void handleGameOver(){

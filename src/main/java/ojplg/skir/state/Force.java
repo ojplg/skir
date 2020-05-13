@@ -1,6 +1,8 @@
 package ojplg.skir.state;
 
-public class Force {
+import java.io.Serializable;
+
+public class Force implements Serializable {
 
     private final Player _player;
     private int _armies;

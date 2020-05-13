@@ -2,7 +2,9 @@ package ojplg.skir.state;
 
 import ojplg.skir.state.event.GameSpecifiable;
 
-public class GameId implements GameSpecifiable, Comparable<GameId> {
+import java.io.Serializable;
+
+public class GameId implements GameSpecifiable, Comparable<GameId>, Serializable {
 
     private static volatile int _counter = 0;
     private final int _id;
