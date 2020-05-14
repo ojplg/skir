@@ -5,6 +5,7 @@ import ojplg.skir.play.Channels;
 import ojplg.skir.play.GameRunner;
 import ojplg.skir.play.NewGameRequest;
 import ojplg.skir.state.GameId;
+import ojplg.skir.state.GameState;
 import ojplg.skir.state.event.GameEventMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,11 +28,19 @@ public class WebRunner {
         _channels = channels;
         _fiber = fiber;
         _channels.subscribeToAllGameEvents(_fiber, this::handleGameEvent);
+        _channels.subscribeToRestoreGameChannel(_fiber, this::handleRestoreGameRequest);
     }
 
     public void start(){
         _log.info("Starting");
         _fiber.start();
+    }
+
+    private void handleRestoreGameRequest(GameState gameState){
+        GameRunner gameRunner = new GameRunner(_channels, gameState);
+        synchronized (_lock){
+            _gameRunners.put(gameState.getGameId(), gameRunner);
+        }
     }
 
     GameId newGame(NewGameRequest request){

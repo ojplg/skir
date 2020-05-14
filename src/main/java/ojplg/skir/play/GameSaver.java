@@ -54,11 +54,14 @@ public class GameSaver {
 
             inputStream.close();
             fileInputStream.close();
+            _log.info("loaded old game " + gameId);
             return game;
         } catch (IOException ioe){
-            throw new RuntimeException(ioe);
+            _log.warn("Could not load game " + gameId, ioe);
+            return null;
         } catch (ClassNotFoundException cnfe) {
-            throw new RuntimeException(cnfe);
+            _log.warn("Could not load game " + gameId, cnfe);
+            return null;
         }
     }
 

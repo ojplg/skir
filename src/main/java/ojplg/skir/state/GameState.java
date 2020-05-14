@@ -92,4 +92,8 @@ public class GameState implements Serializable {
     public void setLastAttackTurn(int _lastAttackTurn) {
         this._lastAttackTurn = _lastAttackTurn;
     }
+
+    public boolean isOver(){
+        return _players.size() <= 1;
+    }
 }

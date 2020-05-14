@@ -2,6 +2,7 @@ package ojplg.skir.play;
 
 import ojplg.skir.play.orders.Adjutant;
 import ojplg.skir.play.orders.Order;
+import ojplg.skir.state.GameState;
 import ojplg.skir.state.event.GameEventMessage;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
@@ -26,6 +27,7 @@ public class Channels {
     private final Channel<ClientConnectedEvent> _clientConnectedEventChannel = new MemoryChannel<>();
     private final Channel<GameStartRequest> _gameStartRequestChannel = new MemoryChannel<>();
     private final Channel<NoMoveReceivedEvent> _noMoveReceivedEventChannel = new MemoryChannel<>();
+    private final Channel<GameState> _restoreGamesChannel = new MemoryChannel<>();
 
     public void publishOrder(Order order){
         _orderMemoryChannel.publish(order);
@@ -110,5 +112,13 @@ public class Channels {
                                                DisposingExecutor executor,
                                                Callback<NoMoveReceivedEvent> callback){
         gameSpecifiedSubscription(gameSpecifiable, executor, callback, _noMoveReceivedEventChannel);
+    }
+
+    public void publishRestoreGame(GameState gameState){
+        _restoreGamesChannel.publish(gameState);
+    }
+
+    public void subscribeToRestoreGameChannel(DisposingExecutor executor, Callback<GameState> callback){
+        _restoreGamesChannel.subscribe(executor, callback);
     }
 }

@@ -12,6 +12,7 @@ import ojplg.skir.play.orders.OrderType;
 import ojplg.skir.play.orders.Transitions;
 import ojplg.skir.state.GameException;
 import ojplg.skir.state.GameId;
+import ojplg.skir.state.GameState;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
 import ojplg.skir.state.event.NoMoveReceivedEvent;
@@ -54,6 +55,20 @@ public class GameRunner implements GameSpecifiable {
         _preGame = new PreGame(channels, gameRequest.getGameId());
         _fiber = Skir.createThreadFiber("GameRunner-" + _preGame.getGameId());
         _playerClock = new PlayerClock(_preGame.getGameId(), _channels);
+
+        _channels.subscribeToOrder(this, _fiber, this::processOrder);
+        _channels.subscribeToClientConnectedEvent(this, _fiber, this::handleClientConnection);
+        _channels.subscribeToGameStartRequest(this, _fiber, this::startGame);
+        _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
+        _channels.subscribeToNoMoveReceviedEvent(this, _fiber, this::handleNoMoveReceivedEvent);
+    }
+
+    public GameRunner( Channels channels, GameState gameState ){
+        _channels = channels;
+        _gameRequest = null;
+        _aiFactory = null;
+        _fiber = Skir.createThreadFiber("GameRunner-" + gameState.getGameId());
+        _playerClock = new PlayerClock(gameState.getGameId(), channels);
 
         _channels.subscribeToOrder(this, _fiber, this::processOrder);
         _channels.subscribeToClientConnectedEvent(this, _fiber, this::handleClientConnection);

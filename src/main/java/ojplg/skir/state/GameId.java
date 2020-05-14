@@ -18,11 +18,20 @@ public class GameId implements GameSpecifiable, Comparable<GameId>, Serializable
 
     public static GameId fromString(String s){
         int value = Integer.valueOf(s);
+        guard(value);
         return new GameId(value);
     }
 
     public static GameId fromLong(long i){
-        return new GameId((int) i);
+        int number = (int) i;
+        guard(number);
+        return new GameId(number);
+    }
+
+    private static void guard(int number){
+        if( number >= _counter ){
+            _counter = number + 1;
+        }
     }
 
     private GameId(int number){
