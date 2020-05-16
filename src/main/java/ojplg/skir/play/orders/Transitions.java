@@ -26,7 +26,7 @@ public class Transitions {
             case DrawCard:
                 return Arrays.asList(OrderType.EndTurn, OrderType.ClaimArmies, OrderType.ExchangeCardSet);
             case EndTurn:
-                return Arrays.asList(OrderType.ExchangeCardSet, OrderType.ClaimArmies);
+                return Arrays.asList(OrderType.ExchangeCardSet, OrderType.ClaimArmies, OrderType.PlaceArmy);
             default:
                 throw new UnsupportedOperationException("missing order type: " + orderType);
         }

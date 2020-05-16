@@ -1,6 +1,8 @@
 package ojplg.skir.play.orders;
 
+import ojplg.skir.state.Game;
 import ojplg.skir.state.GameId;
+import ojplg.skir.state.PlayerHoldings;
 import ojplg.skir.state.event.GameSpecifiable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,16 +24,23 @@ public class Adjutant implements GameSpecifiable {
     private final int _turnNumber;
     private final GameId _gameId;
 
-    public static Adjutant restoredGameAdjutant(GameId gameId, Player player, int turnNumber, boolean hasReserves, boolean hasCardSet){
-        if ( ! hasReserves ) {
+    public static Adjutant restoredGameAdjutant(Game game){
+        GameId gameId = game.getGameId();
+        int turnNumber = game.getTurnNumber();
+        Player player = game.currentAttacker();
+
+        PlayerHoldings playerHoldings = game.getPlayerHoldings(game.currentAttacker());
+        int reserves = playerHoldings.reserveCount();
+
+        if ( reserves == 0  ) {
             return new Adjutant(gameId, player, false, OrderType.ClaimArmies, turnNumber);
         }
-        if ( hasCardSet ){
+        if ( playerHoldings.hasCardSet() ){
             return new Adjutant(gameId, player, false, turnNumber,
                     ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet),
-                    ConstrainedOrderType.unconstrainedOrder(OrderType.PlaceArmy));
+                    ConstrainedOrderType.placeArmy(player, game));
         }
-        return new Adjutant(gameId, player, false, OrderType.PlaceArmy, turnNumber);
+        return new Adjutant(gameId, player, false, turnNumber, ConstrainedOrderType.placeArmy(player, game));
     }
 
     public static Adjutant newGameAdjutant(GameId gameId, Player player){

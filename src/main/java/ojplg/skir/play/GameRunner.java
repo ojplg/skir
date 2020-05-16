@@ -216,8 +216,7 @@ public class GameRunner implements GameSpecifiable {
             // this is a restore situation
             _log.info("Restarting a restored game");
 
-            PlayerHoldings playerHoldings = _game.getPlayerHoldings(_game.currentAttacker());
-            _currentAdjutant = Adjutant.restoredGameAdjutant(_game.getGameId(), _game.currentAttacker(), _game.getTurnNumber(), playerHoldings.hasReserves(), playerHoldings.hasCardSet());
+            _currentAdjutant = Adjutant.restoredGameAdjutant(_game);
             _channels.publishAdjutant(_currentAdjutant);
         } else {
             // this is a true start
