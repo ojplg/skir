@@ -41,6 +41,7 @@ public class WebRunner {
         synchronized (_lock){
             _gameRunners.put(gameState.getGameId(), gameRunner);
         }
+        gameRunner.start();
     }
 
     GameId newGame(NewGameRequest request){

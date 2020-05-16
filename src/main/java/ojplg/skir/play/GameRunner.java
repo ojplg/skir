@@ -63,9 +63,9 @@ public class GameRunner implements GameSpecifiable {
         _channels.subscribeToNoMoveReceviedEvent(this, _fiber, this::handleNoMoveReceivedEvent);
     }
 
-    public GameRunner( Channels channels, GameState gameState ){
+    public GameRunner(Channels channels, GameState gameState ){
         _channels = channels;
-        _gameRequest = null;
+        _gameRequest = NewGameRequest.restoreGame(gameState.getGameId());
         _aiFactory = null;
         _fiber = Skir.createThreadFiber("GameRunner-" + gameState.getGameId());
         _playerClock = new PlayerClock(gameState.getGameId(), channels);
@@ -75,6 +75,11 @@ public class GameRunner implements GameSpecifiable {
         _channels.subscribeToGameStartRequest(this, _fiber, this::startGame);
         _channels.subscribeToAdjutant(this, _fiber, this::aiOrderGenerator);
         _channels.subscribeToNoMoveReceviedEvent(this, _fiber, this::handleNoMoveReceivedEvent);
+
+        Roller roller = new RandomRoller(System.currentTimeMillis());
+        
+        _preGame = new PreGame(channels, gameState.getGameId());
+        _game = new Game(gameState, roller, channels);
     }
 
     public void start(){
