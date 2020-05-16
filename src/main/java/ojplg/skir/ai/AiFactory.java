@@ -63,6 +63,10 @@ public class AiFactory {
         return automatedPlayers;
     }
 
+    public static AutomatedPlayer generateAiInstance(String name, Player player){
+        return _playerGenerators.get(name).apply(player);
+    }
+
     private static List<String> extractPlayerNames(){
         List<String> names  = new ArrayList<>();
         names.addAll(_playerGenerators.keySet());

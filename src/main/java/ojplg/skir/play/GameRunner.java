@@ -27,6 +27,7 @@ import ojplg.skir.state.event.ClientConnectedEvent;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,9 +78,16 @@ public class GameRunner implements GameSpecifiable {
         _channels.subscribeToNoMoveReceviedEvent(this, _fiber, this::handleNoMoveReceivedEvent);
 
         Roller roller = new RandomRoller(System.currentTimeMillis());
-        
+
         _preGame = new PreGame(channels, gameState.getGameId());
         _game = new Game(gameState, roller, channels);
+
+        _automatedPlayers = new HashMap<>();
+        for(Map.Entry<Player, String> aiPlayerEntry : gameState.getAiPlayerNames().entrySet()){
+            AutomatedPlayer automatedPlayer = AiFactory.generateAiInstance(aiPlayerEntry.getValue(), aiPlayerEntry.getKey());
+            automatedPlayer.initialize(_game);
+            _automatedPlayers.put(aiPlayerEntry.getKey(), automatedPlayer);
+        }
     }
 
     public void start(){
@@ -126,7 +134,18 @@ public class GameRunner implements GameSpecifiable {
             _log.error("Error processing an order " + ge.getMessage() + " with " +  player + " with ai " + _automatedPlayers.get(player));
             throw ge;
         }
-        GameSaver.saveGameState(_game.getGameState());
+        doGameStateSave();
+    }
+
+    private void doGameStateSave(){
+        GameState gameState = _game.getGameState();
+        Map<Player, String> aiPlayerNames = new HashMap<>();
+        for(Player ai : _automatedPlayers.keySet()){
+            String playerName = ai.getDisplayName();
+            aiPlayerNames.put(ai, playerName);
+        }
+        gameState.setAiPlayerNames(aiPlayerNames);
+        GameSaver.saveGameState(gameState);
     }
 
     private void handleGameOver(){

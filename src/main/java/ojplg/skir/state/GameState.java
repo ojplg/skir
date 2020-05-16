@@ -21,6 +21,16 @@ public class GameState implements Serializable {
     private int _turnNumber = 1;
     private int _lastAttackTurn = 0;
 
+    private Map<Player, String> _aiPlayerNames;
+
+    public Map<Player, String> getAiPlayerNames() {
+        return _aiPlayerNames;
+    }
+
+    public void setAiPlayerNames(Map<Player, String> _aiPlayerNames) {
+        this._aiPlayerNames = _aiPlayerNames;
+    }
+
     public GameId getGameId() {
         return _gameId;
     }
