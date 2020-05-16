@@ -22,6 +22,18 @@ public class Adjutant implements GameSpecifiable {
     private final int _turnNumber;
     private final GameId _gameId;
 
+    public static Adjutant restoredGameAdjutant(GameId gameId, Player player, int turnNumber, boolean hasReserves, boolean hasCardSet){
+        if ( ! hasReserves ) {
+            return new Adjutant(gameId, player, false, OrderType.ClaimArmies, turnNumber);
+        }
+        if ( hasCardSet ){
+            return new Adjutant(gameId, player, false, turnNumber,
+                    ConstrainedOrderType.unconstrainedOrder(OrderType.ExchangeCardSet),
+                    ConstrainedOrderType.unconstrainedOrder(OrderType.PlaceArmy));
+        }
+        return new Adjutant(gameId, player, false, OrderType.PlaceArmy, turnNumber);
+    }
+
     public static Adjutant newGameAdjutant(GameId gameId, Player player){
         _log.info("New game " + player);
         return new Adjutant(gameId, player, false, OrderType.ClaimArmies, 1);

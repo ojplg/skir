@@ -7,16 +7,32 @@ import java.time.LocalDateTime;
 
 public class GameMenuEntry {
 
-    private final NewGameRequest _gameRequest;
+    private final LocalDateTime _requestTime;
+    private final String _requesterName;
+    private final String _requesterAddress;
+    private final GamePurpose _gamePurpose;
     private final boolean _started;
+    private final boolean _restored;
 
     public GameMenuEntry(NewGameRequest gameRequest, boolean started) {
-        this._gameRequest = gameRequest;
+        _requestTime = gameRequest.getRequestTime();
+        _requesterName = gameRequest.getRequesterName();
+        _requesterAddress = gameRequest.getRequesterAddress();
+        _gamePurpose = gameRequest.getGamePurpose();
         this._started = started;
+        this._restored =  gameRequest.isRestored();
     }
 
     public boolean isJoinable(){
-        return (!_started) && getGamePurpose().equals(GamePurpose.WebPlay);
+        if ( GamePurpose.WebPlay.equals(_gamePurpose)){
+            if( _restored ){
+                return true;
+            }
+            if ( !_started ){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isDemo(){
@@ -28,17 +44,17 @@ public class GameMenuEntry {
     }
 
     public LocalDateTime getRequestTime() {
-        return _gameRequest.getRequestTime();
+        return _requestTime;
     }
 
     public String getRequesterName() {
-        return _gameRequest.getRequesterName();
+        return _requesterName;
     }
 
     public String getRequesterAddress() {
-        return _gameRequest.getRequesterAddress();
+        return _requesterAddress;
     }
 
-    public GamePurpose getGamePurpose() { return _gameRequest.getGamePurpose(); }
+    public GamePurpose getGamePurpose() { return _gamePurpose; }
 
 }

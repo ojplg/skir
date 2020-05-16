@@ -17,6 +17,7 @@ public class NewGameRequest {
     private final int _delay;
     private final GamePurpose _gamePurpose;
     private final GameId _gameId;
+    private final boolean _restored;
 
     public static NewGameRequest webDemo(String requesterName, String requesterAddress, List<String> aiNames) {
         return new NewGameRequest(requesterName, requesterAddress, aiNames, Constants.WEB_PLAY_DELAY, GamePurpose.WebDemo);
@@ -45,6 +46,7 @@ public class NewGameRequest {
         this._delay = 0;
         this._gamePurpose = GamePurpose.WebPlay;
         this._gameId = gameId;
+        this._restored = true;
     }
 
     private NewGameRequest(String requesterName, String requesterAddress, List<String> aiNames, int delay, GamePurpose gamePurpose) {
@@ -54,6 +56,7 @@ public class NewGameRequest {
         this._delay = delay;
         this._gamePurpose = gamePurpose;
         this._gameId = GameId.next();
+        this._restored = false;
     }
 
     int getDelay() {
@@ -81,4 +84,6 @@ public class NewGameRequest {
     public GameId getGameId(){
         return _gameId;
     }
+
+    public boolean isRestored() { return _restored; }
 }

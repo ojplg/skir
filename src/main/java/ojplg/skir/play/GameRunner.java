@@ -13,6 +13,7 @@ import ojplg.skir.play.orders.Transitions;
 import ojplg.skir.state.GameException;
 import ojplg.skir.state.GameId;
 import ojplg.skir.state.GameState;
+import ojplg.skir.state.PlayerHoldings;
 import ojplg.skir.state.event.GameSpecifiable;
 import ojplg.skir.state.event.GameStartRequest;
 import ojplg.skir.state.event.NoMoveReceivedEvent;
@@ -130,11 +131,16 @@ public class GameRunner implements GameSpecifiable {
             } else {
                 _channels.publishAdjutant(_currentAdjutant);
             }
+            if( !player.equals(_currentAdjutant)){
+                // Save game state at the end of a players turn
+                // it's hard to recover in the middle of a turn, so we do not try to
+                doGameStateSave();
+            }
+
         } catch (GameException ge) {
             _log.error("Error processing an order " + ge.getMessage() + " with " +  player + " with ai " + _automatedPlayers.get(player));
             throw ge;
         }
-        doGameStateSave();
     }
 
     private void doGameStateSave(){
@@ -168,20 +174,18 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void aiOrderGenerator(Adjutant adjutant){
-        if( matches(adjutant)){
-            AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
-            if( ai != null ) {
-                Instant start = Instant.now();
-                Order order = ai.generateOrder(_currentAdjutant, _game);
-                Instant end = Instant.now();
-                Duration timeSpent = Duration.between(start, end);
-                if(timeSpent.getSeconds() > 1.0){
-                    _log.warn("On turn " + _game.getTurnNumber() + " ai " + ai.getPlayer() + " took " + timeSpent
-                        + " when choosing between " + adjutant.allowableOrders());
-                }
-                littleDelay();
-                _channels.publishOrder(order);
+        AutomatedPlayer ai = _automatedPlayers.get(adjutant.getActivePlayer());
+        if( ai != null ) {
+            Instant start = Instant.now();
+            Order order = ai.generateOrder(_currentAdjutant, _game);
+            Instant end = Instant.now();
+            Duration timeSpent = Duration.between(start, end);
+            if(timeSpent.getSeconds() > 1.0){
+                _log.warn("On turn " + _game.getTurnNumber() + " ai " + ai.getPlayer() + " took " + timeSpent
+                    + " when choosing between " + adjutant.allowableOrders());
             }
+            littleDelay();
+            _channels.publishOrder(order);
         }
     }
 
@@ -208,18 +212,28 @@ public class GameRunner implements GameSpecifiable {
     }
 
     private void startGame(GameStartRequest gameStartRequest){
-        _game = initializeGame(gameStartRequest, _channels);
-        _log.info("Game initialized");
-        assignCountries();
-        _log.info("Countries assigned");
-        initializedAIs(_game);
-        _game.start();
-        _log.info("Game started");
-        _game.publishAllState();
-        _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
-        _log.info("New game adjutant created " + _game.getGameId() + ", " + _game.currentAttacker());
-        _channels.publishAdjutant(_currentAdjutant);
-        _log.info("Starting game " + gameStartRequest);
+        if ( _game != null ){
+            // this is a restore situation
+            _log.info("Restarting a restored game");
+
+            PlayerHoldings playerHoldings = _game.getPlayerHoldings(_game.currentAttacker());
+            _currentAdjutant = Adjutant.restoredGameAdjutant(_game.getGameId(), _game.currentAttacker(), _game.getTurnNumber(), playerHoldings.hasReserves(), playerHoldings.hasCardSet());
+            _channels.publishAdjutant(_currentAdjutant);
+        } else {
+            // this is a true start
+            _game = initializeGame(gameStartRequest, _channels);
+            _log.info("Game initialized");
+            assignCountries();
+            _log.info("Countries assigned");
+            initializedAIs(_game);
+            _game.start();
+            _log.info("Game started");
+            _game.publishAllState();
+            _currentAdjutant = Adjutant.newGameAdjutant(_game.getGameId(), _game.currentAttacker());
+            _log.info("New game adjutant created " + _game.getGameId() + ", " + _game.currentAttacker());
+            _channels.publishAdjutant(_currentAdjutant);
+            _log.info("Starting game " + gameStartRequest);
+        }
     }
 
     public boolean isStarted(){

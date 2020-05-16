@@ -1,6 +1,7 @@
 package ojplg.skir.state;
 
 import ojplg.skir.card.Card;
+import ojplg.skir.card.CardSet;
 import ojplg.skir.state.event.GameSpecifiable;
 
 import java.io.Serializable;
@@ -60,6 +61,10 @@ public class PlayerHoldings implements GameSpecifiable, Serializable {
 
     public boolean hasTooManyCards(){
         return _cards.size() > Constants.MAXIMUM_CARD_HOLDINGS;
+    }
+
+    public boolean hasCardSet() {
+        return CardSet.hasTradeableSet(_cards);
     }
 
     @Override
