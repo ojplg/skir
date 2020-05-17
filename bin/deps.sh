@@ -7,10 +7,10 @@ source jars.sh
 TMP_DOWNLOAD_DIR=$PROJECT_HOME_DIR/.tmp_download_dir
 
 JETTY_TARBALL=jetty-distribution-$JETTY_VERSION
-JETTY_URL=http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/$JETTY_VERSION/$JETTY_TARBALL
+JETTY_URL=https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/$JETTY_VERSION/$JETTY_TARBALL
 
 LOG4J_TARBALL=apache-log4j-$LOG4J_VERSION-bin
-LOG4J_URL=http://apache.cs.utah.edu/logging/log4j/$LOG4J_VERSION/$LOG4J_TARBALL
+LOG4J_URL=https://apache.cs.utah.edu/logging/log4j/$LOG4J_VERSION/$LOG4J_TARBALL
 
 JSON_URL=https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple
 
