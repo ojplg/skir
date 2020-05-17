@@ -22,7 +22,7 @@ To build and run the program follow these steps:
 2. ./deps.sh
 3. ./build.sh
 4. ./start.sh
-5. Navigate your browswer to http://localhost:8080/
+5. Navigate your browswer to http://localhost:8010/skir
 
 If you are using Windows (Cygwin) you need to set some environment variables JAVA\_PATH\_SEPARATOR=";" and CYGWIN\_PREFIX="C:\\cygwin64" (or wherever cygwin is installed for you).
 
@@ -33,7 +33,7 @@ If you prefer to use Maven rather than the home-brewed scripts do:
 
 1. mvn install
 2. java -cp target/classes:target/dependency/\* ojplg.skir.play.Skir
-3. Navigate your browswer to http://localhost:8080/
+3. Navigate your browswer to http://localhost:8010/skir
 
 Heroku
 ------
@@ -100,6 +100,33 @@ Attempts a plan of slow growth.
 Tuney
 -----
 A generic algorithm that allows its heuristic to be configured.
+
+
+Writing an AI
+=============
+To contribute your own AI, you must implement the interface
+`ojplg.skir.ai.AutomatedPlayer`. There are only three methods,
+and two of them are trivial.
+
+ * There is an optional `initialize` method. You can ignore it to start.
+ The default implementation does nothing, and that's fine.
+ * The `getPlayer` method must return the `Player` object. This is
+ trivial. When you register your AI in the `AiFactory` class, your
+ class will be passed a `Player` object. Just return it.
+ * All of the work is in the `generateOrder` method. It receives two
+ arguments: an `Adjutant` object and a `Game` object. The `Adjutant`
+ describes the types of orders that are possible to issue. The `Game`
+ object describes everything about the state of the game: what player
+ owns what country and the level of forces in each country, etc.
+
+Take a look at the class `ojplg.skir.ai.Wimpy` which is about
+the simplest possible implementation that can participate in a game.
+
+Remember to register your AI in `ojplg.skir.ai.AiFactory`.
+
+There is a collection of static methods in `AiUtils` that are
+useful for building an intelligent AI.
+
 
 Modes
 =====
