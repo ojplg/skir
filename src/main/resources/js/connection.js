@@ -1,7 +1,7 @@
 function Connection(map){
     let self = this;
 
-    this.socket = new WebSocket(web_socket_protocol + "://" + window.location.host + "/sockets/");
+    this.socket = new WebSocket(web_socket_protocol + "://" + window.location.host + "/skirwebsocket/sockets/");
     this.queuedUpdates = {};
     this.map = map;
 

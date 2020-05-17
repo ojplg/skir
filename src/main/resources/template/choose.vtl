@@ -22,7 +22,7 @@
         <div class="error">Error: $error</div>
     #end
 
-    <form action="/app/new-game" method="post">
+    <form action="/skir/app/new-game" method="post">
         <h3>Start New Game</h3>
 
         <input type="hidden" name="user-name" value="${user_name}"/>
@@ -74,9 +74,9 @@
             <td>$menu_entry.RequestTime</td>
             <td>$menu_entry.GamePurpose</td>
             #if($menu_entry.isJoinable())</td>
-            <td><a href="/app/join-game?user-name=${user_name}&game=${game_id}">Join</a></td>
+            <td><a href="/skir/app/join-game?user-name=${user_name}&game=${game_id}">Join</a></td>
             #else
-            <td><a href="/app/view-game?user-name=${user_name}&game=${game_id}&demo=${menu_entry.isDemo()}">View</a></td>
+            <td><a href="/skir/app/view-game?user-name=${user_name}&game=${game_id}&demo=${menu_entry.isDemo()}">View</a></td>
             #end
         </tr>
     #end

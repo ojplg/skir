@@ -41,7 +41,12 @@ public class SkirWebHandler extends AbstractHandler {
                 + " with path into " + request.getPathInfo()
                 + " with context path " + request.getContextPath());
 
-        switch(request.getPathInfo()){
+        String pathInfo = request.getPathInfo();
+        if (pathInfo.startsWith("/skir")){
+            pathInfo = pathInfo.substring(5);
+        }
+
+        switch(pathInfo){
             case "/chooser":
                 renderChooserPage(request, httpServletResponse, "");
                 break;
@@ -96,7 +101,7 @@ public class SkirWebHandler extends AbstractHandler {
             GameId gameId = _webRunner.newGame(gameRequest);
 
             response.setStatus(HttpServletResponse.SC_SEE_OTHER);
-            response.setHeader("Location", "/app/join-game?user-name=" + userName
+            response.setHeader("Location", "/skir/app/join-game?user-name=" + userName
                     + "&demo=" + demoFlag + "&game=" + gameId.getId());
         } else {
             renderChooserPage(request, response, "Need to select at least one AI");
