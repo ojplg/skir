@@ -2,6 +2,7 @@ package ojplg.skir.web;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -39,15 +40,23 @@ public class JettyInitializer {
         resourceHandler.setWelcomeFiles(new String[]{ "html/index.html"});
         resourceHandler.setResourceBase("target/classes");
 
+        MimeTypes mimeTypes = new MimeTypes();
+        mimeTypes.addMimeMapping("js","application/javascript");
+        resourceHandler.setMimeTypes(mimeTypes);
+
         ServletContextHandler webSocketContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        webSocketContextHandler.setContextPath("/");
+        webSocketContextHandler.setContextPath("/skirwebsocket");
 
         ContextHandler appHandler = new ContextHandler();
-        appHandler.setContextPath("/app");
+        appHandler.setContextPath("/skir/app");
         appHandler.setHandler(new SkirWebHandler(_webRunner));
 
+        ContextHandler skirResources = new ContextHandler();
+        skirResources.setContextPath("/skir");
+        skirResources.setHandler(resourceHandler);
+
         HandlerList handlers = new HandlerList();
-        handlers.setHandlers(new Handler[] { appHandler, resourceHandler, webSocketContextHandler });
+        handlers.setHandlers(new Handler[] { appHandler, skirResources, webSocketContextHandler });
         _server.setHandler(handlers);
 
         ServerContainer wsContainer = WebSocketServerContainerInitializer.configureContext(webSocketContextHandler);
