@@ -20,16 +20,16 @@ HAMCREST_URL=https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$HAMCREST
 JETLANG_URL=https://repo1.maven.org/maven2/org/jetlang/jetlang/$JETLANG_VERSION
 
 VELOCITY_TARBALL=velocity-$VELOCITY_VERSION
-VELOCITY_URL=http://www-us.apache.org/dist//velocity/engine/$VELOCITY_VERSION/$VELOCITY_TARBALL
+VELOCITY_URL=https://downloads.apache.org/velocity/engine/$VELOCITY_VERSION/$VELOCITY_TARBALL
 
 APACHE_COLLECTIONS_TARBALL=commons-collections-$APACHE_COLLECTIONS_VERSION
-APACHE_COLLECTIONS_URL=http://www-us.apache.org/dist//commons/collections/binaries/$APACHE_COLLECTIONS_TARBALL-bin
+APACHE_COLLECTIONS_URL=https://downloads.apache.org//commons/collections/binaries/$APACHE_COLLECTIONS_TARBALL-bin
 
 APACHE_LANG_TARBALL=commons-lang-$APACHE_LANG_VERSION
-APACHE_LANG_URL=http://www-us.apache.org/dist//commons/lang/binaries/$APACHE_LANG_TARBALL-bin
+APACHE_LANG_URL=https://downloads.apache.org/commons/lang/binaries/$APACHE_LANG_TARBALL-bin
 
 APACHE_CLI_TARBALL=commons-cli-$APACHE_CLI_VERSION
-APACHE_CLI_URL=http://www-us.apache.org/dist//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
+APACHE_CLI_URL=https://downloads.apache.org//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
 
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
