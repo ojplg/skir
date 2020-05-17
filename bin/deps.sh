@@ -10,7 +10,7 @@ JETTY_TARBALL=jetty-distribution-$JETTY_VERSION
 JETTY_URL=https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/$JETTY_VERSION/$JETTY_TARBALL
 
 LOG4J_TARBALL=apache-log4j-$LOG4J_VERSION-bin
-LOG4J_URL=https://apache.cs.utah.edu/logging/log4j/$LOG4J_VERSION/$LOG4J_TARBALL
+LOG4J_URL=https://downloads.apache.org/logging/log4j/$LOG4J_VERSION/apache-log4j-$LOG4J_VERSION-bin
 
 JSON_URL=https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple
 
@@ -122,7 +122,7 @@ clean_and_create_tmp_dir
 cd $TMP_DOWNLOAD_DIR
 
 function get_all {
-        get_log4
+        get_log4j
         get_jetty
         get_json
         get_junit
