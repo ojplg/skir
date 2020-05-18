@@ -15,7 +15,7 @@ public class Transitions {
                 return Arrays.asList(OrderType.PlaceArmy, OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.Fortify, OrderType.EndTurn);
             case Attack:
             case AttackUntilVictoryOrDeath:
-                return Arrays.asList(OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.Occupy, OrderType.EndTurn);
+                return Arrays.asList(OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.Occupy, OrderType.EndTurn, OrderType.Fortify);
             case Occupy:
                 return Arrays.asList(OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.EndTurn, OrderType.Fortify,
                         OrderType.ExchangeCardSet, OrderType.ClaimArmies);
