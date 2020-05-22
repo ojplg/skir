@@ -18,7 +18,7 @@ public class Transitions {
                 return Arrays.asList(OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.Occupy, OrderType.EndTurn, OrderType.Fortify);
             case Occupy:
                 return Arrays.asList(OrderType.Attack, OrderType.AttackUntilVictoryOrDeath, OrderType.EndAttacks, OrderType.EndTurn, OrderType.Fortify,
-                        OrderType.ExchangeCardSet, OrderType.ClaimArmies);
+                        OrderType.ExchangeCardSet, OrderType.ClaimArmies, OrderType.DrawCard);
             case EndAttacks:
                 return Arrays.asList(OrderType.DrawCard, OrderType.Fortify, OrderType.EndTurn, OrderType.ClaimArmies);
             case Fortify:
