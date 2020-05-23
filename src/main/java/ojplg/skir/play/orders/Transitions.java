@@ -8,7 +8,7 @@ public class Transitions {
     public static List<OrderType> possibleTransition(OrderType orderType){
         switch (orderType) {
             case ExchangeCardSet:
-                return Arrays.asList(OrderType.ClaimArmies, OrderType.PlaceArmy);
+                return Arrays.asList(OrderType.ClaimArmies, OrderType.PlaceArmy, OrderType.ExchangeCardSet);
             case ClaimArmies :
                 return Arrays.asList(OrderType.PlaceArmy, OrderType.ExchangeCardSet);
             case PlaceArmy:
