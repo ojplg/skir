@@ -25,8 +25,8 @@ VELOCITY_URL=https://dlcdn.apache.org/velocity/engine/$VELOCITY_VERSION/$VELOCIT
 APACHE_COLLECTIONS_TARBALL=commons-collections-$APACHE_COLLECTIONS_VERSION
 APACHE_COLLECTIONS_URL=https://downloads.apache.org//commons/collections/binaries/$APACHE_COLLECTIONS_TARBALL-bin
 
-APACHE_LANG_TARBALL=commons-lang-$APACHE_LANG_VERSION
-APACHE_LANG_URL=https://downloads.apache.org/commons/lang/binaries/$APACHE_LANG_TARBALL-bin
+APACHE_LANG3_TARBALL=commons-lang3-$APACHE_LANG3_VERSION
+APACHE_LANG3_URL=https://dlcdn.apache.org/commons/lang/binaries/$APACHE_LANG3_TARBALL-bin
 
 APACHE_CLI_TARBALL=commons-cli-$APACHE_CLI_VERSION
 APACHE_CLI_URL=https://dlcdn.apache.org//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
@@ -108,8 +108,8 @@ function get_apache_collections {
 
 function get_apache_lang {
 	echo "apache lang ..."
-	download_and_untar $APACHE_LANG_URL $APACHE_LANG_JAR
-        copy_to_libs $APACHE_LANG_TARBALL $APACHE_LANG_JAR.jar
+	download_and_untar $APACHE_LANG3_URL $APACHE_LANG3_JAR
+        copy_to_libs $APACHE_LANG3_TARBALL $APACHE_LANG3_JAR.jar
 }
 
 function get_apache_cli {
@@ -143,4 +143,5 @@ function get_all {
     get_slf4j
 }
 
-get_all
+#get_all
+get_apache_lang
