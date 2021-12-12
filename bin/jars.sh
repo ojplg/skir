@@ -20,7 +20,7 @@ LOG4J_JARS=(log4j-core log4j-api)
 
 JSON_JAR=json-simple-1.1.1.jar
 
-JUNIT_VERSION=4.12
+JUNIT_VERSION=4.13.1
 JUNIT_JAR=junit-$JUNIT_VERSION.jar
 
 HAMCREST_VERSION=1.3

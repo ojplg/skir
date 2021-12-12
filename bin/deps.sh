@@ -143,5 +143,4 @@ function get_all {
     get_slf4j
 }
 
-#get_all
-get_apache_lang
+get_all
