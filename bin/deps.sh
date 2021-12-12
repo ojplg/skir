@@ -20,7 +20,7 @@ HAMCREST_URL=https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/$HAMCREST
 JETLANG_URL=https://repo1.maven.org/maven2/org/jetlang/jetlang/$JETLANG_VERSION
 
 VELOCITY_TARBALL=velocity-$VELOCITY_VERSION
-VELOCITY_URL=https://downloads.apache.org/velocity/engine/$VELOCITY_VERSION/$VELOCITY_TARBALL
+VELOCITY_URL=https://dlcdn.apache.org/velocity/engine/$VELOCITY_VERSION/$VELOCITY_JAR
 
 APACHE_COLLECTIONS_TARBALL=commons-collections-$APACHE_COLLECTIONS_VERSION
 APACHE_COLLECTIONS_URL=https://downloads.apache.org//commons/collections/binaries/$APACHE_COLLECTIONS_TARBALL-bin
@@ -29,7 +29,7 @@ APACHE_LANG_TARBALL=commons-lang-$APACHE_LANG_VERSION
 APACHE_LANG_URL=https://downloads.apache.org/commons/lang/binaries/$APACHE_LANG_TARBALL-bin
 
 APACHE_CLI_TARBALL=commons-cli-$APACHE_CLI_VERSION
-APACHE_CLI_URL=https://downloads.apache.org//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
+APACHE_CLI_URL=https://dlcdn.apache.org//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
 
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
@@ -39,7 +39,7 @@ function clean_and_create_tmp_dir {
 
 # Pass the URL and the base name of the tar ball
 function download_and_untar {
-        echo " curling" $1
+    echo " curling" $1
 	curl $1.tar.gz > $2.tar.gz
 	echo " extracting" $2
 	tar -xzf $2.tar.gz
@@ -53,8 +53,8 @@ function copy_to_libs {
 
 function get_velocity {
 	echo "velocity ..."
-	download_and_untar $VELOCITY_URL $VELOCITY_TARBALL
-        copy_to_libs $VELOCITY_TARBALL $VELOCITY_JAR
+	curl $VELOCITY_URL > $VELOCITY_JAR
+	cp $VELOCITY_JAR $LIBS_DIR/
 }
 
 function get_log4j {

@@ -21,7 +21,7 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 4);
 
         assertEquals(1, distributed.size());
-        assertEquals(new Integer(4), distributed.get("A"));
+        assertEquals(Integer.valueOf(4), distributed.get("A"));
     }
 
     @Test
@@ -33,8 +33,8 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 4);
 
         assertEquals(2, distributed.size());
-        assertEquals(new Integer(2), distributed.get("A"));
-        assertEquals(new Integer(2), distributed.get("B"));
+        assertEquals(Integer.valueOf(2), distributed.get("A"));
+        assertEquals(Integer.valueOf(2), distributed.get("B"));
     }
 
     @Test
@@ -46,8 +46,8 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 4);
 
         assertEquals(2, distributed.size());
-        assertEquals(new Integer(1), distributed.get("A"));
-        assertEquals(new Integer(3), distributed.get("B"));
+        assertEquals(Integer.valueOf(1), distributed.get("A"));
+        assertEquals(Integer.valueOf(3), distributed.get("B"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 1);
 
         assertEquals(1, distributed.size());
-        assertEquals(new Integer(1), distributed.get("B"));
+        assertEquals(Integer.valueOf(1), distributed.get("B"));
     }
 
     @Test
@@ -72,9 +72,9 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 12);
 
         assertEquals(3, distributed.size());
-        assertEquals(new Integer(4), distributed.get("A"));
-        assertEquals(new Integer(4), distributed.get("B"));
-        assertEquals(new Integer(4), distributed.get("A"));
+        assertEquals(Integer.valueOf(4), distributed.get("A"));
+        assertEquals(Integer.valueOf(4), distributed.get("B"));
+        assertEquals(Integer.valueOf(4), distributed.get("A"));
     }
 
 
@@ -88,8 +88,8 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 10);
 
         assertEquals(2, distributed.size());
-        assertEquals(new Integer(1), distributed.get("A"));
-        assertEquals(new Integer(9), distributed.get("B"));
+        assertEquals(Integer.valueOf(1), distributed.get("A"));
+        assertEquals(Integer.valueOf(9), distributed.get("B"));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 8);
 
         assertEquals(2, distributed.size());
-        assertEquals(new Integer(1), distributed.get("A"));
-        assertEquals(new Integer(7), distributed.get("B"));
+        assertEquals(Integer.valueOf(1), distributed.get("A"));
+        assertEquals(Integer.valueOf(7), distributed.get("B"));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 5, 1);
 
         assertEquals(1, distributed.size());
-        assertEquals(new Integer(5), distributed.get("C"));
+        assertEquals(Integer.valueOf(5), distributed.get("C"));
     }
 
     @Test
@@ -151,8 +151,8 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 5, 2);
 
         assertEquals(2, distributed.size());
-        assertEquals(new Integer(3), distributed.get("C"));
-        assertEquals(new Integer(2), distributed.get("A"));
+        assertEquals(Integer.valueOf(3), distributed.get("C"));
+        assertEquals(Integer.valueOf(2), distributed.get("A"));
     }
 
     @Test
@@ -166,10 +166,10 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 8);
 
         assertEquals(4, distributed.size());
-        assertEquals(new Integer(2), distributed.get("A"));
-        assertEquals(new Integer(2), distributed.get("B"));
-        assertEquals(new Integer(2), distributed.get("C"));
-        assertEquals(new Integer(2), distributed.get("D"));
+        assertEquals(Integer.valueOf(2), distributed.get("A"));
+        assertEquals(Integer.valueOf(2), distributed.get("B"));
+        assertEquals(Integer.valueOf(2), distributed.get("C"));
+        assertEquals(Integer.valueOf(2), distributed.get("D"));
     }
 
 
@@ -186,9 +186,9 @@ public class RatioDistributorTest
         Map<String, Integer> distributed = RatioDistributor.distribute(ratios, 8, minimums);
 
         //assertEquals(3, distributed.size());
-        assertEquals(new Integer(1), distributed.get("A"));
-        assertEquals(new Integer(2), distributed.get("B"));
-        assertEquals(new Integer(5), distributed.get("C"));
+        assertEquals(Integer.valueOf(1), distributed.get("A"));
+        assertEquals(Integer.valueOf(2), distributed.get("B"));
+        assertEquals(Integer.valueOf(5), distributed.get("C"));
     }
 
 }
