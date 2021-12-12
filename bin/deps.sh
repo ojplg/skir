@@ -31,6 +31,8 @@ APACHE_LANG_URL=https://downloads.apache.org/commons/lang/binaries/$APACHE_LANG_
 APACHE_CLI_TARBALL=commons-cli-$APACHE_CLI_VERSION
 APACHE_CLI_URL=https://dlcdn.apache.org//commons/cli/binaries/$APACHE_CLI_TARBALL-bin
 
+SLF4J_URL=https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$SLF4J_VERSION/$SLF4J_JAR
+
 function clean_and_create_tmp_dir {
 	rm -rf $TMP_DOWNLOAD_DIR
 	mkdir $TMP_DOWNLOAD_DIR
@@ -116,6 +118,13 @@ function get_apache_cli {
         copy_to_libs $APACHE_CLI_TARBALL $APACHE_CLI_JAR.jar
 }
 
+function get_slf4j {
+    echo "slf4j ..."
+    
+	curl $SLF4J_URL > $SLF4J_JAR
+    cp $SLF4J_JAR $LIBS_DIR/
+}
+
 echo "Downloading dependencies ..."
 
 clean_and_create_tmp_dir
@@ -131,6 +140,7 @@ function get_all {
         get_apache_collections
         get_apache_lang
         get_apache_cli
+    get_slf4j
 }
 
 get_all
