@@ -15,7 +15,7 @@ JETTY_WEBSOCKET_JARS=(javax-websocket-server-impl javax-websocket-client-impl we
 SERVLET_JAR=servlet-api-3.1.jar
 WEBSOCKET_JAR=javax.websocket-api-1.0.jar
 
-LOG4J_VERSION=2.17.0
+LOG4J_VERSION=2.17.1
 LOG4J_JARS=(log4j-core log4j-api)
 
 JSON_JAR=json-simple-1.1.1.jar
